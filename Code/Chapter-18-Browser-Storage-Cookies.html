@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 18: Browser Storage &amp; Cookies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      line-height: 1.38;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+    .syn-regex { color: #38bdf8; font-style: italic; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10px;
+      line-height: 1.32;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 18: BROWSER STORAGE &amp; COOKIES — LOCALSTORAGE, SESSIONSTORAGE &amp; INDEXEDDB</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">53 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 12 — Client-Side Storage &amp; Persistence</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">localStorage, sessionStorage, Cookies &amp; StorageEvent</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">W3C Web Storage / WHATWG / ECMAScript 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Browser Storage — Browser-এর মধ্যে Data Save, Read, Update ও Delete করা</h2>
+      <p class="text-p">একটি আধুনিক ওয়েব অ্যাপ্লিকেশনে ইউজার প্রেফারেন্স (যেমন ডার্ক মোড, ভাষা), শপিং কার্ট ডাটা কিংবা সাময়িক ফর্ম ডাটা পেজ রিলোড বা ব্রাউজার বন্ধ করলেও যেন হারিয়ে না যায়, সেজন্য ব্রাউজারের নিজস্ব <strong>Web Storage API</strong> ব্যবহার করা হয়।</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">Client Application &nbsp;→&nbsp; Web Storage (localStorage / sessionStorage) / Cookies / IndexedDB &nbsp;→&nbsp; JSON Serialization &nbsp;→&nbsp; Persistent State</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">ব্রাউজারে নির্ভরযোগ্য স্টেট পারসিস্টেন্স এবং অফলাইন-রেডি ইউজার এক্সপেরিয়েন্সের মূল ভিত্তি হলো এই স্টোরেজ আর্কিটেকচার। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Web Storage Foundations &amp; localStorage (18.1 – 18.10)</div>
+
+    <!-- 18.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">18.1</span> Browser Storage কী?</div>
+<p class="text-p">Browser Storage হলো browser-এর মধ্যে website-এর কিছু data সংরক্ষণ করার ব্যবস্থা।</p>
+<div class="sub-badge">💡 Real-life example</div>
+<p class="text-p">ধরো তুমি একটি shopping website-এ গেলে এবং:</p>
+<div class="ascii-tree-container">Dark Mode → ON
+Language → বাংলা
+Cart → 3 products</div>
+<p class="text-p">Browser কিছু information মনে রাখতে পারে।</p>
+<p class="text-p">তাই পরেরবার website খুললে:</p>
+<div class="ascii-tree-container">Dark Mode → ON
+Language → বাংলা</div>
+<p class="text-p">থাকতে পারে।</p>
+    </div>
+
+    <!-- 18.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.2</span> Web Storage API</div>
+<p class="text-p">JavaScript-এর Web Storage API-এর প্রধান দুটি অংশ:</p>
+<div class="ascii-tree-container">localStorage
+sessionStorage</div>
+<p class="text-p">দুটোই সাধারণত <strong>key-value pair</strong> আকারে data রাখে।</p>
+<div class="ascii-tree-container">key          value
+-------------------------
+username     Shariar
+theme        dark
+language     bn</div>
+    </div>
+
+    <!-- 18.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.3</span> localStorage` কী?</div>
+<p class="text-p"><code>localStorage</code> browser-এ data save করে এবং সাধারণত browser বন্ধ করলেও data থেকে যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>18.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;username<span class="syn-str">&quot;, &quot;</span>Shariar&quot;);</pre>
+</div>
+<p class="text-p">এখন browser-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>username = Shariar</pre>
+</div>
+<p class="text-p">save হয়েছে।</p>
+    </div>
+
+    <!-- 18.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.4</span> localStorage.setItem()</div>
+<p class="text-p">Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(<span class="syn-op">key</span>, value);</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;name<span class="syn-str">&quot;, &quot;</span>Shariar&quot;);</pre>
+</div>
+<p class="text-p">আরেকটি:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">theme</span><span class="syn-str">&quot;, &quot;</span>dark&quot;);</pre>
+</div>
+    </div>
+
+    <!-- 18.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.5</span> localStorage.getItem()</div>
+<p class="text-p">Data পড়তে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> name = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;name&quot;);
+
+<span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+    </div>
+
+    <!-- 18.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.6</span> localStorage.removeItem()</div>
+<p class="text-p">একটি নির্দিষ্ট item delete:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">removeItem</span>(&quot;name&quot;);</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;name&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>null</pre>
+</div>
+    </div>
+
+    <!-- 18.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.7</span> localStorage.clear()</div>
+<p class="text-p">সব localStorage data delete করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">clear</span>();</pre>
+</div>
+<div class="warn-box">⚠️ এটি ওই origin-এর localStorage-এর <strong>সব entries</strong> মুছে দিতে পারে।</div>
+<p class="text-p">তাই production code-এ সাবধানে ব্যবহার করতে হবে।</p>
+    </div>
+
+    <!-- 18.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.8</span> localStorage.length</div>
+<p class="text-p">কতগুলো item আছে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">localStorage</span>.<span class="syn-kw" style="color:#fdba74;">length</span>);</pre>
+</div>
+<p class="text-p">যদি থাকে:</p>
+<div class="ascii-tree-container">name
+theme
+language</div>
+<p class="text-p">তাহলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3</pre>
+</div>
+    </div>
+
+    <!-- 18.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.9</span> localStorage.key()</div>
+<p class="text-p">Index দিয়ে key পাওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>18.9 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">localStorage</span>.<span class="syn-op">key</span>(<span class="syn-num">0</span>));</pre>
+</div>
+<p class="text-p">Output উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name</pre>
+</div>
+<div class="warn-box">⚠️ Key-এর order-এর উপর application logic নির্ভর করানো উচিত নয়।</div>
+    </div>
+
+    <!-- 18.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.10</span> localStorage-এর সবচেয়ে গুরুত্বপূর্ণ বৈশিষ্ট্য</div>
+<div class="ascii-tree-container">localStorage
+     │
+     ├── Key → Value
+     ├── Persistent
+     ├── Same origin
+     └── String-based</div>
+<div class="memory-box">সবচেয়ে গুরুত্বপূর্ণ:</div>
+<div class="def-box">
+  <div class="def-text"><strong>localStorage মূলত string data store করে।</strong></div>
+</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Data Serialization: Numbers, Booleans, Objects &amp; JSON Formula (18.11 – 18.21)</div>
+
+    <!-- 18.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.11</span> Number Save করলে কী হয়?</div>
+<div class="code-box">
+  <div class="code-top"><span>18.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;age&quot;, <span class="syn-num">25</span>);</pre>
+</div>
+<p class="text-p">পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> age = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;age&quot;);
+
+<span class="syn-fn">console</span>.log(age);
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> age);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>25
+string</pre>
+</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">25 Number
+   ↓
+localStorage
+   ↓
+&quot;25&quot; String</div>
+    </div>
+
+    <!-- 18.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.12</span> String থেকে Number</div>
+<div class="code-box">
+  <div class="code-top"><span>18.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> age = <span class="syn-fn">Number</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;age&quot;));
+
+<span class="syn-fn">console</span>.log(age);
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> age);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>25
+number</pre>
+</div>
+    </div>
+
+    <!-- 18.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.13</span> Boolean Save করলে?</div>
+<div class="code-box">
+  <div class="code-top"><span>18.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;isLoggedIn&quot;, <span class="syn-bool">true</span>);</pre>
+</div>
+<p class="text-p">পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> value = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;isLoggedIn&quot;);
+
+<span class="syn-fn">console</span>.log(value);
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> value);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+string</pre>
+</div>
+<div class="warn-box">⚠️ এটি Boolean <code>true</code> নয়, string <code>&quot;true&quot;</code>।</div>
+    </div>
+
+    <!-- 18.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.14</span> Boolean Convert করা</div>
+<div class="code-box">
+  <div class="code-top"><span>18.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> isLoggedIn = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;isLoggedIn<span class="syn-str">&quot;) === &quot;</span><span class="syn-bool">true</span>&quot;;
+
+<span class="syn-fn">console</span>.log(isLoggedIn);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 18.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.15</span> Object কি সরাসরি Save করা যায়?</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  name: <span class="syn-str">&quot;Shariar&quot;</span>,
+  age: <span class="syn-num">24</span>,
+};</pre>
+</div>
+<p class="text-p">এভাবে করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;, <span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+<div class="warn-box">সমস্যা হবে।</div>
+<p class="text-p">পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;));</pre>
+</div>
+<p class="text-p">Output হতে পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[object Object]</pre>
+</div>
+<p class="text-p">কারণ Web Storage string-based।</p>
+    </div>
+
+    <!-- 18.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.16</span> Object Save করার জন্য `JSON.stringify()</div>
+<div class="code-box">
+  <div class="code-top"><span>18.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  name: <span class="syn-str">&quot;Shariar&quot;</span>,
+  age: <span class="syn-num">24</span>,
+  role: <span class="syn-str">&quot;Developer&quot;</span>,
+};
+
+<span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>));</pre>
+</div>
+<p class="text-p">এখন object string JSON format-এ save হয়েছে।</p>
+    </div>
+
+    <!-- 18.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.17</span> Object Read করার জন্য `JSON.parse()</div>
+<div class="code-box">
+  <div class="code-top"><span>18.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> storedUser = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;);
+
+<span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(storedUser);
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>18.17 JavaScript</span><span>Run</span></div>
+  <pre>{
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">24</span>,
+    role: <span class="syn-str">&quot;Developer&quot;</span>
+}</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">user</span>.name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+    </div>
+
+    <!-- 18.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.18</span> JSON + localStorage Formula</div>
+<div class="memory-box">এটা খুব ভালোভাবে মনে রাখো:</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Save:</div>
+<div class="code-box">
+  <div class="code-top"><span>18.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>));</pre>
+</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Read:</div>
+<div class="code-box">
+  <div class="code-top"><span>18.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;));</pre>
+</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 Mental Model</div>
+<div class="ascii-tree-container">Object
+   ↓
+JSON.stringify()
+   ↓
+String
+   ↓
+localStorage</div>
+<p class="text-p">Read করার সময়:</p>
+<div class="ascii-tree-container">localStorage
+   ↓
+String
+   ↓
+JSON.parse()
+   ↓
+Object</div>
+    </div>
+
+    <!-- 18.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.19</span> Array Save করা</div>
+<div class="code-box">
+  <div class="code-top"><span>18.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;, &quot;</span>React<span class="syn-str">&quot;];
+
+localStorage.setItem(&quot;</span>skills&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(skills));</pre>
+</div>
+<p class="text-p">Read:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> skills = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;skills&quot;));
+
+<span class="syn-fn">console</span>.log(skills);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;HTML&quot;, &quot;CSS&quot;, &quot;JavaScript&quot;, &quot;React&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 18.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.20</span> Array-এর মধ্যে নতুন Data যোগ করা</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> skills = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;skills<span class="syn-str">&quot;));
+
+skills.push(&quot;</span>Node.js<span class="syn-str">&quot;);
+
+localStorage.setItem(&quot;</span>skills&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(skills));</pre>
+</div>
+<p class="text-p">এখন storage-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>HTML
+CSS
+JavaScript
+React
+Node.js</pre>
+</div>
+    </div>
+
+    <!-- 18.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.21</span> Safe JSON Parsing</div>
+<p class="text-p">যদি storage-এ কিছু না থাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;));</pre>
+</div>
+<p class="text-p"><code>getItem()</code> যদি <code>null</code> দেয়, তাহলে <code>JSON.parse(null)</code> JavaScript-এ <code>null</code> দেয়, কিন্তু malformed JSON থাকলে error হতে পারে।</p>
+<p class="text-p">Safe pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> storedUser = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span><span class="syn-str">&quot;);
+
+let user = null;
+
+if (storedUser) {
+  try {
+    user = JSON.parse(storedUser);
+  } catch (error) {
+    console.error(&quot;</span>Invalid stored <span class="syn-kw" style="color:#fdba74;">user</span> data&quot;, error);
+  }
+}
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — sessionStorage &amp; Real-World Theme/Dark Mode State (18.22 – 18.27)</div>
+
+    <!-- 18.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.22</span> sessionStorage` কী?</div>
+<p class="text-p"><code>sessionStorage</code>-ও key-value storage।</p>
+<div class="code-box">
+  <div class="code-top"><span>18.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">sessionStorage</span>.<span class="syn-op">setItem</span>(&quot;username<span class="syn-str">&quot;, &quot;</span>Shariar&quot;);</pre>
+</div>
+<p class="text-p">Read:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">sessionStorage</span>.<span class="syn-op">getItem</span>(&quot;username&quot;));</pre>
+</div>
+    </div>
+
+    <!-- 18.23 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">18.23</span> localStorage vs sessionStorage</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Feature</th><th><code>localStorage</code></th><th><code>sessionStorage</code></th></tr></thead>
+    <tbody>
+      <tr><td>Data format</td><td>String</td><td>String</td></tr><tr><td>Persistent</td><td>Yes</td><td>Session-based</td></tr><tr><td>Tab-specific</td><td>No</td><td>Yes</td></tr><tr><td>Browser restart</td><td>Usually remains</td><td>Typically cleared when the page session ends</td></tr><tr><td>API</td><td>Same</td><td>Same</td></tr><tr><td><code>setItem()</code></td><td>Yes</td><td>Yes</td></tr><tr><td><code>getItem()</code></td><td>Yes</td><td>Yes</td></tr><tr><td><code>removeItem()</code></td><td>Yes</td><td>Yes</td></tr><tr><td><code>clear()</code></td><td>Yes</td><td>Yes</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="section-subhead">সহজভাবে</div>
+<div class="ascii-tree-container">localStorage
+→ &quot;পরের বারও মনে রাখো&quot;
+
+sessionStorage
+→ &quot;এই tab/session-এর জন্য রাখো&quot;</div>
+    </div>
+
+    <!-- 18.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.24</span> sessionStorage Example</div>
+<p class="text-p">ধরো একটি checkout process:</p>
+<div class="ascii-tree-container">Step 1 → Personal Info
+Step 2 → Address
+Step 3 → Payment</div>
+<p class="text-p">Current tab-এর session-এর মধ্যে temporary state রাখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">sessionStorage</span>.<span class="syn-op">setItem</span>(&quot;checkoutStep<span class="syn-str">&quot;, &quot;</span><span class="syn-num">2</span>&quot;);</pre>
+</div>
+<p class="text-p">পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">sessionStorage</span>.<span class="syn-op">getItem</span>(&quot;checkoutStep&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>2</pre>
+</div>
+    </div>
+
+    <!-- 18.25 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">18.25</span> Theme Switcher — Real-life Example</div>
+<p class="text-p">এখন localStorage-এর একটি খুব common use case দেখি।</p>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">18.25 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;themeBtn&quot;</span><span class="syn-fn">&gt;</span>Toggle Theme<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> button = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#themeBtn<span class="syn-str">&quot;);
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+  document.body.classList.toggle(&quot;</span>dark<span class="syn-str">&quot;);
+
+  const isDark = document.body.classList.contains(&quot;</span>dark<span class="syn-str">&quot;);
+
+  localStorage.setItem(&quot;</span><span class="syn-kw" style="color:#fdba74;">theme</span><span class="syn-str">&quot;, isDark ? &quot;</span>dark<span class="syn-str">&quot; : &quot;</span>light&quot;);
+});</pre>
+</div>
+<p class="text-p">Page reload হলেও theme preference পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 18.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.26</span> Page Load-এর সময় Theme Restore</div>
+<p class="text-p">শুধু save করলে হবে না। Page load হলে read করতে হবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>18.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> savedTheme = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">theme</span><span class="syn-str">&quot;);
+
+if (savedTheme === &quot;</span>dark<span class="syn-str">&quot;) {
+  document.body.classList.add(&quot;</span>dark&quot;);
+}</pre>
+</div>
+<div class="section-subhead">Complete Flow</div>
+<div class="ascii-tree-container">User selects Dark Mode
+        ↓
+localStorage.setItem()
+        ↓
+Page reload
+        ↓
+localStorage.getItem()
+        ↓
+Dark Mode restore</div>
+    </div>
+
+    <!-- 18.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.27</span> Dark Mode Example</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">18.27 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;themeBtn&quot;</span><span class="syn-fn">&gt;</span>Dark Mode<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">CSS:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>.dark {
+  background: #111;
+  color: white;
+}</pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> button = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#themeBtn<span class="syn-str">&quot;);
+
+const savedTheme = localStorage.getItem(&quot;</span><span class="syn-kw" style="color:#fdba74;">theme</span><span class="syn-str">&quot;);
+
+if (savedTheme === &quot;</span>dark<span class="syn-str">&quot;) {
+  document.body.classList.add(&quot;</span>dark<span class="syn-str">&quot;);
+}
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+  document.body.classList.toggle(&quot;</span>dark<span class="syn-str">&quot;);
+
+  const theme = document.body.classList.contains(&quot;</span>dark<span class="syn-str">&quot;) ? &quot;</span>dark<span class="syn-str">&quot; : &quot;</span>light<span class="syn-str">&quot;;
+
+  localStorage.setItem(&quot;</span><span class="syn-kw" style="color:#fdba74;">theme</span>&quot;, <span class="syn-kw" style="color:#fdba74;">theme</span>);
+});</pre>
+</div>
+<p class="text-p">এটি real-world website-এ খুব common pattern।</p>
+    </div>
+
+    <div class="part-banner">Part 04 — Interactive Shopping Cart, Preferences &amp; Storage Security (18.28 – 18.33)</div>
+
+    <!-- 18.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.28</span> Shopping Cart with localStorage</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">cart</span> = [
+  {
+    id: <span class="syn-num">1</span>,
+    name: <span class="syn-str">&quot;Laptop&quot;</span>,
+    price: <span class="syn-num">70000</span>,
+  },
+  {
+    id: <span class="syn-num">2</span>,
+    name: <span class="syn-str">&quot;Mouse&quot;</span>,
+    price: <span class="syn-num">1500</span>,
+  },
+];</pre>
+</div>
+<p class="text-p">Save:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">cart</span>&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">cart</span>));</pre>
+</div>
+<p class="text-p">Read:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> cartData = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">cart</span>&quot;)) || [];
+
+<span class="syn-fn">console</span>.log(cartData);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.28 JavaScript</span><span>Run</span></div>
+  <pre>|| []</pre>
+</div>
+<p class="text-p">এর কারণে storage-এ cart না থাকলে empty array পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 18.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.29</span> Add Product to Cart</div>
+<div class="code-box">
+  <div class="code-top"><span>18.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> product = {
+  id: <span class="syn-num">3</span>,
+  name: <span class="syn-str">&quot;Keyboard&quot;</span>,
+  price: <span class="syn-num">2500</span>,
+};
+
+<span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">cart</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">cart</span><span class="syn-str">&quot;)) || [];
+
+cart.push(product);
+
+localStorage.setItem(&quot;</span><span class="syn-kw" style="color:#fdba74;">cart</span>&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">cart</span>));</pre>
+</div>
+    </div>
+
+    <!-- 18.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.30</span> Remove Product from Cart</div>
+<div class="code-box">
+  <div class="code-top"><span>18.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> <span class="syn-kw" style="color:#fdba74;">cart</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">cart</span><span class="syn-str">&quot;)) || [];
+
+cart = cart.filter((product) =&gt; product.id !== 2);
+
+localStorage.setItem(&quot;</span><span class="syn-kw" style="color:#fdba74;">cart</span>&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">cart</span>));</pre>
+</div>
+    </div>
+
+    <!-- 18.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.31</span> localStorage দিয়ে User Preferences</div>
+<p class="text-p">একটি website-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> settings = {
+  <span class="syn-kw" style="color:#fdba74;">theme</span>: <span class="syn-str">&quot;dark&quot;</span>,
+  language: <span class="syn-str">&quot;bn&quot;</span>,
+  fontSize: <span class="syn-str">&quot;large&quot;</span>,
+};
+
+<span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;settings&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(settings));</pre>
+</div>
+<p class="text-p">Read:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> settings = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;settings&quot;));
+
+<span class="syn-fn">console</span>.log(settings.language);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>bn</pre>
+</div>
+    </div>
+
+    <!-- 18.32 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">18.32</span> Storage-এ Sensitive Data রাখা যাবে?</div>
+<div class="memory-box">এখানে <strong>খুব গুরুত্বপূর্ণ security concept</strong> আছে।</div>
+<p class="text-p"><code>localStorage</code>-এ sensitive information রাখা risky হতে পারে।</p>
+<p class="text-p">বিশেষ করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Password
+Long-lived secret
+Highly sensitive personal information
+Authentication secrets</pre>
+</div>
+<p class="text-p">কারণ JavaScript একই origin-এর storage access করতে পারে এবং XSS vulnerability থাকলে attacker storage-এর data পড়তে পারে।</p>
+<div class="section-subhead">তাই:</div>
+<p class="text-p">❌ Password localStorage-এ রেখো না।</p>
+<div class="code-box">
+  <div class="code-top"><span>18.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;password<span class="syn-str">&quot;, &quot;</span><span class="syn-num">12345678</span>&quot;);</pre>
+</div>
+<p class="text-p">এটা করা উচিত নয়।</p>
+    </div>
+
+    <!-- 18.33 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">18.33</span> Authentication Token নিয়ে সতর্কতা</div>
+<p class="text-p">অনেক web application authentication-এর জন্য token ব্যবহার করে।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Access Token
+Refresh Token</pre>
+</div>
+<div class="memory-box">এগুলো কোথায় রাখা হবে—এটি security architecture-এর গুরুত্বপূর্ণ বিষয়।</div>
+<p class="text-p">বিশেষ করে authentication token localStorage-এ রাখার আগে <strong>XSS risk</strong> বিবেচনা করতে হয়।</p>
+<div class="warn-box">Sensitive authentication cookie-এর ক্ষেত্রে server-managed:</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>HttpOnly
+Secure
+SameSite</pre>
+</div>
+<p class="text-p">cookie attributes ব্যবহার করা যায়।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — HTTP Cookies &amp; Large-Scale IndexedDB Architecture (18.34 – 18.42)</div>
+
+    <!-- 18.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.34</span> Cookies কী?</div>
+<p class="text-p">Cookie হলো browser-এ ছোট data store করার একটি mechanism।</p>
+<p class="text-p">Example:</p>
+<div class="ascii-tree-container">theme=dark
+language=bn</div>
+<p class="text-p">JavaScript দিয়ে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-kw" style="color:#fdba74;">cookie</span> = <span class="syn-str">&quot;theme=dark&quot;</span>;</pre>
+</div>
+<p class="text-p">Read:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">document</span>.<span class="syn-kw" style="color:#fdba74;">cookie</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>theme=dark</pre>
+</div>
+    </div>
+
+    <!-- 18.35 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">18.35</span> Cookie vs localStorage</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Feature</th><th>localStorage</th><th>Cookie</th></tr></thead>
+    <tbody>
+      <tr><td>Storage</td><td>Client-side</td><td>Client-side</td></tr><tr><td>JavaScript access</td><td>Yes</td><td>Usually yes, unless <code>HttpOnly</code></td></tr><tr><td>Automatically sent with HTTP requests</td><td>No</td><td>Yes, subject to cookie rules</td></tr><tr><td>Size</td><td>তুলনামূলক বেশি</td><td>ছোট</td></tr><tr><td>Expiration</td><td>সাধারণত explicit expiration নয়</td><td>Expiration সেট করা যায়</td></tr><tr><td>Server access</td><td>Directly নয়</td><td>Request-এর সাথে পাঠানো যায়</td></tr><tr><td>Common use</td><td>Preferences, local app state</td><td>Session/auth-related state, server-managed preferences</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 18.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.36</span> Cookie তৈরি করা</div>
+<div class="code-box">
+  <div class="code-top"><span>18.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-kw" style="color:#fdba74;">cookie</span> = <span class="syn-str">&quot;theme=dark; max-age=3600; path=/&quot;</span>;</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>theme=dark
+max-age=3600 seconds
+path=/</pre>
+</div>
+    </div>
+
+    <!-- 18.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.37</span> Cookie Delete</div>
+<p class="text-p">একটি cookie expire করাতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-kw" style="color:#fdba74;">cookie</span> = <span class="syn-str">&quot;theme=; max-age=0; path=/&quot;</span>;</pre>
+</div>
+    </div>
+
+    <!-- 18.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.38</span> Cookie-এর Important Attributes</div>
+<div class="section-subhead"><code>Max-Age</code></div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>max-age=3600</pre>
+</div>
+<p class="text-p">কত seconds পরে expire করবে।</p>
+<div class="section-subhead"><code>Expires</code></div>
+<p class="text-p">নির্দিষ্ট expiry time দেওয়া যায়।</p>
+<div class="section-subhead"><code>Path</code></div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>path=/</pre>
+</div>
+<p class="text-p">কোন path-এ cookie applicable।</p>
+<div class="section-subhead"><code>Secure</code></div>
+<p class="text-p">HTTPS connection-এর মাধ্যমে cookie পাঠাতে নির্দেশ দেয়।</p>
+<div class="section-subhead"><code>HttpOnly</code></div>
+<p class="text-p">JavaScript থেকে cookie access বন্ধ করে।</p>
+<div class="warn-box">⚠️ <code>HttpOnly</code> cookie JavaScript দিয়ে <code>document.cookie</code> থেকে পড়া যায় না।</div>
+<div class="section-subhead"><code>SameSite</code></div>
+<p class="text-p">Cross-site request-এর ক্ষেত্রে cookie behavior নিয়ন্ত্রণে সাহায্য করে।</p>
+    </div>
+
+    <!-- 18.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.39</span> IndexedDB কী?</div>
+<p class="text-p"><code>localStorage</code> ছোট/simple data-এর জন্য ভালো।</p>
+<p class="text-p">কিন্তু যদি বড় বা structured client-side data রাখতে হয়, তখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>IndexedDB</pre>
+</div>
+<p class="text-p">ব্যবহার করা যায়।</p>
+<p class="text-p">এটি browser-এর একটি <strong>asynchronous, transactional, structured database API</strong>।</p>
+    </div>
+
+    <!-- 18.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.40</span> IndexedDB কখন ব্যবহার করব?</div>
+<p class="text-p">ধরো তুমি বানাচ্ছো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Offline Notes App
+Offline Video Metadata App
+Large Client-side Dataset
+Offline-first Web App</pre>
+</div>
+<p class="text-p">এখানে হাজার হাজার structured record থাকতে পারে।</p>
+<p class="text-p">তখন <code>localStorage</code> ideal নয়।</p>
+    </div>
+
+    <!-- 18.41 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">18.41</span> localStorage vs IndexedDB</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>localStorage</th><th>IndexedDB</th></tr></thead>
+    <tbody>
+      <tr><td>Data type</td><td>String</td><td>Structured data</td></tr><tr><td>API</td><td>Simple</td><td>More advanced</td></tr><tr><td>Async</td><td>No</td><td>Yes</td></tr><tr><td>Large data</td><td>Not suitable</td><td>Better</td></tr><tr><td>Transactions</td><td>No</td><td>Yes</td></tr><tr><td>Queries/indexes</td><td>Very limited</td><td>Supported</td></tr><tr><td>Complexity</td><td>Easy</td><td>More complex</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 18.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.42</span> IndexedDB-এর Basic Idea</div>
+<p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">Database
+   ↓
+Object Store
+   ↓
+Records</div>
+<p class="text-p">উদাহরণ:</p>
+<div class="ascii-tree-container">Database: StudentDB
+
+Object Store: students
+
+1 → Shariar
+2 → Rahim
+3 → Karim</div>
+<p class="text-p">IndexedDB asynchronous হওয়ায় এর code localStorage-এর তুলনায় বেশি complex।</p>
+    </div>
+
+    <div class="part-banner">Part 06 — Storage Events, Utility Wrapper &amp; Enterprise Best Practices (18.43 – 18.49)</div>
+
+    <!-- 18.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.43</span> Storage Events</div>
+<p class="text-p">একটি interesting browser event হলো:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">window</span>.<span class="syn-op">addEventListener</span>(&quot;storage&quot;, <span class="syn-kw">function</span> (event) {
+  <span class="syn-fn">console</span>.log(event.<span class="syn-op">key</span>);
+  <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">oldValue</span>);
+  <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">newValue</span>);
+});</pre>
+</div>
+<p class="text-p"><code>storage</code> event সাধারণত অন্য same-origin document/context-এ storage পরিবর্তন হলে useful হয়।</p>
+    </div>
+
+    <!-- 18.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.44</span> Storage Event Example</div>
+<p class="text-p">ধরো একই website-এর দুইটি tab খোলা:</p>
+<div class="ascii-tree-container">Tab A                 Tab B
+  │                     │
+  │ localStorage.set   │
+  │───────────────────→│
+  │                     │
+  │                  storage event</div>
+<p class="text-p">Tab B পরিবর্তন detect করতে পারে।</p>
+    </div>
+
+    <!-- 18.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.45</span> Storage Data Inspect করা</div>
+<p class="text-p">Chrome DevTools-এ:</p>
+<div class="ascii-tree-container">DevTools
+   ↓
+Application
+   ↓
+Storage
+   ↓
+Local Storage</div>
+<p class="text-p">এখানে দেখতে পারবে:</p>
+<div class="ascii-tree-container">Key          Value
+-------------------------
+theme        dark
+username     Shariar
+cart         [...]</div>
+<p class="text-p">এটি debugging-এর জন্য খুব useful।</p>
+    </div>
+
+    <!-- 18.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.46</span> localStorage Utility Function</div>
+<p class="text-p">বারবার code না লিখে function তৈরি করতে পারো।</p>
+<div class="code-box">
+  <div class="code-top"><span>18.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> saveData(<span class="syn-op">key</span>, value) {
+  <span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(<span class="syn-op">key</span>, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(value));
+}</pre>
+</div>
+<p class="text-p">Use:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.46 JavaScript</span><span>Run</span></div>
+  <pre>saveData(&quot;<span class="syn-kw" style="color:#fdba74;">user</span><span class="syn-str">&quot;, {
+  name: &quot;</span>Shariar&quot;,
+  age: <span class="syn-num">24</span>,
+});</pre>
+</div>
+    </div>
+
+    <!-- 18.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.47</span> Generic Read Function</div>
+<div class="code-box">
+  <div class="code-top"><span>18.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> getData(<span class="syn-op">key</span>) {
+  <span class="syn-kw">const</span> data = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(<span class="syn-op">key</span>);
+
+  <span class="syn-kw">if</span> (!data) {
+    <span class="syn-kw">return</span> <span class="syn-bool">null</span>;
+  }
+
+  <span class="syn-kw">try</span> {
+    <span class="syn-kw">return</span> <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(data);
+  } <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.error(&quot;Invalid <span class="syn-fn">JSON</span>:&quot;, error);
+
+    <span class="syn-kw">return</span> <span class="syn-bool">null</span>;
+  }
+}</pre>
+</div>
+<p class="text-p">Use:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = getData(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;);
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+<p class="text-p">এটি real project-এ utility হিসেবে ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 18.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18.48</span> Storage Wrapper</div>
+<p class="text-p">আরও সুন্দরভাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> storage = {
+  set(<span class="syn-op">key</span>, value) {
+    <span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(<span class="syn-op">key</span>, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(value));
+  },
+
+  get(<span class="syn-op">key</span>) {
+    <span class="syn-kw">const</span> value = <span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(<span class="syn-op">key</span>);
+
+    <span class="syn-kw">if</span> (value === <span class="syn-bool">null</span>) {
+      <span class="syn-kw">return</span> <span class="syn-bool">null</span>;
+    }
+
+    <span class="syn-kw">try</span> {
+      <span class="syn-kw">return</span> <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(value);
+    } <span class="syn-kw">catch</span> {
+      <span class="syn-kw">return</span> <span class="syn-bool">null</span>;
+    }
+  },
+
+  remove(<span class="syn-op">key</span>) {
+    <span class="syn-fn">localStorage</span>.<span class="syn-op">removeItem</span>(<span class="syn-op">key</span>);
+  },
+
+  <span class="syn-op">clear</span>() {
+    <span class="syn-fn">localStorage</span>.<span class="syn-op">clear</span>();
+  },
+};</pre>
+</div>
+<p class="text-p">Use:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.48 JavaScript</span><span>Run</span></div>
+  <pre>storage.set(&quot;<span class="syn-kw" style="color:#fdba74;">user</span><span class="syn-str">&quot;, {
+  name: &quot;</span>Shariar<span class="syn-str">&quot;,
+  role: &quot;</span>Developer&quot;,
+});</pre>
+</div>
+<p class="text-p">Read:</p>
+<div class="code-box">
+  <div class="code-top"><span>18.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(storage.get(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;));</pre>
+</div>
+    </div>
+
+    <!-- 18.49 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">18.49</span> Storage-এর Limitation</div>
+<p class="text-p">localStorage খুব useful হলেও সবকিছুর জন্য নয়।</p>
+<div class="sub-badge" style="background:#fff1f2; color:#be123c;">⚠️ Limitations:</div>
+<div class="ascii-tree-container">1. String-based
+2. Synchronous API
+3. Limited storage capacity
+4. Same-origin scoped
+5. XSS risk
+6. Not suitable for large databases
+7. Not suitable for secrets</div>
+    </div>
+
+    <div class="part-banner">Part 07 — Browser Storage Mastery: Must Know, Cheat Sheet, Practice Lab &amp; Mental Map</div>
+
+    <!-- 18.50 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 18.50 Must Know — Storage Engine Security &amp; Mechanics</div>
+<p class="text-p">এই chapter থেকে অবশ্যই জানতে হবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">removeItem</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">clear</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-kw" style="color:#fdba74;">length</span>;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">localStorage</span>.<span class="syn-op">key</span>();</pre>
+</div>
+<div class="section-subhead">JSON Storage</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>();</pre>
+</div>
+<div class="section-subhead">Session</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">sessionStorage</span>.<span class="syn-op">setItem</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">sessionStorage</span>.<span class="syn-op">getItem</span>();</pre>
+</div>
+<div class="section-subhead">Cookies</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-kw" style="color:#fdba74;">cookie</span>;</pre>
+</div>
+<div class="section-subhead">Advanced Storage</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>IndexedDB</pre>
+</div>
+    </div>
+
+    <!-- 18.51 Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 18.51 Quick Cheat Sheet — Web Storage &amp; Cookies API</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>কাজ</th><th>Code</th></tr></thead>
+    <tbody>
+      <tr><td>Save</td><td><code>localStorage.setItem(&quot;key&quot;, &quot;value&quot;)</code></td></tr><tr><td>Read</td><td><code>localStorage.getItem(&quot;key&quot;)</code></td></tr><tr><td>Delete one</td><td><code>localStorage.removeItem(&quot;key&quot;)</code></td></tr><tr><td>Delete all</td><td><code>localStorage.clear()</code></td></tr><tr><td>Count</td><td><code>localStorage.length</code></td></tr><tr><td>Get key</td><td><code>localStorage.key(index)</code></td></tr><tr><td>Object → String</td><td><code>JSON.stringify(obj)</code></td></tr><tr><td>String → Object</td><td><code>JSON.parse(str)</code></td></tr><tr><td>Session save</td><td><code>sessionStorage.setItem()</code></td></tr><tr><td>Session read</td><td><code>sessionStorage.getItem()</code></td></tr><tr><td>Cookie</td><td><code>document.cookie</code></td></tr><tr><td>Large structured data</td><td><code>IndexedDB</code></td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 18.52 Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 18.52 Practice Set — 6 Hands-on Production Exercises</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 1 — Save User Name</h4>
+<p class="text-p">Input থেকে name নিয়ে:</p>
+<div class="ascii-tree-container">localStorage</div>
+<p class="text-p">এ save করো।</p>
+<p class="text-p">Page reload করার পর name আবার দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 2 — Dark Mode</h4>
+<p class="text-p">একটি button বানাও:</p>
+<div class="ascii-tree-container">🌙 Dark Mode
+☀️ Light Mode</div>
+<p class="text-p">User preference localStorage-এ save করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 3 — Shopping Cart</h4>
+<p class="text-p">এই structure ব্যবহার করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>{
+    id: <span class="syn-num">1</span>,
+    name: <span class="syn-str">&quot;Laptop&quot;</span>,
+    price: <span class="syn-num">70000</span>
+}</pre>
+</div>
+<p class="text-p">Features:</p>
+<div class="ascii-tree-container">Add Product
+Remove Product
+Clear Cart
+Cart Count
+Total Price</div>
+<p class="text-p">সব data localStorage-এ রাখো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 4 — Todo App</h4>
+<p class="text-p">Features:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Add Todo
+Delete Todo
+Mark Complete
+Clear All</pre>
+</div>
+<p class="text-p">Page reload করলেও todo যেন থাকে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 5 — Student Profile</h4>
+<p class="text-p">Save:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>{
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    studentId: <span class="syn-str">&quot;23105101019&quot;</span>,
+    department: <span class="syn-str">&quot;CSE&quot;</span>,
+    university: <span class="syn-str">&quot;Daffodil International University&quot;</span>
+}</pre>
+</div>
+<p class="text-p">localStorage-এ save করে reload-এর পর UI-তে দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 6 — Session Storage</h4>
+<p class="text-p">একটি multi-step form বানাও:</p>
+<div class="ascii-tree-container">Step 1 → Personal Information
+Step 2 → Academic Information
+Step 3 → Confirmation</div>
+<p class="text-p">Current step <code>sessionStorage</code>-এ রাখো।</p>
+      </div>
+    </div>
+
+    <!-- 18.53 Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 18.53 Final Mental Map — Client Storage Decision Architecture</div>
+<div class="ascii-tree-container">              BROWSER STORAGE
+                     │
+       ┌─────────────┼─────────────┐
+       ↓             ↓             ↓
+ localStorage   sessionStorage   Cookies
+       │             │             │
+       ↓             ↓             ↓
+ Persistent       Session       Request
+ Client Data      Data          related
+       │
+       ↓
+  String-based
+       │
+       ↓
+ JSON.stringify()
+       ↓
+    Storage
+       ↓
+ JSON.parse()
+       ↓
+ Object / Array</div>
+<p class="text-p">আর বড় structured offline data হলে:</p>
+<div class="ascii-tree-container">Large / Structured Data
+          ↓
+      IndexedDB</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 ⭐ Chapter 18-এর সবচেয়ে গুরুত্বপূর্ণ Concept</div>
+<p class="text-p">তুমি যদি শুধু <strong>একটি জিনিস</strong> মনে রাখতে চাও:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  name: <span class="syn-str">&quot;Shariar&quot;</span>,
+  role: <span class="syn-str">&quot;Developer&quot;</span>,
+};
+
+<span class="syn-com">// Save</span>
+<span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span><span class="syn-str">&quot;, JSON.stringify(user));
+
+// Read
+const savedUser = JSON.parse(localStorage.getItem(&quot;</span><span class="syn-kw" style="color:#fdba74;">user</span>&quot;));
+
+<span class="syn-fn">console</span>.log(savedUser);</pre>
+</div>
+<p class="text-p">এই pattern বুঝে ফেললে <strong>localStorage + JSON + object/array persistence</strong>-এর মূল concept তোমার পরিষ্কার হয়ে যাবে।</p>
+<p class="text-p"><strong>Chapter 18 complete.</strong></p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 19 Preview — JSON (JavaScript Object Notation)</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায়ে আমরা আধুনিক ওয়েব কমিউনিকেশন ও ডেটা ইন্টারচেঞ্জের বিশ্বজনীন ফরম্যাট <strong>JSON (JavaScript Object Notation)</strong> নিয়ে গভীরভাবে শিখব—<code>JSON.stringify()</code>, <code>JSON.parse()</code>, replacer ও reviver ফাংশন, deep clone, circular reference হ্যান্ডলিং এবং API ডেটা ফরম্যাটিং।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

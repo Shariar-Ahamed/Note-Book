@@ -1,0 +1,2617 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 22: HTTP, REST API &amp; Fetch API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .banner-sub {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f8fafc;
+      padding: 7px 12px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 5px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      border-left: 4px solid #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: var(--font-code);
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--blue-accent);
+      padding-left: 5px;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-family: var(--font-heading);
+      font-size: 9.5px;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      margin-bottom: 3px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+    .memory-box {
+      background: #eff6ff;
+      border-left: 3px solid #3b82f6;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #1e40af;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #991b1b;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Lists */
+    .bullet-list {
+      margin: 3px 0 5px 14px;
+      font-size: 10.5px;
+      color: #334155;
+      line-height: 1.4;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 3px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.32;
+      padding: 5px 8px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #38bdf8; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+    .syn-regex { color: #facc15; }
+
+    /* ASCII Diagrams */
+    .ascii-tree-container {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.22;
+      padding: 5px 8px;
+      border-radius: 5px;
+      margin: 3px 0;
+      white-space: pre;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      border: 1px solid #1e293b;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 4px;
+      padding: 5px 8px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 22: HTTP, REST API &amp; FETCH API — CLIENT-SERVER NETWORKING &amp; FULL-STACK INTEGRATION</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">70 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 16 — Network Protocols &amp; Web APIs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">HTTP, REST, JSON, Fetch API &amp; CRUD</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">RFC 9110 / WHATWG Fetch / REST Architecture</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 8px 12px; margin-bottom: 6px;">
+      <h2 style="font-size: 12px; color: var(--navy-mid); margin-bottom: 3px;">HTTP, REST API এবং Fetch API — Frontend থেকে Backend-এর সাথে সংযোগ</h2>
+      <p class="text-p" style="font-size: 10px; margin-bottom: 3px;">Chapter 21-এ আমরা Asynchronous JavaScript ও Promise শিখেছি। একজন Full Stack ইঞ্জিনিয়ার হিসেবে ক্লায়েন্ট ব্রাউজার কীভাবে সার্ভারের সাথে যোগাযোগ করে, ডাটা আনা-নেওয়া করে এবং ব্যাকএন্ড ডাটাবেজে প্রভাব ফেলে—সেটি গভীরভাবে জানা অপরিহার্য।</p>
+      <div class="def-box" style="margin: 2px 0; padding: 4px 6px;">
+        <div class="def-text" style="font-size: 9px;">Browser Client &nbsp;→&nbsp; HTTP Request (Method, URL, Headers, Body) &nbsp;→&nbsp; Backend REST API &nbsp;→&nbsp; HTTP Response (Status, JSON)</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 2px; font-size: 9.5px;">React, Next.js, Node.js বা Express—যেকোনো ওয়েব প্ল্যাটফর্মে ফুল-স্ট্যাক ডেভলপমেন্টের মূল মেরুদণ্ড হলো এই নেটওয়ার্কিং জ্ঞান। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Networking Protocols &amp; HTTP Client-Server Architecture (22.1 – 22.12)</div>
+
+    <!-- 22.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">22.1</span> API কী?</div>
+<p class="text-p"><strong>API = Application Programming Interface</strong></p>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box">
+  <div class="def-text">API হলো এমন একটি মাধ্যম যার মাধ্যমে একটি application অন্য application/service-এর সাথে কথা বলে এবং data আদান-প্রদান করে।</div>
+</div>
+<div class="sub-badge">💡 Real-Life Example 🍔</div>
+<p class="text-p">ধরো তুমি restaurant-এ গেলে।</p>
+<div class="ascii-tree-container">You
+ ↓
+Waiter
+ ↓
+Kitchen
+ ↓
+Food
+ ↓
+Waiter
+ ↓
+You</div>
+<p class="text-p">এখানে <strong>Waiter = API</strong></p>
+<p class="text-p">তুমি সরাসরি kitchen-এ গিয়ে order দিচ্ছ না।</p>
+<p class="text-p">একইভাবে:</p>
+<div class="ascii-tree-container">Frontend
+   ↓
+  API
+   ↓
+Backend
+   ↓
+Database</div>
+<p class="text-p">Backend-এর database-এ frontend সরাসরি access না করে API-এর মাধ্যমে request করে।</p>
+    </div>
+
+    <!-- 22.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.2</span> Frontend এবং Backend Communication</div>
+<p class="text-p">ধরো একটি e-commerce website:</p>
+<div class="ascii-tree-container">React Frontend
+      ↓
+GET /api/products
+      ↓
+Node.js / Express Backend
+      ↓
+MongoDB
+      ↓
+Backend
+      ↓
+JSON Response
+      ↓
+React</div>
+<p class="text-p">Frontend:</p>
+<div class="def-box">
+  <div class="def-text">&quot;আমাকে সব products দাও।&quot;</div>
+</div>
+<p class="text-p">Backend:</p>
+<div class="def-box">
+  <div class="def-text">&quot;এই নাও products-এর data।&quot;</div>
+</div>
+    </div>
+
+    <!-- 22.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.3</span> HTTP কী?</div>
+<p class="text-p"><strong>HTTP = HyperText Transfer Protocol</strong></p>
+<p class="text-p">এটি web-এর communication protocol।</p>
+<p class="text-p">Browser এবং server HTTP-এর মাধ্যমে communicate করতে পারে।</p>
+<div class="ascii-tree-container">Client
+  │
+  │ HTTP Request
+  ▼
+Server
+  │
+  │ HTTP Response
+  ▼
+Client</div>
+<div class="section-subhead">Client বলতে কী?</div>
+<p class="text-p">সাধারণত:</p>
+<ul class="bullet-list"><li>Browser</li><li>Mobile App</li><li>React App</li><li>Postman</li><li>অন্য কোনো application</li></ul>
+<div class="section-subhead">Server বলতে কী?</div>
+<p class="text-p">যে system request receive করে এবং response দেয়।</p>
+<p class="text-p">যেমন:</p>
+<ul class="bullet-list"><li>Node.js server</li><li>Express server</li><li>Django</li><li>Spring Boot</li><li>Laravel</li></ul>
+    </div>
+
+    <!-- 22.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.4</span> HTTP Request</div>
+<p class="text-p">একটি request-এ সাধারণত থাকে:</p>
+<div class="ascii-tree-container">HTTP Request
+├── Method
+├── URL
+├── Headers
+├── Body
+└── অন্যান্য তথ্য</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.4 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-kw">GET</span> <span class="syn-str">/api/products</span></pre>
+</div>
+    </div>
+
+    <!-- 22.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.5</span> HTTP Response</div>
+<p class="text-p">Server সাধারণত দেয়:</p>
+<div class="ascii-tree-container">HTTP Response
+├── Status Code
+├── Headers
+└── Body</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.5 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-fn">HTTP/1.1</span> <span class="syn-num">200</span> <span class="syn-bool">OK</span>
+<span class="syn-fn">Content-Type</span>:<span class="syn-str"> application/json</span></pre>
+</div>
+<p class="text-p">Body:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#fbbf24;">22.5 JSON Payload</span><span>application/json</span></div>
+  <pre><span class="syn-op">[</span>
+    <span class="syn-op">{</span>
+        <span class="syn-kw">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">1</span><span class="syn-op">,</span>
+        <span class="syn-kw">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Laptop&quot;</span><span class="syn-op">,</span>
+        <span class="syn-kw">&quot;price&quot;</span><span class="syn-op">:</span> <span class="syn-num">70000</span>
+    <span class="syn-op">}</span>
+<span class="syn-op">]</span></pre>
+</div>
+    </div>
+
+    <!-- 22.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.6</span> HTTP Methods</div>
+<div class="memory-box">সবচেয়ে গুরুত্বপূর্ণ HTTP methods:</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td>Data নেওয়া</td></tr><tr><td>POST</td><td>নতুন Data তৈরি করা</td></tr><tr><td>PUT</td><td>সম্পূর্ণ resource update করা</td></tr><tr><td>PATCH</td><td>Resource-এর নির্দিষ্ট অংশ update করা</td></tr><tr><td>DELETE</td><td>Data delete করা</td></tr><tr><td>HEAD</td><td>Header information নেওয়া</td></tr><tr><td>OPTIONS</td><td>Server কী methods/options support করে তা জানা</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Frontend development-এ সবচেয়ে বেশি:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>GET
+POST
+PUT
+PATCH
+DELETE</pre>
+</div>
+    </div>
+
+    <!-- 22.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.7</span> GET</div>
+<p class="text-p">GET ব্যবহার করা হয় data নেওয়ার জন্য।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.7 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-kw">GET</span> <span class="syn-str">/api/products</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.7 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/products&quot;);
+
+<span class="syn-kw">const</span> products = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(products);</pre>
+</div>
+    </div>
+
+    <!-- 22.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.8</span> POST</div>
+<p class="text-p">POST সাধারণত নতুন resource তৈরি করতে ব্যবহার করা হয়।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.8 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-kw">POST</span> <span class="syn-str">/api/products</span></pre>
+</div>
+<p class="text-p">Data:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#fbbf24;">22.8 JSON Payload</span><span>application/json</span></div>
+  <pre><span class="syn-op">{</span>
+    <span class="syn-kw">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Laptop&quot;</span><span class="syn-op">,</span>
+    <span class="syn-kw">&quot;price&quot;</span><span class="syn-op">:</span> <span class="syn-num">70000</span>
+<span class="syn-op">}</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.8 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/products<span class="syn-str">&quot;, {
+    method: &quot;</span>POST<span class="syn-str">&quot;,
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;
+    },
+
+    body: JSON.stringify({
+        name: &quot;</span>Laptop&quot;,
+        price: <span class="syn-num">70000</span>
+    })
+});
+
+<span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);</pre>
+</div>
+    </div>
+
+    <!-- 22.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.9</span> PUT</div>
+<p class="text-p">PUT সাধারণত একটি resource-এর সম্পূর্ণ representation replace/update করতে ব্যবহার করা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>22.9 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api<span class="syn-regex">/products/</span><span class="syn-num">1</span><span class="syn-str">&quot;, {
+    method: &quot;</span>PUT<span class="syn-str">&quot;,
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;
+    },
+
+    body: JSON.stringify({
+        name: &quot;</span>Gaming Laptop&quot;,
+        price: <span class="syn-num">90000</span>
+    })
+});</pre>
+</div>
+    </div>
+
+    <!-- 22.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.10</span> PATCH</div>
+<p class="text-p">PATCH সাধারণত resource-এর নির্দিষ্ট অংশ update করতে ব্যবহার করা হয়।</p>
+<p class="text-p">ধরো শুধু price পরিবর্তন করবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.10 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api<span class="syn-regex">/products/</span><span class="syn-num">1</span><span class="syn-str">&quot;, {
+    method: &quot;</span>PATCH<span class="syn-str">&quot;,
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span>&quot;
+    },
+
+    body: <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>({
+        price: <span class="syn-num">85000</span>
+    })
+});</pre>
+</div>
+    </div>
+
+    <!-- 22.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.11</span> DELETE</div>
+<p class="text-p">Data delete করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.11 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api<span class="syn-regex">/products/</span><span class="syn-num">1</span><span class="syn-str">&quot;, {
+    method: &quot;</span>DELETE&quot;
+});</pre>
+</div>
+    </div>
+
+    <!-- 22.12 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.12</span> CRUD</div>
+<div class="memory-box">Backend/API development-এ একটি খুব গুরুত্বপূর্ণ term:</div>
+<p class="text-p"># CRUD</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Letter</th><th>Meaning</th><th>HTTP</th></tr></thead>
+    <tbody>
+      <tr><td>C</td><td>Create</td><td>POST</td></tr><tr><td>R</td><td>Read</td><td>GET</td></tr><tr><td>U</td><td>Update</td><td>PUT/PATCH</td></tr><tr><td>D</td><td>Delete</td><td>DELETE</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Real-life product system:</p>
+<div class="ascii-tree-container">Create Product → POST
+Get Products   → GET
+Update Product → PUT/PATCH
+Delete Product → DELETE</div>
+    </div>
+
+    <div class="part-banner">Part 02 — REST API Architecture, Resource URLs &amp; Status Codes (22.13 – 22.25)</div>
+
+    <!-- 22.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.13</span> REST API কী?</div>
+<p class="text-p"><strong>REST = Representational State Transfer</strong></p>
+<p class="text-p">REST হলো web API design করার একটি architectural style।</p>
+<p class="text-p">REST API সাধারণত resource-oriented হয়।</p>
+<p class="text-p">Example:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/users
+/api/products
+/api/orders
+/api/students</pre>
+</div>
+    </div>
+
+    <!-- 22.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.14</span> RESTful URL Design</div>
+<div class="sub-badge" style="background:#fee2e2; color:#991b1b;">❌ সাধারণত এভাবে না:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/getUsers
+/createProduct
+/deleteProduct
+/updateProduct</pre>
+</div>
+<div class="sub-badge" style="background:#dcfce7; color:#166534;">✅ Resource-oriented:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>GET    /users
+POST   /users
+GET    /users/10
+PATCH  /users/10
+DELETE /users/10</pre>
+</div>
+<p class="text-p">Method বলে দেয় কী action হবে।</p>
+    </div>
+
+    <!-- 22.15 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.15</span> REST API Example</div>
+<p class="text-p">ধরো Student API:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>GET     /api/students
+GET     /api/students/101
+POST    /api/students
+PATCH   /api/students/101
+DELETE  /api/students/101</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/students</pre>
+</div>
+<p class="text-p">হলো resource।</p>
+    </div>
+
+    <!-- 22.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.16</span> URL কী?</div>
+<p class="text-p">URL:</p>
+<p class="text-p"><strong>Uniform Resource Locator</strong></p>
+<p class="text-p">Example:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>https://example.com/api/products/10</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>https://</pre>
+</div>
+<p class="text-p">→ Protocol</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>example.com</pre>
+</div>
+<p class="text-p">→ Domain</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products/10</pre>
+</div>
+<p class="text-p">→ Path</p>
+    </div>
+
+    <!-- 22.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.17</span> Query Parameters</div>
+<p class="text-p">ধরো products search করতে চাই:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products?search=laptop</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>search=laptop</pre>
+</div>
+<p class="text-p">হলো query parameter।</p>
+<p class="text-p">আরেকটি:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products?page=2&amp;limit=10</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>page=2
+limit=10</pre>
+</div>
+    </div>
+
+    <!-- 22.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.18</span> JavaScript দিয়ে Query Parameters</div>
+<div class="code-box">
+  <div class="code-top"><span>22.18 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> params = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>({
+    search: <span class="syn-str">&quot;laptop&quot;</span>,
+    page: <span class="syn-num">2</span>,
+    limit: <span class="syn-num">10</span>
+});
+
+<span class="syn-kw">const</span> url = <span class="syn-str">`/api/products?${params}`</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(url);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>/api/products?search=laptop&amp;page=2&amp;limit=10</pre>
+</div>
+    </div>
+
+    <!-- 22.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.19</span> URLSearchParams</div>
+<p class="text-p">এটি query parameter তৈরি/পরিচালনা করতে সাহায্য করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>22.19 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> params = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>();
+
+params.<span class="syn-op">set</span>(&quot;search<span class="syn-str">&quot;, &quot;</span>phone<span class="syn-str">&quot;);
+params.set(&quot;</span>page<span class="syn-str">&quot;, &quot;</span><span class="syn-num">1</span>&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(params.<span class="syn-op">toString</span>());</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>search=phone&amp;page=1</pre>
+</div>
+    </div>
+
+    <!-- 22.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.20</span> Path Parameter বনাম Query Parameter</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Path Parameter</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products/10</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>10</pre>
+</div>
+<p class="text-p">নির্দিষ্ট product identify করছে।</p>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Query Parameter</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products?category=phone</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>category=phone</pre>
+</div>
+<p class="text-p">filter/search-এর মতো optional information।</p>
+<div class="section-subhead">সহজভাবে:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/products/10
+          ↑
+       নির্দিষ্ট ID
+
+/products?category=phone
+          ↑
+       filter/query</pre>
+</div>
+    </div>
+
+    <!-- 22.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.21</span> HTTP Status Code</div>
+<div class="memory-box">Server response-এর একটি গুরুত্বপূর্ণ অংশ হলো status code।</div>
+<div class="section-subhead">1xx — Informational</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>100 Continue</pre>
+</div>
+<div class="section-subhead">2xx — Success</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>200 OK
+201 Created
+202 Accepted
+204 No Content</pre>
+</div>
+<div class="section-subhead">3xx — Redirection</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>301 Moved Permanently
+302 Found
+304 Not Modified</pre>
+</div>
+<div class="section-subhead">4xx — Client Error</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>400 Bad Request
+401 Unauthorized
+403 Forbidden
+404 Not Found
+409 Conflict
+422 Unprocessable Content
+429 Too Many Requests</pre>
+</div>
+<div class="section-subhead">5xx — Server Error</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>500 Internal Server Error
+502 Bad Gateway
+503 Service Unavailable
+504 Gateway Timeout</pre>
+</div>
+    </div>
+
+    <!-- 22.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.22</span> সবচেয়ে গুরুত্বপূর্ণ Status Codes</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>200</td><td>Request successful</td></tr><tr><td>201</td><td>Resource created</td></tr><tr><td>204</td><td>Success, no response body</td></tr><tr><td>400</td><td>Bad request</td></tr><tr><td>401</td><td>Authentication required/failed</td></tr><tr><td>403</td><td>Access forbidden</td></tr><tr><td>404</td><td>Resource not found</td></tr><tr><td>409</td><td>Conflict</td></tr><tr><td>422</td><td>Validation/unprocessable content</td></tr><tr><td>429</td><td>Too many requests</td></tr><tr><td>500</td><td>Server error</td></tr><tr><td>503</td><td>Service unavailable</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 22.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.23</span> response.ok</div>
+<p class="text-p">Fetch-এর response object-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.23 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>response.<span class="syn-op">ok</span></pre>
+</div>
+<p class="text-p">থাকে।</p>
+<p class="text-p">সাধারণভাবে 200–299 status হলে এটি <code>true</code>।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.23 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/users&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(response.<span class="syn-op">ok</span>);</pre>
+</div>
+    </div>
+
+    <!-- 22.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.24</span> response.status</div>
+<div class="code-box">
+  <div class="code-top"><span>22.24 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/users&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(response.<span class="syn-op">status</span>);</pre>
+</div>
+<p class="text-p">Possible output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>200</pre>
+</div>
+    </div>
+
+    <!-- 22.25 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">22.25</span> Complete Fetch Error Handling</div>
+<div class="code-box">
+  <div class="code-top"><span>22.25 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> getUsers() {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/users<span class="syn-str">&quot;);
+
+        if (!response.ok) {
+            throw new Error(
+                `HTTP Error: ${response.status}`
+            );
+        }
+
+        const users = await response.json();
+
+        console.log(users);
+
+    } catch (error) {
+
+        console.error(&quot;</span><span class="syn-fn">Request</span> failed:&quot;, <span class="syn-op">error</span>);
+
+    }
+}</pre>
+</div>
+<p class="text-p">এটি একটি খুব useful pattern।</p>
+    </div>
+
+    <div class="part-banner">Part 03 — Request/Response Headers, Payloads &amp; Stream Aborts (22.26 – 22.38)</div>
+
+    <!-- 22.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.26</span> Response Headers</div>
+<p class="text-p">Response-এর headers দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.26 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/users&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(response.headers);</pre>
+</div>
+<p class="text-p">নির্দিষ্ট header:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.26 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    response.headers.<span class="syn-op">get</span>(&quot;Content-Type&quot;)
+);</pre>
+</div>
+    </div>
+
+    <!-- 22.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.27</span> Request Headers</div>
+<p class="text-p">Server-কে information পাঠাতে headers ব্যবহার করা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>22.27 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-op">fetch</span>(&quot;/api/users<span class="syn-str">&quot;, {
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span>&quot;
+    }
+
+});</pre>
+</div>
+    </div>
+
+    <!-- 22.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.28</span> Authorization Header</div>
+<p class="text-p">Authentication-এর ক্ষেত্রে অনেক API-তে:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.28 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-op">fetch</span>(&quot;/api/profile<span class="syn-str">&quot;, {
+
+    headers: {
+        &quot;</span>Authorization<span class="syn-str">&quot;: &quot;</span>Bearer YOUR_TOKEN&quot;
+    }
+
+});</pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Authorization</pre>
+</div>
+<p class="text-p">হলো header।</p>
+<div class="ascii-tree-container">Bearer YOUR_TOKEN</div>
+<p class="text-p">হলো header value।</p>
+<div class="def-box">
+  <div class="def-text">Real application-এ token handling নিরাপদভাবে করতে হয়; token অযথা expose করা উচিত নয়।</div>
+</div>
+    </div>
+
+    <!-- 22.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.29</span> Request Body</div>
+<p class="text-p">POST request:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.29 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    email: <span class="syn-str">&quot;shariar@example.com&quot;</span>
+};
+
+<span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/users<span class="syn-str">&quot;, {
+
+    method: &quot;</span>POST<span class="syn-str">&quot;,
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span>&quot;
+    },
+
+    body: <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(user)
+
+});</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.29 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(user)</pre>
+</div>
+<p class="text-p">object-কে JSON string-এ convert করছে।</p>
+    </div>
+
+    <!-- 22.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.30</span> কেন <code>JSON.stringify()</code>?</div>
+<p class="text-p">JavaScript object:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.30 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>{
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">24</span>
+}</pre>
+</div>
+<p class="text-p">JSON:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#fbbf24;">22.30 JSON Payload</span><span>application/json</span></div>
+  <pre><span class="syn-op">{</span>
+    <span class="syn-kw">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+    <span class="syn-kw">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span>
+<span class="syn-op">}</span></pre>
+</div>
+<p class="text-p">HTTP request body-তে JSON পাঠাতে সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.30 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>()</pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+    </div>
+
+    <!-- 22.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.31</span> Response থেকে JSON</div>
+<div class="code-box">
+  <div class="code-top"><span>22.31 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/users&quot;);
+
+<span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();</pre>
+</div>
+<p class="text-p"><code>response.json()</code> একটি Promise return করে।</p>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.31 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">await</span> response.<span class="syn-op">json</span>()</pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+    </div>
+
+    <!-- 22.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.32</span> Response` Object</div>
+<p class="text-p">Fetch করলে আমরা একটি <code>Response</code> object পাই।</p>
+<div class="code-box">
+  <div class="code-top"><span>22.32 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(url);</pre>
+</div>
+<div class="memory-box">এর গুরুত্বপূর্ণ properties/methods:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>response.ok
+response.status
+response.statusText
+response.headers
+response.url
+response.json()
+response.text()
+response.blob()
+response.arrayBuffer()
+response.formData()</pre>
+</div>
+    </div>
+
+    <!-- 22.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.33</span> response.text()</div>
+<p class="text-p">যদি server plain text দেয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.33 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/message&quot;);
+
+<span class="syn-kw">const</span> <span class="syn-op">text</span> = <span class="syn-kw">await</span> response.<span class="syn-op">text</span>();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">text</span>);</pre>
+</div>
+    </div>
+
+    <!-- 22.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.34</span> response.json()</div>
+<p class="text-p">JSON response:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.34 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();</pre>
+</div>
+<p class="text-p">সবচেয়ে common।</p>
+    </div>
+
+    <!-- 22.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.35</span> response.blob()</div>
+<p class="text-p">Image/file-এর মতো binary data handle করতে <code>blob()</code> ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>22.35 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/image.jpg&quot;);
+
+<span class="syn-kw">const</span> <span class="syn-op">blob</span> = <span class="syn-kw">await</span> response.<span class="syn-op">blob</span>();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">blob</span>);</pre>
+</div>
+    </div>
+
+    <!-- 22.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.36</span> AbortController</div>
+<p class="text-p">কখনো request cancel করতে হয়।</p>
+<p class="text-p">যেমন:</p>
+<ul class="bullet-list"><li>User search করছে</li><li>পুরোনো search request cancel করা দরকার</li><li>Page change হয়েছে</li><li>Request timeout করতে হবে</li></ul>
+<p class="text-p">তখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.36 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> controller = <span class="syn-kw">new</span> <span class="syn-fn">AbortController</span>();
+
+<span class="syn-op">fetch</span>(&quot;/api/data&quot;, {
+    <span class="syn-op">signal</span>: controller.<span class="syn-op">signal</span>
+});</pre>
+</div>
+<p class="text-p">Cancel:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.36 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>controller.<span class="syn-op">abort</span>();</pre>
+</div>
+    </div>
+
+    <!-- 22.37 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.37</span> Abort Example</div>
+<div class="code-box">
+  <div class="code-top"><span>22.37 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> controller = <span class="syn-kw">new</span> <span class="syn-fn">AbortController</span>();
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> loadData() {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/data&quot;, {
+            <span class="syn-op">signal</span>: controller.<span class="syn-op">signal</span>
+        });
+
+        <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);
+
+    } <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">error</span>.name);
+
+    }
+}
+
+loadData();
+
+<span class="syn-com">// Later</span>
+controller.<span class="syn-op">abort</span>();</pre>
+</div>
+<p class="text-p">Abort হলে সাধারণত error-এর name:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>AbortError</pre>
+</div>
+<p class="text-p">হতে পারে।</p>
+    </div>
+
+    <!-- 22.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.38</span> Fetch Timeout</div>
+<p class="text-p">Fetch-এর জন্য নিজে timeout implement করা যায় <code>AbortController</code> দিয়ে।</p>
+<div class="code-box">
+  <div class="code-top"><span>22.38 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> fetchWithTimeout(url, ms) {
+
+    <span class="syn-kw">const</span> controller = <span class="syn-kw">new</span> <span class="syn-fn">AbortController</span>();
+
+    <span class="syn-kw">const</span> timer = <span class="syn-op">setTimeout</span>(() =&gt; {
+        controller.<span class="syn-op">abort</span>();
+    }, ms);
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(url, {
+            <span class="syn-op">signal</span>: controller.<span class="syn-op">signal</span>
+        });
+
+        <span class="syn-kw">return</span> response;
+
+    } <span class="syn-kw">finally</span> {
+
+        <span class="syn-op">clearTimeout</span>(timer);
+
+    }
+}</pre>
+</div>
+<p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.38 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">try</span> {
+
+    <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> fetchWithTimeout(
+        <span class="syn-str">&quot;/api/data&quot;</span>,
+        <span class="syn-num">5000</span>
+    );
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-kw">await</span> response.<span class="syn-op">json</span>());
+
+} <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;<span class="syn-fn">Request</span> failed or timed out&quot;);
+}</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Web Security: CORS, Preflights, Auth &amp; UI States (22.39 – 22.50)</div>
+
+    <!-- 22.39 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">22.39</span> CORS</div>
+<div class="warn-box"># 🔥 CORS খুব গুরুত্বপূর্ণ</div>
+<div class="warn-box"><strong>CORS = Cross-Origin Resource Sharing</strong></div>
+<p class="text-p">ধরো:</p>
+<p class="text-p">Frontend:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>http://localhost:3000</pre>
+</div>
+<p class="text-p">Backend:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>http://localhost:5000</pre>
+</div>
+<p class="text-p">দুইটি different origin।</p>
+<p class="text-p">Browser security-এর কারণে server-কে cross-origin request allow করতে হতে পারে।</p>
+    </div>
+
+    <!-- 22.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.40</span> Origin কী?</div>
+<p class="text-p">Origin-এর তিনটি প্রধান অংশ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>scheme + host + port</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>https://example.com:443</pre>
+</div>
+<div class="section-subhead">এগুলো different origin হতে পারে:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>http://example.com
+https://example.com</pre>
+</div>
+<p class="text-p">কারণ scheme আলাদা।</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>https://example.com
+https://api.example.com</pre>
+</div>
+<p class="text-p">কারণ host আলাদা।</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>https://example.com:443
+https://example.com:8080</pre>
+</div>
+<p class="text-p">কারণ port আলাদা।</p>
+    </div>
+
+    <!-- 22.41 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">22.41</span> CORS Error Example</div>
+<p class="text-p">Frontend:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.41 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-op">fetch</span>(&quot;http://localhost:<span class="syn-num">5000</span><span class="syn-regex">/api/us</span>ers&quot;);</pre>
+</div>
+<div class="warn-box">Backend CORS allow না করলে browser console-এ CORS-related error দেখা যেতে পারে।</div>
+<p class="text-p">এটা সাধারণত frontend JavaScript-এর syntax error নয়।</p>
+<div class="warn-box">Server-এর CORS configuration-এর সাথে সম্পর্কিত।</div>
+    </div>
+
+    <!-- 22.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.42</span> Preflight Request</div>
+<p class="text-p">কিছু cross-origin request-এর আগে browser:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.42 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre>OPTIONS</pre>
+</div>
+<p class="text-p">request পাঠাতে পারে।</p>
+<p class="text-p">এটাকে বলা হয়:</p>
+<p class="text-p"># Preflight Request</p>
+<p class="text-p">এটি server-কে জিজ্ঞেস করে:</p>
+<div class="def-box">
+  <div class="def-text">&quot;এই ধরনের cross-origin request আমি করতে পারব?&quot;</div>
+</div>
+<div class="warn-box">Server appropriate CORS headers দিয়ে অনুমতি দিতে পারে।</div>
+    </div>
+
+    <!-- 22.43 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">22.43</span> CORS Headers</div>
+<p class="text-p">Server response-এ এমন header থাকতে পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.43 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-fn">Access-Control-Allow-Origin</span>:<span class="syn-str"> https://example.com</span></pre>
+</div>
+<p class="text-p">এটি নির্দিষ্ট origin allow করতে পারে।</p>
+<p class="text-p">আরও headers:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Access-Control-Allow-Methods
+Access-Control-Allow-Headers
+Access-Control-Allow-Credentials</pre>
+</div>
+    </div>
+
+    <!-- 22.44 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.44</span> Frontend থেকে Backend Example</div>
+<p class="text-p">ধরো:</p>
+<div class="ascii-tree-container">Frontend
+http://localhost:5173
+
+Backend
+http://localhost:5000</div>
+<p class="text-p">Frontend:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.44 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(
+    <span class="syn-str">&quot;http://localhost:5000/api/products&quot;</span>
+);
+
+<span class="syn-kw">const</span> products = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(products);</pre>
+</div>
+<div class="warn-box">Backend-কে CORS appropriately configure করতে হবে।</div>
+    </div>
+
+    <!-- 22.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.45</span> API Data Rendering</div>
+<p class="text-p">ধরো API থেকে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#fbbf24;">22.45 JSON Payload</span><span>application/json</span></div>
+  <pre><span class="syn-op">[</span>
+    <span class="syn-op">{</span>
+        <span class="syn-kw">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">1</span><span class="syn-op">,</span>
+        <span class="syn-kw">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Laptop&quot;</span><span class="syn-op">,</span>
+        <span class="syn-kw">&quot;price&quot;</span><span class="syn-op">:</span> <span class="syn-num">70000</span>
+    <span class="syn-op">}</span><span class="syn-op">,</span>
+    <span class="syn-op">{</span>
+        <span class="syn-kw">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">2</span><span class="syn-op">,</span>
+        <span class="syn-kw">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Phone&quot;</span><span class="syn-op">,</span>
+        <span class="syn-kw">&quot;price&quot;</span><span class="syn-op">:</span> <span class="syn-num">30000</span>
+    <span class="syn-op">}</span>
+<span class="syn-op">]</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.45 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> loadProducts() {
+
+    <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/products<span class="syn-str">&quot;);
+
+    const products = await response.json();
+
+    const list = document.querySelector(&quot;</span>#productList<span class="syn-str">&quot;);
+
+    products.forEach(product =&gt; {
+
+        const li = document.createElement(&quot;</span>li&quot;);
+
+        li.textContent =
+            <span class="syn-str">`${product.name} - ৳${product.price}`</span>;
+
+        list.appendChild(li);
+
+    });
+}
+
+loadProducts();</pre>
+</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">22.45 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;ul</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;productList&quot;</span><span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/ul</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 22.46 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">22.46</span> Loading, Success, Error State</div>
+<div class="memory-box">Modern frontend application-এ API call-এর তিনটি গুরুত্বপূর্ণ UI state:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Loading
+Success
+Error</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.46 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> loadProducts() {
+
+    <span class="syn-kw">const</span> <span class="syn-op">status</span> = <span class="syn-fn">document</span>.querySelector(&quot;#<span class="syn-op">status</span><span class="syn-str">&quot;);
+
+    try {
+
+        status.textContent = &quot;</span>Loading...&quot;;
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/products<span class="syn-str">&quot;);
+
+        if (!response.ok) {
+            throw new Error(&quot;</span>Failed to load<span class="syn-str">&quot;);
+        }
+
+        const products = await response.json();
+
+        status.textContent =
+            `${products.length} products loaded`;
+
+    } catch (error) {
+
+        status.textContent =
+            &quot;</span>Could not load products.&quot;;
+
+    }
+}</pre>
+</div>
+    </div>
+
+    <!-- 22.47 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.47</span> Search API Example</div>
+<p class="text-p">ধরো user search box-এ লিখল:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>laptop</pre>
+</div>
+<p class="text-p">Frontend:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.47 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> searchProducts(query) {
+
+    <span class="syn-kw">const</span> params = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>({
+        search: query
+    });
+
+    <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(
+        <span class="syn-str">`/api/products?${params}`</span>
+    );
+
+    <span class="syn-kw">if</span> (!response.<span class="syn-op">ok</span>) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Search failed&quot;);
+    }
+
+    <span class="syn-kw">return</span> response.<span class="syn-op">json</span>();
+}</pre>
+</div>
+<p class="text-p">Call:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.47 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> products =
+    <span class="syn-kw">await</span> searchProducts(&quot;laptop&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(products);</pre>
+</div>
+    </div>
+
+    <!-- 22.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.48</span> POST Form Data</div>
+<p class="text-p">ধরো signup form:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.48 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> form = <span class="syn-fn">document</span>.querySelector(&quot;#signupForm<span class="syn-str">&quot;);
+
+form.addEventListener(&quot;</span>submit<span class="syn-str">&quot;, async (event) =&gt; {
+
+    event.preventDefault();
+
+    const formData = new FormData(form);
+
+    const user = Object.fromEntries(formData);
+
+    const response = await fetch(&quot;</span><span class="syn-regex">/api/</span>register<span class="syn-str">&quot;, {
+
+        method: &quot;</span>POST<span class="syn-str">&quot;,
+
+        headers: {
+            &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span>&quot;
+        },
+
+        body: <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(user)
+
+    });
+
+    <span class="syn-kw">const</span> result = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+});</pre>
+</div>
+<p class="text-p">এখানে Chapter 17-এর <strong>FormData</strong> + Chapter 19-এর <strong>JSON</strong> + Chapter 21-এর <strong>async/await</strong> + Chapter 22-এর <strong>HTTP/API</strong> একসাথে ব্যবহার হয়েছে।</p>
+    </div>
+
+    <!-- 22.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.49</span> API Authentication</div>
+<p class="text-p">একটি private API:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>GET /api/profile</pre>
+</div>
+<p class="text-p">request-এর সাথে authentication information লাগতে পারে।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.49 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/profile&quot;, {
+
+    headers: {
+        Authorization: <span class="syn-str">`Bearer ${token}`</span>
+    }
+
+});</pre>
+</div>
+<p class="text-p">Flow:</p>
+<div class="ascii-tree-container">Login
+ ↓
+Server verifies credentials
+ ↓
+Authentication result/token
+ ↓
+Client sends credentials/token
+ ↓
+Protected API</div>
+<p class="text-p">Authentication এবং authorization এক জিনিস নয়।</p>
+<div class="section-subhead">Authentication</div>
+<div class="def-box">
+  <div class="def-text">তুমি কে?</div>
+</div>
+<div class="section-subhead">Authorization</div>
+<div class="def-box">
+  <div class="def-text">তুমি কী করতে পারবে?</div>
+</div>
+    </div>
+
+    <!-- 22.50 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.50</span> 401 vs 403</div>
+<div class="section-subhead"><code>401 Unauthorized</code></div>
+<p class="text-p">সাধারণত authentication প্রয়োজন বা credentials invalid/missing।</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>&quot;তুমি কে?&quot;</pre>
+</div>
+<div class="section-subhead"><code>403 Forbidden</code></div>
+<p class="text-p">Server request বুঝেছে, কিন্তু access অনুমোদিত নয়।</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>&quot;তুমি কে জানি, কিন্তু এই কাজের permission নেই।&quot;</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 05 — Enterprise Patterns: Pagination, DevTools &amp; Full CRUD (22.51 – 22.69)</div>
+
+    <!-- 22.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.51</span> API Pagination</div>
+<p class="text-p">ধরো database-এ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>100,000 products</pre>
+</div>
+<p class="text-p">একবারে সব পাঠানো inefficient।</p>
+<p class="text-p">তাই pagination:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products?page=1&amp;limit=20</pre>
+</div>
+<p class="text-p">Page 1:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Products 1–20</pre>
+</div>
+<p class="text-p">Page 2:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Products 21–40</pre>
+</div>
+    </div>
+
+    <!-- 22.52 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.52</span> Pagination Example</div>
+<div class="code-box">
+  <div class="code-top"><span>22.52 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> getProducts(page = <span class="syn-num">1</span>) {
+
+    <span class="syn-kw">const</span> params = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>({
+        page,
+        limit: <span class="syn-num">20</span>
+    });
+
+    <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(
+        <span class="syn-str">`/api/products?${params}`</span>
+    );
+
+    <span class="syn-kw">return</span> response.<span class="syn-op">json</span>();
+}</pre>
+</div>
+    </div>
+
+    <!-- 22.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.53</span> API Filtering</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products?category=laptop</pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.53 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> params = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>({
+    category: <span class="syn-str">&quot;laptop&quot;</span>
+});
+
+<span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(
+    <span class="syn-str">`/api/products?${params}`</span>
+);</pre>
+</div>
+    </div>
+
+    <!-- 22.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.54</span> API Sorting</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products?sort=price&amp;order=asc</pre>
+</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products?sort=createdAt&amp;order=desc</pre>
+</div>
+<p class="text-p">Backend এই parameters অনুযায়ী data sort করতে পারে।</p>
+    </div>
+
+    <!-- 22.55 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.55</span> API Request-এর Full Structure</div>
+<p class="text-p">একটি request:</p>
+<div class="ascii-tree-container">┌──────────────────────────────┐
+│ Method                       │
+│ GET / POST / PATCH / DELETE │
+├──────────────────────────────┤
+│ URL                          │
+├──────────────────────────────┤
+│ Headers                      │
+├──────────────────────────────┤
+│ Body                         │
+└──────────────────────────────┘</div>
+<p class="text-p">Response:</p>
+<div class="ascii-tree-container">┌──────────────────────────────┐
+│ Status Code                  │
+├──────────────────────────────┤
+│ Headers                      │
+├──────────────────────────────┤
+│ Body                         │
+└──────────────────────────────┘</div>
+    </div>
+
+    <!-- 22.56 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.56</span> GET vs POST</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>GET</th><th>POST</th></tr></thead>
+    <tbody>
+      <tr><td>Purpose</td><td>Data নেওয়া</td><td>Data তৈরি/submit</td></tr><tr><td>Body</td><td>সাধারণত ব্যবহার করা হয় না</td><td>সাধারণত থাকে</td></tr><tr><td>Query params</td><td>Common</td><td>Common</td></tr><tr><td>Data modification</td><td>সাধারণত নয়</td><td>হতে পারে</td></tr><tr><td>Idempotent</td><td>সাধারণত হ্যাঁ</td><td>সাধারণত নয়</td></tr><tr><td>Cache</td><td>Cacheable হতে পারে</td><td>সাধারণত defaultভাবে নয়</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 22.57 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.57</span> PUT vs PATCH</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>PUT</th><th>PATCH</th></tr></thead>
+    <tbody>
+      <tr><td>সম্পূর্ণ resource replace/update-এর জন্য</td><td>আংশিক update-এর জন্য</td></tr><tr><td>পুরো representation পাঠানোর pattern common</td><td>শুধু পরিবর্তিত field পাঠানো common</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Example:</p>
+<p class="text-p">PUT:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#fbbf24;">22.57 JSON Payload</span><span>application/json</span></div>
+  <pre><span class="syn-op">{</span>
+    <span class="syn-kw">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+    <span class="syn-kw">&quot;email&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;new@example.com&quot;</span><span class="syn-op">,</span>
+    <span class="syn-kw">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span>
+<span class="syn-op">}</span></pre>
+</div>
+<p class="text-p">PATCH:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#fbbf24;">22.57 JSON Payload</span><span>application/json</span></div>
+  <pre><span class="syn-op">{</span>
+    <span class="syn-kw">&quot;email&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;new@example.com&quot;</span>
+<span class="syn-op">}</span></pre>
+</div>
+    </div>
+
+    <!-- 22.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.58</span> Idempotency</div>
+<div class="memory-box">এটি একটু advanced কিন্তু গুরুত্বপূর্ণ।</div>
+<p class="text-p">কোনো operation একইভাবে বারবার করলে final state একই থাকে কি না—এটি idempotency-এর ধারণার সাথে সম্পর্কিত।</p>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>PUT /users/1</pre>
+</div>
+<p class="text-p">একই update বারবার পাঠালে সাধারণত একই final state পাওয়া যায়।</p>
+<p class="text-p">অন্যদিকে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>POST /orders</pre>
+</div>
+<p class="text-p">একই request বারবার পাঠালে multiple order তৈরি হতে পারে, যদি server-side ব্যবস্থা না থাকে।</p>
+    </div>
+
+    <!-- 22.59 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.59</span> HTTP Request-এর Real-Life Example</div>
+<p class="text-p">তুমি e-commerce website-এ:</p>
+<div class="section-subhead">Product দেখতে:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.59 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-kw">GET</span> <span class="syn-str">/api/products/10</span></pre>
+</div>
+<div class="section-subhead">Cart-এ add:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.59 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-kw">POST</span> <span class="syn-str">/api/cart</span></pre>
+</div>
+<div class="section-subhead">Quantity update:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.59 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-kw">PATCH</span> <span class="syn-str">/api/cart/10</span></pre>
+</div>
+<div class="section-subhead">Cart item remove:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.59 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-kw">DELETE</span> <span class="syn-str">/api/cart/10</span></pre>
+</div>
+<div class="section-subhead">Order create:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">22.59 HTTP Protocol</span><span>HTTP/1.1</span></div>
+  <pre><span class="syn-kw">POST</span> <span class="syn-str">/api/orders</span></pre>
+</div>
+    </div>
+
+    <!-- 22.60 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.60</span> Complete E-Commerce API Flow</div>
+<div class="ascii-tree-container">                E-Commerce Frontend
+                        │
+             ┌──────────┼──────────┐
+             ↓          ↓          ↓
+           GET        POST       PATCH
+        Products       Cart       Cart
+             │          │          │
+             └──────────┼──────────┘
+                        ↓
+                   Backend API
+                        ↓
+                    Database
+                        ↓
+                     JSON
+                        ↓
+                   Frontend UI</div>
+    </div>
+
+    <!-- 22.61 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">22.61</span> API Error Handling — Professional Pattern</div>
+<div class="code-box">
+  <div class="code-top"><span>22.61 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> apiRequest(url, options = {}) {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(url, options);
+
+        <span class="syn-kw">if</span> (!response.<span class="syn-op">ok</span>) {
+
+            <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(
+                <span class="syn-str">`Request failed: ${response.status}`</span>
+            );
+
+        }
+
+        <span class="syn-kw">const</span> contentType =
+            response.headers.<span class="syn-op">get</span>(&quot;content-type<span class="syn-str">&quot;);
+
+        if (contentType?.includes(&quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;)) {
+
+            return await response.json();
+
+        }
+
+        return await response.text();
+
+    } catch (error) {
+
+        console.error(&quot;</span>API <span class="syn-fn">Error</span>:&quot;, <span class="syn-op">error</span>);
+
+        <span class="syn-kw">throw</span> <span class="syn-op">error</span>;
+    }
+}</pre>
+</div>
+<p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.61 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> users = <span class="syn-kw">await</span> apiRequest(&quot;/api/users&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(users);</pre>
+</div>
+<p class="text-p">এভাবে একটি reusable API utility তৈরি করা যায়।</p>
+    </div>
+
+    <!-- 22.62 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.62</span> fetch()` কি automatically JSON বুঝে?</div>
+<p class="text-p">❌ না।</p>
+<p class="text-p">এই:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.62 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(url);</pre>
+</div>
+<p class="text-p">শুধু response দেয়।</p>
+<p class="text-p">JSON পেতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.62 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();</pre>
+</div>
+<p class="text-p">করতে হবে।</p>
+    </div>
+
+    <!-- 22.63 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">22.63</span> fetch()` কি 404-এ automatically reject করে?</div>
+<p class="text-p">❌ সাধারণ HTTP 4xx/5xx status-এর জন্য সাধারণত না।</p>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.63 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">if</span> (!response.<span class="syn-op">ok</span>) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;<span class="syn-fn">Request</span> failed&quot;);
+}</pre>
+</div>
+<div class="memory-box">check করা গুরুত্বপূর্ণ।</div>
+<p class="text-p">Network-level failure হলে Fetch Promise reject করতে পারে।</p>
+    </div>
+
+    <!-- 22.64 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">22.64</span> Network Error</div>
+<p class="text-p">যেমন:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Internet disconnected
+DNS problem
+Connection failed
+Request aborted</pre>
+</div>
+<p class="text-p">এ ধরনের ক্ষেত্রে <code>fetch()</code> reject করতে পারে।</p>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.64 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">try</span> {
+    ...
+} <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+    ...
+}</pre>
+</div>
+<div class="memory-box">গুরুত্বপূর্ণ।</div>
+    </div>
+
+    <!-- 22.65 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.65</span> Browser DevTools — Network Tab</div>
+<p class="text-p">API debugging-এর জন্য:</p>
+<div class="ascii-tree-container">Chrome DevTools
+      ↓
+Network</div>
+<p class="text-p">এখানে দেখতে পারবে:</p>
+<ul class="bullet-list"><li>Request URL</li><li>Request Method</li><li>Status Code</li><li>Request Headers</li><li>Response Headers</li><li>Request Payload</li><li>Response</li><li>Timing</li><li>Initiator</li></ul>
+<p class="text-p">Frontend developer হিসেবে <strong>Network tab</strong> ভালোভাবে জানা খুব জরুরি।</p>
+    </div>
+
+    <!-- 22.66 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.66</span> Network Debugging Example</div>
+<p class="text-p">ধরো API কাজ করছে না।</p>
+<p class="text-p">Network tab-এ দেখলে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Request:
+POST /api/login
+
+Status:
+401</pre>
+</div>
+<p class="text-p">তাহলে authentication-related problem হতে পারে।</p>
+<p class="text-p">অথবা:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>404</pre>
+</div>
+<p class="text-p">হলে endpoint ভুল হতে পারে।</p>
+<p class="text-p">অথবা:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>500</pre>
+</div>
+<p class="text-p">হলে server-side error হতে পারে।</p>
+    </div>
+
+    <!-- 22.67 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.67</span> REST API-এর একটি সম্পূর্ণ Example</div>
+<p class="text-p">ধরো Student Management System।</p>
+<div class="section-subhead">Get all students</div>
+<div class="code-box">
+  <div class="code-top"><span>22.67 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> getStudents() {
+
+    <span class="syn-kw">const</span> response =
+        <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/students<span class="syn-str">&quot;);
+
+    if (!response.ok) {
+        throw new Error(&quot;</span>Failed&quot;);
+    }
+
+    <span class="syn-kw">return</span> response.<span class="syn-op">json</span>();
+}</pre>
+</div>
+<div class="section-subhead">Create student</div>
+<div class="code-box">
+  <div class="code-top"><span>22.67 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> createStudent(student) {
+
+    <span class="syn-kw">const</span> response =
+        <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/students<span class="syn-str">&quot;, {
+
+            method: &quot;</span>POST<span class="syn-str">&quot;,
+
+            headers: {
+                &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;
+            },
+
+            body: JSON.stringify(student)
+
+        });
+
+    if (!response.ok) {
+        throw new Error(&quot;</span>Creation failed&quot;);
+    }
+
+    <span class="syn-kw">return</span> response.<span class="syn-op">json</span>();
+}</pre>
+</div>
+<div class="section-subhead">Update student</div>
+<div class="code-box">
+  <div class="code-top"><span>22.67 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> updateStudent(id, data) {
+
+    <span class="syn-kw">const</span> response =
+        <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(`/api<span class="syn-regex">/students/</span>${id}`, {
+
+            method: <span class="syn-str">&quot;PATCH&quot;</span>,
+
+            headers: {
+                <span class="syn-str">&quot;Content-Type&quot;</span>: <span class="syn-str">&quot;application/json&quot;</span>
+            },
+
+            body: <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(data)
+
+        });
+
+    <span class="syn-kw">if</span> (!response.<span class="syn-op">ok</span>) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Update failed&quot;);
+    }
+
+    <span class="syn-kw">return</span> response.<span class="syn-op">json</span>();
+}</pre>
+</div>
+<div class="section-subhead">Delete student</div>
+<div class="code-box">
+  <div class="code-top"><span>22.67 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> deleteStudent(id) {
+
+    <span class="syn-kw">const</span> response =
+        <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(`/api<span class="syn-regex">/students/</span>${id}`, {
+
+            method: <span class="syn-str">&quot;DELETE&quot;</span>
+
+        });
+
+    <span class="syn-kw">if</span> (!response.<span class="syn-op">ok</span>) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Delete failed&quot;);
+    }
+}</pre>
+</div>
+    </div>
+
+    <!-- 22.68 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">22.68</span> পুরো CRUD একসাথে</div>
+<div class="code-box">
+  <div class="code-top"><span>22.68 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// READ</span>
+<span class="syn-kw">const</span> students =
+    <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/students<span class="syn-str">&quot;)
+        .then(res =&gt; res.json());
+
+
+// CREATE
+await fetch(&quot;</span><span class="syn-regex">/api/s</span>tudents<span class="syn-str">&quot;, {
+
+    method: &quot;</span>POST<span class="syn-str">&quot;,
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;
+    },
+
+    body: JSON.stringify({
+        name: &quot;</span>Shariar<span class="syn-str">&quot;,
+        department: &quot;</span>CSE<span class="syn-str">&quot;
+    })
+
+});
+
+
+// UPDATE
+await fetch(&quot;</span><span class="syn-regex">/api/s</span>tudents/<span class="syn-num">1</span><span class="syn-str">&quot;, {
+
+    method: &quot;</span>PATCH<span class="syn-str">&quot;,
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;
+    },
+
+    body: JSON.stringify({
+        department: &quot;</span>Software Engineering<span class="syn-str">&quot;
+    })
+
+});
+
+
+// DELETE
+await fetch(&quot;</span><span class="syn-regex">/api/s</span>tudents/<span class="syn-num">1</span><span class="syn-str">&quot;, {
+
+    method: &quot;</span>DELETE&quot;
+
+});</pre>
+</div>
+    </div>
+
+    <!-- 22.69 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22.69</span> Frontend Developer হিসেবে API শেখার গুরুত্ব</div>
+<p class="text-p">React application-এ তুমি প্রায়ই করবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.69 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>useEffect(() =&gt; {
+
+    <span class="syn-op">fetch</span>(&quot;/api/products&quot;)
+        .then(response =&gt; response.<span class="syn-op">json</span>())
+        .then(data =&gt; {
+            setProducts(data);
+        });
+
+}, []);</pre>
+</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span>22.69 JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/products&quot;);
+<span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();</pre>
+</div>
+<p class="text-p">Node.js/Express backend-এর সাথে:</p>
+<div class="ascii-tree-container">React
+ ↓
+Fetch/Axios
+ ↓
+Express API
+ ↓
+MongoDB/PostgreSQL</div>
+<p class="text-p">এটাই Full Stack development-এর core workflow-এর একটি অংশ।</p>
+    </div>
+
+    <div class="part-banner">Part 06 — REST API Mastery: Must Know, Cheat Sheet, Practice Lab &amp; Mental Map</div>
+
+    <!-- 22.70 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 22.70 Must Know — HTTP &amp; REST API Pillars</div>
+<p class="text-p">এই Chapter থেকে অবশ্যই জানতে হবে:</p>
+<div class="section-subhead">HTTP</div>
+<ul class="bullet-list"><li>HTTP</li><li>Request</li><li>Response</li><li>URL</li><li>Headers</li><li>Body</li></ul>
+<div class="section-subhead">HTTP Methods</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>GET
+POST
+PUT
+PATCH
+DELETE
+HEAD
+OPTIONS</pre>
+</div>
+<div class="section-subhead">Status Codes</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>200
+201
+204
+400
+401
+403
+404
+409
+422
+429
+500
+503</pre>
+</div>
+<div class="section-subhead">REST</div>
+<ul class="bullet-list"><li>REST</li><li>Resource</li><li>RESTful URL</li><li>Path parameter</li><li>Query parameter</li><li>CRUD</li><li>Idempotency basic concept</li></ul>
+<div class="section-subhead">Fetch</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-op">fetch</span>()</pre>
+</div>
+<ul class="bullet-list"><li>GET</li><li>POST</li><li>PUT</li><li>PATCH</li><li>DELETE</li><li>Headers</li><li>Body</li><li><code>JSON.stringify()</code></li><li><code>response.json()</code></li><li><code>response.text()</code></li><li><code>response.ok</code></li><li><code>response.status</code></li><li><code>response.headers</code></li></ul>
+<div class="section-subhead">Advanced</div>
+<ul class="bullet-list"><li>CORS</li><li>Preflight</li><li><code>OPTIONS</code></li><li><code>AbortController</code></li><li>Timeout</li><li>Pagination</li><li>Filtering</li><li>Sorting</li><li>Authentication</li><li>Authorization</li><li>401 vs 403</li><li>Network debugging</li></ul>
+    </div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet — HTTP Methods, Headers &amp; Fetch Patterns</div>
+<div class="section-subhead">GET</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/users&quot;);
+
+<span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();</pre>
+</div>
+<div class="section-subhead">POST</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/users<span class="syn-str">&quot;, {
+
+    method: &quot;</span>POST<span class="syn-str">&quot;,
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;
+    },
+
+    body: JSON.stringify({
+        name: &quot;</span>Shariar&quot;
+    })
+
+});</pre>
+</div>
+<div class="section-subhead">PATCH</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api<span class="syn-regex">/users/</span><span class="syn-num">1</span><span class="syn-str">&quot;, {
+
+    method: &quot;</span>PATCH<span class="syn-str">&quot;,
+
+    headers: {
+        &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;
+    },
+
+    body: JSON.stringify({
+        name: &quot;</span>New Name&quot;
+    })
+
+});</pre>
+</div>
+<div class="section-subhead">DELETE</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api<span class="syn-regex">/users/</span><span class="syn-num">1</span><span class="syn-str">&quot;, {
+    method: &quot;</span>DELETE&quot;
+});</pre>
+</div>
+<div class="section-subhead">Error Check</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">if</span> (!response.<span class="syn-op">ok</span>) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(
+        <span class="syn-str">`HTTP ${response.status}`</span>
+    );
+}</pre>
+</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Query Parameter</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> params = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>({
+    search: <span class="syn-str">&quot;laptop&quot;</span>,
+    page: <span class="syn-num">1</span>
+});
+
+<span class="syn-op">fetch</span>(`/api/products?${params}`);</pre>
+</div>
+<div class="section-subhead">Authorization</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-op">fetch</span>(&quot;/api/profile&quot;, {
+
+    headers: {
+        Authorization: <span class="syn-str">`Bearer ${token}`</span>
+    }
+
+});</pre>
+</div>
+<div class="section-subhead">Abort</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> controller =
+    <span class="syn-kw">new</span> <span class="syn-fn">AbortController</span>();
+
+<span class="syn-op">fetch</span>(url, {
+    <span class="syn-op">signal</span>: controller.<span class="syn-op">signal</span>
+});
+
+controller.<span class="syn-op">abort</span>();</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — 7 Practical API &amp; CRUD Challenges</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 1 — GET</h4>
+<p class="text-p">একটি function তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>getProducts()</pre>
+</div>
+<p class="text-p">যেটি:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products</pre>
+</div>
+<p class="text-p">থেকে data আনবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 2 — POST</h4>
+<p class="text-p">একটি function:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>createUser()</pre>
+</div>
+<p class="text-p">তৈরি করো যেটি এই data পাঠাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>{
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    email: <span class="syn-str">&quot;shariar@example.com&quot;</span>
+}</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 3 — PATCH</h4>
+<p class="text-p">Product <code>id = 10</code>-এর শুধু price update করো:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>85000</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 4 — DELETE</h4>
+<p class="text-p">Product <code>id = 20</code> delete করার function তৈরি করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 5 — Search</h4>
+<p class="text-p">User input:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>laptop</pre>
+</div>
+<p class="text-p">থেকে URL তৈরি করো:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>/api/products?search=laptop</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 6 — Error Handling</h4>
+<p class="text-p">এমন code লেখো যেখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>response.<span class="syn-op">ok</span> === <span class="syn-bool">false</span></pre>
+</div>
+<p class="text-p">হলে custom error throw করবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 7 — Full CRUD</h4>
+<p class="text-p">একটি:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Student Management API</pre>
+</div>
+<p class="text-p">এর জন্য frontend-side functions তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Fetch API</span><span>ES2026</span></div>
+  <pre>getStudents()
+createStudent()
+updateStudent()
+deleteStudent()</pre>
+</div>
+      </div>
+    </div>
+
+    <!-- Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 22 Final Mental Map — Web API, HTTP &amp; Data Pipeline</div>
+<div class="memory-box">পুরো Chapter-টি এইভাবে মনে রাখো:</div>
+<div class="ascii-tree-container">                     WEB API
+                        │
+                       HTTP
+                        │
+              ┌─────────┴─────────┐
+              │                   │
+           Request             Response
+              │                   │
+       ┌──────┼──────┐       ┌────┼─────┐
+       │      │      │       │    │     │
+     Method   URL  Headers  Status Headers Body
+       │
+ ┌─────┼──────────────────────────┐
+ │     │      │      │            │
+GET   POST   PUT   PATCH        DELETE
+ │
+ └──────────────┐
+                ↓
+              CRUD
+                ↓
+             REST API
+                ↓
+              fetch()
+                ↓
+            Promise
+                ↓
+           async/await
+                ↓
+               JSON
+                ↓
+          Frontend UI</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 ⭐ সবচেয়ে গুরুত্বপূর্ণ বাস্তব Flow:</div>
+<div class="ascii-tree-container">User clicks button
+       ↓
+JavaScript event
+       ↓
+fetch()
+       ↓
+HTTP Request
+       ↓
+Backend API
+       ↓
+Database
+       ↓
+HTTP Response
+       ↓
+response.json()
+       ↓
+JavaScript data
+       ↓
+DOM / React State
+       ↓
+UI Update</div>
+<p class="text-p"><strong>Chapter 21 + 22 একসাথে করলে এখন তুমি JavaScript-এর asynchronous programming থেকে শুরু করে বাস্তব API communication পর্যন্ত একটি complete foundation তৈরি করে ফেলেছ।</strong></p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 23 Preview — Advanced Regular Expressions (RegExp)</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায়ে আমরা জাভাস্ক্রিপ্টের অন্যতম শক্তিশালী টেক্সট প্রসেসিং ইঞ্জিন <strong>Advanced Regular Expressions (RegExp)</strong> নিয়ে বিস্তারিত শিখব—Lookaheads, Lookbehinds, Named Capturing Groups, Unicode Property Escapes, এবং বাস্তব ডেটা ভ্যালিডেশন প্যাটার্নস।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

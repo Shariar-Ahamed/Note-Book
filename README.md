@@ -21,6 +21,15 @@ Comprehensive, production-grade JavaScript study notes, interactive HTML documen
 | **11** | Prototypes & Prototype Chain | [HTML](Code/Chapter-11-Prototypes.html) | [PDF](PDF/Chapter-11-Prototypes.pdf) | ✅ Complete |
 | **12** | Map, Set, WeakMap & WeakSet | [HTML](Code/Chapter-12-Map-Set-WeakMap-WeakSet.html) | [PDF](PDF/Chapter-12-Map-Set-WeakMap-WeakSet.pdf) | ✅ Complete |
 | **13** | Built-in Objects: Date, Math, Number, BigInt, Intl & RegExp | [HTML](Code/Chapter-13-Built-in-Objects.html) | [PDF](PDF/Chapter-13-Built-in-Objects.pdf) | ✅ Complete |
+| **14** | Error Handling & Debugging | [HTML](Code/Chapter-14-Error-Handling-Debugging.html) | [PDF](PDF/Chapter-14-Error-Handling-Debugging.pdf) | ✅ Complete |
+| **15** | DOM — Document Object Model | [HTML](Code/Chapter-15-DOM.html) | [PDF](PDF/Chapter-15-DOM.pdf) | ✅ Complete |
+| **16** | Events & Event Handling | [HTML](Code/Chapter-16-Events.html) | [PDF](PDF/Chapter-16-Events.pdf) | ✅ Complete |
+| **17** | Forms & Form Validation | [HTML](Code/Chapter-17-Forms-Validation.html) | [PDF](PDF/Chapter-17-Forms-Validation.pdf) | ✅ Complete |
+| **18** | Browser Storage & Cookies | [HTML](Code/Chapter-18-Browser-Storage-Cookies.html) | [PDF](PDF/Chapter-18-Browser-Storage-Cookies.pdf) | ✅ Complete |
+| **19** | JSON (JavaScript Object Notation) | [HTML](Code/Chapter-19-JSON.html) | [PDF](PDF/Chapter-19-JSON.pdf) | ✅ Complete |
+| **20** | ES Modules (ESM) | [HTML](Code/Chapter-20-ES-Modules.html) | [PDF](PDF/Chapter-20-ES-Modules.pdf) | ✅ Complete |
+| **21** | Asynchronous JavaScript (Event Loop, Promises & async/await) | [HTML](Code/Chapter-21-Asynchronous-JavaScript.html) | [PDF](PDF/Chapter-21-Asynchronous-JavaScript.pdf) | ✅ Complete |
+| **22** | HTTP, REST API & Fetch API | [HTML](Code/Chapter-22-HTTP-API-Fetch.html) | [PDF](PDF/Chapter-22-HTTP-API-Fetch.pdf) | ✅ Complete |
 
 ---
 

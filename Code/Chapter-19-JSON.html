@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 19: JSON (JavaScript Object Notation)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      line-height: 1.38;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+    .syn-regex { color: #38bdf8; font-style: italic; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10px;
+      line-height: 1.32;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 19: JSON (JAVASCRIPT OBJECT NOTATION) — SERIALIZATION, API DATA &amp; PROTOCOLS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">56 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 13 — Data Formats &amp; Network Serialization</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">JSON.stringify(), JSON.parse(), Replacer &amp; Reviver</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">RFC 8259 / ECMA-404 / ECMAScript 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">JSON — Data আদান-প্রদান ও API Communication-এর সবচেয়ে গুরুত্বপূর্ণ Format</h2>
+      <p class="text-p">আধুনিক ওয়েব ডেভেলপমেন্টে ফ্রন্টএন্ড ও ব্যাকএন্ডের মধ্যে ডেটা আদান-প্রদান, ক্লায়েন্ট-সাইড স্টোরেজে অবজেক্ট পারসিস্ট করা এবং বিভিন্ন সিস্টেমের মধ্যে যোগাযোগ স্থাপনের জন্য <strong>JSON (JavaScript Object Notation)</strong> হলো সবচেয়ে হালকা, দ্রুত এবং বিশ্বজনীন মানদণ্ড।</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">JS Object &nbsp;→&nbsp; JSON.stringify() &nbsp;→&nbsp; JSON String (Payload) &nbsp;→&nbsp; Network / Storage &nbsp;→&nbsp; JSON.parse() &nbsp;→&nbsp; JS Object</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">ফুলস্ট্যাক ও আধুনিক ফ্রন্টএন্ড ইঞ্জিনিয়ারিংয়ে এপিআই কমিউনিকেশনের ভিত্তিই হলো এই JSON আর্কিটেকচার। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — JSON Fundamentals, Syntax &amp; Data Types (19.1 – 19.14)</div>
+
+    <!-- 19.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">19.1</span> JSON কী?</div>
+<p class="text-p"><strong>JSON = JavaScript Object Notation</strong></p>
+<p class="text-p">JSON হলো এমন একটি <strong>text-based data format</strong>, যেটা বিভিন্ন application-এর মধ্যে data আদান-প্রদানের জন্য ব্যাপকভাবে ব্যবহৃত হয়।</p>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box">
+  <div class="def-text"><strong>JSON হলো structured data লেখার একটি standard format।</strong></div>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.1 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;role&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Developer&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এটি দেখতে JavaScript object-এর মতো।</p>
+<div class="memory-box">কিন্তু মনে রাখবে:</div>
+<div class="def-box">
+  <div class="def-text"><strong>JSON নিজে JavaScript Object নয়। JSON হলো text format।</strong></div>
+</div>
+    </div>
+
+    <!-- 19.2 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">19.2</span> Real-life Example</div>
+<p class="text-p">ধরো Frontend থেকে Backend-এ user data পাঠাবে।</p>
+<p class="text-p">Frontend:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Name: Shariar
+Email: shariar@gmail.com
+Age: 24</pre>
+</div>
+<p class="text-p">Backend-এ structured data পাঠানো যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.2 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;email&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;shariar@gmail.com&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">Backend data process করে database-এ save করতে পারে।</p>
+    </div>
+
+    <!-- 19.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.3</span> কেন JSON এত গুরুত্বপূর্ণ?</div>
+<p class="text-p">Modern web development-এ:</p>
+<div class="ascii-tree-container">Frontend
+   ↓
+HTTP Request
+   ↓
+API
+   ↓
+Backend
+   ↓
+Database</div>
+<p class="text-p">এখানে data আদান-প্রদানের জন্য JSON খুব common।</p>
+<p class="text-p">যেমন:</p>
+<div class="ascii-tree-container">React
+   ↕
+REST API
+   ↕
+Node.js / Express
+   ↕
+Database</div>
+<p class="text-p">তুমি Full Stack Developer হিসেবে JSON প্রায় প্রতিদিনই ব্যবহার করবে।</p>
+    </div>
+
+    <!-- 19.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.4</span> JSON-এর Basic Structure</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.4 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;student&quot;</span><span class="syn-op">:</span> <span class="syn-bool">true</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">&quot;name&quot;    → Key
+&quot;Shariar&quot; → Value
+
+&quot;age&quot;     → Key
+24        → Value</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Key : Value</pre>
+</div>
+    </div>
+
+    <!-- 19.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.5</span> JSON Data Types</div>
+<p class="text-p">JSON-এ মূলত ৬ ধরনের data থাকে:</p>
+<div class="ascii-tree-container">String
+Number
+Boolean
+Object
+Array
+null</div>
+    </div>
+
+    <!-- 19.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.6</span> JSON String</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.6 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">String অবশ্যই double quote-এর মধ্যে হবে।</p>
+<div class="sub-badge" style="background:#dcfce7; color:#166534;">✅ Correct:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.6 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<div class="sub-badge" style="background:#fee2e2; color:#991b1b;">❌ Invalid JSON:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.6 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str" style="color:#f87171; text-decoration: underline wavy #ef4444;" title="Invalid: Single quotes not allowed in JSON">&#x27;Shariar&#x27;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<div class="warn-box">JSON standard-এ string-এর জন্য <strong>double quotes</strong> ব্যবহার করতে হয় (Single Quote <code>&#x27;...&#x27;</code> ব্যবহার করলে SyntaxError হবে)।</div>
+    </div>
+
+    <!-- 19.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.7</span> JSON Number</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.7 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;price&quot;</span><span class="syn-op">:</span> <span class="syn-num">70000</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;rating&quot;</span><span class="syn-op">:</span> <span class="syn-num">4.5</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">Number-এর জন্য quote লাগে না।</p>
+    </div>
+
+    <!-- 19.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.8</span> JSON Boolean</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.8 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;isStudent&quot;</span><span class="syn-op">:</span> <span class="syn-bool">true</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;isActive&quot;</span><span class="syn-op">:</span> <span class="syn-bool">false</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false</pre>
+</div>
+<p class="text-p">quote-এর মধ্যে থাকবে না।</p>
+    </div>
+
+    <!-- 19.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.9</span> JSON `null</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.9 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;middleName&quot;</span><span class="syn-op">:</span> <span class="syn-bool">null</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এর অর্থ এখানে বর্তমানে কোনো value নেই।</p>
+    </div>
+
+    <!-- 19.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.10</span> JSON Array</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.10 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;skills&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">[</span><span class="syn-str">&quot;HTML&quot;</span><span class="syn-op">,</span> <span class="syn-str">&quot;CSS&quot;</span><span class="syn-op">,</span> <span class="syn-str">&quot;JavaScript&quot;</span><span class="syn-op">,</span> <span class="syn-str">&quot;React&quot;</span><span style="color:#94a3b8;">]</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">Array-এর মধ্যে multiple values রাখা যায়।</p>
+    </div>
+
+    <!-- 19.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.11</span> JSON Object</div>
+<p class="text-p">Nested object:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.11 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;address&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">{</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;city&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Dhaka&quot;</span><span class="syn-op">,</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;country&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Bangladesh&quot;</span>
+  <span style="color:#94a3b8;">}</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এখানে <code>address</code> নিজেই একটি object।</p>
+    </div>
+
+    <!-- 19.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.12</span> Nested JSON</div>
+<p class="text-p">Real-world API response-এ nested data খুব common।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.12 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;user&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">{</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">101</span><span class="syn-op">,</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;profile&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">{</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;role&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Developer&quot;</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;skills&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">[</span><span class="syn-str">&quot;JavaScript&quot;</span><span class="syn-op">,</span> <span class="syn-str">&quot;React&quot;</span><span class="syn-op">,</span> <span class="syn-str">&quot;Node.js&quot;</span><span style="color:#94a3b8;">]</span>
+    <span style="color:#94a3b8;">}</span>
+  <span style="color:#94a3b8;">}</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">JavaScript-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(data.<span class="syn-kw" style="color:#fdba74;">user</span>.<span class="syn-kw" style="color:#fdba74;">name</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(data.<span class="syn-kw" style="color:#fdba74;">user</span>.profile.<span class="syn-kw" style="color:#fdba74;">skills</span>[<span class="syn-num">0</span>]);</pre>
+</div>
+<div class="ascii-tree-container">JavaScript</div>
+    </div>
+
+    <!-- 19.13 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">19.13</span> JSON বনাম JavaScript Object</div>
+<p class="text-p">JavaScript object:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">24</span>,
+};</pre>
+</div>
+<p class="text-p">JSON:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.13 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">দেখতে একই রকম হলেও পার্থক্য আছে।</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>JavaScript Object</th><th>JSON</th></tr></thead>
+    <tbody>
+      <tr><td>JavaScript-এর data structure</td><td>Text-based data format</td></tr><tr><td>Key quote ছাড়া হতে পারে</td><td>Key double quote-এ থাকতে হবে</td></tr><tr><td>Single quote string হিসেবে ব্যবহার করা যায়</td><td>String-এর জন্য double quote</td></tr><tr><td><code>undefined</code> থাকতে পারে</td><td><code>undefined</code> নেই</td></tr><tr><td>Function থাকতে পারে</td><td>Function নেই</td></tr><tr><td><code>Date</code> object থাকতে পারে</td><td>Native Date type নেই</td></tr><tr><td>Methods থাকতে পারে</td><td>Methods নেই</td></tr><tr><td>Directly executable data structure</td><td>Data representation</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 19.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.14</span> JSON কেন JavaScript Object নয়?</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> <span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+<div class="ascii-tree-container">object</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> jsonData = <span class="syn-str">&#x27;{&quot;name&quot;:&quot;Shariar&quot;}&#x27;</span>;
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> jsonData);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>string</pre>
+</div>
+<p class="text-p">অর্থাৎ JSON representation সাধারণত JavaScript-এর কাছে <strong>string</strong> হিসেবে থাকে।</p>
+    </div>
+
+    <div class="part-banner">Part 02 — Serialization &amp; Parsing: stringify, parse &amp; The Core Formula (19.15 – 19.23)</div>
+
+    <!-- 19.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.15</span> JSON.stringify()</div>
+<p class="text-p">JavaScript value → JSON string</p>
+<p class="text-p">এটাই <code>JSON.stringify()</code>-এর কাজ।</p>
+<div class="code-box">
+  <div class="code-top"><span>19.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">24</span>,
+};
+
+<span class="syn-kw">const</span> jsonData = <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>);
+
+<span class="syn-fn">console</span>.log(jsonData);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{&quot;name&quot;:&quot;Shariar&quot;,&quot;age&quot;:24}</pre>
+</div>
+    </div>
+
+    <!-- 19.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.16</span> typeof JSON.stringify()</div>
+<div class="code-box">
+  <div class="code-top"><span>19.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">24</span>,
+};
+
+<span class="syn-kw">const</span> jsonData = <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>);
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> jsonData);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>string</pre>
+</div>
+    </div>
+
+    <!-- 19.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.17</span> JSON.parse()</div>
+<p class="text-p">JSON string → JavaScript value</p>
+<div class="code-box">
+  <div class="code-top"><span>19.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> jsonData = <span class="syn-str">&#x27;{&quot;name&quot;:&quot;Shariar&quot;,&quot;age&quot;:24}&#x27;</span>;
+
+<span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(jsonData);
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>19.17 JavaScript</span><span>Run</span></div>
+  <pre>{
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+    <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">24</span>
+}</pre>
+</div>
+    </div>
+
+    <!-- 19.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.18</span> JSON.parse()` Type</div>
+<div class="code-box">
+  <div class="code-top"><span>19.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> <span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+<div class="ascii-tree-container">object</div>
+    </div>
+
+    <!-- 19.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.19</span> Main JSON Formula</div>
+<div class="memory-box">এই দুইটা খুব ভালোভাবে মনে রাখবে:</div>
+<div class="section-subhead">JavaScript → JSON</div>
+<div class="code-box">
+  <div class="code-top"><span>19.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(data);</pre>
+</div>
+<div class="section-subhead">JSON → JavaScript</div>
+<div class="code-box">
+  <div class="code-top"><span>19.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-op">json</span>);</pre>
+</div>
+<p class="text-p">Mental model:</p>
+<div class="ascii-tree-container">JavaScript Object
+       ↓
+JSON.stringify()
+       ↓
+JSON String</div>
+<p class="text-p">Reverse:</p>
+<div class="ascii-tree-container">JSON String
+     ↓
+JSON.parse()
+     ↓
+JavaScript Object</div>
+    </div>
+
+    <!-- 19.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.20</span> Array → JSON</div>
+<div class="code-box">
+  <div class="code-top"><span>19.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">skills</span> = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript&quot;];
+
+<span class="syn-kw">const</span> jsonSkills = <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">skills</span>);
+
+<span class="syn-fn">console</span>.log(jsonSkills);</pre>
+</div>
+<div class="ascii-tree-container">[&quot;HTML&quot;,&quot;CSS&quot;,&quot;JavaScript&quot;]</div>
+    </div>
+
+    <!-- 19.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.21</span> JSON → Array</div>
+<div class="code-box">
+  <div class="code-top"><span>19.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> jsonSkills = <span class="syn-str">&#x27;[&quot;HTML&quot;,&quot;CSS&quot;,&quot;JavaScript&quot;]&#x27;</span>;
+
+<span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">skills</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(jsonSkills);
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">skills</span>);</pre>
+</div>
+<div class="ascii-tree-container">[&quot;HTML&quot;, &quot;CSS&quot;, &quot;JavaScript&quot;]</div>
+    </div>
+
+    <!-- 19.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.22</span> Nested Object → JSON</div>
+<div class="code-box">
+  <div class="code-top"><span>19.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">student</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+
+  academic: {
+    department: <span class="syn-str">&quot;CSE&quot;</span>,
+    semester: <span class="syn-num">8</span>,
+  },
+
+  <span class="syn-kw" style="color:#fdba74;">skills</span>: [&quot;JavaScript<span class="syn-str">&quot;, &quot;</span>React<span class="syn-str">&quot;, &quot;</span>Node.js&quot;],
+};
+
+<span class="syn-kw">const</span> jsonStudent = <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">student</span>);
+
+<span class="syn-fn">console</span>.log(jsonStudent);</pre>
+</div>
+<div class="ascii-tree-container">{&quot;name&quot;:&quot;Shariar&quot;,&quot;academic&quot;:{&quot;department&quot;:&quot;CSE&quot;,&quot;semester&quot;:8},&quot;skills&quot;:[&quot;JavaScript&quot;,&quot;React&quot;,&quot;Node.js&quot;]}</div>
+    </div>
+
+    <!-- 19.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.23</span> JSON Pretty Print</div>
+<p class="text-p">Normally JSON এক লাইনে আসে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">student</span>);</pre>
+</div>
+<p class="text-p">কিন্তু readable format চাইলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">student</span>, <span class="syn-bool">null</span>, <span class="syn-num">2</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.23 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;academic&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">{</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;department&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;CSE&quot;</span><span class="syn-op">,</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;semester&quot;</span><span class="syn-op">:</span> <span class="syn-num">8</span>
+  <span style="color:#94a3b8;">}</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;skills&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">[</span><span class="syn-str">&quot;JavaScript&quot;</span><span class="syn-op">,</span> <span class="syn-str">&quot;React&quot;</span><span class="syn-op">,</span> <span class="syn-str">&quot;Node.js&quot;</span><span style="color:#94a3b8;">]</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">2 → indentation</div>
+<p class="text-p">দিচ্ছে।</p>
+    </div>
+
+    <div class="part-banner">Part 03 — Advanced Serialization: Replacer, Reviver &amp; Serialization Quirks (19.24 – 19.36)</div>
+
+    <!-- 19.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.24</span> JSON.stringify()` এর তিনটি Argument</div>
+<p class="text-p">Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(value, replacer, space);</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>, <span class="syn-bool">null</span>, <span class="syn-num">2</span>);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">value    → user
+replacer → null
+space    → 2</div>
+    </div>
+
+    <!-- 19.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.25</span> replacer</div>
+<p class="text-p"><code>replacer</code> ব্যবহার করে কোন property JSON-এ থাকবে তা control করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>19.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">24</span>,
+  password: <span class="syn-str">&quot;secret123&quot;</span>,
+};
+
+<span class="syn-kw">const</span> <span class="syn-op">json</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>, [&quot;<span class="syn-kw" style="color:#fdba74;">name</span><span class="syn-str">&quot;, &quot;</span><span class="syn-kw" style="color:#fdba74;">age</span>&quot;]);
+
+<span class="syn-fn">console</span>.log(<span class="syn-op">json</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.25 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span> <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span> <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span> <span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p"><code>password</code> বাদ গেছে।</p>
+<div class="warn-box">⚠️ Sensitive data JSON-এ stringify না করাই ভালো যদি তার প্রয়োজন না থাকে।</div>
+    </div>
+
+    <!-- 19.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.26</span> Replacer Function</div>
+<p class="text-p">আরও advanced:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">24</span>,
+  password: <span class="syn-str">&quot;secret&quot;</span>,
+};
+
+<span class="syn-kw">const</span> <span class="syn-op">json</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>, <span class="syn-kw">function</span> (key, value) {
+  <span class="syn-kw">if</span> (key === <span class="syn-str">&quot;password&quot;</span>) {
+    <span class="syn-kw">return</span> <span class="syn-bool">undefined</span>;
+  }
+
+  <span class="syn-kw">return</span> value;
+});
+
+<span class="syn-fn">console</span>.log(<span class="syn-op">json</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.26 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span> <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span> <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span> <span style="color:#94a3b8;">}</span></pre>
+</div>
+    </div>
+
+    <!-- 19.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.27</span> JSON.parse()` Reviver</div>
+<p class="text-p"><code>JSON.parse()</code>-এরও second argument আছে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-op">text</span>, reviver);</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-op">json</span> = <span class="syn-str">`
+{
+    &quot;name&quot;: &quot;Shariar&quot;,
+    &quot;age&quot;: 24
+}
+`</span>;
+
+<span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-op">json</span>, <span class="syn-kw">function</span> (key, value) {
+  <span class="syn-kw">if</span> (key === <span class="syn-str">&quot;age&quot;</span>) {
+    <span class="syn-kw">return</span> value + <span class="syn-num">1</span>;
+  }
+
+  <span class="syn-kw">return</span> value;
+});
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>19.27 JavaScript</span><span>Run</span></div>
+  <pre>{
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+    <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">25</span>
+}</pre>
+</div>
+    </div>
+
+    <!-- 19.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.28</span> JSON এ Function রাখা যায়?</div>
+<p class="text-p">না।</p>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+
+  greet() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+  },
+};
+
+<span class="syn-kw">const</span> <span class="syn-op">json</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>);
+
+<span class="syn-fn">console</span>.log(<span class="syn-op">json</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.28 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span> <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span> <span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p"><code>greet()</code> বাদ গেছে।</p>
+<p class="text-p">কারণ:</p>
+<div class="def-box">
+  <div class="def-text"><strong>JSON data format; executable function রাখার format নয়।</strong></div>
+</div>
+    </div>
+
+    <!-- 19.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.29</span> undefined` এবং JSON</div>
+<div class="code-box">
+  <div class="code-top"><span>19.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-bool">undefined</span>,
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.29 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span> <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span> <span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">Object-এর property হিসেবে <code>undefined</code> সাধারণত বাদ যায়।</p>
+    </div>
+
+    <!-- 19.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.30</span> Array-এর মধ্যে `undefined</div>
+<div class="code-box">
+  <div class="code-top"><span>19.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = [&quot;HTML<span class="syn-str">&quot;, undefined, &quot;</span>JavaScript&quot;];
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(data));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.30 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">[</span><span class="syn-str">&quot;HTML&quot;</span><span class="syn-op">,</span> <span class="syn-bool">null</span><span class="syn-op">,</span> <span class="syn-str">&quot;JavaScript&quot;</span><span style="color:#94a3b8;">]</span></pre>
+</div>
+<p class="text-p">অর্থাৎ array-এর ক্ষেত্রে <code>undefined</code> → <code>null</code> হয়ে যায়।</p>
+    </div>
+
+    <!-- 19.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.31</span> NaN` এবং Infinity</div>
+<div class="code-box">
+  <div class="code-top"><span>19.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = {
+  a: <span class="syn-bool">NaN</span>,
+  b: <span class="syn-bool">Infinity</span>,
+  c: -<span class="syn-bool">Infinity</span>,
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(data));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.31 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;a&quot;</span><span class="syn-op">:</span> <span class="syn-bool">null</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;b&quot;</span><span class="syn-op">:</span> <span class="syn-bool">null</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;c&quot;</span><span class="syn-op">:</span> <span class="syn-bool">null</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">JSON-এ এগুলোর আলাদা standard number representation নেই।</p>
+    </div>
+
+    <!-- 19.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.32</span> Date এবং JSON</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = {
+  createdAt: <span class="syn-kw">new</span> <span class="syn-fn">Date</span>(),
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(data));</pre>
+</div>
+<p class="text-p">Date সাধারণত ISO string representation-এ serialize হয়।</p>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.32 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;createdAt&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;2026-09-16T09:55:00.000Z&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">অর্থাৎ JSON-এ native <code>Date</code> type নেই।</p>
+    </div>
+
+    <!-- 19.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.33</span> JSON Parse করার সময় Date</div>
+<p class="text-p">JSON থেকে date parse করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.33 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-op">json</span>);
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> data.createdAt);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>string</pre>
+</div>
+<p class="text-p">এটি আবার Date object বানাতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.33 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> <span class="syn-fn">Date</span>(data.createdAt);
+
+<span class="syn-fn">console</span>.log(date);</pre>
+</div>
+    </div>
+
+    <!-- 19.34 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">19.34</span> Circular Reference</div>
+<p class="text-p">একটি object নিজেকেই reference করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+};
+
+<span class="syn-kw" style="color:#fdba74;">user</span>.self = <span class="syn-kw" style="color:#fdba74;">user</span>;</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>);</pre>
+</div>
+<div class="warn-box">Error হবে:</div>
+<div class="ascii-tree-container">TypeError:
+Converting circular structure to JSON</div>
+<p class="text-p">কারণ JSON-এর normal object structure circular reference represent করতে পারে না।</p>
+    </div>
+
+    <!-- 19.35 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">19.35</span> JSON Parse Error</div>
+<p class="text-p">Invalid JSON parse করলে error হবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>19.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-op">json</span> = <span class="syn-str">&#x27;{&quot;name&quot;:&quot;Shariar&quot;&#x27;</span>;
+
+<span class="syn-kw">try</span> {
+  <span class="syn-kw">const</span> data = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-op">json</span>);
+
+  <span class="syn-fn">console</span>.log(data);
+} <span class="syn-kw">catch</span> (error) {
+  <span class="syn-fn">console</span>.error(&quot;Invalid <span class="syn-fn">JSON</span>:&quot;, error.message);
+}</pre>
+</div>
+<div class="ascii-tree-container">Invalid JSON: ...</div>
+<p class="text-p">এখানে Chapter 14-এর <code>try...catch</code> আবার কাজে লাগছে।</p>
+    </div>
+
+    <!-- 19.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.36</span> JSON-এর Common Syntax Rules</div>
+<div class="section-subhead">Rule 1 — Keys double quotes</div>
+<div class="sub-badge" style="background:#dcfce7; color:#166534;">✅</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.36 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<div class="sub-badge" style="background:#fee2e2; color:#991b1b;">❌</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.36 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#f87171; text-decoration: underline wavy #ef4444;" title="Invalid JSON Key">name</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<div class="section-subhead">Rule 2 — String double quotes</div>
+<div class="sub-badge" style="background:#dcfce7; color:#166534;">✅</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.36 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<div class="sub-badge" style="background:#fee2e2; color:#991b1b;">❌</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.36 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str" style="color:#f87171; text-decoration: underline wavy #ef4444;" title="Invalid: Single quotes not allowed in JSON">&#x27;Shariar&#x27;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<div class="section-subhead">Rule 3 — Trailing comma নয়</div>
+<div class="sub-badge" style="background:#fee2e2; color:#991b1b;">❌</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.36 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span><span class="syn-op">,</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<div class="sub-badge" style="background:#dcfce7; color:#166534;">✅</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.36 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<div class="section-subhead">Rule 4 — Comments নেই</div>
+<div class="sub-badge" style="background:#fee2e2; color:#991b1b;">❌</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.36 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span> // user name
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">Standard JSON-এ comments নেই।</p>
+    </div>
+
+    <div class="part-banner">Part 04 — Modern Web APIs, Fetch &amp; Network Communication (19.37 – 19.43)</div>
+
+    <!-- 19.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.37</span> JSON File</div>
+<p class="text-p">JSON আলাদা <code>.json</code> file হিসেবেও রাখা যায়।</p>
+<p class="text-p">File:</p>
+<div class="ascii-tree-container">students.json</div>
+<p class="text-p">Content:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.37 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;students&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">[</span>
+    <span style="color:#94a3b8;">{</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">1</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;department&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;CSE&quot;</span>
+    <span style="color:#94a3b8;">}</span><span class="syn-op">,</span>
+    <span style="color:#94a3b8;">{</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">2</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Rahim&quot;</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;department&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;EEE&quot;</span>
+    <span style="color:#94a3b8;">}</span>
+  <span style="color:#94a3b8;">]</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এ ধরনের file configuration বা static data-এর জন্য ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 19.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.38</span> fetch()` দিয়ে JSON File পড়া</div>
+<p class="text-p">এখানে Chapter 21-এ আমরা <code>fetch()</code> বিস্তারিত শিখব; এখন শুধু JSON-এর সাথে relation দেখছি।</p>
+<div class="code-box">
+  <div class="code-top"><span>19.38 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">fetch</span>(&quot;students.<span class="syn-op">json</span>&quot;)
+  .<span class="syn-op">then</span>((response) =&gt; response.<span class="syn-op">json</span>())
+  .<span class="syn-op">then</span>((data) =&gt; {
+    <span class="syn-fn">console</span>.log(data);
+  });</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>19.38 JavaScript</span><span>Run</span></div>
+  <pre>{
+    students: [
+        {
+            id: <span class="syn-num">1</span>,
+            <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+            department: <span class="syn-str">&quot;CSE&quot;</span>
+        },
+        ...
+    ]
+}</pre>
+</div>
+    </div>
+
+    <!-- 19.39 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">19.39</span> API Response হিসেবে JSON</div>
+<p class="text-p">ধরো server response:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.39 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;success&quot;</span><span class="syn-op">:</span> <span class="syn-bool">true</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;message&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Login successful&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;user&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">{</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">101</span><span class="syn-op">,</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;role&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;student&quot;</span>
+  <span style="color:#94a3b8;">}</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">Frontend:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(data.success);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(data.<span class="syn-kw" style="color:#fdba74;">user</span>.<span class="syn-kw" style="color:#fdba74;">name</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+    </div>
+
+    <!-- 19.40 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">19.40</span> REST API-তে JSON</div>
+<p class="text-p">একটি typical API request:</p>
+<div class="ascii-tree-container">POST /api/users</div>
+<p class="text-p">Request body:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.40 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;email&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;shariar@gmail.com&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;role&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;student&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">Server response:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.40 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;success&quot;</span><span class="syn-op">:</span> <span class="syn-bool">true</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;message&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;User created&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;userId&quot;</span><span class="syn-op">:</span> <span class="syn-num">101</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এই pattern তুমি React + Node.js/Express project-এ অনেক দেখবে।</p>
+    </div>
+
+    <!-- 19.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.41</span> JSON Headers</div>
+<p class="text-p">HTTP API-তে JSON পাঠানোর সময় সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.41 JavaScript</span><span>Run</span></div>
+  <pre>Content-Type: application/<span class="syn-op">json</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">fetch</span>(&quot;/api/users<span class="syn-str">&quot;, {
+  method: &quot;</span>POST<span class="syn-str">&quot;,
+
+  headers: {
+    &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;,
+  },
+
+  body: JSON.stringify({
+    name: &quot;</span>Shariar<span class="syn-str">&quot;,
+    email: &quot;</span>shariar@gmail.com&quot;,
+  }),
+});</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw" style="color:#fdba74;">body</span>: <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(...)</pre>
+</div>
+<div class="memory-box">খুব গুরুত্বপূর্ণ।</div>
+    </div>
+
+    <!-- 19.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.42</span> কেন <code>JSON.stringify()</code> দরকার?</div>
+<p class="text-p">এই object:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.42 JavaScript</span><span>Run</span></div>
+  <pre>{
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+    <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">24</span>
+}</pre>
+</div>
+<p class="text-p">JavaScript object।</p>
+<p class="text-p">HTTP request body-তে JSON পাঠাতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>({
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">age</span>: <span class="syn-num">24</span>,
+});</pre>
+</div>
+<p class="text-p">হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.42 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span> <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span> <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span> <span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">হয়।</p>
+    </div>
+
+    <!-- 19.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.43</span> Server থেকে JSON Response</div>
+<p class="text-p">Server response যদি JSON হয়, তখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-fn">fetch</span>(&quot;/api/users&quot;);
+
+<span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.43 JavaScript</span><span>Run</span></div>
+  <pre>response.<span class="syn-op">json</span>();</pre>
+</div>
+<p class="text-p">response body-এর JSON data parse করে JavaScript value দেয়।</p>
+<p class="text-p">এটি Chapter 21-এ বিস্তারিত শিখব।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Deep Cloning, Security, Schema &amp; Array Operations (19.44 – 19.52)</div>
+
+    <!-- 19.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.44</span> localStorage + JSON</div>
+<p class="text-p">Chapter 18-এর concept আবার:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">role</span>: <span class="syn-str">&quot;Developer&quot;</span>,
+};
+
+<span class="syn-fn">localStorage</span>.<span class="syn-op">setItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;, <span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(<span class="syn-kw" style="color:#fdba74;">user</span>));</pre>
+</div>
+<p class="text-p">Read:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">localStorage</span>.<span class="syn-op">getItem</span>(&quot;<span class="syn-kw" style="color:#fdba74;">user</span>&quot;));</pre>
+</div>
+<p class="text-p">এখানে JSON হলো bridge:</p>
+<div class="ascii-tree-container">JavaScript Object
+       ↓
+JSON.stringify()
+       ↓
+String
+       ↓
+localStorage</div>
+    </div>
+
+    <!-- 19.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.45</span> JSON Deep Copy Pattern</div>
+<p class="text-p">Primitive/simple JSON-compatible data-এর ক্ষেত্রে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> original = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">skills</span>: [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS&quot;],
+};
+
+<span class="syn-kw">const</span> copy = <span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>(<span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(original));</pre>
+</div>
+<p class="text-p">এতে আলাদা object তৈরি হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>19.45 JavaScript</span><span>Run</span></div>
+  <pre>copy.<span class="syn-kw" style="color:#fdba74;">name</span> = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(original.<span class="syn-kw" style="color:#fdba74;">name</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<p class="text-p">তবে এটি <strong>general-purpose deep clone solution নয়</strong>।</p>
+<p class="text-p">কারণ <code>Date</code>, <code>Map</code>, <code>Set</code>, <code>undefined</code>, functions, circular references ইত্যাদির ক্ষেত্রে JSON cloning data পরিবর্তন/হারাতে পারে বা error দিতে পারে।</p>
+<p class="text-p">Modern JavaScript-এ সাধারণ structured data clone করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.45 JavaScript</span><span>Run</span></div>
+  <pre>structuredClone(original);</pre>
+</div>
+<p class="text-p">অনেক ক্ষেত্রে বেশি উপযুক্ত।</p>
+    </div>
+
+    <!-- 19.46 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">19.46</span> JSON Security</div>
+<p class="text-p">JSON নিজে dangerous নয়।</p>
+<div class="memory-box">কিন্তু <strong>untrusted JSON data কীভাবে ব্যবহার করছো</strong>, সেটাই গুরুত্বপূর্ণ।</div>
+<p class="text-p">ধরো server থেকে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.46 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;message&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;&lt;img src=x onerror=alert(&#x27;XSS&#x27;)&gt;&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">তুমি যদি এটাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.46 JavaScript</span><span>Run</span></div>
+  <pre>element.innerHTML = data.message;</pre>
+</div>
+<p class="text-p">দাও, security problem তৈরি হতে পারে।</p>
+<p class="text-p">বরং সাধারণ text হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.46 JavaScript</span><span>Run</span></div>
+  <pre>element.textContent = data.message;</pre>
+</div>
+<p class="text-p">ব্যবহার করা safer।</p>
+    </div>
+
+    <!-- 19.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.47</span> JSON Schema-এর Basic Idea</div>
+<p class="text-p">Large project-এ JSON data-এর structure define করার প্রয়োজন হয়।</p>
+<p class="text-p">যেমন:</p>
+<div class="ascii-tree-container">User
+ ├── id → number
+ ├── name → string
+ ├── email → string
+ └── age → number</div>
+<p class="text-p">JSON Schema দিয়ে বলা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.47 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;type&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;object&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;properties&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">{</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">{</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;type&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;string&quot;</span>
+    <span style="color:#94a3b8;">}</span><span class="syn-op">,</span>
+    <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">{</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;type&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;number&quot;</span>
+    <span style="color:#94a3b8;">}</span>
+  <span style="color:#94a3b8;">}</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;required&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">[</span><span class="syn-str">&quot;name&quot;</span><span class="syn-op">,</span> <span class="syn-str">&quot;age&quot;</span><span style="color:#94a3b8;">]</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">এটি data structure validation-এর জন্য ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 19.48 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">19.48</span> Real-life Student API</div>
+<p class="text-p">ধরো API response:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">19.48 JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;success&quot;</span><span class="syn-op">:</span> <span class="syn-bool">true</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;students&quot;</span><span class="syn-op">:</span> <span style="color:#94a3b8;">[</span>
+    <span style="color:#94a3b8;">{</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">1</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;department&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;CSE&quot;</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;cgpa&quot;</span><span class="syn-op">:</span> <span class="syn-num">3.75</span>
+    <span style="color:#94a3b8;">}</span><span class="syn-op">,</span>
+    <span style="color:#94a3b8;">{</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;id&quot;</span><span class="syn-op">:</span> <span class="syn-num">2</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Rahim&quot;</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;department&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;EEE&quot;</span><span class="syn-op">,</span>
+      <span class="syn-kw" style="color:#38bdf8;">&quot;cgpa&quot;</span><span class="syn-op">:</span> <span class="syn-num">3.5</span>
+    <span style="color:#94a3b8;">}</span>
+  <span style="color:#94a3b8;">]</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = {
+  success: <span class="syn-bool">true</span>,
+  students: [
+    {
+      id: <span class="syn-num">1</span>,
+      <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+      department: <span class="syn-str">&quot;CSE&quot;</span>,
+      cgpa: <span class="syn-num">3.75</span>,
+    },
+    {
+      id: <span class="syn-num">2</span>,
+      <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Rahim&quot;</span>,
+      department: <span class="syn-str">&quot;EEE&quot;</span>,
+      cgpa: <span class="syn-num">3.5</span>,
+    },
+  ],
+};
+
+data.students.forEach((<span class="syn-kw" style="color:#fdba74;">student</span>) =&gt; {
+  <span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">student</span>.<span class="syn-kw" style="color:#fdba74;">name</span>, <span class="syn-kw" style="color:#fdba74;">student</span>.cgpa);
+});</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar 3.75
+Rahim 3.5</pre>
+</div>
+    </div>
+
+    <!-- 19.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.49</span> JSON + `map()</div>
+<div class="code-box">
+  <div class="code-top"><span>19.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> names = data.students.<span class="syn-op">map</span>((<span class="syn-kw" style="color:#fdba74;">student</span>) =&gt; <span class="syn-kw" style="color:#fdba74;">student</span>.<span class="syn-kw" style="color:#fdba74;">name</span>);
+
+<span class="syn-fn">console</span>.log(names);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Shariar&quot;, &quot;Rahim&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 19.50 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.50</span> JSON + `filter()</div>
+<p class="text-p">CSE students:</p>
+<div class="code-box">
+  <div class="code-top"><span>19.50 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> cseStudents = data.students.<span class="syn-op">filter</span>(
+  (<span class="syn-kw" style="color:#fdba74;">student</span>) =&gt; <span class="syn-kw" style="color:#fdba74;">student</span>.department === <span class="syn-str">&quot;CSE&quot;</span>,
+);
+
+<span class="syn-fn">console</span>.log(cseStudents);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>19.50 JavaScript</span><span>Run</span></div>
+  <pre>[
+  {
+    id: <span class="syn-num">1</span>,
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+    department: <span class="syn-str">&quot;CSE&quot;</span>,
+    cgpa: <span class="syn-num">3.75</span>,
+  },
+];</pre>
+</div>
+    </div>
+
+    <!-- 19.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19.51</span> JSON + `find()</div>
+<div class="code-box">
+  <div class="code-top"><span>19.51 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">student</span> = data.students.<span class="syn-op">find</span>((<span class="syn-kw" style="color:#fdba74;">student</span>) =&gt; <span class="syn-kw" style="color:#fdba74;">student</span>.id === <span class="syn-num">1</span>);
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">student</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>19.51 JavaScript</span><span>Run</span></div>
+  <pre>{
+    id: <span class="syn-num">1</span>,
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+    department: <span class="syn-str">&quot;CSE&quot;</span>,
+    cgpa: <span class="syn-num">3.75</span>
+}</pre>
+</div>
+    </div>
+
+    <!-- 19.52 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">19.52</span> Complete JSON Workflow</div>
+<p class="text-p">একটি real-world application:</p>
+<div class="ascii-tree-container">                 USER
+                   ↓
+               FRONTEND
+                   ↓
+           JavaScript Object
+                   ↓
+            JSON.stringify()
+                   ↓
+              HTTP Request
+                   ↓
+                API
+                   ↓
+               BACKEND
+                   ↓
+              DATABASE
+                   ↓
+              JSON Response
+                   ↓
+             response.json()
+                   ↓
+           JavaScript Object
+                   ↓
+                UI</div>
+<p class="text-p">এটাই modern web development-এর একটি core data flow।</p>
+    </div>
+
+    <div class="part-banner">Part 06 — JSON Mastery: Must Know, Cheat Sheet, Practice Lab &amp; Mental Map</div>
+
+    <!-- 19.53 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 19.53 Must Know — JSON Syntax, Types &amp; Limitations</div>
+<div class="memory-box">এই chapter-এর সবচেয়ে গুরুত্বপূর্ণ বিষয়গুলো:</div>
+<div class="section-subhead">JSON Basics</div>
+<div class="ascii-tree-container">JSON
+JSON Object
+JSON Array
+JSON String
+JSON Number
+JSON Boolean
+JSON null</div>
+<div class="section-subhead">Conversion</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>();
+<span class="syn-fn">JSON</span>.<span class="syn-op">parse</span>();</pre>
+</div>
+<div class="section-subhead">Advanced</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>replacer
+reviver
+pretty printing</pre>
+</div>
+<div class="section-subhead">JSON Limitations</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>No functions
+No undefined
+No comments
+No native Date
+No Map/Set
+No circular references</pre>
+</div>
+<div class="section-subhead">Web Development</div>
+<div class="ascii-tree-container">JSON + localStorage
+JSON + fetch
+JSON + REST API
+JSON + HTTP
+JSON + Backend</div>
+    </div>
+
+    <!-- 19.54 Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 19.54 Quick Cheat Sheet — stringify, parse &amp; Methods</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>কাজ</th><th>Code</th></tr></thead>
+    <tbody>
+      <tr><td>Object → JSON</td><td><code>JSON.stringify(object)</code></td></tr><tr><td>Array → JSON</td><td><code>JSON.stringify(array)</code></td></tr><tr><td>JSON → Object</td><td><code>JSON.parse(json)</code></td></tr><tr><td>Pretty JSON</td><td><code>JSON.stringify(data, null, 2)</code></td></tr><tr><td>Filter properties</td><td><code>JSON.stringify(data, [&quot;name&quot;])</code></td></tr><tr><td>Custom stringify</td><td><code>JSON.stringify(data, replacer)</code></td></tr><tr><td>Custom parse</td><td><code>JSON.parse(json, reviver)</code></td></tr><tr><td>JSON API body</td><td><code>JSON.stringify(data)</code></td></tr><tr><td>JSON response parse</td><td><code>response.json()</code></td></tr><tr><td>localStorage save</td><td><code>JSON.stringify(data)</code></td></tr><tr><td>localStorage read</td><td><code>JSON.parse(data)</code></td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 19.55 Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 19.55 Practice Set — 6 Hands-on Production Problems</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 1 — Student Object</h4>
+<p class="text-p">এই object তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">student</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  id: <span class="syn-str">&quot;23105101019&quot;</span>,
+  department: <span class="syn-str">&quot;CSE&quot;</span>,
+  semester: <span class="syn-num">8</span>,
+  <span class="syn-kw" style="color:#fdba74;">skills</span>: [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;, &quot;</span>React&quot;],
+};</pre>
+</div>
+<p class="text-p">এটাকে JSON string-এ convert করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 2 — JSON → Object</h4>
+<p class="text-p">এই JSON parse করো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">JSON</span><span>Data Format</span></div>
+  <pre><span style="color:#94a3b8;">{</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;name&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Shariar&quot;</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;age&quot;</span><span class="syn-op">:</span> <span class="syn-num">24</span><span class="syn-op">,</span>
+  <span class="syn-kw" style="color:#38bdf8;">&quot;role&quot;</span><span class="syn-op">:</span> <span class="syn-str">&quot;Full Stack Developer&quot;</span>
+<span style="color:#94a3b8;">}</span></pre>
+</div>
+<p class="text-p">তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">user</span>.<span class="syn-kw" style="color:#fdba74;">name</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">user</span>.<span class="syn-kw" style="color:#fdba74;">role</span>);</pre>
+</div>
+<p class="text-p">করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 3 — Pretty JSON</h4>
+<p class="text-p">Nested object তৈরি করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">JSON</span>.<span class="syn-op">stringify</span>(data, <span class="syn-bool">null</span>, <span class="syn-num">2</span>);</pre>
+</div>
+<p class="text-p">দিয়ে সুন্দর JSON output তৈরি করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 4 — Product API</h4>
+<p class="text-p">এই structure ব্যবহার করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">products</span> = [
+  {
+    id: <span class="syn-num">1</span>,
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Laptop&quot;</span>,
+    price: <span class="syn-num">70000</span>,
+  },
+  {
+    id: <span class="syn-num">2</span>,
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Mouse&quot;</span>,
+    price: <span class="syn-num">1500</span>,
+  },
+  {
+    id: <span class="syn-num">3</span>,
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Keyboard&quot;</span>,
+    price: <span class="syn-num">2500</span>,
+  },
+];</pre>
+</div>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">→ JSON বানাও
+→ JSON parse করো
+→ price &gt; 2000 filter করো
+→ product names বের করো</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 5 — localStorage</h4>
+<p class="text-p">একটি user object:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>{
+    <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+    <span class="syn-kw" style="color:#fdba74;">email</span>: <span class="syn-str">&quot;shariar@gmail.com&quot;</span>,
+    <span class="syn-kw" style="color:#fdba74;">role</span>: <span class="syn-str">&quot;Developer&quot;</span>
+}</pre>
+</div>
+<p class="text-p"><code>localStorage</code>-এ save করো এবং page reload-এর পরে আবার object হিসেবে retrieve করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 6 — API Request Body</h4>
+<p class="text-p">এই data:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">user</span> = {
+  <span class="syn-kw" style="color:#fdba74;">name</span>: <span class="syn-str">&quot;Shariar&quot;</span>,
+  <span class="syn-kw" style="color:#fdba74;">email</span>: <span class="syn-str">&quot;shariar@gmail.com&quot;</span>,
+};</pre>
+</div>
+<p class="text-p"><code>fetch()</code> request-এর JSON body হিসেবে পাঠানোর code লেখো।</p>
+      </div>
+    </div>
+
+    <!-- 19.56 Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 19.56 Final Mental Map — Full-Stack JSON Workflow</div>
+<div class="ascii-tree-container">                    JSON
+                     │
+          ┌──────────┴──────────┐
+          ↓                     ↓
+      JavaScript             JSON Text
+       Object                   │
+          │                     │
+          │ stringify()         │
+          ├────────────────────→│
+          │                     │
+          │                     │
+          │←────────────────────┤
+          │       parse()       │
+          ↓                     ↓
+       Object / Array         API
+          │                     │
+          ↓                     ↓
+     localStorage          Backend
+          │                     │
+          └──────────┬──────────┘
+                     ↓
+                 Database</div>
+<div class="section-subhead">⭐ Chapter 19-এর মূল কথা</div>
+<p class="text-p">তুমি যদি পুরো chapter থেকে শুধু এই flow-টা ভালোভাবে বুঝে ফেলো:</p>
+<div class="ascii-tree-container">const user = {
+  name: &quot;Shariar&quot;,
+  age: 24,
+};
+
+// JavaScript → JSON
+const json = JSON.stringify(user);
+
+console.log(json);
+
+// JSON → JavaScript
+const data = JSON.parse(json);
+
+console.log(data.name);</div>
+<p class="text-p">তাহলে JSON-এর fundamental concept তোমার পরিষ্কার।</p>
+<div class="memory-box">আর Full Stack Development-এ সবচেয়ে গুরুত্বপূর্ণ connection হলো:</div>
+<div class="ascii-tree-container">JavaScript Object
+       ↓
+JSON.stringify()
+       ↓
+API Request
+       ↓
+Backend
+       ↓
+JSON Response
+       ↓
+response.json()
+       ↓
+JavaScript Object
+       ↓
+React UI</div>
+<p class="text-p"><strong>Chapter 19 complete.</strong></p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 20 Preview — ES Modules (ESM)</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায়ে আমরা আধুনিক মডুলার জাভাস্ক্রিপ্ট আর্কিটেকচার <strong>ES Modules (ESM)</strong> নিয়ে বিস্তারিত শিখব—<code>import</code>, <code>export</code>, Named Export, Default Export, Dynamic Import (<code>import()</code>), <code>import.meta</code>, এবং CommonJS বনাম ES Modules-এর পার্থক্য।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

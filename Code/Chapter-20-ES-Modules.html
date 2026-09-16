@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 20: ES Modules (ESM)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      line-height: 1.38;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+    .syn-regex { color: #38bdf8; font-style: italic; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10px;
+      line-height: 1.32;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 20: ES MODULES (ESM) — MODULAR ARCHITECTURE, IMPORT/EXPORT &amp; PATTERNS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">55 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 14 — Modular Architecture &amp; Organization</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">import, export, Dynamic Import &amp; Live Bindings</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / TC39 / Node.js ESM</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Modules — বড় JavaScript Project-কে ছোট, Organized ও Reusable File-এ ভাগ করা</h2>
+      <p class="text-p">প্রফেশনাল সফটওয়্যার ইঞ্জিনিয়ারিংয়ে কোনো বড় কোডবেস একটিমাত্র ফাইলে রাখা অসম্ভব। কোডবেসকে পরিষ্কার, রিইউজেবল, সহজে টেস্টেবল এবং মেইনটেইনেবল রাখতে জাভাস্ক্রিপ্টের অফিসিয়াল মডিউল স্ট্যান্ডার্ড <strong>ES Modules (ESM)</strong> ব্যবহার করা হয়।</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">Single Responsibility File &nbsp;→&nbsp; export (Named / Default) &nbsp;→&nbsp; Module Dependency Graph &nbsp;→&nbsp; import / Dynamic import()</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">React, Vue, Next.js বা Node.js যেকোনো আধুনিক ফ্রন্টএন্ড ফ্রেমওয়ার্কের ভিত্তিই হলো এই মডিউল সিস্টেম। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Module Architecture &amp; The ES Modules Standard (20.1 – 20.8)</div>
+
+    <!-- 20.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">20.1</span> Module কী?</div>
+<p class="text-p"><strong>Module</strong> হলো JavaScript code-এর একটি আলাদা file, যেখানে নির্দিষ্ট functionality রাখা হয় এবং প্রয়োজন হলে অন্য file-এ <code>export</code> / <code>import</code> করা যায়।</p>
+<p class="text-p">সহজভাবে:</p>
+<div class="ascii-tree-container">একটা বড় Project
+       ↓
+ ┌─────┼─────┐
+ ↓     ↓     ↓
+auth  cart  utils
+.js   .js    .js</div>
+<p class="text-p">প্রতিটি file নিজের কাজ করবে।</p>
+    </div>
+
+    <!-- 20.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.2</span> Real-life Example</div>
+<p class="text-p">ধরো তুমি একটি E-commerce website বানাচ্ছো।</p>
+<p class="text-p">সব code এক file-এ:</p>
+<div class="ascii-tree-container">app.js
+ ├── Login
+ ├── Register
+ ├── Products
+ ├── Cart
+ ├── Payment
+ ├── Validation
+ └── Utility</div>
+<p class="text-p">এটা বড় হলে manage করা কঠিন।</p>
+<p class="text-p">তার বদলে:</p>
+<div class="ascii-tree-container">project/
+│
+├── index.html
+│
+├── js/
+│   ├── app.js
+│   ├── auth.js
+│   ├── cart.js
+│   ├── products.js
+│   └── utils.js</div>
+<p class="text-p">এটাই modular architecture।</p>
+    </div>
+
+    <!-- 20.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.3</span> Module-এর প্রধান সুবিধা</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1. Code organization
+2. Reusability
+3. Maintainability
+4. Encapsulation
+5. Namespace pollution কমানো
+6. Dependency management
+7. Team collaboration সহজ</pre>
+</div>
+    </div>
+
+    <!-- 20.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.4</span> Normal JavaScript File</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.4 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">add</span>(<span class="syn-num">10</span>, <span class="syn-num">20</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>30</pre>
+</div>
+<p class="text-p">এখন <code>add()</code> অন্য file-এ ব্যবহার করতে চাই।</p>
+<p class="text-p">এখানেই module দরকার।</p>
+    </div>
+
+    <!-- 20.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.5</span> ES Modules</div>
+<p class="text-p">Modern JavaScript-এ module system হলো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>ES Modules
+বা
+ESM</pre>
+</div>
+<p class="text-p">এর প্রধান keyword:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.5 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span>
+<span class="syn-kw">import</span></pre>
+</div>
+    </div>
+
+    <!-- 20.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.6</span> প্রথম Module Example</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ <code>math.js</code></div>
+<div class="code-box">
+  <div class="code-top"><span>20.6 `math.js`</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</pre>
+</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ <code>app.js</code></div>
+<div class="code-box">
+  <div class="code-top"><span>20.6 `app.js`</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> { <span class="syn-op">add</span> } <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">add</span>(<span class="syn-num">10</span>, <span class="syn-num">20</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>30</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">math.js
+   ↓
+export
+   ↓
+add()
+   ↓
+app.js
+   ↓
+import</div>
+    </div>
+
+    <!-- 20.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.7</span> HTML-এ Module Load করা</div>
+<p class="text-p">Browser-এ ES Module ব্যবহার করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">20.7 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;script</span>
+    <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;module&quot;</span>
+    <span class="syn-kw">src</span><span class="syn-op">=</span><span class="syn-str">&quot;./js/app.js&quot;</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/script</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 খুব গুরুত্বপূর্ণ</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">20.7 HTML</span><span>Markup</span></div>
+  <pre>type=&quot;module&quot;</pre>
+</div>
+<p class="text-p">না দিলে browser এটাকে normal script হিসেবে treat করবে এবং <code>import/export</code> কাজ করবে না।</p>
+    </div>
+
+    <!-- 20.8 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">20.8</span> Complete Folder Structure</div>
+<div class="ascii-tree-container">project/
+│
+├── index.html
+│
+└── js/
+    ├── app.js
+    └── math.js</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ <code>index.html</code></div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">20.8 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-kw">&lt;!DOCTYPE html&gt;</span>
+<span class="syn-fn">&lt;html</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;head</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;title</span><span class="syn-fn">&gt;</span>JS Modules<span class="syn-fn">&lt;/title</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/head</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;body</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;h1</span><span class="syn-fn">&gt;</span>JavaScript Modules<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;script</span>
+        <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;module&quot;</span>
+        <span class="syn-kw">src</span><span class="syn-op">=</span><span class="syn-str">&quot;./js/app.js&quot;</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;/script</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/body</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/html</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ <code>math.js</code></div>
+<div class="code-box">
+  <div class="code-top"><span>20.8 `math.js`</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">subtract</span>(a, b) {
+    <span class="syn-kw">return</span> a - b;
+}</pre>
+</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ <code>app.js</code></div>
+<div class="code-box">
+  <div class="code-top"><span>20.8 `app.js`</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>,
+    <span class="syn-op">subtract</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">add</span>(<span class="syn-num">10</span>, <span class="syn-num">5</span>));
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">subtract</span>(<span class="syn-num">10</span>, <span class="syn-num">5</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>15
+5</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Named Exports, Default Exports &amp; Imports (20.9 – 20.17)</div>
+
+    <!-- 20.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.9</span> Named Export</div>
+<p class="text-p">একাধিক function export করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.9 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">multiply</span>(a, b) {
+    <span class="syn-kw">return</span> a * b;
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">const</span> PI = <span class="syn-num">3.14159</span>;</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.9 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>,
+    <span class="syn-op">multiply</span>,
+    PI
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+    </div>
+
+    <!-- 20.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.10</span> Export at the Bottom</div>
+<p class="text-p">Function-এর সামনে <code>export</code> না দিয়ে শেষেও export করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>20.10 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">function</span> <span class="syn-op">subtract</span>(a, b) {
+    <span class="syn-kw">return</span> a - b;
+}
+
+<span class="syn-kw">export</span> {
+    <span class="syn-op">add</span>,
+    <span class="syn-op">subtract</span>
+};</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.10 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>,
+    <span class="syn-op">subtract</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">দুটো approach valid।</p>
+    </div>
+
+    <!-- 20.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.11</span> Named Import</div>
+<p class="text-p">যদি:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.11 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">add</span>() {}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">subtract</span>() {}</pre>
+</div>
+<p class="text-p">তাহলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.11 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>,
+    <span class="syn-op">subtract</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">এটাই named import।</p>
+    </div>
+
+    <!-- 20.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.12</span> Import Rename</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.12 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span> <span class="syn-kw">as</span> sum
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(sum(<span class="syn-num">10</span>, <span class="syn-num">20</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>30</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">add → sum</div>
+<p class="text-p">নামে locally ব্যবহার করছি।</p>
+    </div>
+
+    <!-- 20.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.13</span> Export Rename</div>
+<p class="text-p">এভাবেও করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.13 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">export</span> {
+    <span class="syn-op">add</span> <span class="syn-kw">as</span> sum
+};</pre>
+</div>
+<p class="text-p">তখন import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.13 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    sum
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+    </div>
+
+    <!-- 20.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.14</span> Default Export</div>
+<p class="text-p">একটি module-এর <strong>একটি default export</strong> থাকতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>20.14 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">default</span> <span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.14 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> <span class="syn-op">add</span> <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">এখানে <code>{}</code> লাগে না।</p>
+    </div>
+
+    <!-- 20.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.15</span> Default Export Rename করা যায়</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.15 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">default</span> <span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.15 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> sum <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">এটাও valid।</p>
+<p class="text-p">কারণ default export import করার সময় local নাম তুমি নিজেই দিতে পারো।</p>
+    </div>
+
+    <!-- 20.16 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">20.16</span> Named vs Default Export</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>Named Export</th><th>Default Export</th></tr></thead>
+    <tbody>
+      <tr><td>Syntax</td><td><code>export { add }</code></td><td><code>export default add</code></td></tr><tr><td>Import</td><td><code>{ add }</code></td><td><code>add</code></td></tr><tr><td>Multiple</td><td>Yes</td><td>One default per module</td></tr><tr><td>Rename</td><td><code>as</code> দিয়ে</td><td>Import-এই নাম দেওয়া যায়</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.16 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-com">// Named</span>
+<span class="syn-kw">export</span> {
+    <span class="syn-op">add</span>,
+    <span class="syn-op">subtract</span>
+};</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.16 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>,
+    <span class="syn-op">subtract</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">Default:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.16 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">default</span> <span class="syn-op">add</span>;</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.16 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> <span class="syn-op">add</span> <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+    </div>
+
+    <!-- 20.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.17</span> একই Module-এ Named + Default</div>
+<p class="text-p">এটাও করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>20.17 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">const</span> PI = <span class="syn-num">3.14159</span>;
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">multiply</span>(a, b) {
+    <span class="syn-kw">return</span> a * b;
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">default</span> <span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.17 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> <span class="syn-op">add</span>, {
+    PI,
+    <span class="syn-op">multiply</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Namespaces, Side-Effects &amp; Module Scoping (20.18 – 20.29)</div>
+
+    <!-- 20.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.18</span> Namespace Import</div>
+<p class="text-p">সব named export একসাথে object-এর মতো ব্যবহার করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.18 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> * <span class="syn-kw">as</span> math
+<span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    math.<span class="syn-op">add</span>(<span class="syn-num">10</span>, <span class="syn-num">20</span>)
+);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    math.<span class="syn-op">multiply</span>(<span class="syn-num">5</span>, <span class="syn-num">4</span>)
+);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>math.add()
+math.multiply()
+math.PI</pre>
+</div>
+<p class="text-p">ব্যবহার করা যাবে।</p>
+    </div>
+
+    <!-- 20.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.19</span> Namespace Import-এর Real-life Use</div>
+<p class="text-p">ধরো:</p>
+<div class="ascii-tree-container">utils.js
+ ├── formatDate
+ ├── formatCurrency
+ ├── capitalize
+ └── debounce</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.19 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> * <span class="syn-kw">as</span> utils
+<span class="syn-kw">from</span> <span class="syn-str">&quot;./utils.js&quot;</span>;
+
+utils.formatDate();
+utils.formatCurrency();
+utils.capitalize();</pre>
+</div>
+<p class="text-p">এতে related functions একটি namespace-এর মধ্যে থাকে।</p>
+    </div>
+
+    <!-- 20.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.20</span> Side-effect Import</div>
+<p class="text-p">কখনো শুধু module execute করাতে import করা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>20.20 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> <span class="syn-str">&quot;./analytics.js&quot;</span>;</pre>
+</div>
+<p class="text-p">এখানে কোনো function import করছি না।</p>
+<p class="text-p">শুধু:</p>
+<div class="ascii-tree-container">analytics.js
+      ↓
+execute</div>
+<p class="text-p">হবে।</p>
+    </div>
+
+    <!-- 20.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.21</span> Module Scope</div>
+<div class="memory-box">এটি খুব গুরুত্বপূর্ণ।</div>
+<p class="text-p">Normal script-এ global variable তৈরি হতে পারে।</p>
+<p class="text-p">Module-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.21 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">const</span> username = <span class="syn-str">&quot;Shariar&quot;</span>;</pre>
+</div>
+<p class="text-p">এই variable automatically global scope-এ চলে যায় না।</p>
+<p class="text-p">অন্য module সরাসরি:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.21 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(username);</pre>
+</div>
+<p class="text-p">করতে পারবে না।</p>
+<p class="text-p">যদি দরকার হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.21 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">const</span> username = <span class="syn-str">&quot;Shariar&quot;</span>;</pre>
+</div>
+<p class="text-p">তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.21 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    username
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./user.js&quot;</span>;</pre>
+</div>
+    </div>
+
+    <!-- 20.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.22</span> Modules = Private by Default</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.22 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">const</span> password =
+    <span class="syn-str">&quot;secret123&quot;</span>;
+
+<span class="syn-kw">export</span> <span class="syn-kw">const</span> username =
+    <span class="syn-str">&quot;Shariar&quot;</span>;</pre>
+</div>
+<p class="text-p">অন্য module <code>password</code> access করতে পারবে না।</p>
+<p class="text-p">শুধু exported values accessible।</p>
+<p class="text-p">এটি <strong>encapsulation</strong>-এর basic form।</p>
+    </div>
+
+    <!-- 20.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.23</span> Module Dependency</div>
+<p class="text-p">ধরো:</p>
+<div class="ascii-tree-container">app.js
+  ↓
+auth.js
+  ↓
+api.js</div>
+<p class="text-p"><code>app.js</code> যদি <code>auth.js</code> import করে এবং <code>auth.js</code> যদি <code>api.js</code> import করে, তাহলে dependency chain তৈরি হয়।</p>
+<div class="ascii-tree-container">app.js
+  │
+  ↓
+auth.js
+  │
+  ↓
+api.js</div>
+<p class="text-p">Modern bundlers এই dependency graph analyze করে।</p>
+    </div>
+
+    <!-- 20.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.24</span> Relative Path</div>
+<p class="text-p">যদি structure:</p>
+<div class="ascii-tree-container">js/
+├── app.js
+└── utils.js</div>
+<p class="text-p">তাহলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.24 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./utils.js&quot;</span>;</pre>
+</div>
+<p class="text-p"><code>./</code> মানে current directory।</p>
+    </div>
+
+    <!-- 20.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.25</span> Parent Directory</div>
+<p class="text-p">Structure:</p>
+<div class="ascii-tree-container">js/
+├── app.js
+└── utils/
+    └── math.js</div>
+<p class="text-p"><code>app.js</code> থেকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.25 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./utils/math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">আর nested file থেকে parent-এ যেতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>../</pre>
+</div>
+<p class="text-p">ব্যবহার হয়।</p>
+    </div>
+
+    <!-- 20.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.26</span> File Extension</div>
+<p class="text-p">Browser-based native ES Modules-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.26 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p"><code>.js</code> extension explicitly দেওয়া ভালো/প্রয়োজনীয়।</p>
+<p class="text-p">Bundler-based project যেমন Vite/webpack-এ tooling কিছু path handling করতে পারে, কিন্তু native browser module বুঝতে এই বিষয়টি জানা জরুরি।</p>
+    </div>
+
+    <!-- 20.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.27</span> Module Script-এর Important Features</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">20.27 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;script</span>
+    <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;module&quot;</span>
+    <span class="syn-kw">src</span><span class="syn-op">=</span><span class="syn-str">&quot;./app.js&quot;</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/script</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">Module scripts:</p>
+<ul class="bullet-list"><li>strict mode semantics ব্যবহার করে</li><li>module scope রাখে</li><li><code>import/export</code> support করে</li><li>dependency অনুযায়ী modules load করে</li><li>browser-এ সাধারণত deferred behavior-এর মতো execute হয়</li></ul>
+    </div>
+
+    <!-- 20.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.28</span> Strict Mode</div>
+<p class="text-p">Module code automatically strict mode semantics-এ চলে।</p>
+<p class="text-p">তাই সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.28 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-str">&quot;use strict&quot;</span>;</pre>
+</div>
+<p class="text-p">আলাদাভাবে লেখার দরকার নেই।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.28 JavaScript Module</span><span>ESM</span></div>
+  <pre>x = <span class="syn-num">10</span>;</pre>
+</div>
+<p class="text-p">Module-এ undeclared variable assignment error দেবে।</p>
+    </div>
+
+    <!-- 20.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.29</span> Module-এর Top-Level `this</div>
+<p class="text-p">Module-এর top-level <code>this</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.29 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-kw">this</span>);</pre>
+</div>
+<p class="text-p">Browser ES module-এ সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>undefined</pre>
+</div>
+<p class="text-p">পাওয়া যায়।</p>
+<p class="text-p">এটি normal classic script-এর behavior থেকে আলাদা।</p>
+    </div>
+
+    <div class="part-banner">Part 04 — Dynamic Imports, Re-Exporting &amp; Project Architecture (20.30 – 20.43)</div>
+
+    <!-- 20.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.30</span> Dynamic Import</div>
+<p class="text-p">সবসময় module শুরুতেই load করতে হবে এমন নয়।</p>
+<p class="text-p">Runtime-এ module load করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.30 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw">module</span> =
+    <span class="syn-kw">await</span> <span class="syn-kw">import</span>(&quot;./math.js&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    <span class="syn-kw">module</span>.<span class="syn-op">add</span>(<span class="syn-num">10</span>, <span class="syn-num">20</span>)
+);</pre>
+</div>
+<p class="text-p">এটাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Dynamic Import</pre>
+</div>
+<p class="text-p">বলে।</p>
+    </div>
+
+    <!-- 20.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.31</span> Dynamic Import কেন দরকার?</div>
+<p class="text-p">ধরো user একটা বিশেষ feature click করল:</p>
+<div class="ascii-tree-container">User clicks
+&quot;Advanced Editor&quot;
+       ↓
+Load editor.js</div>
+<p class="text-p">শুরুতেই editor code load না করে প্রয়োজনের সময় load করা যায়।</p>
+<p class="text-p">এতে বড় application-এর initial loading optimize করা সম্ভব।</p>
+    </div>
+
+    <!-- 20.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.32</span> Dynamic Import Without `await</div>
+<div class="code-box">
+  <div class="code-top"><span>20.32 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span>(&quot;./math.js&quot;)
+    .then(<span class="syn-kw">module</span> =&gt; {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+            <span class="syn-kw">module</span>.<span class="syn-op">add</span>(<span class="syn-num">10</span>, <span class="syn-num">20</span>)
+        );
+
+    });</pre>
+</div>
+<p class="text-p">কারণ dynamic <code>import()</code> একটি Promise return করে।</p>
+    </div>
+
+    <!-- 20.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.33</span> export</div>
+<p class="text-p">একটি module-এর exports অন্য module থেকে re-export করা যায়।</p>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ <code>math.js</code></div>
+<div class="code-box">
+  <div class="code-top"><span>20.33 `math.js`</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">add</span>(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> <span class="syn-op">subtract</span>(a, b) {
+    <span class="syn-kw">return</span> a - b;
+}</pre>
+</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ <code>index.js</code></div>
+<div class="code-box">
+  <div class="code-top"><span>20.33 `index.js`</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> * <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">এখন অন্য file:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.33 `index.js`</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>,
+    <span class="syn-op">subtract</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./index.js&quot;</span>;</pre>
+</div>
+<p class="text-p">এটাকে <strong>barrel/re-export pattern</strong>-এর basic example হিসেবে দেখতে পারো।</p>
+    </div>
+
+    <!-- 20.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.34</span> Re-export with Rename</div>
+<div class="code-box">
+  <div class="code-top"><span>20.34 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> {
+    <span class="syn-op">add</span> <span class="syn-kw">as</span> sum
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.34 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    sum
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./index.js&quot;</span>;</pre>
+</div>
+    </div>
+
+    <!-- 20.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.35</span> Default Re-export</div>
+<div class="code-box">
+  <div class="code-top"><span>20.35 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> {
+    <span class="syn-kw">default</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.35 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> {
+    <span class="syn-kw">default</span> <span class="syn-kw">as</span> calculate
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+    </div>
+
+    <!-- 20.36 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">20.36</span> Practical Project Structure</div>
+<p class="text-p">একটি ছোট e-commerce project:</p>
+<div class="ascii-tree-container">project/
+│
+├── index.html
+│
+├── css/
+│   └── style.css
+│
+└── js/
+    │
+    ├── app.js
+    ├── api.js
+    ├── auth.js
+    ├── cart.js
+    ├── products.js
+    ├── storage.js
+    └── utils.js</div>
+<p class="text-p">Responsibilities:</p>
+<div class="ascii-tree-container">app.js
+→ application entry point
+
+api.js
+→ API communication
+
+auth.js
+→ login/logout
+
+cart.js
+→ shopping cart
+
+products.js
+→ product logic
+
+storage.js
+→ localStorage
+
+utils.js
+→ reusable helper functions</div>
+<p class="text-p">এটাই modular thinking।</p>
+    </div>
+
+    <!-- 20.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.37</span> Practical `storage.js</div>
+<div class="code-box">
+  <div class="code-top"><span>20.37 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">function</span> saveData(key, value) {
+
+    localStorage.<span class="syn-op">setItem</span>(
+        key,
+        <span class="syn-fn">JSON</span>.stringify(value)
+    );
+
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> getData(key) {
+
+    <span class="syn-kw">const</span> data =
+        localStorage.<span class="syn-op">getItem</span>(key);
+
+    <span class="syn-kw">return</span> data
+        ? <span class="syn-fn">JSON</span>.parse(data)
+        : <span class="syn-bool">null</span>;
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> removeData(key) {
+
+    localStorage.<span class="syn-op">removeItem</span>(key);
+
+}</pre>
+</div>
+    </div>
+
+    <!-- 20.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.38</span> app.js</div>
+<div class="code-box">
+  <div class="code-top"><span>20.38 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    saveData,
+    getData,
+    removeData
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./storage.js&quot;</span>;
+
+<span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    role: <span class="syn-str">&quot;Developer&quot;</span>
+};
+
+saveData(&quot;user<span class="syn-str">&quot;, user);
+
+console.log(
+    getData(&quot;</span>user&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>20.38 JavaScript Module</span><span>ESM</span></div>
+  <pre>{
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    role: <span class="syn-str">&quot;Developer&quot;</span>
+}</pre>
+</div>
+    </div>
+
+    <!-- 20.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.39</span> Practical `utils.js</div>
+<div class="code-box">
+  <div class="code-top"><span>20.39 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">function</span> capitalize(text) {
+
+    <span class="syn-kw">return</span> (
+        text.charAt(<span class="syn-num">0</span>).toUpperCase() +
+        text.slice(<span class="syn-num">1</span>)
+    );
+
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> calculateDiscount(
+    price,
+    discount
+) {
+
+    <span class="syn-kw">return</span> price -
+        (price * discount / <span class="syn-num">100</span>);
+
+}</pre>
+</div>
+<p class="text-p">Use:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.39 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    capitalize,
+    calculateDiscount
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./utils.js&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    capitalize(&quot;shariar&quot;)
+);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    calculateDiscount(<span class="syn-num">1000</span>, <span class="syn-num">10</span>)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar
+900</pre>
+</div>
+    </div>
+
+    <!-- 20.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.40</span> Module + Class</div>
+<p class="text-p">Class-ও export করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>20.40 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">class</span> User {
+
+    constructor(name) {
+        <span class="syn-kw">this</span>.name = name;
+    }
+
+    greet() {
+        <span class="syn-kw">return</span> <span class="syn-str">`Hello ${this.name}`</span>;
+    }
+
+}</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.40 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> { User }
+<span class="syn-kw">from</span> <span class="syn-str">&quot;./User.js&quot;</span>;
+
+<span class="syn-kw">const</span> user =
+    <span class="syn-kw">new</span> User(&quot;Shariar&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    user.greet()
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Hello Shariar</pre>
+</div>
+    </div>
+
+    <!-- 20.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.41</span> Module + Constant</div>
+<div class="code-box">
+  <div class="code-top"><span>20.41 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">const</span> API_URL =
+    <span class="syn-str">&quot;https://example.com/api&quot;</span>;</pre>
+</div>
+<p class="text-p">Import:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.41 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> { API_URL }
+<span class="syn-kw">from</span> <span class="syn-str">&quot;./config.js&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(API_URL);</pre>
+</div>
+<p class="text-p">Real project-এ configuration আলাদা module-এ রাখা common।</p>
+    </div>
+
+    <!-- 20.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.42</span> Module + Async Function</div>
+<p class="text-p">Module-এর ভিতরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.42 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">async</span> <span class="syn-kw">function</span> getUsers() {
+
+    <span class="syn-kw">const</span> response =
+        <span class="syn-kw">await</span> fetch(&quot;/api/users&quot;);
+
+    <span class="syn-kw">return</span> response.json();
+
+}</pre>
+</div>
+<p class="text-p">অন্য module:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.42 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> { getUsers }
+<span class="syn-kw">from</span> <span class="syn-str">&quot;./api.js&quot;</span>;
+
+<span class="syn-kw">const</span> users =
+    <span class="syn-kw">await</span> getUsers();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(users);</pre>
+</div>
+<p class="text-p">Modern modules-এ top-level <code>await</code>-ও supported environments-এ ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 20.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.43</span> Top-Level `await</div>
+<p class="text-p">Module-এর top level-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.43 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">const</span> response =
+    <span class="syn-kw">await</span> fetch(&quot;/api/users&quot;);
+
+<span class="syn-kw">const</span> users =
+    <span class="syn-kw">await</span> response.json();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(users);</pre>
+</div>
+<p class="text-p">Classic script-এ সাধারণভাবে top-level <code>await</code> কাজ করবে না, কিন্তু ES module-এ supported।</p>
+<p class="text-p">এটি asynchronous module loading-এর সাথে related।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Advanced Module Mechanics: Node.js, CommonJS vs ESM, Live Bindings (20.44 – 20.51)</div>
+
+    <!-- 20.44 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">20.44</span> Module vs Normal Script</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>Normal Script</th><th>ES Module</th></tr></thead>
+    <tbody>
+      <tr><td><code>import/export</code></td><td>❌</td><td>✅</td></tr><tr><td>Scope</td><td>Global/script scope</td><td>Module scope</td></tr><tr><td>Strict semantics</td><td>Not automatically module strict</td><td>✅</td></tr><tr><td>Reusable dependency system</td><td>Limited</td><td>✅</td></tr><tr><td><code>type=&quot;module&quot;</code></td><td>❌</td><td>Browser-এ প্রয়োজন</td></tr><tr><td>Top-level <code>await</code></td><td>❌</td><td>✅</td></tr><tr><td>Dynamic <code>import()</code></td><td>Modern JS-এ available</td><td>✅</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 20.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.45</span> Module কেন React-এ গুরুত্বপূর্ণ?</div>
+<p class="text-p">তুমি যখন React ব্যবহার করবে, প্রায় প্রতিটি file module-এর মতো কাজ করবে।</p>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.45 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> React <span class="syn-kw">from</span> <span class="syn-str">&quot;react&quot;</span>;
+<span class="syn-kw">import</span> Navbar <span class="syn-kw">from</span> <span class="syn-str">&quot;./components/Navbar&quot;</span>;
+<span class="syn-kw">import</span> Login <span class="syn-kw">from</span> <span class="syn-str">&quot;./pages/Login&quot;</span>;
+<span class="syn-kw">import</span> api <span class="syn-kw">from</span> <span class="syn-str">&quot;./services/api&quot;</span>;</pre>
+</div>
+<p class="text-p">React project মূলত modular architecture-এর উপর heavily নির্ভর করে।</p>
+    </div>
+
+    <!-- 20.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.46</span> Node.js-এ Modules</div>
+<div class="memory-box">Node.js-এ module system-এর দুটি গুরুত্বপূর্ণ style আছে:</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>CommonJS
+ES Modules</pre>
+</div>
+<p class="text-p">CommonJS:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.46 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">const</span> math =
+    <span class="syn-kw">require</span>(&quot;./math&quot;);</pre>
+</div>
+<p class="text-p">Export:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.46 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">module</span>.<span class="syn-kw">exports</span> = {
+    <span class="syn-op">add</span>
+};</pre>
+</div>
+<p class="text-p">Modern Node.js-এ ES Modules-ও ব্যবহার করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.46 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> { <span class="syn-op">add</span> }
+<span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<p class="text-p">এবং:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.46 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> {
+    <span class="syn-op">add</span>
+};</pre>
+</div>
+    </div>
+
+    <!-- 20.47 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">20.47</span> CommonJS vs ES Modules</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>CommonJS</th><th>ES Modules</th></tr></thead>
+    <tbody>
+      <tr><td><code>require()</code></td><td><code>import</code></td></tr><tr><td><code>module.exports</code></td><td><code>export</code></td></tr><tr><td>Node.js-এর traditional system</td><td>JavaScript standard module system</td></tr><tr><td>Older Node ecosystem-এ খুব common</td><td>Modern JS/browser/Node-এ widely used</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Modern full-stack development-এ দুটো system সম্পর্কে জানা useful।</p>
+    </div>
+
+    <!-- 20.48 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">20.48</span> Circular Dependencies</div>
+<p class="text-p">ধরো:</p>
+<div class="ascii-tree-container">A.js
+ ↓
+B.js
+ ↓
+A.js</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.48 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-com">// A.js</span>
+<span class="syn-kw">import</span> { b } <span class="syn-kw">from</span> <span class="syn-str">&quot;./B.js&quot;</span>;</pre>
+</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.48 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-com">// B.js</span>
+<span class="syn-kw">import</span> { a } <span class="syn-kw">from</span> <span class="syn-str">&quot;./A.js&quot;</span>;</pre>
+</div>
+<p class="text-p">একে <strong>circular dependency</strong> বলে।</p>
+<div class="warn-box">এটি কখনো কাজ করতে পারে, কিন্তু complex initialization সমস্যা তৈরি করতে পারে।</div>
+<p class="text-p">তাই architecture এমনভাবে design করা ভালো যাতে unnecessary circular dependency না থাকে।</p>
+    </div>
+
+    <!-- 20.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.49</span> Modules এবং Encapsulation</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.49 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">let</span> balance = <span class="syn-num">1000</span>;
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> deposit(amount) {
+
+    balance += amount;
+
+}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> getBalance() {
+
+    <span class="syn-kw">return</span> balance;
+
+}</pre>
+</div>
+<p class="text-p">অন্য file:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.49 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    deposit,
+    getBalance
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./bank.js&quot;</span>;
+
+deposit(<span class="syn-num">500</span>);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    getBalance()
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1500</pre>
+</div>
+<p class="text-p">অন্য module সরাসরি:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.49 JavaScript Module</span><span>ESM</span></div>
+  <pre>balance = <span class="syn-num">999999</span>;</pre>
+</div>
+<p class="text-p">করতে পারবে না।</p>
+<p class="text-p">এটাই module-based encapsulation-এর practical ধারণা।</p>
+    </div>
+
+    <!-- 20.50 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">20.50</span> Live Binding Concept</div>
+<p class="text-p">Modules-এর export সাধারণত <strong>live binding</strong>।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.50 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-com">// counter.js</span>
+
+<span class="syn-kw">export</span> <span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> increment() {
+    count++;
+}</pre>
+</div>
+<p class="text-p">অন্য file:</p>
+<div class="code-box">
+  <div class="code-top"><span>20.50 JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    count,
+    increment
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./counter.js&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(count);
+
+increment();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(count);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0
+1</pre>
+</div>
+<p class="text-p">Imported binding module-এর current exported value-এর সাথে linked থাকে।</p>
+<p class="text-p">তবে importer সাধারণত imported binding নিজে reassign করতে পারে না।</p>
+    </div>
+
+    <!-- 20.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20.51</span> Module Cache / Reuse</div>
+<p class="text-p">একই module একাধিক জায়গায় import করলে environment সাধারণত module-টিকে বারবার নতুন করে execute না করে module instance reuse করে।</p>
+<p class="text-p">Example:</p>
+<div class="ascii-tree-container">app.js ──┐
+         ├──→ config.js
+cart.js ─┘</div>
+<p class="text-p">দুই জায়গা থেকে <code>config.js</code> import হলেও একই module instance-এর exports share করা হয়।</p>
+<div class="memory-box">এটি application architecture-এ গুরুত্বপূর্ণ।</div>
+    </div>
+
+    <div class="part-banner">Part 06 — Module Mastery: Must Know, Cheat Sheet, Practice Lab &amp; Mental Map</div>
+
+    <!-- 20.52 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 20.52 Must Know — ES Modules Architecture</div>
+<p class="text-p">এই chapter থেকে অবশ্যই জানতে হবে:</p>
+<div class="section-subhead">Core</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span>
+<span class="syn-kw">import</span></pre>
+</div>
+<div class="section-subhead">Named</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> {
+    <span class="syn-op">add</span>
+};</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> {
+    <span class="syn-op">add</span>
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<div class="section-subhead">Default</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">default</span> <span class="syn-kw">function</span>() {}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> something
+<span class="syn-kw">from</span> <span class="syn-str">&quot;./file.js&quot;</span>;</pre>
+</div>
+<div class="section-subhead">Namespace</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> * <span class="syn-kw">as</span> utils
+<span class="syn-kw">from</span> <span class="syn-str">&quot;./utils.js&quot;</span>;</pre>
+</div>
+<div class="section-subhead">Dynamic</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span>(&quot;./<span class="syn-kw">module</span>.js&quot;);</pre>
+</div>
+<div class="section-subhead">Re-export</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> * <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</pre>
+</div>
+<div class="section-subhead">Browser</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;script</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;module&quot;</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 20.53 Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 20.53 Quick Cheat Sheet — Import &amp; Export Syntax</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>কাজ</th><th>Syntax</th></tr></thead>
+    <tbody>
+      <tr><td>Named export</td><td><code>export { add }</code></td></tr><tr><td>Inline export</td><td><code>export function add(){}</code></td></tr><tr><td>Named import</td><td><code>import { add } from &quot;./math.js&quot;</code></td></tr><tr><td>Rename import</td><td><code>import { add as sum } ...</code></td></tr><tr><td>Default export</td><td><code>export default add</code></td></tr><tr><td>Default import</td><td><code>import add from &quot;./math.js&quot;</code></td></tr><tr><td>Namespace import</td><td><code>import * as math from &quot;./math.js&quot;</code></td></tr><tr><td>Side-effect import</td><td><code>import &quot;./analytics.js&quot;</code></td></tr><tr><td>Dynamic import</td><td><code>import(&quot;./math.js&quot;)</code></td></tr><tr><td>Re-export</td><td><code>export * from &quot;./math.js&quot;</code></td></tr><tr><td>Browser module</td><td><code>&lt;script type=&quot;module&quot;&gt;</code></td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 20.54 Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 20.54 Practice Set — 5 Modular Architecture Projects</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 1 — Math Module</h4>
+<p class="text-p"><code>math.js</code> তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>add()
+subtract()
+multiply()
+divide()</pre>
+</div>
+<p class="text-p">সবগুলো export করো।</p>
+<p class="text-p">তারপর <code>app.js</code> থেকে import করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 2 — User Module</h4>
+<p class="text-p"><code>user.js</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">export</span> <span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    role: <span class="syn-str">&quot;Developer&quot;</span>
+};</pre>
+</div>
+<p class="text-p"><code>app.js</code> থেকে import করে UI-তে name দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 3 — Utility Module</h4>
+<p class="text-p">একটি <code>utils.js</code> বানিয়ে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>capitalize()
+calculateDiscount()
+formatPrice()</pre>
+</div>
+<p class="text-p">তৈরি করো এবং অন্য file-এ ব্যবহার করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 4 — Storage Module</h4>
+<p class="text-p">Chapter 18-এর code দিয়ে:</p>
+<div class="ascii-tree-container">storage.js
+    ↓
+saveData()
+getData()
+removeData()</div>
+<p class="text-p">বানাও।</p>
+<p class="text-p">তারপর <code>app.js</code> থেকে ব্যবহার করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 5 — Mini E-commerce Architecture</h4>
+<p class="text-p">এই structure বানাও:</p>
+<div class="ascii-tree-container">js/
+├── app.js
+├── products.js
+├── cart.js
+├── storage.js
+└── utils.js</div>
+<p class="text-p">Responsibilities:</p>
+<div class="ascii-tree-container">products.js
+→ product data
+
+cart.js
+→ add/remove cart
+
+storage.js
+→ localStorage
+
+utils.js
+→ helper functions
+
+app.js
+→ main application</div>
+      </div>
+    </div>
+
+    <!-- 20.55 Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 20.55 Final Mental Map — Module Organization &amp; Lifecycle</div>
+<div class="ascii-tree-container">                 JavaScript Project
+                        │
+                        ↓
+                  Modules
+                        │
+          ┌─────────────┼─────────────┐
+          ↓             ↓             ↓
+        auth.js       cart.js      utils.js
+          │             │             │
+          └─────────────┼─────────────┘
+                        ↓
+                     app.js
+                        │
+              ┌─────────┴─────────┐
+              ↓                   ↓
+           import               export
+              │                   │
+              └─────────┬─────────┘
+                        ↓
+                 Reusable Code</div>
+<div class="memory-box"># ⭐ Chapter 20-এর সবচেয়ে গুরুত্বপূর্ণ বিষয়</div>
+<p class="text-p">তুমি Full Stack Developer হিসেবে এই concept-টা ভালোভাবে বুঝবে:</p>
+<div class="ascii-tree-container">একটা বড় JavaScript file
+          ↓
+ছোট ছোট modules
+          ↓
+প্রতিটি module-এর নির্দিষ্ট কাজ
+          ↓
+export
+          ↓
+import
+          ↓
+Main Application</div>
+<p class="text-p">একটি real project:</p>
+<div class="ascii-tree-container">                app.js
+                  │
+      ┌───────────┼───────────┐
+      ↓           ↓           ↓
+    auth.js    products.js   cart.js
+      │           │           │
+      └───────────┼───────────┘
+                  ↓
+              storage.js
+                  │
+                  ↓
+             localStorage</div>
+<p class="text-p">আর React/Node.js project-এ তুমি যে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Module</span><span>ESM</span></div>
+  <pre><span class="syn-kw">import</span> ...
+<span class="syn-kw">export</span> ...</pre>
+</div>
+<p class="text-p">প্রায় প্রতিদিন দেখবে—তার foundation হলো <strong>এই Chapter 20-এর ES Modules</strong>।</p>
+<p class="text-p"><strong>Chapter 20 complete.</strong></p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 21 Preview — Asynchronous JavaScript</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায়ে আমরা জাভাস্ক্রিপ্টের অন্যতম কোর পিলার <strong>Asynchronous JavaScript</strong> নিয়ে বিস্তারিত শিখব—Event Loop, Call Stack, Callback Hell, Promises (<code>then</code>, <code>catch</code>, <code>finally</code>), Promise Combinators (<code>all</code>, <code>race</code>, <code>allSettled</code>, <code>any</code>), এবং আধুনিক <code>async/await</code> সিনট্যাক্স।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

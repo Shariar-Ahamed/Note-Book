@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 16: Events &amp; Event Handling</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      line-height: 1.38;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+    .syn-regex { color: #38bdf8; font-style: italic; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10px;
+      line-height: 1.32;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 16: EVENTS &amp; EVENT HANDLING — USER INTERACTION, PROPAGATION &amp; DELEGATION</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">66 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 10 — Browser Interaction &amp; UI Events</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">addEventListener, Event Object, Bubbling &amp; Delegation</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">W3C DOM Events / ECMAScript 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Events &amp; Event Handling — Events এবং User Interaction</h2>
+      <p class="text-p">এখন আমরা JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ practical বিষয়গুলোর একটি শিখব — <strong>Events</strong>। DOM Chapter-এ আমরা শিখেছি কীভাবে HTML element select করে পরিবর্তন করতে হয়। কিন্তু একটি webpage-এ user যখন বাটন ক্লিক করে, ইনপুটে লিখে, মাউস সরায়, কিবোর্ড প্রেস করে কিংবা ফর্ম সাবমিট করে—তখন জাভাস্ক্রিপ্ট কীভাবে বুঝবে যে কিছু একটা ঘটেছে? এর উত্তর হলো 👉 <strong>Event</strong>।</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">User / Browser Action &nbsp;→&nbsp; Event Triggered &nbsp;→&nbsp; Event Listener (Callback) &nbsp;→&nbsp; Event Object &nbsp;→&nbsp; Dynamic Response</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">ইভেন্ট হ্যান্ডলিং হলো ইন্টারঅ্যাক্টিভ ও ডায়নামিক ফ্রন্টএন্ড ওয়েব ডেভেলপমেন্টের চালিকাশক্তি। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Event Foundations, Handlers &amp; addEventListener (16.1 – 16.10)</div>
+
+    <!-- 16.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">16.1</span> Event কী?</div>
+<p class="text-p"><strong>Event</strong> হলো webpage-এ ঘটে যাওয়া কোনো action বা ঘটনা।</p>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box">
+  <div class="def-text">User বা browser-এর কোনো action ঘটলে সেটাকে Event বলা হয়।</div>
+</div>
+<div class="sub-badge">💡 Real-Life Example</div>
+<p class="text-p">ধরো একটি door:</p>
+<div class="ascii-tree-container">Door
+ ↓
+Someone knocks
+ ↓
+You hear it
+ ↓
+You open the door</div>
+<p class="text-p">Webpage:</p>
+<div class="ascii-tree-container">Button
+ ↓
+User clicks
+ ↓
+Browser detects event
+ ↓
+JavaScript runs code</div>
+    </div>
+
+    <!-- 16.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.2</span> Common Events</div>
+<p class="text-p">JavaScript-এ অনেক ধরনের event আছে।</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Event</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>click</code></td><td>Mouse click</td></tr><tr><td><code>dblclick</code></td><td>Double click</td></tr><tr><td><code>mousedown</code></td><td>Mouse button press</td></tr><tr><td><code>mouseup</code></td><td>Mouse button release</td></tr><tr><td><code>mousemove</code></td><td>Mouse move</td></tr><tr><td><code>mouseenter</code></td><td>Element-এর ভিতরে mouse ঢোকে</td></tr><tr><td><code>mouseleave</code></td><td>Element থেকে mouse বের হয়</td></tr><tr><td><code>keydown</code></td><td>Keyboard key press</td></tr><tr><td><code>keyup</code></td><td>Keyboard key release</td></tr><tr><td><code>input</code></td><td>Input value change</td></tr><tr><td><code>change</code></td><td>Form value change/commit</td></tr><tr><td><code>submit</code></td><td>Form submit</td></tr><tr><td><code>focus</code></td><td>Element focus পায়</td></tr><tr><td><code>blur</code></td><td>Element focus হারায়</td></tr><tr><td><code>load</code></td><td>Resource/page load</td></tr><tr><td><code>scroll</code></td><td>Page scroll</td></tr><tr><td><code>resize</code></td><td>Window resize</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 16.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.3</span> Event Handler কী?</div>
+<p class="text-p">Event ঘটলে যে function execute হয় তাকে সাধারণভাবে <strong>Event Handler</strong> বলা হয়।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> handleClick() {
+    <span class="syn-fn">console</span>.log(&quot;Button clicked!&quot;);
+}</pre>
+</div>
+<p class="text-p">এই function-কে click event-এর সাথে connect করলে এটি event handler হিসেবে কাজ করবে।</p>
+    </div>
+
+    <!-- 16.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.4</span> প্রথম Event Example</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.4 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;btn&quot;</span><span class="syn-fn">&gt;</span>Click Me<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> button = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;btn<span class="syn-str">&quot;);
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Button clicked!&quot;);
+});</pre>
+</div>
+<p class="text-p">Button click করলে:</p>
+<div class="ascii-tree-container">Button clicked!</div>
+    </div>
+
+    <!-- 16.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.5</span> addEventListener()</div>
+<div class="memory-box">এটি JavaScript-এ event handle করার সবচেয়ে গুরুত্বপূর্ণ method।</div>
+<p class="text-p">Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.5 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">addEventListener</span>(&quot;event&quot;, <span class="syn-kw">function</span> () {
+    <span class="syn-com">// code</span>
+});</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.5 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Hello&quot;);
+});</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">button
+   ↓
+addEventListener()
+   ↓
+&quot;click&quot;
+   ↓
+function()</div>
+    </div>
+
+    <!-- 16.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.6</span> Named Function ব্যবহার</div>
+<p class="text-p">Anonymous function-এর পরিবর্তে named function-ও ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> handleClick() {
+    <span class="syn-fn">console</span>.log(&quot;Clicked!&quot;);
+}
+
+button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, handleClick);</pre>
+</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 খুব গুরুত্বপূর্ণ</div>
+<p class="text-p">সঠিক:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.6 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, handleClick);</pre>
+</div>
+<p class="text-p">ভুল:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.6 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, handleClick());</pre>
+</div>
+<p class="text-p">কারণ <code>handleClick()</code> দিলে function তখনই execute হয়ে যাবে।</p>
+    </div>
+
+    <!-- 16.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.7</span> onclick` Property</div>
+<p class="text-p">Event handle করার আরেকটি উপায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.7 JavaScript</span><span>Run</span></div>
+  <pre>button.onclick = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Clicked!&quot;);
+};</pre>
+</div>
+<p class="text-p">এটি কাজ করে।</p>
+<p class="text-p">কিন্তু সাধারণত modern code-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">addEventListener</span>()</pre>
+</div>
+<p class="text-p">বেশি flexible।</p>
+    </div>
+
+    <!-- 16.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.8</span> HTML Inline Event</div>
+<p class="text-p">HTML-এর ভিতরেও event লেখা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.8 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;button</span> <span class="syn-kw">onclick</span><span class="syn-op">=</span><span class="syn-str">&quot;sayHello()&quot;</span><span class="syn-fn">&gt;</span>
+    Click Me
+<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> sayHello() {
+    alert(&quot;Hello!&quot;);
+}</pre>
+</div>
+<p class="text-p">এটি কাজ করলেও বড় application-এ HTML এবং JavaScript আলাদা রাখা সাধারণত cleaner approach।</p>
+    </div>
+
+    <!-- 16.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.9</span> addEventListener()` কেন গুরুত্বপূর্ণ?</div>
+<p class="text-p">একই element-এ multiple event listener দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.9 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>First<span class="syn-str">&quot;);
+});
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Second&quot;);
+});</pre>
+</div>
+<p class="text-p">Click করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>First
+Second</pre>
+</div>
+    </div>
+
+    <!-- 16.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.10</span> Event Listener Remove</div>
+<p class="text-p">একটি listener remove করতে একই function reference দরকার।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.10 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> handleClick() {
+    <span class="syn-fn">console</span>.log(&quot;Clicked<span class="syn-str">&quot;);
+}
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, handleClick);
+
+button.removeEventListener(&quot;</span>click&quot;, handleClick);</pre>
+</div>
+<p class="text-p">এখন click করলে function আর execute হবে না।</p>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 Important</div>
+<p class="text-p">এটি কাজ করবে না:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.10 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Clicked<span class="syn-str">&quot;);
+});
+
+button.removeEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Clicked&quot;);
+});</pre>
+</div>
+<p class="text-p">কারণ দুইটি anonymous function আলাদা function object।</p>
+    </div>
+
+    <div class="part-banner">Part 02 — The Event Object &amp; Target Mechanics (16.11 – 16.15)</div>
+
+    <!-- 16.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.11</span> Event Object</div>
+<p class="text-p">Event ঘটলে browser একটি <strong>event object</strong> তৈরি করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.11 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, <span class="syn-kw">function</span> (event) {
+    <span class="syn-fn">console</span>.log(event);
+});</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.11 JavaScript</span><span>Run</span></div>
+  <pre>event</pre>
+</div>
+<p class="text-p">এর মধ্যে event-এর অনেক information থাকে।</p>
+    </div>
+
+    <!-- 16.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.12</span> event.target</div>
+<p class="text-p">যে element-এ event ঘটেছে সেটি:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.12 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-kw" style="color:#fdba74;">target</span></pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.12 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, <span class="syn-kw">function</span> (event) {
+    <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">target</span>);
+});</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.12 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;btn&quot;</span><span class="syn-fn">&gt;</span>Click Me<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 16.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.13</span> event.currentTarget</div>
+<p class="text-p">যে element-এর ওপর listener attached হয়েছে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.13 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-kw" style="color:#fdba74;">currentTarget</span></pre>
+</div>
+<p class="text-p">অনেক সময়:</p>
+<div class="ascii-tree-container">target === currentTarget</div>
+<p class="text-p">হতে পারে।</p>
+<div class="memory-box">কিন্তু event bubbling-এর সময় এদের মধ্যে পার্থক্য খুব গুরুত্বপূর্ণ হয়ে যায়।</div>
+    </div>
+
+    <!-- 16.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.14</span> event.type</div>
+<p class="text-p">Event-এর নাম পাওয়া যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.14 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, <span class="syn-kw">function</span> (event) {
+    <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">type</span>);
+});</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>click</pre>
+</div>
+    </div>
+
+    <!-- 16.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.15</span> event.timeStamp</div>
+<p class="text-p">Event কখন ঘটেছে তার timing information:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.15 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, <span class="syn-kw">function</span> (event) {
+    <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">timeStamp</span>);
+});</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Mouse &amp; Keyboard Interaction Events (16.16 – 16.29)</div>
+
+    <!-- 16.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.16</span> Mouse Click Event</div>
+<div class="code-box">
+  <div class="code-top"><span>16.16 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Clicked&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.17</span> Double Click</div>
+<div class="code-box">
+  <div class="code-top"><span>16.17 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;dblclick<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Double clicked&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.18</span> Mouse Down</div>
+<p class="text-p">Mouse button press করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.18 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;mousedown<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Mouse button pressed&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.19</span> Mouse Up</div>
+<p class="text-p">Mouse button release:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.19 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;mouseup<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Mouse button released&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.20</span> Mouse Move</div>
+<div class="code-box">
+  <div class="code-top"><span>16.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">addEventListener</span>(&quot;mousemove<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Mouse moving&quot;);
+});</pre>
+</div>
+<div class="warn-box">⚠️ এটি খুব ঘন ঘন fire হতে পারে। তাই performance-sensitive code-এ সাবধান হতে হবে।</div>
+    </div>
+
+    <!-- 16.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.21</span> mouseenter</div>
+<p class="text-p">Mouse কোনো element-এর ভিতরে ঢুকলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.21 JavaScript</span><span>Run</span></div>
+  <pre>box.<span class="syn-op">addEventListener</span>(&quot;mouseenter<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Mouse entered&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.22</span> mouseleave</div>
+<p class="text-p">Mouse element থেকে বের হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.22 JavaScript</span><span>Run</span></div>
+  <pre>box.<span class="syn-op">addEventListener</span>(&quot;mouseleave<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Mouse left&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.23</span> Keyboard Events</div>
+<div class="memory-box">Keyboard-এর জন্য গুরুত্বপূর্ণ:</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>keydown
+keyup</pre>
+</div>
+    </div>
+
+    <!-- 16.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.24</span> keydown</div>
+<p class="text-p">কোনো key press করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">addEventListener</span>(&quot;keydown&quot;, <span class="syn-kw">function</span> (event) {
+    <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">key</span>);
+});</pre>
+</div>
+<p class="text-p">তুমি <code>A</code> press করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>a</pre>
+</div>
+<p class="text-p">Enter:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Enter</pre>
+</div>
+<p class="text-p">Escape:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Escape</pre>
+</div>
+    </div>
+
+    <!-- 16.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.25</span> keyup</div>
+<p class="text-p">Key release করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">addEventListener</span>(&quot;keyup&quot;, <span class="syn-kw">function</span> (event) {
+    <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">key</span>);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.26</span> event.code</div>
+<p class="text-p"><code>event.key</code> key-এর value দেয়।</p>
+<p class="text-p"><code>event.code</code> physical keyboard key-এর নাম দেয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">addEventListener</span>(&quot;keydown<span class="syn-str">&quot;, function (event) {
+
+    console.log(&quot;</span>Key:&quot;, event.<span class="syn-kw" style="color:#fdba74;">key</span>);
+    <span class="syn-fn">console</span>.log(&quot;Code:&quot;, event.<span class="syn-kw" style="color:#fdba74;">code</span>);
+
+});</pre>
+</div>
+<p class="text-p"><code>A</code> press করলে browser সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Key: a
+Code: KeyA</pre>
+</div>
+    </div>
+
+    <!-- 16.27 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.27</span> event.key<code> বনাম </code>event.code</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th><code>key</code></th><th><code>code</code></th></tr></thead>
+    <tbody>
+      <tr><td>Press করা key-এর value</td><td>Physical key</td></tr><tr><td><code>&quot;a&quot;</code></td><td><code>&quot;KeyA&quot;</code></td></tr><tr><td><code>&quot;Enter&quot;</code></td><td><code>&quot;Enter&quot;</code></td></tr><tr><td><code>&quot; &quot;</code></td><td><code>&quot;Space&quot;</code></td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 16.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.28</span> Keyboard Shortcut</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Ctrl + S</pre>
+</div>
+<p class="text-p">detect করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">addEventListener</span>(&quot;keydown<span class="syn-str">&quot;, function (event) {
+
+    if (event.ctrlKey &amp;&amp; event.key === &quot;</span>s<span class="syn-str">&quot;) {
+        console.log(&quot;</span>Save shortcut&quot;);
+    }
+
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.29</span> Modifier Keys</div>
+<p class="text-p">Event object-এ পাওয়া যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.29 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-kw" style="color:#fdba74;">ctrlKey</span>
+event.<span class="syn-kw" style="color:#fdba74;">shiftKey</span>
+event.<span class="syn-kw" style="color:#fdba74;">altKey</span>
+event.<span class="syn-kw" style="color:#fdba74;">metaKey</span></pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">addEventListener</span>(&quot;keydown<span class="syn-str">&quot;, function (event) {
+
+    if (event.shiftKey) {
+        console.log(&quot;</span>Shift is pressed&quot;);
+    }
+
+});</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Form, Input, Focus &amp; Window Events (16.30 – 16.42)</div>
+
+    <!-- 16.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.30</span> Input Event</div>
+<p class="text-p">User input field-এ typing করলে <code>input</code> event fire হয়।</p>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.30 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;nameInput&quot;</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> input = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;nameInput<span class="syn-str">&quot;);
+
+input.addEventListener(&quot;</span>input&quot;, <span class="syn-kw">function</span> (event) {
+
+    <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">target</span>.<span class="syn-kw" style="color:#fdba74;">value</span>);
+
+});</pre>
+</div>
+<p class="text-p">User লিখলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>S
+Sh
+Sha
+Shar
+Shariar</pre>
+</div>
+<p class="text-p">প্রতিবার event fire হতে পারে।</p>
+    </div>
+
+    <!-- 16.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.31</span> change` Event</div>
+<div class="code-box">
+  <div class="code-top"><span>16.31 JavaScript</span><span>Run</span></div>
+  <pre>input.<span class="syn-op">addEventListener</span>(&quot;change<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Value changed&quot;);
+});</pre>
+</div>
+<p class="text-p"><code>input</code> এবং <code>change</code> এক নয়।</p>
+<p class="text-p">সাধারণভাবে:</p>
+<div class="ascii-tree-container">input
+→ typing/change-এর সময় continuously fire
+
+change
+→ value committed/changed হওয়ার পর fire</div>
+    </div>
+
+    <!-- 16.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.32</span> Focus Event</div>
+<p class="text-p">Input focus পেলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.32 JavaScript</span><span>Run</span></div>
+  <pre>input.<span class="syn-op">addEventListener</span>(&quot;focus<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Input focused&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.33</span> Blur Event</div>
+<p class="text-p">Input focus হারালে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.33 JavaScript</span><span>Run</span></div>
+  <pre>input.<span class="syn-op">addEventListener</span>(&quot;blur<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Input lost focus&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.34</span> Form Submit Event</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.34 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;loginForm&quot;</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;button</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>
+        Login
+    <span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> form = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;loginForm<span class="syn-str">&quot;);
+
+form.addEventListener(&quot;</span>submit<span class="syn-str">&quot;, function () {
+
+    console.log(&quot;</span>Form submitted&quot;);
+
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.35</span> preventDefault()</div>
+<p class="text-p">Form submit করলে browser সাধারণত default action করতে পারে, যেমন page reload/navigation।</p>
+<p class="text-p">এটা বন্ধ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.35 JavaScript</span><span>Run</span></div>
+  <pre>form.<span class="syn-op">addEventListener</span>(&quot;submit<span class="syn-str">&quot;, function (event) {
+
+    event.preventDefault();
+
+    console.log(&quot;</span>Submit handled by JavaScript&quot;);
+
+});</pre>
+</div>
+<div class="memory-box">এটি web development-এ অত্যন্ত গুরুত্বপূর্ণ।</div>
+    </div>
+
+    <!-- 16.36 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.36</span> Real-Life Login Form</div>
+<div class="code-box">
+  <div class="code-top"><span>16.36 JavaScript</span><span>Run</span></div>
+  <pre>form.<span class="syn-op">addEventListener</span>(&quot;submit<span class="syn-str">&quot;, function (event) {
+
+    event.preventDefault();
+
+    let email = document.getElementById(&quot;</span>email<span class="syn-str">&quot;).value;
+
+    if (email === &quot;</span><span class="syn-str">&quot;) {
+        console.log(&quot;</span>Email is required<span class="syn-str">&quot;);
+        return;
+    }
+
+    console.log(&quot;</span>Login request sent&quot;);
+
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.37</span> Checkbox Change</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.37 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;terms&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;checkbox&quot;</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>16.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> terms = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;terms<span class="syn-str">&quot;);
+
+terms.addEventListener(&quot;</span>change&quot;, <span class="syn-kw">function</span> () {
+
+    <span class="syn-fn">console</span>.log(terms.<span class="syn-kw" style="color:#fdba74;">checked</span>);
+
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.38</span> Select Change</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.38 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;select</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;department&quot;</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;cse&quot;</span><span class="syn-fn">&gt;</span>CSE<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;eee&quot;</span><span class="syn-fn">&gt;</span>EEE<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;bba&quot;</span><span class="syn-fn">&gt;</span>BBA<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/select</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.38 JavaScript</span><span>Run</span></div>
+  <pre>department.<span class="syn-op">addEventListener</span>(&quot;change&quot;, <span class="syn-kw">function</span> () {
+
+    <span class="syn-fn">console</span>.log(department.<span class="syn-kw" style="color:#fdba74;">value</span>);
+
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.39</span> Window Events</div>
+<p class="text-p">শুধু HTML elements নয়, <code>window</code>-এরও events আছে।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">window</span>.<span class="syn-op">addEventListener</span>(&quot;resize<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Window resized&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.40</span> Scroll Event</div>
+<div class="code-box">
+  <div class="code-top"><span>16.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">window</span>.<span class="syn-op">addEventListener</span>(&quot;scroll<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Page scrolling&quot;);
+});</pre>
+</div>
+<div class="warn-box">⚠️ Scroll event-ও অনেকবার fire হতে পারে।</div>
+    </div>
+
+    <!-- 16.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.41</span> Load Event</div>
+<p class="text-p">Page/resources load হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">window</span>.<span class="syn-op">addEventListener</span>(&quot;load<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Page fully loaded&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.42</span> DOMContentLoaded</div>
+<p class="text-p">HTML document parse শেষ হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">addEventListener</span>(&quot;DOMContentLoaded<span class="syn-str">&quot;, function () {
+
+    console.log(&quot;</span>DOM ready&quot;);
+
+});</pre>
+</div>
+<p class="text-p">এটি DOM manipulation শুরু করার জন্য খুব useful।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Event Propagation: Bubbling, Capturing &amp; Delegation (16.43 – 16.58)</div>
+
+    <!-- 16.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.43</span> Event Bubbling</div>
+<div class="memory-box">এটি Chapter 16-এর সবচেয়ে গুরুত্বপূর্ণ advanced concept-এর একটি।</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.43 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;parent&quot;</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;child&quot;</span><span class="syn-fn">&gt;</span>
+        Click
+    <span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> parent = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;parent<span class="syn-str">&quot;);
+let child = document.getElementById(&quot;</span>child<span class="syn-str">&quot;);
+
+child.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Child<span class="syn-str">&quot;);
+});
+
+parent.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+    console.log(&quot;</span>Parent&quot;);
+});</pre>
+</div>
+<p class="text-p">Button click করলে:</p>
+<div class="ascii-tree-container">Child
+Parent</div>
+<p class="text-p">কেন?</p>
+<p class="text-p">কারণ event child থেকে parent-এর দিকে <strong>bubble</strong> করে।</p>
+    </div>
+
+    <!-- 16.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.44</span> Event Bubbling-এর Mental Model</div>
+<div class="ascii-tree-container">Button
+  ↑
+Parent
+  ↑
+Body
+  ↑
+HTML
+  ↑
+Document
+  ↑
+Window</div>
+<p class="text-p">Event সাধারণত target থেকে উপরের দিকে propagate করে।</p>
+    </div>
+
+    <!-- 16.45 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.45</span> event.target<code> বনাম </code>event.currentTarget</div>
+<p class="text-p">এখন পার্থক্যটা বুঝো।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.45 JavaScript</span><span>Run</span></div>
+  <pre>parent.<span class="syn-op">addEventListener</span>(&quot;click<span class="syn-str">&quot;, function (event) {
+
+    console.log(&quot;</span>Target:&quot;, event.<span class="syn-kw" style="color:#fdba74;">target</span>);
+    <span class="syn-fn">console</span>.log(&quot;Current:&quot;, event.<span class="syn-kw" style="color:#fdba74;">currentTarget</span>);
+
+});</pre>
+</div>
+<p class="text-p">যদি child button click করো:</p>
+<div class="ascii-tree-container">Target
+→ button
+
+CurrentTarget
+→ parent</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 মনে রাখো</div>
+<div class="ascii-tree-container">target
+→ যেখানে event শুরু হয়েছে
+
+currentTarget
+→ যেখানে listener attached</div>
+    </div>
+
+    <!-- 16.46 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.46</span> stopPropagation()</div>
+<p class="text-p">Event bubbling বন্ধ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.46 JavaScript</span><span>Run</span></div>
+  <pre>child.<span class="syn-op">addEventListener</span>(&quot;click<span class="syn-str">&quot;, function (event) {
+
+    event.stopPropagation();
+
+    console.log(&quot;</span>Child clicked&quot;);
+
+});</pre>
+</div>
+<p class="text-p">এখন parent listener সাধারণ bubbling-এর কারণে execute হবে না।</p>
+    </div>
+
+    <!-- 16.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.47</span> Event Capturing</div>
+<p class="text-p">Event propagation-এর একটি phase হলো <strong>capturing</strong>।</p>
+<p class="text-p">সাধারণভাবে event flow:</p>
+<div class="ascii-tree-container">Capturing
+    ↓
+Target
+    ↓
+Bubbling</div>
+    </div>
+
+    <!-- 16.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.48</span> Capturing Listener</div>
+<p class="text-p"><code>addEventListener()</code>-এর third argument বা options ব্যবহার করে capture করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.48 JavaScript</span><span>Run</span></div>
+  <pre>parent.<span class="syn-op">addEventListener</span>(
+    <span class="syn-str">&quot;click&quot;</span>,
+    <span class="syn-kw">function</span> () {
+        <span class="syn-fn">console</span>.log(&quot;Parent capture&quot;);
+    },
+    <span class="syn-bool">true</span>
+);</pre>
+</div>
+<p class="text-p">এখন parent capture phase-এ event পেতে পারে।</p>
+<p class="text-p">Modern style:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.48 JavaScript</span><span>Run</span></div>
+  <pre>parent.<span class="syn-op">addEventListener</span>(
+    <span class="syn-str">&quot;click&quot;</span>,
+    <span class="syn-kw">function</span> () {
+        <span class="syn-fn">console</span>.log(&quot;Parent capture&quot;);
+    },
+    { capture: <span class="syn-bool">true</span> }
+);</pre>
+</div>
+    </div>
+
+    <!-- 16.49 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.49</span> Event Propagation</div>
+<p class="text-p">পুরো concept:</p>
+<div class="ascii-tree-container">Window
+  ↓
+Document
+  ↓
+HTML
+  ↓
+Body
+  ↓
+Parent
+  ↓
+Button
+  ↑
+Target
+  ↑
+Parent
+  ↑
+Body
+  ↑
+Document
+  ↑
+Window</div>
+<p class="text-p">প্রথম অংশ:</p>
+<div class="ascii-tree-container">Capturing</div>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">Target</div>
+<p class="text-p">শেষে:</p>
+<div class="ascii-tree-container">Bubbling</div>
+    </div>
+
+    <!-- 16.50 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.50</span> Event Delegation</div>
+<div class="memory-box">এটি খুব গুরুত্বপূর্ণ professional technique।</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.50 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;ul</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;list&quot;</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;li</span><span class="syn-fn">&gt;</span>Apple<span class="syn-fn">&lt;/li</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;li</span><span class="syn-fn">&gt;</span>Banana<span class="syn-fn">&lt;/li</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;li</span><span class="syn-fn">&gt;</span>Mango<span class="syn-fn">&lt;/li</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/ul</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">প্রতিটি <code>&lt;li&gt;</code>-তে আলাদা listener না দিয়ে parent-এ listener দিতে পারো।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.50 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> list = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;list<span class="syn-str">&quot;);
+
+list.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function (event) {
+
+    if (event.target.matches(&quot;</span>li&quot;)) {
+        <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">target</span>.<span class="syn-op">textContent</span>);
+    }
+
+});</pre>
+</div>
+<p class="text-p">Apple click:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Apple</pre>
+</div>
+<p class="text-p">Mango click:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Mango</pre>
+</div>
+    </div>
+
+    <!-- 16.51 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.51</span> Event Delegation কেন দরকার?</div>
+<p class="text-p">ধরো 1000টি button আছে।</p>
+<p class="text-p">খারাপ approach:</p>
+<div class="ascii-tree-container">Button 1 → listener
+Button 2 → listener
+Button 3 → listener
+...
+Button 1000 → listener</div>
+<p class="text-p">Delegation:</p>
+<div class="ascii-tree-container">Parent
+ ↓
+একটি listener
+ ↓
+Target identify</div>
+<p class="text-p">এতে code cleaner এবং অনেক ক্ষেত্রে resource usage কমে।</p>
+    </div>
+
+    <!-- 16.52 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.52</span> Dynamic Elements এবং Event Delegation</div>
+<div class="memory-box">এটি খুব গুরুত্বপূর্ণ।</div>
+<p class="text-p">ধরো পরে JavaScript দিয়ে নতুন <code>&lt;li&gt;</code> তৈরি করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> li = <span class="syn-fn">document</span>.<span class="syn-op">createElement</span>(&quot;li<span class="syn-str">&quot;);
+
+li.textContent = &quot;</span>Orange&quot;;
+
+list.<span class="syn-op">append</span>(li);</pre>
+</div>
+<p class="text-p">Parent-এর delegated listener থাকলে নতুন <code>li</code>-তেও click handling কাজ করতে পারে।</p>
+    </div>
+
+    <!-- 16.53 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.53</span> preventDefault()<code> বনাম </code>stopPropagation()</div>
+<p class="text-p">দুটো একদম আলাদা।</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>preventDefault()</code></td><td>Browser-এর default action বন্ধ</td></tr><tr><td><code>stopPropagation()</code></td><td>Event propagation বন্ধ</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.53 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-op">preventDefault</span>();</pre>
+</div>
+<p class="text-p">→ form submit/navigation-এর default behavior বন্ধ করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.53 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-op">stopPropagation</span>();</pre>
+</div>
+<p class="text-p">→ parent-এর দিকে event propagation বন্ধ করে।</p>
+    </div>
+
+    <!-- 16.54 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.54</span> stopImmediatePropagation()</div>
+<p class="text-p">একই element-এ multiple listener থাকলে অন্য listener-গুলোর execution-ও থামাতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.54 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-op">stopImmediatePropagation</span>();</pre>
+</div>
+<p class="text-p">এটি advanced use case-এ প্রয়োজন হয়।</p>
+    </div>
+
+    <!-- 16.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.55</span> Event Options</div>
+<p class="text-p"><code>addEventListener()</code>-এর third parameter-এ options দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.55 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(
+    <span class="syn-str">&quot;click&quot;</span>,
+    handleClick,
+    {
+        once: <span class="syn-bool">true</span>
+    }
+);</pre>
+</div>
+    </div>
+
+    <!-- 16.56 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.56</span> once</div>
+<div class="code-box">
+  <div class="code-top"><span>16.56 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(
+    <span class="syn-str">&quot;click&quot;</span>,
+    <span class="syn-kw">function</span> () {
+        <span class="syn-fn">console</span>.log(&quot;Runs once&quot;);
+    },
+    {
+        once: <span class="syn-bool">true</span>
+    }
+);</pre>
+</div>
+<p class="text-p">Button যতবার click করো, শুধু প্রথমবার execute হবে।</p>
+    </div>
+
+    <!-- 16.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.57</span> capture</div>
+<div class="code-box">
+  <div class="code-top"><span>16.57 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">addEventListener</span>(
+    <span class="syn-str">&quot;click&quot;</span>,
+    handleClick,
+    {
+        capture: <span class="syn-bool">true</span>
+    }
+);</pre>
+</div>
+<p class="text-p">Capture phase-এ listener চালাবে।</p>
+    </div>
+
+    <!-- 16.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.58</span> passive</div>
+<div class="code-box">
+  <div class="code-top"><span>16.58 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">window</span>.<span class="syn-op">addEventListener</span>(
+    <span class="syn-str">&quot;scroll&quot;</span>,
+    handleScroll,
+    {
+        passive: <span class="syn-bool">true</span>
+    }
+);</pre>
+</div>
+<p class="text-p">Browser-কে জানানো হয় যে listener সাধারণত <code>preventDefault()</code> ব্যবহার করবে না।</p>
+<div class="memory-box">বিশেষ করে touch/scroll performance-এর ক্ষেত্রে এটি গুরুত্বপূর্ণ হতে পারে।</div>
+    </div>
+
+    <div class="part-banner">Part 06 — Real-World Interactive Patterns &amp; Complete Event Flow (16.59 – 16.65)</div>
+
+    <!-- 16.59 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.59</span> Real-Life Example — Character Counter</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.59 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;textarea</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;message&quot;</span><span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/textarea</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>
+    Characters:
+    <span class="syn-fn">&lt;span</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;count&quot;</span><span class="syn-fn">&gt;</span>0<span class="syn-fn">&lt;/span</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.59 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;message<span class="syn-str">&quot;);
+let count = document.getElementById(&quot;</span>count<span class="syn-str">&quot;);
+
+message.addEventListener(&quot;</span>input&quot;, <span class="syn-kw">function</span> () {
+
+    count.<span class="syn-op">textContent</span> = message.<span class="syn-kw" style="color:#fdba74;">value</span>.length;
+
+});</pre>
+</div>
+<p class="text-p">User লিখলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Hello</pre>
+</div>
+<p class="text-p">দেখাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Characters: 5</pre>
+</div>
+    </div>
+
+    <!-- 16.60 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.60</span> Real-Life Example — Live Search</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.60 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;search&quot;</span> <span class="syn-kw">placeholder</span><span class="syn-op">=</span><span class="syn-str">&quot;Search...&quot;</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;ul</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;results&quot;</span><span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/ul</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.60 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> search = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;search<span class="syn-str">&quot;);
+let results = document.getElementById(&quot;</span>results<span class="syn-str">&quot;);
+
+let products = [
+    &quot;</span>Laptop<span class="syn-str">&quot;,
+    &quot;</span>Mouse<span class="syn-str">&quot;,
+    &quot;</span>Keyboard<span class="syn-str">&quot;,
+    &quot;</span>Monitor<span class="syn-str">&quot;
+];
+
+search.addEventListener(&quot;</span>input<span class="syn-str">&quot;, function () {
+
+    let keyword = search.value.toLowerCase();
+
+    results.innerHTML = &quot;</span><span class="syn-str">&quot;;
+
+    let filtered = products.filter(function (product) {
+        return product.toLowerCase().includes(keyword);
+    });
+
+    filtered.forEach(function (product) {
+
+        let li = document.createElement(&quot;</span>li&quot;);
+
+        li.<span class="syn-op">textContent</span> = product;
+
+        results.<span class="syn-op">append</span>(li);
+
+    });
+
+});</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">User types
+   ↓
+input event
+   ↓
+Search data
+   ↓
+filter()
+   ↓
+DOM update</div>
+    </div>
+
+    <!-- 16.61 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.61</span> Real-Life Example — Password Visibility</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.61 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;toggle&quot;</span><span class="syn-fn">&gt;</span>
+    Show
+<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.61 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> password = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;password<span class="syn-str">&quot;);
+let toggle = document.getElementById(&quot;</span><span class="syn-op">toggle</span><span class="syn-str">&quot;);
+
+toggle.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+
+    if (password.type === &quot;</span>password<span class="syn-str">&quot;) {
+
+        password.type = &quot;</span>text<span class="syn-str">&quot;;
+        toggle.textContent = &quot;</span>Hide<span class="syn-str">&quot;;
+
+    } else {
+
+        password.type = &quot;</span>password<span class="syn-str">&quot;;
+        toggle.textContent = &quot;</span>Show&quot;;
+
+    }
+
+});</pre>
+</div>
+<p class="text-p">এটি real-world login/signup form-এ ব্যবহৃত হয়।</p>
+    </div>
+
+    <!-- 16.62 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">16.62</span> Real-Life Example — Form Validation</div>
+<div class="code-box">
+  <div class="code-top"><span>16.62 JavaScript</span><span>Run</span></div>
+  <pre>form.<span class="syn-op">addEventListener</span>(&quot;submit<span class="syn-str">&quot;, function (event) {
+
+    event.preventDefault();
+
+    let email = document.getElementById(&quot;</span>email<span class="syn-str">&quot;).value;
+
+    if (!email.includes(&quot;</span>@&quot;)) {
+
+        <span class="syn-fn">console</span>.log(&quot;Invalid email<span class="syn-str">&quot;);
+
+        return;
+    }
+
+    console.log(&quot;</span>Form submitted successfully&quot;);
+
+});</pre>
+</div>
+    </div>
+
+    <!-- 16.63 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.63</span> Event Handler-এর ভিতরে `this</div>
+<p class="text-p">Regular function ব্যবহার করলে event listener-এর ক্ষেত্রে <code>this</code> সাধারণত যে element-এ listener attached হয়েছে সেটিকে refer করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.63 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, <span class="syn-kw">function</span> () {
+
+    <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>);
+
+});</pre>
+</div>
+<p class="text-p">সাধারণত:</p>
+<div class="ascii-tree-container">this → button</div>
+<p class="text-p">কিন্তু arrow function-এর নিজের <code>this</code> binding নেই।</p>
+<div class="code-box">
+  <div class="code-top"><span>16.63 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, () =&gt; {
+
+    <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>);
+
+});</pre>
+</div>
+<p class="text-p">এখানে <code>this</code> lexical context থেকে আসবে।</p>
+    </div>
+
+    <!-- 16.64 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.64</span> Event Listener + Arrow Function</div>
+<p class="text-p">Arrow function অবশ্যই ব্যবহার করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.64 JavaScript</span><span>Run</span></div>
+  <pre>button.<span class="syn-op">addEventListener</span>(&quot;click&quot;, (event) =&gt; {
+
+    <span class="syn-fn">console</span>.log(event.<span class="syn-kw" style="color:#fdba74;">target</span>);
+
+});</pre>
+</div>
+<p class="text-p">এক্ষেত্রে element access করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.64 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-kw" style="color:#fdba74;">currentTarget</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা সুবিধাজনক হতে পারে।</p>
+    </div>
+
+    <!-- 16.65 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16.65</span> Event Flow-এর Complete Example</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">16.65 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;parent&quot;</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;button&quot;</span><span class="syn-fn">&gt;</span>
+        Click Me
+    <span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>16.65 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> parent = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;parent<span class="syn-str">&quot;);
+let button = document.getElementById(&quot;</span>button<span class="syn-str">&quot;);
+
+parent.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function (event) {
+
+    console.log(
+        &quot;</span>Parent:&quot;,
+        event.<span class="syn-kw" style="color:#fdba74;">target</span>,
+        event.<span class="syn-kw" style="color:#fdba74;">currentTarget</span>
+    );
+
+});
+
+button.<span class="syn-op">addEventListener</span>(&quot;click<span class="syn-str">&quot;, function (event) {
+
+    console.log(
+        &quot;</span>Button:&quot;,
+        event.<span class="syn-kw" style="color:#fdba74;">target</span>,
+        event.<span class="syn-kw" style="color:#fdba74;">currentTarget</span>
+    );
+
+});</pre>
+</div>
+<p class="text-p">Button click করলে:</p>
+<div class="ascii-tree-container">Button: button button
+Parent: button parent</div>
+<p class="text-p">এটাই <code>target</code> বনাম <code>currentTarget</code> বোঝার সবচেয়ে ভালো example।</p>
+    </div>
+
+    <div class="part-banner">Part 07 — Event Mastery: Must Know, Cheat Sheet, Practice Lab &amp; Mental Map (16.66 – Post)</div>
+
+    <!-- 16.66 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">16.66</span> Must Know</div>
+<p class="text-p">Chapter 16 থেকে এগুলো অবশ্যই জানতে হবে:</p>
+<div class="section-subhead">Basic</div>
+<div class="code-box">
+  <div class="code-top"><span>16.66 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">addEventListener</span>()
+<span class="syn-op">removeEventListener</span>()</pre>
+</div>
+<div class="section-subhead">Mouse</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>click
+dblclick
+mousedown
+mouseup
+mousemove
+mouseenter
+mouseleave</pre>
+</div>
+<div class="section-subhead">Keyboard</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>keydown
+keyup</pre>
+</div>
+<div class="section-subhead">Form</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>input
+change
+focus
+blur
+submit</pre>
+</div>
+<div class="section-subhead">Browser</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>load
+DOMContentLoaded
+scroll
+resize</pre>
+</div>
+<div class="section-subhead">Event Object</div>
+<div class="code-box">
+  <div class="code-top"><span>16.66 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-kw" style="color:#fdba74;">target</span>
+event.<span class="syn-kw" style="color:#fdba74;">currentTarget</span>
+event.<span class="syn-kw" style="color:#fdba74;">type</span>
+event.<span class="syn-kw" style="color:#fdba74;">key</span>
+event.<span class="syn-kw" style="color:#fdba74;">code</span>
+event.<span class="syn-kw" style="color:#fdba74;">ctrlKey</span>
+event.<span class="syn-kw" style="color:#fdba74;">shiftKey</span>
+event.<span class="syn-kw" style="color:#fdba74;">altKey</span>
+event.<span class="syn-kw" style="color:#fdba74;">metaKey</span></pre>
+</div>
+<div class="section-subhead">Event Control</div>
+<div class="code-box">
+  <div class="code-top"><span>16.66 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">preventDefault</span>()
+<span class="syn-op">stopPropagation</span>()
+<span class="syn-op">stopImmediatePropagation</span>()</pre>
+</div>
+<div class="section-subhead">Event Propagation</div>
+<div class="ascii-tree-container">Capturing
+   ↓
+Target
+   ↓
+Bubbling</div>
+<div class="section-subhead">Event Delegation</div>
+<div class="code-box">
+  <div class="code-top"><span>16.66 JavaScript</span><span>Run</span></div>
+  <pre>parent.<span class="syn-op">addEventListener</span>(...)</pre>
+</div>
+    </div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet — Common Events &amp; Listeners</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-com">// Click</span>
+button.<span class="syn-op">addEventListener</span>(&quot;click<span class="syn-str">&quot;, handler);
+
+// Keyboard
+document.addEventListener(&quot;</span>keydown<span class="syn-str">&quot;, handler);
+
+// Input
+input.addEventListener(&quot;</span>input<span class="syn-str">&quot;, handler);
+
+// Form
+form.addEventListener(&quot;</span>submit&quot;, handler);
+
+<span class="syn-com">// Stop default</span>
+event.<span class="syn-op">preventDefault</span>();
+
+<span class="syn-com">// Stop bubbling</span>
+event.<span class="syn-op">stopPropagation</span>();
+
+<span class="syn-com">// Target</span>
+event.<span class="syn-kw" style="color:#fdba74;">target</span>;
+
+<span class="syn-com">// Listener element</span>
+event.<span class="syn-kw" style="color:#fdba74;">currentTarget</span>;
+
+<span class="syn-com">// Keyboard</span>
+event.<span class="syn-kw" style="color:#fdba74;">key</span>;
+event.<span class="syn-kw" style="color:#fdba74;">code</span>;
+
+<span class="syn-com">// Modifier</span>
+event.<span class="syn-kw" style="color:#fdba74;">ctrlKey</span>;
+event.<span class="syn-kw" style="color:#fdba74;">shiftKey</span>;
+event.<span class="syn-kw" style="color:#fdba74;">altKey</span>;
+event.<span class="syn-kw" style="color:#fdba74;">metaKey</span>;</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Chapter 16 Practice Set — 13 Hands-on Problems</div>
+
+      <div style="margin: 8px 0 4px 0;"><span class="sub-badge" style="background: #0284c7; color: white; padding: 2px 8px; font-size: 10px;">LEVEL: BEGINNER</span></div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #0284c7; margin-bottom: 6px;">
+<p class="text-p"><strong>1.</strong> একটি button click করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Hello JavaScript</pre>
+</div>
+<p class="text-p">console-এ দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #0284c7; margin-bottom: 6px;">
+<p class="text-p"><strong>2.</strong> একটি button click করলে তার text পরিবর্তন করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #0284c7; margin-bottom: 6px;">
+<p class="text-p"><strong>3.</strong> Mouse enter করলে box-এর color পরিবর্তন করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #0284c7; margin-bottom: 6px;">
+<p class="text-p"><strong>4.</strong> Keyboard-এ যেকোনো key press করলে key-এর নাম console-এ দেখাও।</p>
+      </div>
+      <div style="margin: 8px 0 4px 0;"><span class="sub-badge" style="background: #d97706; color: white; padding: 2px 8px; font-size: 10px;">LEVEL: INTERMEDIATE</span></div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #d97706; margin-bottom: 6px;">
+<p class="text-p"><strong>5.</strong> একটি input-এর value live <code>&lt;p&gt;</code> element-এ দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #d97706; margin-bottom: 6px;">
+<p class="text-p"><strong>6.</strong> একটি textarea-এর character counter তৈরি করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #d97706; margin-bottom: 6px;">
+<p class="text-p"><strong>7.</strong> একটি form submit করলে page reload বন্ধ করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #d97706; margin-bottom: 6px;">
+<p class="text-p"><strong>8.</strong> একটি checkbox checked কিনা তা <code>change</code> event দিয়ে detect করো।</p>
+      </div>
+      <div style="margin: 8px 0 4px 0;"><span class="sub-badge" style="background: #dc2626; color: white; padding: 2px 8px; font-size: 10px;">LEVEL: ADVANCED</span></div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>9.</strong> <code>Ctrl + S</code> shortcut detect করো এবং browser-এর default behavior prevent করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>10.</strong> Event bubbling demonstrate করো:</p>
+<div class="ascii-tree-container">Parent
+  ↓
+Child</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>11.</strong> <code>stopPropagation()</code> ব্যবহার করে bubbling বন্ধ করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>12.</strong> Event delegation ব্যবহার করে একটি dynamic Todo List বানাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>13.</strong> Parent-এর একটি listener ব্যবহার করে তার সব child button-এর click handle করো।</p>
+      </div>
+    </div>
+
+    <!-- Chapter 16 Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 16 Final Mental Map — Event Flow &amp; Propagation</div>
+<div class="memory-box">পুরো chapter-টা এই flow-তে মনে রাখো:</div>
+<div class="ascii-tree-container">User Action
+    ↓
+Event
+    ↓
+Event Listener
+    ↓
+Handler Function
+    ↓
+Event Object
+    ↓
+JavaScript Logic
+    ↓
+DOM Update
+    ↓
+UI Changes</div>
+<p class="text-p">আর advanced event system:</p>
+<div class="ascii-tree-container">Event
+  ↓
+Capturing
+  ↓
+Target
+  ↓
+Bubbling
+  ↓
+Event Delegation</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 সবচেয়ে গুরুত্বপূর্ণ পার্থক্য</div>
+<div class="ascii-tree-container">preventDefault()
+→ Browser-এর default কাজ বন্ধ করে
+
+stopPropagation()
+→ Event-এর propagation বন্ধ করে
+
+target
+→ যেখানে event ঘটেছে
+
+currentTarget
+→ যেখানে listener attached
+
+input
+→ user typing/change-এর সময় বারবার fire হতে পারে
+
+change
+→ value change/commit হওয়ার পর fire হয়</div>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 17 Preview — Forms &amp; Form Validation</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায়ে আমরা <strong>Chapter 17 — Forms &amp; Form Validation</strong>-এ যাব। সেখানে HTML forms-এর সাথে JavaScript ব্যবহার করে <strong>input validation, required fields, email/password validation, regex validation, error messages, FormData, submit handling এবং professional form validation structure</strong> বিস্তারিত শিখব।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

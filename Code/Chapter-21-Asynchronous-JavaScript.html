@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 21: Asynchronous JavaScript</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .banner-sub {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f8fafc;
+      padding: 7px 12px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 5px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      border-left: 4px solid #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: var(--font-code);
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--blue-accent);
+      padding-left: 5px;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-family: var(--font-heading);
+      font-size: 9.5px;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      margin-bottom: 3px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+    .memory-box {
+      background: #eff6ff;
+      border-left: 3px solid #3b82f6;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #1e40af;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #991b1b;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Lists */
+    .bullet-list {
+      margin: 3px 0 5px 14px;
+      font-size: 10.5px;
+      color: #334155;
+      line-height: 1.4;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.35;
+      padding: 6px 10px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #38bdf8; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+    .syn-regex { color: #facc15; }
+
+    /* ASCII Diagrams */
+    .ascii-tree-container {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.25;
+      padding: 6px 10px;
+      border-radius: 5px;
+      margin: 4px 0;
+      white-space: pre;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      border: 1px solid #1e293b;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 21: ASYNCHRONOUS JAVASCRIPT — EVENT LOOP, PROMISES, ASYNC/AWAIT &amp; FETCH API</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">56 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 15 — Asynchronous Programming &amp; Concurrency</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Event Loop, Microtasks, Promise &amp; async/await</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / WHATWG HTML Living Standard</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 8px 12px; margin-bottom: 6px;">
+      <h2 style="font-size: 12px; color: var(--navy-mid); margin-bottom: 3px;">Asynchronous JavaScript — নন-ব্লকিং মডেল ও অ্যাসিনক্রোনাস আর্কিটেকচার</h2>
+      <p class="text-p" style="font-size: 10px; margin-bottom: 3px;">JavaScript হলো একটি <strong>Single-Threaded</strong> ল্যাঙ্গুয়েজ, অর্থাৎ এটি একসাথে একটিমাত্র কাজ করতে পারে। কিন্তু বাস্তব অ্যাপ্লিকেশনে নেটওয়ার্ক রিকোয়েস্ট, সার্ভার থেকে ডাটা লোড, টাইমার বা ডেটাবেজ এক্সেসের মতো দীর্ঘস্থায়ী কাজের সময় ব্রাউজার যেন জমে (Freeze) না যায়, সেজন্য জাভাস্ক্রিপ্ট <strong>Non-blocking Asynchronous</strong> মডেল ব্যবহার করে।</p>
+      <div class="def-box" style="margin: 2px 0; padding: 4px 6px;">
+        <div class="def-text" style="font-size: 9px;">Call Stack (JS Engine) &nbsp;→&nbsp; Web APIs (Timer/Network) &nbsp;→&nbsp; Callback / Microtask Queue &nbsp;→&nbsp; Event Loop</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 2px; font-size: 9.5px;">React, Next.js, Node.js কিংবা Express-এ API Integration ও Backend Communication-এর মূল চালিকাশক্তিই হলো Asynchronous JavaScript। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Asynchronous Foundations, Browser Runtime, Call Stack &amp; Event Loop (21.1 – 21.10)</div>
+
+    <!-- 21.1 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff; page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.1</span> Synchronous vs Asynchronous</div>
+<div class="section-subhead">🔹 Synchronous JavaScript</div>
+<p class="text-p">Synchronous মানে:</p>
+<div class="def-box">
+  <div class="def-text"><strong>একটি কাজ শেষ হওয়ার পর পরের কাজ শুরু হবে।</strong></div>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.1 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Task <span class="syn-num">1</span><span class="syn-str">&quot;);
+console.log(&quot;</span>Task <span class="syn-num">2</span><span class="syn-str">&quot;);
+console.log(&quot;</span>Task <span class="syn-num">3</span>&quot;);</pre>
+</div>
+<div class="ascii-tree-container">Task 1
+Task 2
+Task 3</div>
+<p class="text-p">এখানে JavaScript:</p>
+<div class="ascii-tree-container">Task 1 → শেষ
+       ↓
+Task 2 → শেষ
+       ↓
+Task 3 → শেষ</div>
+<div class="sub-badge">💡 🔹 Real-Life Example</div>
+<p class="text-p">ধরো তুমি restaurant-এ গেলে।</p>
+<p class="text-p">একজন waiter:</p>
+<ul class="bullet-list"><li>Customer 1-এর order নিল</li><li>Customer 1-এর খাবার তৈরি হওয়া পর্যন্ত দাঁড়িয়ে থাকল</li><li>খাবার দিল</li><li>তারপর Customer 2-এর order নিল</li></ul>
+<p class="text-p">এটা inefficient।</p>
+<p class="text-p">এটাই synchronous-এর মতো।</p>
+    </div>
+
+    <!-- 21.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.2</span> Asynchronous JavaScript</div>
+<p class="text-p">Asynchronous মানে:</p>
+<div class="def-box">
+  <div class="def-text">একটি কাজের জন্য অপেক্ষা করতে গিয়ে JavaScript পুরো program-কে আটকে রাখে না।</div>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.2 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Start<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>Data received<span class="syn-str">&quot;);
+}, 2000);
+
+console.log(&quot;</span>End&quot;);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Start
+End
+Data received</pre>
+</div>
+<p class="text-p">এখানে কী হলো?</p>
+<div class="ascii-tree-container">Start
+  ↓
+setTimeout শুরু
+  ↓
+JavaScript অপেক্ষা না করে
+  ↓
+End
+  ↓
+2 seconds পরে
+  ↓
+Data received</div>
+    </div>
+
+    <!-- 21.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.3</span> setTimeout()</div>
+<p class="text-p"><code>setTimeout()</code> নির্দিষ্ট সময় পরে একটি function execute করে।</p>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span>21.3 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-op">setTimeout</span>(<span class="syn-kw">function</span>, delay);</pre>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.3 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-op">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Hello&quot;);
+}, <span class="syn-num">3000</span>);</pre>
+</div>
+<p class="text-p">৩ সেকেন্ড পরে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Hello</pre>
+</div>
+<div class="sub-badge">💡 Real-Life Example</div>
+<p class="text-p">তুমি বললে:</p>
+<div class="def-box">
+  <div class="def-text">&quot;আমাকে 5 মিনিট পরে মনে করিয়ে দিও।&quot;</div>
+</div>
+<p class="text-p">JavaScript-এর ক্ষেত্রে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.3 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-op">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Reminder!&quot;);
+}, <span class="syn-num">5000</span>);</pre>
+</div>
+    </div>
+
+    <!-- 21.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.4</span> setTimeout()` কি JavaScript-এর অংশ?</div>
+<div class="memory-box">এখানে একটি গুরুত্বপূর্ণ বিষয় আছে।</div>
+<p class="text-p"><code>setTimeout()</code> আসলে JavaScript language-এর core feature নয়।</p>
+<p class="text-p">এটি environment থেকে আসে।</p>
+<p class="text-p">Browser-এ:</p>
+<div class="ascii-tree-container">JavaScript
+   ↓
+Browser Web APIs
+   ↓
+setTimeout()</div>
+<p class="text-p">Node.js-এ Node-এর runtime timer APIs provide করে।</p>
+    </div>
+
+    <!-- 21.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.5</span> JavaScript কেন Async হতে পারে?</div>
+<p class="text-p">JavaScript-এর মূল execution model হলো <strong>single-threaded</strong>।</p>
+<p class="text-p">অর্থাৎ সাধারণভাবে একটি JavaScript execution thread এক সময়ে একটি কাজ execute করে।</p>
+<p class="text-p">কিন্তু Browser environment বিভিন্ন কাজ JavaScript-এর বাইরে handle করতে পারে।</p>
+<p class="text-p">যেমন:</p>
+<div class="ascii-tree-container">JavaScript
+   ↓
+Web API
+   ↓
+Timer / Network / DOM
+   ↓
+Task Queue
+   ↓
+Event Loop
+   ↓
+JavaScript</div>
+<div class="memory-box">এই mechanism-টাই asynchronous JavaScript বোঝার জন্য খুব গুরুত্বপূর্ণ।</div>
+    </div>
+
+    <!-- 21.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.6</span> Call Stack</div>
+<p class="text-p"><strong>Call Stack</strong> হলো JavaScript-এর execution-এর জায়গা।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.6 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">function</span> one() {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;One<span class="syn-str">&quot;);
+}
+
+function two() {
+    one();
+    console.log(&quot;</span>Two&quot;);
+}
+
+two();</pre>
+</div>
+<p class="text-p">Execution:</p>
+<div class="ascii-tree-container">two()
+ ↓
+one()
+ ↓
+console.log()</div>
+<p class="text-p">Call Stack ধারণাগতভাবে:</p>
+<div class="ascii-tree-container">┌───────────────┐
+│ console.log   │
+├───────────────┤
+│ one()         │
+├───────────────┤
+│ two()         │
+└───────────────┘</div>
+<p class="text-p">যে function আগে আসে, তার execution complete হয়ে stack থেকে বের হয়।</p>
+    </div>
+
+    <!-- 21.7 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.7</span> Event Loop</div>
+<p class="text-p">এখন আসল magic:</p>
+<div class="section-subhead">Event Loop কী?</div>
+<p class="text-p">Event Loop check করে:</p>
+<div class="def-box">
+  <div class="def-text">&quot;Call Stack কি empty?&quot;</div>
+</div>
+<p class="text-p">যদি empty হয় এবং queue-তে pending কাজ থাকে, তাহলে appropriate callback execution-এর জন্য stack-এ পাঠানো হয়।</p>
+<p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">             JavaScript
+                 │
+                 ▼
+            Call Stack
+                 │
+                 ▼
+        ┌────────────────┐
+        │   Web APIs     │
+        │ Timer / Fetch  │
+        └────────────────┘
+                 │
+                 ▼
+              Queue
+                 │
+                 ▼
+            Event Loop
+                 │
+          Stack empty?
+                 │
+                 ▼
+            Call Stack</div>
+    </div>
+
+    <!-- 21.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.8</span> Callback Function</div>
+<p class="text-p">Callback হলো:</p>
+<div class="def-box">
+  <div class="def-text">একটি function-কে অন্য function-এর argument হিসেবে দেওয়া, যাতে পরে সেটি execute করা যায়।</div>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.8 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Hello <span class="syn-str">&quot; + name);
+}
+
+function processUser(callback) {
+    callback(&quot;</span>Shariar&quot;);
+}
+
+processUser(greet);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Hello Shariar</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.8 JavaScript Async</span><span>ES2026</span></div>
+  <pre>greet</pre>
+</div>
+<p class="text-p">হলো callback function।</p>
+    </div>
+
+    <!-- 21.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.9</span> Asynchronous Callback</div>
+<div class="code-box">
+  <div class="code-top"><span>21.9 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Start<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>Hello<span class="syn-str">&quot;);
+}, 2000);
+
+console.log(&quot;</span>End&quot;);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Start
+End
+Hello</pre>
+</div>
+<p class="text-p"><code>setTimeout()</code>-এর ভিতরের function হলো asynchronous callback।</p>
+    </div>
+
+    <!-- 21.10 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">21.10</span> Callback Hell</div>
+<p class="text-p">একাধিক asynchronous কাজ একটার result-এর উপর আরেকটা নির্ভর করলে code nested হয়ে যেতে পারে।</p>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.10 JavaScript Async</span><span>ES2026</span></div>
+  <pre>getUser(<span class="syn-kw">function</span>(user) {
+
+    getPosts(user, <span class="syn-kw">function</span>(posts) {
+
+        getComments(posts, <span class="syn-kw">function</span>(comments) {
+
+            getLikes(comments, <span class="syn-kw">function</span>(likes) {
+
+                <span class="syn-fn">console</span>.<span class="syn-op">log</span>(likes);
+
+            });
+
+        });
+
+    });
+
+});</pre>
+</div>
+<p class="text-p">এটাকে দেখতে অনেকটা:</p>
+<div class="ascii-tree-container">getUser()
+   ↓
+   getPosts()
+      ↓
+      getComments()
+         ↓
+         getLikes()</div>
+<p class="text-p">এটাকে বলা হয়:</p>
+<p class="text-p"># 🔥 Callback Hell</p>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 কেন সমস্যা?</div>
+<ul class="bullet-list"><li>Code difficult to read</li><li>Debugging কঠিন</li><li>Error handling complicated</li><li>Maintenance কঠিন</li><li>Nested code বাড়তে থাকে</li></ul>
+<div class="warn-box">এই সমস্যা solve করার জন্য এসেছে:</div>
+<p class="text-p"># ⭐ Promise</p>
+    </div>
+
+    <div class="part-banner">Part 02 — Promises Architecture: Creation, Lifecycle, Chaining &amp; Error Handling (21.11 – 21.23)</div>
+
+    <!-- 21.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.11</span> Promise</div>
+<p class="text-p">Promise হলো:</p>
+<div class="def-box">
+  <div class="def-text">ভবিষ্যতে কোনো asynchronous operation-এর result পাওয়া যাবে—এই promise/প্রতিশ্রুতি।</div>
+</div>
+<p class="text-p">Real-life example:</p>
+<p class="text-p">তুমি online-এ product order করলে।</p>
+<p class="text-p">Order করার পর:</p>
+<div class="ascii-tree-container">Order placed
+     ↓
+Processing
+     ↓
+Shipped
+     ↓
+Delivered</div>
+<p class="text-p">তুমি জানো result এখনো আসেনি, কিন্তু পরে আসবে।</p>
+<p class="text-p">এটাই Promise-এর ধারণার মতো।</p>
+    </div>
+
+    <!-- 21.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.12</span> Promise-এর 3টি State</div>
+<p class="text-p">একটি Promise-এর প্রধান ৩টি state:</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>State</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>pending</code></td><td>কাজ চলছে</td></tr><tr><td><code>fulfilled</code></td><td>কাজ সফল হয়েছে</td></tr><tr><td><code>rejected</code></td><td>কাজ ব্যর্থ হয়েছে</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Diagram:</p>
+<div class="ascii-tree-container">             Promise
+                │
+             Pending
+             /     \
+            /       \
+           ▼         ▼
+      Fulfilled   Rejected</div>
+    </div>
+
+    <!-- 21.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.13</span> Promise তৈরি করা</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span>21.13 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> promise = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>, <span class="syn-op">reject</span>) =&gt; {
+
+});</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.13 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-op">resolve</span>()</pre>
+</div>
+<p class="text-p">মানে success।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.13 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-op">reject</span>()</pre>
+</div>
+<p class="text-p">মানে failure।</p>
+    </div>
+
+    <!-- 21.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.14</span> Simple Promise Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.14 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> promise = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>, <span class="syn-op">reject</span>) =&gt; {
+
+    <span class="syn-kw">let</span> success = <span class="syn-bool">true</span>;
+
+    <span class="syn-kw">if</span> (success) {
+        <span class="syn-op">resolve</span>(&quot;Operation successful!&quot;);
+    } <span class="syn-kw">else</span> {
+        <span class="syn-op">reject</span>(&quot;Operation failed!&quot;);
+    }
+
+});</pre>
+</div>
+<p class="text-p">Promise এখন:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>fulfilled</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.14 JavaScript Async</span><span>ES2026</span></div>
+  <pre>success = <span class="syn-bool">true</span></pre>
+</div>
+    </div>
+
+    <!-- 21.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.15</span> Promise-এর Result নেওয়া — `.then()</div>
+<div class="code-box">
+  <div class="code-top"><span>21.15 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> promise = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>, <span class="syn-op">reject</span>) =&gt; {
+    <span class="syn-op">resolve</span>(&quot;Data loaded!&quot;);
+});
+
+promise.<span class="syn-op">then</span>((result) =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+});</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Data loaded!</pre>
+</div>
+<p class="text-p"><code>.then()</code> সাধারণত successful result handle করে।</p>
+    </div>
+
+    <!-- 21.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.16</span> .catch()</div>
+<p class="text-p">যদি Promise reject হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.16 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> promise = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>, <span class="syn-op">reject</span>) =&gt; {
+    <span class="syn-op">reject</span>(&quot;Something went wrong!&quot;);
+});
+
+promise
+    .<span class="syn-op">then</span>((result) =&gt; {
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+    })
+    .<span class="syn-kw">catch</span>((<span class="syn-op">error</span>) =&gt; {
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">error</span>);
+    });</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Something went wrong!</pre>
+</div>
+    </div>
+
+    <!-- 21.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.17</span> .finally()</div>
+<p class="text-p"><code>.finally()</code> success বা failure—দুই ক্ষেত্রেই execute হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.17 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> promise = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>) =&gt; {
+    <span class="syn-op">resolve</span>(&quot;Success<span class="syn-str">&quot;);
+});
+
+promise
+    .then((result) =&gt; {
+        console.log(result);
+    })
+    .catch((error) =&gt; {
+        console.log(error);
+    })
+    .finally(() =&gt; {
+        console.log(&quot;</span>Finished&quot;);
+    });</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Success
+Finished</pre>
+</div>
+    </div>
+
+    <!-- 21.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.18</span> Promise দিয়ে Delay তৈরি</div>
+<div class="code-box">
+  <div class="code-top"><span>21.18 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">function</span> delay(ms) {
+    <span class="syn-kw">return</span> <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>) =&gt; {
+        <span class="syn-op">setTimeout</span>(<span class="syn-op">resolve</span>, ms);
+    });
+}
+
+delay(<span class="syn-num">2000</span>).<span class="syn-op">then</span>(() =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;<span class="syn-num">2</span> seconds completed&quot;);
+});</pre>
+</div>
+<p class="text-p">২ seconds পরে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>2 seconds completed</pre>
+</div>
+    </div>
+
+    <!-- 21.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.19</span> Promise Chaining</div>
+<p class="text-p">একটি Promise-এর result দিয়ে পরের কাজ করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.19 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Promise</span>.<span class="syn-op">resolve</span>(<span class="syn-num">10</span>)
+    .<span class="syn-op">then</span>((number) =&gt; {
+        <span class="syn-kw">return</span> number * <span class="syn-num">2</span>;
+    })
+    .<span class="syn-op">then</span>((number) =&gt; {
+        <span class="syn-kw">return</span> number + <span class="syn-num">5</span>;
+    })
+    .<span class="syn-op">then</span>((result) =&gt; {
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+    });</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>25</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">10
+ ↓ ×2
+20
+ ↓ +5
+25</div>
+    </div>
+
+    <!-- 21.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.20</span> Promise Chain কেন গুরুত্বপূর্ণ?</div>
+<p class="text-p">Real API application:</p>
+<div class="ascii-tree-container">Login
+ ↓
+Get User
+ ↓
+Get Profile
+ ↓
+Get Orders
+ ↓
+Show Dashboard</div>
+<p class="text-p">Promise chaining দিয়ে এগুলো manage করা যায়।</p>
+    </div>
+
+    <!-- 21.21 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">21.21</span> Promise Error Handling</div>
+<div class="code-box">
+  <div class="code-top"><span>21.21 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Promise</span>.<span class="syn-op">reject</span>(&quot;Server <span class="syn-fn">Error</span><span class="syn-str">&quot;)
+    .then((data) =&gt; {
+        console.log(data);
+    })
+    .catch((error) =&gt; {
+        console.error(&quot;</span><span class="syn-fn">Error</span>:&quot;, <span class="syn-op">error</span>);
+    });</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Error: Server Error</pre>
+</div>
+    </div>
+
+    <!-- 21.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.22</span> Promise.resolve()</div>
+<p class="text-p">Already successful Promise তৈরি করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.22 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> promise = <span class="syn-fn">Promise</span>.<span class="syn-op">resolve</span>(&quot;Hello&quot;);
+
+promise.<span class="syn-op">then</span>((value) =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(value);
+});</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Hello</pre>
+</div>
+    </div>
+
+    <!-- 21.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.23</span> Promise.reject()</div>
+<div class="code-box">
+  <div class="code-top"><span>21.23 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> promise = <span class="syn-fn">Promise</span>.<span class="syn-op">reject</span>(&quot;Failed&quot;);
+
+promise.<span class="syn-kw">catch</span>((<span class="syn-op">error</span>) =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">error</span>);
+});</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Failed</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Promise Combinators: Concurrency &amp; Parallel Execution (21.24 – 21.28)</div>
+
+    <!-- 21.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.24</span> Promise.all()</div>
+<p class="text-p">একসাথে একাধিক Promise চালাতে খুব useful।</p>
+<p class="text-p">ধরো:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>User data
+Product data
+Order data</pre>
+</div>
+<p class="text-p">তিনটিই দরকার।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.24 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> userPromise = <span class="syn-fn">Promise</span>.<span class="syn-op">resolve</span>(&quot;User<span class="syn-str">&quot;);
+const productPromise = Promise.resolve(&quot;</span>Products<span class="syn-str">&quot;);
+const orderPromise = Promise.resolve(&quot;</span>Orders&quot;);
+
+<span class="syn-fn">Promise</span>.<span class="syn-op">all</span>([
+    userPromise,
+    productPromise,
+    orderPromise
+])
+.<span class="syn-op">then</span>((results) =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(results);
+});</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>[&quot;User&quot;, &quot;Products&quot;, &quot;Orders&quot;]</pre>
+</div>
+<div class="sub-badge">💡 Real-Life Example</div>
+<p class="text-p">Dashboard load করতে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>GET /user
+GET /products
+GET /orders</pre>
+</div>
+<p class="text-p">সবগুলো successful হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.24 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Promise</span>.<span class="syn-op">all</span>([
+    getUser(),
+    getProducts(),
+    getOrders()
+])</pre>
+</div>
+<p class="text-p">তারপর dashboard render করা যায়।</p>
+    </div>
+
+    <!-- 21.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.25</span> Promise.all()`-এর গুরুত্বপূর্ণ বিষয়</div>
+<p class="text-p">যদি একটি Promise reject করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.25 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Promise</span>.<span class="syn-op">all</span>([
+    <span class="syn-fn">Promise</span>.<span class="syn-op">resolve</span>(&quot;A<span class="syn-str">&quot;),
+    Promise.reject(&quot;</span><span class="syn-fn">Error</span><span class="syn-str">&quot;),
+    Promise.resolve(&quot;</span>C&quot;)
+])
+.<span class="syn-kw">catch</span>((<span class="syn-op">error</span>) =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">error</span>);
+});</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Error</pre>
+</div>
+<p class="text-p">অর্থাৎ <code>Promise.all()</code> সাধারণভাবে সবগুলো সফল না হলে reject করে।</p>
+    </div>
+
+    <!-- 21.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.26</span> Promise.allSettled()</div>
+<p class="text-p">সব Promise-এর final result জানতে চাইলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.26 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Promise</span>.<span class="syn-op">allSettled</span>([
+    <span class="syn-fn">Promise</span>.<span class="syn-op">resolve</span>(&quot;Success<span class="syn-str">&quot;),
+    Promise.reject(&quot;</span>Failed&quot;)
+])
+.<span class="syn-op">then</span>((results) =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(results);
+});</pre>
+</div>
+<p class="text-p">Result conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.26 JavaScript Async</span><span>ES2026</span></div>
+  <pre>[
+    {
+        status: <span class="syn-str">&quot;fulfilled&quot;</span>,
+        value: <span class="syn-str">&quot;Success&quot;</span>
+    },
+    {
+        status: <span class="syn-str">&quot;rejected&quot;</span>,
+        reason: <span class="syn-str">&quot;Failed&quot;</span>
+    }
+]</pre>
+</div>
+<p class="text-p">এখানে একটি fail করলেও অন্য result পাওয়া যায়।</p>
+    </div>
+
+    <!-- 21.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.27</span> Promise.race()</div>
+<p class="text-p">যে Promise আগে settle করবে, তার result পাওয়া যাবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.27 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> first = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>) =&gt; {
+    <span class="syn-op">setTimeout</span>(() =&gt; <span class="syn-op">resolve</span>(&quot;First<span class="syn-str">&quot;), 1000);
+});
+
+const second = new Promise((resolve) =&gt; {
+    setTimeout(() =&gt; resolve(&quot;</span>Second&quot;), <span class="syn-num">2000</span>);
+});
+
+<span class="syn-fn">Promise</span>.<span class="syn-op">race</span>([first, second])
+    .<span class="syn-op">then</span>((result) =&gt; {
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+    });</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>First</pre>
+</div>
+<p class="text-p">কারণ <code>first</code> আগে complete করেছে।</p>
+    </div>
+
+    <!-- 21.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.28</span> Promise.any()</div>
+<p class="text-p">যে Promise প্রথম <strong>fulfilled</strong> হবে তার result দেয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.28 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Promise</span>.<span class="syn-op">any</span>([
+    <span class="syn-fn">Promise</span>.<span class="syn-op">reject</span>(&quot;Failed <span class="syn-num">1</span><span class="syn-str">&quot;),
+    Promise.resolve(&quot;</span>Success<span class="syn-str">&quot;),
+    Promise.resolve(&quot;</span>Success <span class="syn-num">2</span>&quot;)
+])
+.<span class="syn-op">then</span>((result) =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+});</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Success</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Modern Async/Await: Syntactic Sugar, Flow Control &amp; Loop Patterns (21.29 – 21.38)</div>
+
+    <!-- 21.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.29</span> async` Function</div>
+<p class="text-p">Promise handling আরও সহজ করার জন্য:</p>
+<p class="text-p"># ⭐ <code>async</code></p>
+<p class="text-p">একটি function-এর সামনে <code>async</code> দিলে function সবসময় Promise return করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.29 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> greet() {
+    <span class="syn-kw">return</span> <span class="syn-str">&quot;Hello&quot;</span>;
+}</pre>
+</div>
+<p class="text-p">এটা conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.29 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Promise</span>.<span class="syn-op">resolve</span>(&quot;Hello&quot;)</pre>
+</div>
+<p class="text-p">এর মতো।</p>
+    </div>
+
+    <!-- 21.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.30</span> async` Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.30 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> getMessage() {
+    <span class="syn-kw">return</span> <span class="syn-str">&quot;Hello Shariar&quot;</span>;
+}
+
+getMessage().<span class="syn-op">then</span>((message) =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(message);
+});</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Hello Shariar</pre>
+</div>
+    </div>
+
+    <!-- 21.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.31</span> await</div>
+<p class="text-p"><code>await</code> Promise-এর result পাওয়ার জন্য অপেক্ষা করার মতো syntax দেয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.31 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">function</span> getData() {
+    <span class="syn-kw">return</span> <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>) =&gt; {
+        <span class="syn-op">setTimeout</span>(() =&gt; {
+            <span class="syn-op">resolve</span>(&quot;Data received&quot;);
+        }, <span class="syn-num">2000</span>);
+    });
+}
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> showData() {
+
+    <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> getData();
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);
+}
+
+showData();</pre>
+</div>
+<p class="text-p">২ seconds পরে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Data received</pre>
+</div>
+    </div>
+
+    <!-- 21.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.32</span> async/await` কেন এত জনপ্রিয়?</div>
+<p class="text-p">আগে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.32 JavaScript Async</span><span>ES2026</span></div>
+  <pre>getData()
+    .<span class="syn-op">then</span>((data) =&gt; {
+        <span class="syn-kw">return</span> processData(data);
+    })
+    .<span class="syn-op">then</span>((result) =&gt; {
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+    });</pre>
+</div>
+<p class="text-p"><code>async/await</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.32 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> run() {
+
+    <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> getData();
+
+    <span class="syn-kw">const</span> result = <span class="syn-kw">await</span> processData(data);
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+}</pre>
+</div>
+<p class="text-p">দ্বিতীয়টি অনেকটা synchronous code-এর মতো readable।</p>
+    </div>
+
+    <!-- 21.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.33</span> await` কি পুরো JavaScript বন্ধ করে দেয়?</div>
+<p class="text-p">❌ না।</p>
+<div class="memory-box">এটি খুব গুরুত্বপূর্ণ।</div>
+<div class="code-box">
+  <div class="code-top"><span>21.33 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> test() {
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;A<span class="syn-str">&quot;);
+
+    await delay(2000);
+
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+}
+
+test();
+
+console.log(&quot;</span>C&quot;);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>A
+C
+B</pre>
+</div>
+<p class="text-p"><code>await</code> asynchronous function-এর ওই অংশের execution pause করে, কিন্তু পুরো JavaScript environment/blocking করে না।</p>
+    </div>
+
+    <!-- 21.34 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">21.34</span> async/await` Error Handling</div>
+<p class="text-p"><code>await</code>-এর সাথে সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.34 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">try</span>/<span class="syn-kw">catch</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.34 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">function</span> getData() {
+    <span class="syn-kw">return</span> <span class="syn-fn">Promise</span>.<span class="syn-op">reject</span>(&quot;Server <span class="syn-fn">Error</span><span class="syn-str">&quot;);
+}
+
+async function loadData() {
+
+    try {
+
+        const data = await getData();
+
+        console.log(data);
+
+    } catch (error) {
+
+        console.log(&quot;</span><span class="syn-fn">Error</span>:&quot;, <span class="syn-op">error</span>);
+
+    }
+}
+
+loadData();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Error: Server Error</pre>
+</div>
+    </div>
+
+    <!-- 21.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.35</span> try/catch/finally` + async</div>
+<div class="code-box">
+  <div class="code-top"><span>21.35 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> loadData() {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> getData();
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);
+
+    } <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;<span class="syn-fn">Error</span>:&quot;, <span class="syn-op">error</span>);
+
+    } <span class="syn-kw">finally</span> {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;<span class="syn-fn">Request</span> finished&quot;);
+
+    }
+}</pre>
+</div>
+    </div>
+
+    <!-- 21.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.36</span> Sequential Async Operations</div>
+<p class="text-p">ধরো:</p>
+<div class="ascii-tree-container">Login
+ ↓
+Get profile
+ ↓
+Get orders</div>
+<p class="text-p">একটির result ছাড়া পরেরটি চলবে না।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.36 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> run() {
+
+    <span class="syn-kw">const</span> user = <span class="syn-kw">await</span> login();
+
+    <span class="syn-kw">const</span> profile = <span class="syn-kw">await</span> getProfile(user);
+
+    <span class="syn-kw">const</span> orders = <span class="syn-kw">await</span> getOrders(profile);
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(orders);
+}</pre>
+</div>
+<p class="text-p">এটা sequential।</p>
+    </div>
+
+    <!-- 21.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.37</span> Parallel Async Operations</div>
+<p class="text-p">যদি কাজগুলো একে অপরের উপর depend না করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.37 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> loadDashboard() {
+
+    <span class="syn-kw">const</span> [users, products, orders] = <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span class="syn-op">all</span>([
+        getUsers(),
+        getProducts(),
+        getOrders()
+    ]);
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(users);
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(products);
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(orders);
+}</pre>
+</div>
+<p class="text-p">এখানে তিনটি operation parallelভাবে শুরু হয়।</p>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 Important</div>
+<p class="text-p">এটা:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.37 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> users = <span class="syn-kw">await</span> getUsers();
+<span class="syn-kw">const</span> products = <span class="syn-kw">await</span> getProducts();
+<span class="syn-kw">const</span> orders = <span class="syn-kw">await</span> getOrders();</pre>
+</div>
+<p class="text-p">এর চেয়ে independent operations-এর ক্ষেত্রে বেশি efficient হতে পারে।</p>
+    </div>
+
+    <!-- 21.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.38</span> await` Inside Loop</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.38 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> process() {
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">const</span> id <span class="syn-kw">of</span> [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>]) {
+
+        <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> getData(id);
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);
+    }
+}</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">1 → complete
+↓
+2 → complete
+↓
+3 → complete</div>
+<p class="text-p">Sequential execution।</p>
+<p class="text-p">যদি independent হয়, তাহলে অনেক সময়:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.38 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> results = <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span class="syn-op">all</span>(
+    [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>].<span class="syn-op">map</span>(id =&gt; getData(id))
+);</pre>
+</div>
+<p class="text-p">better approach হতে পারে।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Engine Internals, Microtasks, Fetch API &amp; Production Architecture (21.39 – 21.55)</div>
+
+    <!-- 21.39 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.39</span> Microtask vs Macrotask</div>
+<p class="text-p">এখন একটু advanced concept।</p>
+<p class="text-p">JavaScript asynchronous execution-এ বিভিন্ন queue থাকে।</p>
+<div class="section-subhead">সাধারণভাবে:</div>
+<p class="text-p"><strong>Microtask Queue</strong></p>
+<ul class="bullet-list"><li>Promise <code>.then()</code></li><li><code>.catch()</code></li><li><code>.finally()</code></li><li><code>queueMicrotask()</code></li></ul>
+<p class="text-p"><strong>Task/Macrotask Queue</strong></p>
+<ul class="bullet-list"><li><code>setTimeout</code></li><li><code>setInterval</code></li><li>কিছু browser events</li></ul>
+    </div>
+
+    <!-- 21.40 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.40</span> Event Loop Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.40 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;<span class="syn-num">1</span><span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span><span class="syn-num">2</span><span class="syn-str">&quot;);
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span><span class="syn-num">3</span><span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span><span class="syn-num">4</span>&quot;);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>1
+4
+3
+2</pre>
+</div>
+<p class="text-p">কেন?</p>
+<p class="text-p">প্রথমে synchronous:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>1
+4</pre>
+</div>
+<p class="text-p">তারপর microtask:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>3</pre>
+</div>
+<p class="text-p">তারপর task:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>2</pre>
+</div>
+<p class="text-p">অর্থাৎ conceptually:</p>
+<div class="ascii-tree-container">Synchronous code
+       ↓
+Microtasks
+       ↓
+Tasks</div>
+    </div>
+
+    <!-- 21.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.41</span> setTimeout(..., 0)` মানে কি সঙ্গে সঙ্গে?</div>
+<p class="text-p">❌ না।</p>
+<div class="code-box">
+  <div class="code-top"><span>21.41 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-op">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Hello&quot;);
+}, <span class="syn-num">0</span>);</pre>
+</div>
+<p class="text-p">এর অর্থ:</p>
+<div class="def-box">
+  <div class="def-text">callback-টি যত দ্রুত সম্ভব পরে task queue-তে handle করার সুযোগ পাবে।</div>
+</div>
+<p class="text-p">এটি synchronous code-এর আগে execute হয় না।</p>
+    </div>
+
+    <!-- 21.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.42</span> Fetch API</div>
+<div class="memory-box">এখন সবচেয়ে গুরুত্বপূর্ণ practical বিষয়:</div>
+<p class="text-p"># 🌐 Fetch API</p>
+<div class="memory-box">Frontend developer হিসেবে server/API থেকে data আনতে <code>fetch()</code> খুব গুরুত্বপূর্ণ।</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>21.42 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-op">fetch</span>(&quot;https://example.com&quot;)
+    .<span class="syn-op">then</span>(response =&gt; {
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(response);
+    });</pre>
+</div>
+<p class="text-p"><code>fetch()</code> একটি Promise return করে।</p>
+    </div>
+
+    <!-- 21.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.43</span> Fetch + JSON</div>
+<p class="text-p">API থেকে JSON data আনতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.43 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-op">fetch</span>(&quot;https://api.example.com/users&quot;)
+    .<span class="syn-op">then</span>(response =&gt; response.<span class="syn-op">json</span>())
+    .<span class="syn-op">then</span>(data =&gt; {
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);
+    })
+    .<span class="syn-kw">catch</span>(<span class="syn-op">error</span> =&gt; {
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">error</span>);
+    });</pre>
+</div>
+<p class="text-p">Flow:</p>
+<div class="ascii-tree-container">fetch()
+ ↓
+Response
+ ↓
+response.json()
+ ↓
+JSON data
+ ↓
+Use data</div>
+    </div>
+
+    <!-- 21.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.44</span> Fetch with `async/await</div>
+<p class="text-p">এটা আরও readable:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.44 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> getUsers() {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(
+            <span class="syn-str">&quot;https://api.example.com/users&quot;</span>
+        );
+
+        <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);
+
+    } <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">error</span>(<span class="syn-op">error</span>);
+
+    }
+}
+
+getUsers();</pre>
+</div>
+    </div>
+
+    <!-- 21.45 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">21.45</span> HTTP Error সম্পর্কে গুরুত্বপূর্ণ বিষয়</div>
+<p class="text-p"><code>fetch()</code> সাধারণত HTTP <code>404</code> বা <code>500</code> পেলেই Promise reject করে না।</p>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.45 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(url);</pre>
+</div>
+<p class="text-p">এরপর check করা ভালো:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.45 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">if</span> (!response.ok) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(`HTTP <span class="syn-fn">Error</span>: ${response.status}`);
+}</pre>
+</div>
+<p class="text-p">Complete:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.45 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> getUsers() {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(
+            <span class="syn-str">&quot;https://example.com/users&quot;</span>
+        );
+
+        <span class="syn-kw">if</span> (!response.ok) {
+            <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(
+                <span class="syn-str">`HTTP Error: ${response.status}`</span>
+            );
+        }
+
+        <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);
+
+    } <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">error</span>(<span class="syn-op">error</span>);
+
+    }
+}</pre>
+</div>
+    </div>
+
+    <!-- 21.46 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.46</span> Real-Life Login Example</div>
+<p class="text-p">ধরো frontend থেকে login request:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.46 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> login(email, password) {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/login<span class="syn-str">&quot;, {
+
+            method: &quot;</span>POST<span class="syn-str">&quot;,
+
+            headers: {
+                &quot;</span>Content-Type<span class="syn-str">&quot;: &quot;</span>application/<span class="syn-op">json</span><span class="syn-str">&quot;
+            },
+
+            body: JSON.stringify({
+                email,
+                password
+            })
+
+        });
+
+        if (!response.ok) {
+            throw new Error(&quot;</span>Login failed<span class="syn-str">&quot;);
+        }
+
+        const data = await response.json();
+
+        console.log(&quot;</span>Login successful:&quot;, data);
+
+    } <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">error</span>(&quot;Login <span class="syn-op">error</span>:&quot;, <span class="syn-op">error</span>);
+
+    }
+}</pre>
+</div>
+<p class="text-p">এখানে Chapter 19-এর JSON + Chapter 20-এর modules + Chapter 21-এর async concept একসাথে ব্যবহার হচ্ছে।</p>
+    </div>
+
+    <!-- 21.47 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.47</span> Async JavaScript-এর Complete Flow</div>
+<p class="text-p">একটি modern web application-এ:</p>
+<div class="ascii-tree-container">User clicks button
+        ↓
+Event Handler
+        ↓
+async function
+        ↓
+fetch()
+        ↓
+Promise
+        ↓
+Server/API
+        ↓
+Response
+        ↓
+await
+        ↓
+JSON
+        ↓
+Data processing
+        ↓
+DOM update</div>
+<p class="text-p">এটাই frontend development-এর খুব common workflow।</p>
+    </div>
+
+    <!-- 21.48 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.48</span> Callback vs Promise vs Async/Await</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Feature</th><th>Callback</th><th>Promise</th><th>Async/Await</th></tr></thead>
+    <tbody>
+      <tr><td>Readability</td><td>কম</td><td>ভালো</td><td>⭐ খুব ভালো</td></tr><tr><td>Nested code</td><td>বেশি হতে পারে</td><td>কম</td><td>কম</td></tr><tr><td>Error handling</td><td>complicated হতে পারে</td><td><code>.catch()</code></td><td><code>try/catch</code></td></tr><tr><td>Chaining</td><td>কঠিন</td><td><code>.then()</code></td><td>সহজ</td></tr><tr><td>Modern JS</td><td>পুরোনো/common</td><td>Standard</td><td>⭐ খুব common</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 21.49 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.49</span> Real-Life Mini Project — Fake API</div>
+<div class="code-box">
+  <div class="code-top"><span>21.49 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">function</span> getUser() {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>) =&gt; {
+
+        <span class="syn-op">setTimeout</span>(() =&gt; {
+
+            <span class="syn-op">resolve</span>({
+                id: <span class="syn-num">1</span>,
+                name: <span class="syn-str">&quot;Shariar&quot;</span>,
+                role: <span class="syn-str">&quot;Full Stack Developer&quot;</span>
+            });
+
+        }, <span class="syn-num">2000</span>);
+
+    });
+}
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> showUser() {
+
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Loading...&quot;);
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> user = <span class="syn-kw">await</span> getUser();
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;User:&quot;, user);
+
+    } <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">error</span>(<span class="syn-op">error</span>);
+
+    }
+
+}
+
+showUser();</pre>
+</div>
+<p class="text-p">প্রথমে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Loading...</pre>
+</div>
+<p class="text-p">২ seconds পরে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>User: {
+    id: 1,
+    name: &quot;Shariar&quot;,
+    role: &quot;Full Stack Developer&quot;
+}</pre>
+</div>
+    </div>
+
+    <!-- 21.50 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.50</span> Async Function + Loading UI</div>
+<p class="text-p">Real website-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.50 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> loadProducts() {
+
+    <span class="syn-kw">const</span> loading = <span class="syn-fn">document</span>.querySelector(&quot;#loading<span class="syn-str">&quot;);
+
+    try {
+
+        loading.textContent = &quot;</span>Loading...&quot;;
+
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(&quot;/api/products<span class="syn-str">&quot;);
+
+        if (!response.ok) {
+            throw new Error(&quot;</span>Failed to load products<span class="syn-str">&quot;);
+        }
+
+        const products = await response.json();
+
+        console.log(products);
+
+    } catch (error) {
+
+        console.error(error);
+
+    } finally {
+
+        loading.textContent = &quot;</span>&quot;;
+
+    }
+}</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">Start
+ ↓
+Loading...
+ ↓
+API request
+ ↓
+Success/Error
+ ↓
+finally
+ ↓
+Loading remove</div>
+    </div>
+
+    <!-- 21.51 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">21.51</span> Promise-এর কিছু গুরুত্বপূর্ণ ভুল</div>
+<div class="sub-badge" style="background:#fee2e2; color:#991b1b;">❌ ভুল</div>
+<div class="code-box">
+  <div class="code-top"><span>21.51 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> result = getData();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);</pre>
+</div>
+<p class="text-p">যদি <code>getData()</code> Promise return করে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Promise { &lt;pending&gt; }</pre>
+</div>
+<p class="text-p">পেতে পারো।</p>
+<div class="sub-badge" style="background:#dcfce7; color:#166534;">✅ সঠিক</div>
+<div class="code-box">
+  <div class="code-top"><span>21.51 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> result = <span class="syn-kw">await</span> getData();</pre>
+</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.51 JavaScript Async</span><span>ES2026</span></div>
+  <pre>getData().<span class="syn-op">then</span>(result =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);
+});</pre>
+</div>
+    </div>
+
+    <!-- 21.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21.52</span> await` কোথায় ব্যবহার করা যায়?</div>
+<p class="text-p">সাধারণভাবে <code>await</code> ব্যবহার করা যায়:</p>
+<div class="section-subhead"><code>async function</code>-এর ভিতরে</div>
+<div class="code-box">
+  <div class="code-top"><span>21.52 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> test() {
+
+    <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> getData();
+
+}</pre>
+</div>
+<p class="text-p">এছাড়া modern JavaScript modules-এ <strong>top-level <code>await</code></strong>-ও ব্যবহার করা যায়।</p>
+<p class="text-p">যেমন module:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.52 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> data = <span class="syn-kw">await</span> getData();
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);</pre>
+</div>
+    </div>
+
+    <!-- 21.53 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">21.53</span> Promise Constructor-এর Common Mistake</div>
+<div class="section-subhead">❌ অপ্রয়োজনীয়ভাবে Promise wrap করা</div>
+<div class="code-box">
+  <div class="code-top"><span>21.53 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">return</span> <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>, <span class="syn-op">reject</span>) =&gt; {
+
+    <span class="syn-op">fetch</span>(url)
+        .<span class="syn-op">then</span>(response =&gt; <span class="syn-op">resolve</span>(response))
+        .<span class="syn-kw">catch</span>(<span class="syn-op">error</span> =&gt; <span class="syn-op">reject</span>(<span class="syn-op">error</span>));
+
+});</pre>
+</div>
+<p class="text-p">অনেক ক্ষেত্রে এটি দরকার হয় না।</p>
+<p class="text-p">সরাসরি:</p>
+<div class="code-box">
+  <div class="code-top"><span>21.53 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">return</span> <span class="syn-op">fetch</span>(url);</pre>
+</div>
+<p class="text-p">ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 21.54 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.54</span> Promise-এর Mental Model</div>
+<div class="memory-box">মনে রাখবে:</div>
+<div class="ascii-tree-container">Promise
+   │
+   ├── Pending
+   │
+   ├── Fulfilled
+   │
+   └── Rejected</div>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">.then()    → Success
+.catch()   → Error
+.finally() → Always</div>
+    </div>
+
+    <!-- 21.55 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">21.55</span> Async/Await Mental Model</div>
+<div class="memory-box">মনে রাখবে:</div>
+<div class="code-box">
+  <div class="code-top"><span>21.55 JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> load() {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> getData();
+
+    } <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+
+        <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">error</span>);
+
+    }
+
+}</pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="ascii-tree-container">async
+ ↓
+Promise-based function
+ ↓
+await result
+ ↓
+try/catch error</div>
+    </div>
+
+    <div class="part-banner">Part 06 — Asynchronous Mastery: Must Know, Cheat Sheet, Practice Lab &amp; Mental Map</div>
+
+    <!-- 21.56 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 21.56 Must Know — Asynchronous JavaScript Core Pillars</div>
+<p class="text-p">Chapter 21 থেকে অবশ্যই জানতে হবে:</p>
+<div class="section-subhead">Basic</div>
+<ul class="bullet-list"><li>Synchronous</li><li>Asynchronous</li><li><code>setTimeout()</code></li><li>Callback</li><li>Call Stack</li><li>Event Loop</li></ul>
+<div class="section-subhead">Promise</div>
+<ul class="bullet-list"><li>Promise</li><li><code>pending</code></li><li><code>fulfilled</code></li><li><code>rejected</code></li><li><code>resolve()</code></li><li><code>reject()</code></li><li><code>.then()</code></li><li><code>.catch()</code></li><li><code>.finally()</code></li><li>Promise chaining</li></ul>
+<div class="section-subhead">Promise Methods</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Promise</span>.<span class="syn-op">resolve</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-op">reject</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-op">all</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-op">allSettled</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-op">race</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-op">any</span>()</pre>
+</div>
+<div class="section-subhead">Modern Async</div>
+<ul class="bullet-list"><li><code>async</code></li><li><code>await</code></li><li><code>try/catch</code></li><li>Sequential async</li><li>Parallel async</li><li><code>Promise.all()</code></li></ul>
+<div class="section-subhead">Practical</div>
+<ul class="bullet-list"><li>Fetch API</li><li>JSON response</li><li>HTTP error checking</li><li>API error handling</li><li>Loading state</li></ul>
+<div class="section-subhead">Advanced</div>
+<ul class="bullet-list"><li>Microtask</li><li>Task/Macrotask</li><li>Event Loop execution order</li></ul>
+    </div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet — Callback, Promise &amp; Async/Await Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// Callback</span>
+<span class="syn-op">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;Hello&quot;);
+}, <span class="syn-num">1000</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// Promise</span>
+<span class="syn-kw">const</span> p = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span class="syn-op">resolve</span>, <span class="syn-op">reject</span>) =&gt; {
+    <span class="syn-op">resolve</span>(&quot;Success&quot;);
+});</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// then</span>
+p.<span class="syn-op">then</span>(data =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(data);
+});</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// catch</span>
+p.<span class="syn-kw">catch</span>(<span class="syn-op">error</span> =&gt; {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">error</span>);
+});</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// async</span>
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> test() {
+
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// await</span>
+<span class="syn-kw">const</span> data = <span class="syn-kw">await</span> getData();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// Promise.all</span>
+<span class="syn-kw">const</span> results = <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span class="syn-op">all</span>([
+    getUsers(),
+    getProducts()
+]);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// Fetch</span>
+<span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(url);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// JSON</span>
+<span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-com">// Error</span>
+<span class="syn-kw">if</span> (!response.ok) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;<span class="syn-fn">Request</span> failed&quot;);
+}</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — 5 Asynchronous Coding Challenges</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 1</h4>
+<p class="text-p">একটি function বানাও যেটি 3 seconds পরে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Hello JavaScript</pre>
+</div>
+<p class="text-p">print করবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 2</h4>
+<p class="text-p">একটি Promise তৈরি করো:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Success</pre>
+</div>
+<p class="text-p">return করবে।</p>
+<p class="text-p">তারপর <code>.then()</code> দিয়ে output দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 3</h4>
+<p class="text-p">একটি Promise তৈরি করো যেটা reject করবে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Network Error</pre>
+</div>
+<p class="text-p">তারপর <code>.catch()</code> দিয়ে error দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 4</h4>
+<p class="text-p"><code>async/await</code> দিয়ে একটি fake API function তৈরি করো যেটি 2 seconds পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre>{
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">24</span>
+}</pre>
+</div>
+<p class="text-p">return করবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 5</h4>
+<p class="text-p">এই code-এর output predict করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(&quot;A<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span>C<span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span>D&quot;);</pre>
+</div>
+<p class="text-p"><strong>Answer:</strong></p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>A
+D
+C
+B</pre>
+</div>
+      </div>
+    </div>
+
+    <!-- Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 21 Final Mental Map — Asynchronous JavaScript Architecture</div>
+<div class="memory-box">পুরো Chapter-টা এভাবে মনে রাখো:</div>
+<div class="ascii-tree-container">                 ASYNC JAVASCRIPT
+                        │
+        ┌───────────────┼────────────────┐
+        │               │                │
+    Callback         Promise          async/await
+        │               │                │
+ Callback Hell      then/catch        try/catch
+                        │
+              ┌─────────┼─────────┐
+              │         │         │
+           all()    allSettled() race()
+                                  │
+                                any()
+                        │
+                     Fetch
+                        │
+                     API
+                        │
+                     JSON
+                        │
+                 Real Web App</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 সবচেয়ে গুরুত্বপূর্ণ concept:</div>
+<div class="def-box">
+  <div class="def-text"><strong>JavaScript single-threaded হলেও asynchronous programming-এর মাধ্যমে timer, network request, API call ইত্যাদি কাজ handle করতে পারে।</strong></div>
+</div>
+<p class="text-p">আর modern web development-এ তোমার সবচেয়ে বেশি ব্যবহার হবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript Async</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">async</span> <span class="syn-kw">function</span> getData() {
+    <span class="syn-kw">try</span> {
+        <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-op">fetch</span>(url);
+
+        <span class="syn-kw">if</span> (!response.ok) {
+            <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;<span class="syn-fn">Request</span> failed&quot;);
+        }
+
+        <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.<span class="syn-op">json</span>();
+
+        <span class="syn-kw">return</span> data;
+
+    } <span class="syn-kw">catch</span> (<span class="syn-op">error</span>) {
+        <span class="syn-fn">console</span>.<span class="syn-op">error</span>(<span class="syn-op">error</span>);
+    }
+}</pre>
+</div>
+<p class="text-p">এই pattern তুমি <strong>React + Node.js + Express + REST API + Full Stack Development</strong>-এ বারবার দেখতে পাবে।</p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 22 Preview — HTTP, API &amp; Fetch</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায়ে আমরা শিখব <strong>HTTP Protocols, REST APIs, Request Headers, Status Codes (200, 201, 400, 401, 404, 500)</strong> এবং ব্রাউজারের আধুনিক <code>fetch()</code> API দিয়ে ফুল-স্ট্যাক নেটওয়ার্ক ইন্টারঅ্যাকশন ও এরর হ্যান্ডলিং কৌশল।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

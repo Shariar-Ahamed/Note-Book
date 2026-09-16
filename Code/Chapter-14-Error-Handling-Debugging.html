@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 14: Error Handling &amp; Debugging</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10.5px;
+      line-height: 1.4;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+    .syn-regex { color: #38bdf8; font-style: italic; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 14: ERROR HANDLING &amp; DEBUGGING — ARCHITECTURE, PATTERNS &amp; TOOLS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">54 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 08 — Quality, Reliability &amp; Debugging</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">try/catch, Custom Errors, DevTools &amp; Console</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Error Handling &amp; Debugging — Error মোকাবিলা ও Debugging</h2>
+      <p class="text-p">এখন আমরা JavaScript-এর খুব গুরুত্বপূর্ণ একটি অংশ শিখব: <strong>Error Handling এবং Debugging</strong>। বাস্তব জীবনের application-এ user ভুল input দিতে পারে, API fail করতে পারে, কোনো variable ভুল হতে পারে, server response না-ও আসতে পারে। তখন program যেন পুরোপুরি crash না করে এবং developer যেন সমস্যাটা সহজে খুঁজে বের করতে পারে—এই কাজের জন্য Error Handling ও Debugging ব্যবহার করা হয়।</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">Error Detection &nbsp;→&nbsp; Graceful Handling (try...catch) &nbsp;→&nbsp; Clean Recovery (finally) &nbsp;→&nbsp; Root-Cause Debugging</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">নির্ভুল ও ক্র্যাশ-মুক্ত প্রফেশনাল ওয়েব অ্যাপ্লিকেশন তৈরির জন্য এই অধ্যায়টি অপরিহার্য। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — JavaScript Error Architecture &amp; Error Types (14.1 – 14.10)</div>
+
+    <!-- 14.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">14.1</span> Error কী? — Error কী জিনিস?</div>
+<div class="warn-box"><strong>Error</strong> হলো program-এর এমন একটি সমস্যা যার কারণে JavaScript প্রত্যাশিতভাবে কাজ করতে পারে না।</div>
+<div class="sub-badge">💡 Real-Life Example</div>
+<p class="text-p">ধরো তুমি একটি ATM-এ গেলে:</p>
+<ul class="bullet-list"><li>Account number ভুল → সমস্যা</li><li>PIN ভুল → সমস্যা</li><li>Balance কম → সমস্যা</li><li>ATM server unavailable → সমস্যা</li></ul>
+<div class="warn-box">Programming-এও একই ধরনের সমস্যা হয়।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.1 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-num">20</span>;
+
+<span class="syn-fn">console</span>.log(age);</pre>
+</div>
+<div class="warn-box">এখানে কোনো সমস্যা নেই।</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.1 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(username);</pre>
+</div>
+<p class="text-p">এখানে <code>username</code> declare করা হয়নি।</p>
+<div class="ascii-tree-container">ReferenceError: username is not defined</div>
+    </div>
+
+    <!-- 14.2 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">14.2</span> Error বনাম Exception</div>
+<p class="text-p">দুটো শব্দ অনেক সময় একই অর্থে ব্যবহার করা হলেও conceptually:</p>
+<ul class="bullet-list"><li><strong>Error</strong> → program-এর সমস্যা</li><li><strong>Exception</strong> → runtime-এ এমন একটি exceptional condition যা আমরা handle করতে পারি</li></ul>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> result = <span class="syn-num">10</span> / <span class="syn-num">0</span>;
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Infinity</pre>
+</div>
+<p class="text-p">এটা error নয়।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Something went wrong&quot;);</pre>
+</div>
+<p class="text-p">এখানে আমরা ইচ্ছাকৃতভাবে একটি exception throw করেছি।</p>
+    </div>
+
+    <!-- 14.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.3</span> Common JavaScript Errors</div>
+<div class="memory-box">JavaScript-এ কয়েক ধরনের গুরুত্বপূর্ণ built-in error আছে।</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Error</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>SyntaxError</code></td><td>Code-এর syntax ভুল</td></tr><tr><td><code>ReferenceError</code></td><td>এমন variable/reference ব্যবহার করা হয়েছে যা নেই</td></tr><tr><td><code>TypeError</code></td><td>ভুল type-এর operation</td></tr><tr><td><code>RangeError</code></td><td>Valid range-এর বাইরে value</td></tr><tr><td><code>URIError</code></td><td>URI-related ভুল</td></tr><tr><td><code>EvalError</code></td><td><code>eval()</code>-related error; modern code-এ খুব কম ব্যবহৃত</td></tr><tr><td><code>AggregateError</code></td><td>একাধিক error একসাথে represent করতে ব্যবহৃত</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 14.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.4</span> SyntaxError</div>
+<div class="warn-box">Syntax ভুল হলে <code>SyntaxError</code> হয়।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">if</span> (<span class="syn-bool">true</span> {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}</pre>
+</div>
+<div class="ascii-tree-container">SyntaxError</div>
+<p class="text-p">কারণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">if</span> (<span class="syn-bool">true</span>)</pre>
+</div>
+<p class="text-p">এর পরে <code>)</code> missing।</p>
+<p class="text-p">সঠিক:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Hello</pre>
+</div>
+<div class="section-subhead">সহজভাবে</div>
+<p class="text-p">Compiler/JavaScript engine বলতে পারে:</p>
+<div class="def-box">
+  <div class="def-text">&quot;তোমার code-এর grammar ঠিক নেই।&quot;</div>
+</div>
+    </div>
+
+    <!-- 14.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.5</span> ReferenceError</div>
+<div class="warn-box">যে variable exist করে না সেটি access করলে <code>ReferenceError</code> হয়।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(userName);</pre>
+</div>
+<div class="ascii-tree-container">ReferenceError: userName is not defined</div>
+<p class="text-p">সঠিক:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> userName = <span class="syn-str">&quot;Shariar&quot;</span>;
+
+<span class="syn-fn">console</span>.log(userName);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<div class="sub-badge">💡 Real-Life Example</div>
+<p class="text-p">তুমি বললে:</p>
+<div class="def-box">
+  <div class="def-text">&quot;আমাকে Rahim-এর phone number দাও।&quot;</div>
+</div>
+<p class="text-p">কিন্তু তোমার contact list-এ Rahim-এর কোনো record নেই।</p>
+<div class="warn-box">Programming-এ একইভাবে unknown variable → <code>ReferenceError</code>।</div>
+    </div>
+
+    <!-- 14.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.6</span> TypeError</div>
+<div class="warn-box">ভুল data type-এর ওপর এমন operation করলে <code>TypeError</code> হতে পারে।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = <span class="syn-bool">null</span>;
+
+<span class="syn-fn">console</span>.log(user.name);</pre>
+</div>
+<div class="ascii-tree-container">TypeError</div>
+<p class="text-p">কারণ <code>null</code>-এর মধ্যে <code>name</code> access করা যাচ্ছে না।</p>
+<p class="text-p">আরেকটি example:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-num">20</span>;
+
+age();</pre>
+</div>
+<div class="ascii-tree-container">TypeError: age is not a function</div>
+<p class="text-p">কারণ <code>age</code> একটি number, function নয়।</p>
+    </div>
+
+    <!-- 14.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.7</span> RangeError</div>
+<div class="warn-box">কোনো value valid range-এর বাইরে গেলে <code>RangeError</code> হতে পারে।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> number = <span class="syn-num">10</span>;
+
+<span class="syn-fn">console</span>.log(number.toFixed(<span class="syn-num">101</span>));</pre>
+</div>
+<p class="text-p">এখানে decimal digits-এর valid range-এর বাইরে value দেওয়া হয়েছে।</p>
+<div class="ascii-tree-container">RangeError</div>
+<p class="text-p">আরেকটি example:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> arr = <span class="syn-kw">new</span> <span class="syn-fn">Array</span>(-<span class="syn-num">5</span>);</pre>
+</div>
+<div class="ascii-tree-container">RangeError</div>
+<p class="text-p">কারণ array length negative হতে পারে না।</p>
+    </div>
+
+    <!-- 14.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.8</span> URIError</div>
+<div class="warn-box">URI-related function-এ invalid URI দিলে <code>URIError</code> হতে পারে।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.8 JavaScript</span><span>Run</span></div>
+  <pre>decodeURIComponent(&quot;%&quot;);</pre>
+</div>
+<div class="ascii-tree-container">URIError</div>
+<p class="text-p">কারণ <code>%</code> এখানে valid encoded URI sequence নয়।</p>
+    </div>
+
+    <!-- 14.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.9</span> Error Object</div>
+<div class="warn-box">JavaScript-এ আমরা <code>Error</code> object তৈরি করতে পারি।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.9 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> error = <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Something went wrong&quot;);
+
+<span class="syn-fn">console</span>.log(error);</pre>
+</div>
+<div class="ascii-tree-container">Error: Something went wrong</div>
+    </div>
+
+    <!-- 14.10 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">14.10</span> Error-এর গুরুত্বপূর্ণ Properties</div>
+<div class="warn-box">একটি Error object-এর গুরুত্বপূর্ণ properties:</div>
+<div class="code-box">
+  <div class="code-top"><span>14.10 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> error = <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Invalid username&quot;);
+
+<span class="syn-fn">console</span>.log(error.name);
+<span class="syn-fn">console</span>.log(error.message);
+<span class="syn-fn">console</span>.log(error.stack);</pre>
+</div>
+<p class="text-p">Output-এর structure হবে এরকম:</p>
+<div class="ascii-tree-container">Error
+Invalid username
+Error: Invalid username
+    at ...</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 তিনটি গুরুত্বপূর্ণ property</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Property</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>name</code></td><td>Error-এর নাম</td></tr><tr><td><code>message</code></td><td>Error-এর description</td></tr><tr><td><code>stack</code></td><td>Error কোথা থেকে এসেছে তার trace</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Exception Handling: try, catch, finally &amp; throw (14.11 – 14.26)</div>
+
+    <!-- 14.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.11</span> <code>try...catch</code></div>
+<div class="memory-box">JavaScript-এ error handle করার সবচেয়ে গুরুত্বপূর্ণ system হলো:</div>
+<div class="code-box">
+  <div class="code-top"><span>14.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-com">// risky code</span>
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-com">// error handling</span>
+}</pre>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>14.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-fn">console</span>.log(userName);
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(&quot;Something went wrong!&quot;);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Something went wrong!</pre>
+</div>
+<p class="text-p">এখানে program পুরোপুরি crash না করে <code>catch</code> block-এ চলে গেছে।</p>
+    </div>
+
+    <!-- 14.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.12</span> <code>catch</code>-এর Error Object</div>
+<p class="text-p">আমরা error সম্পর্কে information দেখতে পারি।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-fn">console</span>.log(userName);
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(error.name);
+    <span class="syn-fn">console</span>.log(error.message);
+}</pre>
+</div>
+<div class="ascii-tree-container">ReferenceError
+userName is not defined</div>
+    </div>
+
+    <!-- 14.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.13</span> <code>try...catch</code> কীভাবে কাজ করে?</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-fn">console</span>.log(&quot;Step <span class="syn-num">1</span><span class="syn-str">&quot;);
+
+    console.log(userName);
+
+    console.log(&quot;</span>Step <span class="syn-num">3</span><span class="syn-str">&quot;);
+} catch (error) {
+    console.log(&quot;</span><span class="syn-fn">Error</span> caught!&quot;);
+}</pre>
+</div>
+<div class="ascii-tree-container">Step 1
+Error caught!</div>
+<p class="text-p"><code>Step 3</code> execute হবে না।</p>
+<p class="text-p">কারণ error হওয়ার পর JavaScript সরাসরি <code>catch</code> block-এ চলে যায়।</p>
+    </div>
+
+    <!-- 14.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.14</span> <code>finally</code></div>
+<p class="text-p"><code>finally</code> block <strong>error হোক বা না হোক</strong>, সাধারণত execute হয়।</p>
+<p class="text-p">Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+
+} <span class="syn-kw">catch</span> (error) {
+
+} <span class="syn-kw">finally</span> {
+
+}</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-fn">console</span>.log(&quot;Trying...&quot;);
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Error</span>!&quot;);
+} <span class="syn-kw">finally</span> {
+    <span class="syn-fn">console</span>.log(&quot;Finished!&quot;);
+}</pre>
+</div>
+<div class="ascii-tree-container">Trying...
+Finished!</div>
+<div class="warn-box">Error হলে:</div>
+<div class="code-box">
+  <div class="code-top"><span>14.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-fn">console</span>.log(userName);
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Error</span>!&quot;);
+} <span class="syn-kw">finally</span> {
+    <span class="syn-fn">console</span>.log(&quot;Finished!&quot;);
+}</pre>
+</div>
+<div class="ascii-tree-container">Error!
+Finished!</div>
+    </div>
+
+    <!-- 14.15 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">14.15</span> Real-Life Example — Database Connection</div>
+<p class="text-p">ধরো application database-এর সাথে connection করছে।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-fn">console</span>.log(&quot;Connecting to database...&quot;);
+
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Database connection failed<span class="syn-str">&quot;);
+
+} catch (error) {
+    console.log(&quot;</span>Database error:&quot;, error.message);
+
+} <span class="syn-kw">finally</span> {
+    <span class="syn-fn">console</span>.log(&quot;Connection process finished.&quot;);
+}</pre>
+</div>
+<div class="ascii-tree-container">Connecting to database...
+Database error: Database connection failed
+Connection process finished.</div>
+    </div>
+
+    <!-- 14.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.16</span> <code>throw</code></div>
+<p class="text-p">আমরা নিজেরাও manually error তৈরি করতে পারি।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Invalid data&quot;);</pre>
+</div>
+<div class="ascii-tree-container">Error: Invalid data</div>
+    </div>
+
+    <!-- 14.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.17</span> <code>throw</code> + <code>try...catch</code></div>
+<div class="code-box">
+  <div class="code-top"><span>14.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Something went wrong&quot;);
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(error.message);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Something went wrong</pre>
+</div>
+    </div>
+
+    <!-- 14.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.18</span> User Input Validation</div>
+<p class="text-p"><code>throw</code> বাস্তবে validation-এর সময় অনেক useful।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> registerUser(username) {
+
+    <span class="syn-kw">if</span> (!username) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Username is required<span class="syn-str">&quot;);
+    }
+
+    console.log(&quot;</span>User registered:&quot;, username);
+}
+
+<span class="syn-kw">try</span> {
+    registerUser(&quot;&quot;);
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(error.message);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Username is required</pre>
+</div>
+    </div>
+
+    <!-- 14.19 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">14.19</span> Real-Life Login Example</div>
+<div class="code-box">
+  <div class="code-top"><span>14.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> login(username, password) {
+
+    <span class="syn-kw">if</span> (!username) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Username is required<span class="syn-str">&quot;);
+    }
+
+    if (!password) {
+        throw new Error(&quot;</span>Password is required<span class="syn-str">&quot;);
+    }
+
+    console.log(&quot;</span>Login successful<span class="syn-str">&quot;);
+}
+
+try {
+    login(&quot;</span>shariar<span class="syn-str">&quot;, &quot;</span><span class="syn-str">&quot;);
+} catch (error) {
+    console.log(&quot;</span>Login failed:&quot;, error.message);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Login failed: Password is required</pre>
+</div>
+    </div>
+
+    <!-- 14.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.20</span> Custom Error</div>
+<p class="text-p">নিজের application-এর জন্য custom error class তৈরি করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> ValidationError <span class="syn-kw">extends</span> <span class="syn-fn">Error</span> {
+
+    constructor(message) {
+        <span class="syn-kw">super</span>(message);
+
+        <span class="syn-kw">this</span>.name = <span class="syn-str">&quot;ValidationError&quot;</span>;
+    }
+
+}</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">throw</span> <span class="syn-kw">new</span> ValidationError(&quot;Email is invalid&quot;);</pre>
+</div>
+<div class="ascii-tree-container">ValidationError: Email is invalid</div>
+    </div>
+
+    <!-- 14.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.21</span> Custom Error ব্যবহার</div>
+<div class="code-box">
+  <div class="code-top"><span>14.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> ValidationError <span class="syn-kw">extends</span> <span class="syn-fn">Error</span> {
+    constructor(message) {
+        <span class="syn-kw">super</span>(message);
+        <span class="syn-kw">this</span>.name = <span class="syn-str">&quot;ValidationError&quot;</span>;
+    }
+}
+
+<span class="syn-kw">function</span> register(email) {
+
+    <span class="syn-kw">if</span> (!email.includes(&quot;@&quot;)) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> ValidationError(&quot;Invalid email<span class="syn-str">&quot;);
+    }
+
+    console.log(&quot;</span>Registration successful<span class="syn-str">&quot;);
+}
+
+try {
+    register(&quot;</span>hello.com&quot;);
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(error.name);
+    <span class="syn-fn">console</span>.log(error.message);
+}</pre>
+</div>
+<div class="ascii-tree-container">ValidationError
+Invalid email</div>
+    </div>
+
+    <!-- 14.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.22</span> <code>instanceof</code> দিয়ে Error Check</div>
+<p class="text-p">Chapter 11-এ আমরা <code>instanceof</code> দেখেছি।</p>
+<p class="text-p">এখানেও ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">TypeError</span>(&quot;Wrong type<span class="syn-str">&quot;);
+} catch (error) {
+
+    if (error instanceof TypeError) {
+        console.log(&quot;</span>Type error detected&quot;);
+    }
+
+}</pre>
+</div>
+<div class="ascii-tree-container">Type error detected</div>
+    </div>
+
+    <!-- 14.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.23</span> Multiple Error Handling</div>
+<p class="text-p">একাধিক ধরনের error আলাদাভাবে handle করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+
+    <span class="syn-kw">let</span> user = <span class="syn-bool">null</span>;
+
+    <span class="syn-fn">console</span>.log(user.name);
+
+} <span class="syn-kw">catch</span> (error) {
+
+    <span class="syn-kw">if</span> (error <span class="syn-kw">instanceof</span> <span class="syn-fn">TypeError</span>) {
+        <span class="syn-fn">console</span>.log(&quot;Type problem!&quot;);
+
+    } <span class="syn-kw">else</span> <span class="syn-kw">if</span> (error <span class="syn-kw">instanceof</span> <span class="syn-fn">ReferenceError</span>) {
+        <span class="syn-fn">console</span>.log(&quot;Reference problem!&quot;);
+
+    } <span class="syn-kw">else</span> {
+        <span class="syn-fn">console</span>.log(&quot;Unknown error!&quot;);
+    }
+
+}</pre>
+</div>
+<div class="ascii-tree-container">Type problem!</div>
+    </div>
+
+    <!-- 14.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.24</span> Optional Chaining দিয়ে Error এড়ানো</div>
+<p class="text-p">Chapter 3-এ আমরা <code>?.</code> দেখেছি।</p>
+<div class="warn-box">এটা অনেক ক্ষেত্রে <code>TypeError</code> এড়াতে সাহায্য করে।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = <span class="syn-bool">null</span>;
+
+<span class="syn-fn">console</span>.log(user?.name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>undefined</pre>
+</div>
+<p class="text-p">যেখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(user.name);</pre>
+</div>
+<div class="warn-box">এটি <code>TypeError</code> দিতে পারে।</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 কিন্তু মনে রাখবে</div>
+<p class="text-p"><code>?.</code> error handling-এর complete replacement নয়।</p>
+<p class="text-p">এটি শুধু নির্দিষ্ট null/undefined access safely handle করে।</p>
+    </div>
+
+    <!-- 14.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.25</span> Nullish Coalescing</div>
+<p class="text-p"><code>??</code> দিয়ে fallback value দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> username = <span class="syn-bool">null</span>;
+
+<span class="syn-kw">let</span> displayName = username ?? <span class="syn-str">&quot;Guest&quot;</span>;
+
+<span class="syn-fn">console</span>.log(displayName);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Guest</pre>
+</div>
+<p class="text-p">এটাও application crash এড়ানোর ক্ষেত্রে useful।</p>
+    </div>
+
+    <!-- 14.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.26</span> <code>finally</code> কখন বেশি ব্যবহার হয়?</div>
+<p class="text-p"><code>finally</code> সাধারণত cleanup operation-এর জন্য useful।</p>
+<p class="text-p">যেমন:</p>
+<ul class="bullet-list"><li>Database connection cleanup</li><li>File cleanup</li><li>Loading state বন্ধ করা</li><li>Resource release</li></ul>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> loading = <span class="syn-bool">true</span>;
+
+<span class="syn-kw">try</span> {
+    <span class="syn-fn">console</span>.log(&quot;Fetching data...&quot;);
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Error</span>!&quot;);
+} <span class="syn-kw">finally</span> {
+    loading = <span class="syn-bool">false</span>;
+    <span class="syn-fn">console</span>.log(&quot;Loading finished&quot;);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Fetching data...
+Loading finished</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Modern Debugging &amp; Console API (14.27 – 14.37)</div>
+
+    <!-- 14.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.27</span> Debugging কী?</div>
+<p class="text-p"><strong>Debugging</strong> হলো program-এর problem খুঁজে বের করে ঠিক করার process।</p>
+<p class="text-p">Real life:</p>
+<div class="def-box">
+  <div class="def-text">গাড়ি start হচ্ছে না → mechanic কারণ খুঁজছে → problem identify → repair</div>
+</div>
+<p class="text-p">Programming:</p>
+<div class="def-box">
+  <div class="def-text">Website কাজ করছে না → developer code inspect করছে → bug identify → fix</div>
+</div>
+    </div>
+
+    <!-- 14.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.28</span> <code>console.log()</code> দিয়ে Debugging</div>
+<p class="text-p">সবচেয়ে basic debugging technique:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> price = <span class="syn-num">100</span>;
+<span class="syn-kw">let</span> quantity = <span class="syn-num">3</span>;
+
+<span class="syn-fn">console</span>.log(price);
+<span class="syn-fn">console</span>.log(quantity);
+
+<span class="syn-kw">let</span> total = price * quantity;
+
+<span class="syn-fn">console</span>.log(total);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>100
+3
+300</pre>
+</div>
+<p class="text-p">এভাবে বুঝতে পারবে কোন stage-এ value ভুল হচ্ছে।</p>
+    </div>
+
+    <!-- 14.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.29</span> Better <code>console.log()</code></div>
+<p class="text-p">এভাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> price = <span class="syn-num">100</span>;
+<span class="syn-kw">let</span> quantity = <span class="syn-num">3</span>;
+
+<span class="syn-fn">console</span>.log(&quot;Price:&quot;, price);
+<span class="syn-fn">console</span>.log(&quot;Quantity:&quot;, quantity);
+
+<span class="syn-kw">let</span> total = price * quantity;
+
+<span class="syn-fn">console</span>.log(&quot;Total:&quot;, total);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Price: 100
+Quantity: 3
+Total: 300</pre>
+</div>
+<p class="text-p">এটা debugging-এর জন্য অনেক পরিষ্কার।</p>
+    </div>
+
+    <!-- 14.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.30</span> <code>console.error()</code></div>
+<div class="warn-box">Error message দেখাতে:</div>
+<div class="code-box">
+  <div class="code-top"><span>14.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.error(&quot;Database connection failed&quot;);</pre>
+</div>
+<p class="text-p">Browser console-এ এটি error হিসেবে দেখাবে।</p>
+    </div>
+
+    <!-- 14.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.31</span> <code>console.warn()</code></div>
+<div class="warn-box">Warning:</div>
+<div class="code-box">
+  <div class="code-top"><span>14.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.warn(&quot;Password is weak&quot;);</pre>
+</div>
+<p class="text-p">এটি developer-কে warning দেয়।</p>
+    </div>
+
+    <!-- 14.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.32</span> <code>console.table()</code></div>
+<p class="text-p">Array of objects debug করতে এটি অসাধারণ useful।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> students = [
+    {
+        name: <span class="syn-str">&quot;Shariar&quot;</span>,
+        age: <span class="syn-num">23</span>,
+        department: <span class="syn-str">&quot;CSE&quot;</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Rahim&quot;</span>,
+        age: <span class="syn-num">22</span>,
+        department: <span class="syn-str">&quot;CSE&quot;</span>
+    }
+];
+
+<span class="syn-fn">console</span>.table(students);</pre>
+</div>
+<p class="text-p">Browser console-এ table format-এ দেখাবে।</p>
+<p class="text-p">এটি বড় data debug করার সময় খুব useful।</p>
+    </div>
+
+    <!-- 14.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.33</span> <code>console.dir()</code></div>
+<p class="text-p">Object-এর structure inspect করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.33 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    skills: [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript&quot;]
+};
+
+<span class="syn-fn">console</span>.dir(user);</pre>
+</div>
+<p class="text-p">Browser DevTools-এ object structure expand করে দেখতে পারবে।</p>
+    </div>
+
+    <!-- 14.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.34</span> <code>console.time()</code> এবং <code>console.timeEnd()</code></div>
+<p class="text-p">কোনো code কত সময় নিচ্ছে তা measure করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.time(&quot;Loop<span class="syn-str">&quot;);
+
+for (let i = 0; i &lt; 1000000; i++) {
+    // work
+}
+
+console.timeEnd(&quot;</span>Loop&quot;);</pre>
+</div>
+<p class="text-p">Output example:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Loop: 5.123ms</pre>
+</div>
+<p class="text-p">সময় machine/browser অনুযায়ী পরিবর্তিত হবে।</p>
+    </div>
+
+    <!-- 14.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.35</span> <code>console.count()</code></div>
+<p class="text-p">কোনো code কতবার execute হচ্ছে দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+    <span class="syn-fn">console</span>.count(&quot;test <span class="syn-kw">function</span>&quot;);
+}
+
+test();
+test();
+test();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>test function: 1
+test function: 2
+test function: 3</pre>
+</div>
+<p class="text-p">Debugging-এর জন্য useful।</p>
+    </div>
+
+    <!-- 14.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.36</span> <code>console.assert()</code></div>
+<p class="text-p">কোনো condition false হলে message দেখাবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-num">15</span>;
+
+<span class="syn-fn">console</span>.assert(age &gt;= <span class="syn-num">18</span>, <span class="syn-str">&quot;User must be 18 or older&quot;</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Assertion failed: User must be 18 or older</pre>
+</div>
+<p class="text-p">যদি:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-num">20</span>;
+
+<span class="syn-fn">console</span>.assert(age &gt;= <span class="syn-num">18</span>, <span class="syn-str">&quot;User must be 18 or older&quot;</span>);</pre>
+</div>
+<p class="text-p">তাহলে সাধারণত কোনো assertion message দেখাবে না।</p>
+    </div>
+
+    <!-- 14.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.37</span> <code>console.trace()</code></div>
+<p class="text-p">কোন function call chain থেকে code এসেছে তা দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> first() {
+    second();
+}
+
+<span class="syn-kw">function</span> second() {
+    <span class="syn-fn">console</span>.trace();
+}
+
+first();</pre>
+</div>
+<p class="text-p">Console-এ call stack দেখা যাবে।</p>
+<p class="text-p">এটি complex application debugging-এ useful।</p>
+    </div>
+
+    <div class="part-banner">Part 04 — Browser DevTools, Breakpoints &amp; Call Stack (14.38 – 14.43)</div>
+
+    <!-- 14.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.38</span> Browser DevTools</div>
+<p class="text-p">JavaScript developer হিসেবে Browser DevTools অবশ্যই জানতে হবে।</p>
+<p class="text-p">Chrome-এ:</p>
+<div class="ascii-tree-container">Right Click
+→ Inspect
+→ Console</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>F12</pre>
+</div>
+    </div>
+
+    <!-- 14.39 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">14.39</span> DevTools-এর গুরুত্বপূর্ণ অংশ</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Tool</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td>Console</td><td>Error/output/debug</td></tr><tr><td>Sources</td><td>JavaScript files</td></tr><tr><td>Network</td><td>API/request</td></tr><tr><td>Elements</td><td>HTML/CSS</td></tr><tr><td>Application</td><td>Storage/Cookies</td></tr><tr><td>Performance</td><td>Performance analysis</td></tr><tr><td>Memory</td><td>Memory analysis</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 14.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.40</span> Breakpoint</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> calculate() {
+
+    <span class="syn-kw">let</span> price = <span class="syn-num">100</span>;
+    <span class="syn-kw">let</span> quantity = <span class="syn-num">3</span>;
+
+    <span class="syn-kw">let</span> total = price * quantity;
+
+    <span class="syn-fn">console</span>.log(total);
+}
+
+calculate();</pre>
+</div>
+<p class="text-p"><code>Sources</code> panel-এ <code>let total = ...</code> লাইনে breakpoint বসালে JavaScript ওই line-এ execution pause করতে পারে।</p>
+<p class="text-p">তারপর তুমি variable-এর value দেখতে পারবে।</p>
+    </div>
+
+    <!-- 14.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.41</span> <code>debugger</code></div>
+<p class="text-p">Code-এর মধ্যেই breakpoint দিতে পারো:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> calculate() {
+
+    <span class="syn-kw">let</span> price = <span class="syn-num">100</span>;
+    <span class="syn-kw">let</span> quantity = <span class="syn-num">3</span>;
+
+    <span class="syn-kw">debugger</span>;
+
+    <span class="syn-kw">let</span> total = price * quantity;
+
+    <span class="syn-fn">console</span>.log(total);
+}
+
+calculate();</pre>
+</div>
+<p class="text-p">Browser DevTools খোলা থাকলে <code>debugger</code> line-এ execution pause করতে পারে।</p>
+    </div>
+
+    <!-- 14.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.42</span> Call Stack</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> one() {
+    two();
+}
+
+<span class="syn-kw">function</span> two() {
+    three();
+}
+
+<span class="syn-kw">function</span> three() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}
+
+one();</pre>
+</div>
+<p class="text-p">Call sequence:</p>
+<div class="ascii-tree-container">one()
+  ↓
+two()
+  ↓
+three()</div>
+<p class="text-p">এটাকে <strong>Call Stack</strong> দিয়ে track করা যায়।</p>
+<div class="warn-box">Error হলে stack trace দেখে বোঝা যায় কোন function chain-এর মাধ্যমে error এসেছে।</div>
+    </div>
+
+    <!-- 14.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.43</span> Scope Debugging</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> globalValue = <span class="syn-num">100</span>;
+
+<span class="syn-kw">function</span> test() {
+
+    <span class="syn-kw">let</span> localValue = <span class="syn-num">50</span>;
+
+    <span class="syn-fn">console</span>.log(globalValue);
+    <span class="syn-fn">console</span>.log(localValue);
+}
+
+test();</pre>
+</div>
+<p class="text-p">Debugger-এর Scope section-এ দেখতে পারবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Local Scope
+global Scope</pre>
+</div>
+<p class="text-p">এতে variable কোথা থেকে এসেছে বোঝা সহজ হয়।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Advanced Error Handling, Best Practices &amp; Mini Project (14.44 – 14.54)</div>
+
+    <!-- 14.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.44</span> Defensive Programming</div>
+<p class="text-p"><strong>Defensive Programming</strong> মানে হলো আগে থেকেই সম্ভাব্য ভুল situation চিন্তা করে code লেখা।</p>
+<p class="text-p">খারাপ:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> calculateTotal(price, quantity) {
+    <span class="syn-kw">return</span> price * quantity;
+}</pre>
+</div>
+<p class="text-p">যদি:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.44 JavaScript</span><span>Run</span></div>
+  <pre>calculateTotal();</pre>
+</div>
+<p class="text-p">তাহলে result:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>NaN</pre>
+</div>
+<p class="text-p">আরও defensive:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> calculateTotal(price, quantity) {
+
+    <span class="syn-kw">if</span> (<span class="syn-kw">typeof</span> price !== <span class="syn-str">&quot;number&quot;</span>) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">TypeError</span>(&quot;Price must be a number<span class="syn-str">&quot;);
+    }
+
+    if (typeof quantity !== &quot;</span>number<span class="syn-str">&quot;) {
+        throw new TypeError(&quot;</span>Quantity must be a number&quot;);
+    }
+
+    <span class="syn-kw">return</span> price * quantity;
+}</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    <span class="syn-fn">console</span>.log(calculateTotal(&quot;<span class="syn-num">100</span>&quot;, <span class="syn-num">2</span>));
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(error.message);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Price must be a number</pre>
+</div>
+    </div>
+
+    <!-- 14.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.45</span> Real Project Example — API Response</div>
+<p class="text-p">ধরো backend থেকে user data আসছে।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> response = {
+    user: {
+        name: <span class="syn-str">&quot;Shariar&quot;</span>
+    }
+};
+
+<span class="syn-fn">console</span>.log(response.user.name);</pre>
+</div>
+<p class="text-p">কিন্তু কোনো সময় backend response হতে পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> response = {};</pre>
+</div>
+<p class="text-p">তখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(response.user.name);</pre>
+</div>
+<div class="warn-box">সমস্যা হতে পারে।</div>
+<p class="text-p">Safe:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(response.user?.name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>undefined</pre>
+</div>
+    </div>
+
+    <!-- 14.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.46</span> API Error Handling-এর Basic Pattern</div>
+<p class="text-p">বাস্তবে asynchronous API handling আমরা পরে Promise/<code>async/await</code> chapter-এ বিস্তারিত করব।</p>
+<p class="text-p">এখন basic idea:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+
+    <span class="syn-kw">let</span> data = getData();
+
+    <span class="syn-fn">console</span>.log(data);
+
+} <span class="syn-kw">catch</span> (error) {
+
+    <span class="syn-fn">console</span>.error(&quot;Failed:&quot;, error.message);
+
+}</pre>
+</div>
+    </div>
+
+    <!-- 14.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.47</span> <code>Error.cause</code></div>
+<p class="text-p">একটি error-এর original cause অন্য error হিসেবে attach করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Database unavailable<span class="syn-str">&quot;);
+
+} catch (error) {
+
+    throw new Error(&quot;</span>Failed to load user data&quot;, {
+        cause: error
+    });
+
+}</pre>
+</div>
+<p class="text-p">এখানে outer error-এর:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.47 JavaScript</span><span>Run</span></div>
+  <pre>error.cause</pre>
+</div>
+<p class="text-p">এর মধ্যে original error থাকতে পারে।</p>
+<p class="text-p">এটি বড় application-এর error chain বুঝতে useful।</p>
+    </div>
+
+    <!-- 14.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.48</span> AggregateError</div>
+<div class="warn-box">একাধিক error একসাথে represent করার জন্য <code>AggregateError</code> ব্যবহার করা যায়।</div>
+<div class="code-box">
+  <div class="code-top"><span>14.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> errors = [
+    <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Database failed<span class="syn-str">&quot;),
+    new Error(&quot;</span>API failed<span class="syn-str">&quot;),
+    new Error(&quot;</span>Cache failed<span class="syn-str">&quot;)
+];
+
+let aggregate = new AggregateError(
+    errors,
+    &quot;</span>Multiple operations failed&quot;
+);
+
+<span class="syn-fn">console</span>.log(aggregate);</pre>
+</div>
+<p class="text-p">এর মধ্যে multiple errors থাকবে।</p>
+    </div>
+
+    <!-- 14.49 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">14.49</span> Error Handling-এর Real-Life E-Commerce Example</div>
+<p class="text-p">ধরো আমরা product order করছি।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> placeOrder(product, quantity) {
+
+    <span class="syn-kw">if</span> (!product) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Product is required<span class="syn-str">&quot;);
+    }
+
+    if (quantity &lt;= 0) {
+        throw new Error(&quot;</span>Quantity must be greater than <span class="syn-num">0</span>&quot;);
+    }
+
+    <span class="syn-kw">return</span> <span class="syn-str">`Order placed: ${product} x ${quantity}`</span>;
+}</pre>
+</div>
+<p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+
+    <span class="syn-kw">let</span> result = placeOrder(&quot;Laptop<span class="syn-str">&quot;, 2);
+
+    console.log(result);
+
+} catch (error) {
+
+    console.error(&quot;</span>Order failed:&quot;, error.message);
+
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Order placed: Laptop x 2</pre>
+</div>
+<p class="text-p">ভুল input:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+
+    <span class="syn-kw">let</span> result = placeOrder(&quot;Laptop<span class="syn-str">&quot;, 0);
+
+    console.log(result);
+
+} catch (error) {
+
+    console.error(&quot;</span>Order failed:&quot;, error.message);
+
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Order failed: Quantity must be greater than 0</pre>
+</div>
+    </div>
+
+    <!-- 14.50 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.50</span> কখন <code>try...catch</code> ব্যবহার করবে?</div>
+<p class="text-p">সব code-এর চারপাশে <code>try...catch</code> দেওয়া উচিত নয়।</p>
+<p class="text-p">বিশেষ করে যেখানে failure হওয়ার সম্ভাবনা আছে সেখানে ব্যবহার করা ভালো।</p>
+<p class="text-p">যেমন:</p>
+<div class="ascii-tree-container">API request
+↓
+JSON parsing
+↓
+File operation
+↓
+User input validation
+↓
+Database operation
+↓
+External service</div>
+    </div>
+
+    <!-- 14.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.51</span> Bad Error Handling</div>
+<p class="text-p">এভাবে করা ঠিক নয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.51 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    riskyFunction();
+} <span class="syn-kw">catch</span> (error) {
+}</pre>
+</div>
+<p class="text-p">কারণ error silently ignore হয়ে যাচ্ছে।</p>
+<p class="text-p">এটা debugging কঠিন করে দেয়।</p>
+<p class="text-p">Better:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.51 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    riskyFunction();
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.error(&quot;Operation failed:&quot;, error);
+}</pre>
+</div>
+    </div>
+
+    <!-- 14.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.52</span> Error Hide না করে Properly Handle করা</div>
+<p class="text-p">খারাপ:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    loginUser();
+} <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Error</span>&quot;);
+}</pre>
+</div>
+<p class="text-p">ভালো:</p>
+<div class="code-box">
+  <div class="code-top"><span>14.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span> {
+    loginUser();
+} <span class="syn-kw">catch</span> (error) {
+
+    <span class="syn-fn">console</span>.error(&quot;Login failed:&quot;, {
+        name: error.name,
+        message: error.message
+    });
+
+}</pre>
+</div>
+    </div>
+
+    <!-- 14.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14.53</span> User-এর সামনে Technical Error দেখানো উচিত?</div>
+<p class="text-p">সবসময় না।</p>
+<p class="text-p">Developer console:</p>
+<div class="ascii-tree-container">TypeError: Cannot read properties of undefined</div>
+<p class="text-p">User-এর জন্য:</p>
+<div class="ascii-tree-container">Something went wrong. Please try again.</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">Developer → detailed error
+User → friendly message</div>
+<div class="memory-box">এটা professional application-এর গুরুত্বপূর্ণ practice।</div>
+    </div>
+
+    <!-- 14.54 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">14.54</span> Complete Mini Project — Student Registration</div>
+<p class="text-p">এখন সব concept একসাথে ব্যবহার করি।</p>
+<div class="code-box">
+  <div class="code-top"><span>14.54 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> ValidationError <span class="syn-kw">extends</span> <span class="syn-fn">Error</span> {
+
+    constructor(message) {
+        <span class="syn-kw">super</span>(message);
+        <span class="syn-kw">this</span>.name = <span class="syn-str">&quot;ValidationError&quot;</span>;
+    }
+
+}
+
+<span class="syn-kw">function</span> registerStudent(name, age, email) {
+
+    <span class="syn-kw">if</span> (!name) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> ValidationError(&quot;Name is required<span class="syn-str">&quot;);
+    }
+
+    if (typeof age !== &quot;</span>number<span class="syn-str">&quot;) {
+        throw new TypeError(&quot;</span>Age must be a number<span class="syn-str">&quot;);
+    }
+
+    if (age &lt; 18) {
+        throw new ValidationError(&quot;</span>Student must be at least <span class="syn-num">18</span><span class="syn-str">&quot;);
+    }
+
+    if (!email.includes(&quot;</span>@&quot;)) {
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> ValidationError(&quot;Invalid email<span class="syn-str">&quot;);
+    }
+
+    return {
+        name,
+        age,
+        email
+    };
+}
+
+try {
+
+    let student = registerStudent(
+        &quot;</span>Shariar<span class="syn-str">&quot;,
+        23,
+        &quot;</span>shariar@example.com&quot;
+    );
+
+    <span class="syn-fn">console</span>.table(student);
+
+} <span class="syn-kw">catch</span> (error) {
+
+    <span class="syn-fn">console</span>.error(error.name);
+    <span class="syn-fn">console</span>.error(error.message);
+
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name     Shariar
+age      23
+email    shariar@example.com</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 06 — Must Know, Quick Cheat Sheet, Practice Lab &amp; Final Summary</div>
+
+    <!-- 14.55 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 14.55 Must Know</div>
+<p class="text-p">Chapter 14 থেকে অবশ্যই জানতে হবে:</p>
+<div class="section-subhead">Error</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Error</span>
+<span class="syn-fn">SyntaxError</span>
+<span class="syn-fn">ReferenceError</span>
+<span class="syn-fn">TypeError</span>
+<span class="syn-fn">RangeError</span>
+<span class="syn-fn">URIError</span>
+<span class="syn-fn">AggregateError</span></pre>
+</div>
+<div class="section-subhead">Error Handling</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">try</span>
+<span class="syn-kw">catch</span>
+<span class="syn-kw">finally</span>
+<span class="syn-kw">throw</span></pre>
+</div>
+<div class="section-subhead">Error Object</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>error.name
+error.message
+error.stack
+error.cause</pre>
+</div>
+<div class="section-subhead">Custom Error</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> MyError <span class="syn-kw">extends</span> <span class="syn-fn">Error</span> {}</pre>
+</div>
+<div class="section-subhead">Debugging</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log()
+<span class="syn-fn">console</span>.error()
+<span class="syn-fn">console</span>.warn()
+<span class="syn-fn">console</span>.table()
+<span class="syn-fn">console</span>.dir()
+<span class="syn-fn">console</span>.time()
+<span class="syn-fn">console</span>.timeEnd()
+<span class="syn-fn">console</span>.count()
+<span class="syn-fn">console</span>.assert()
+<span class="syn-fn">console</span>.trace()
+<span class="syn-kw">debugger</span></pre>
+</div>
+<div class="section-subhead">DevTools</div>
+<div class="ascii-tree-container">Console
+Sources
+Network
+Elements
+Application
+Performance
+Memory</div>
+    </div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Concept</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td>Error create</td><td><code>new Error(&quot;Failed&quot;)</code></td></tr><tr><td>Throw error</td><td><code>throw new Error()</code></td></tr><tr><td>Handle</td><td><code>try...catch</code></td></tr><tr><td>Cleanup</td><td><code>finally</code></td></tr><tr><td>Error name</td><td><code>error.name</code></td></tr><tr><td>Error message</td><td><code>error.message</code></td></tr><tr><td>Stack</td><td><code>error.stack</code></td></tr><tr><td>Custom error</td><td><code>class MyError extends Error</code></td></tr><tr><td>Debug output</td><td><code>console.log()</code></td></tr><tr><td>Debug table</td><td><code>console.table()</code></td></tr><tr><td>Warning</td><td><code>console.warn()</code></td></tr><tr><td>Debug breakpoint</td><td><code>debugger</code></td></tr><tr><td>Type check</td><td><code>error instanceof TypeError</code></td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — Chapter 14</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 1</h4>
+<p class="text-p">এমন একটি function তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>divide(a, b)</pre>
+</div>
+<p class="text-p">যেখানে <code>b = 0</code> হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Cannot divide by zero</pre>
+</div>
+<p class="text-p">error throw করবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 2</h4>
+<p class="text-p">একটি:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>registerUser()</pre>
+</div>
+<p class="text-p">function তৈরি করো যেখানে:</p>
+<ul class="bullet-list"><li>username required</li><li>email required</li><li>password minimum 8 characters</li></ul>
+<p class="text-p">না হলে custom error throw করবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 3</h4>
+<p class="text-p">এই data:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> students = [
+    { name: <span class="syn-str">&quot;Rahim&quot;</span>, marks: <span class="syn-num">80</span> },
+    { name: <span class="syn-str">&quot;Karim&quot;</span>, marks: <span class="syn-num">75</span> },
+    { name: <span class="syn-str">&quot;Shariar&quot;</span>, marks: <span class="syn-num">90</span> }
+];</pre>
+</div>
+<p class="text-p"><code>console.table()</code> দিয়ে দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 4</h4>
+<p class="text-p"><code>console.time()</code> ব্যবহার করে <code>1</code> থেকে <code>1,000,000</code> পর্যন্ত loop-এর execution time বের করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 5</h4>
+<p class="text-p">একটি custom error তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> InsufficientBalanceError <span class="syn-kw">extends</span> <span class="syn-fn">Error</span></pre>
+</div>
+<p class="text-p">এবং একটি:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>withdraw(balance, amount)</pre>
+</div>
+<p class="text-p">function তৈরি করো।</p>
+<p class="text-p">Balance-এর চেয়ে amount বেশি হলে error throw করবে।</p>
+      </div>
+    </div>
+
+    <!-- Chapter 14 Final Summary -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 14 Final Summary — Error Handling Architecture</div>
+<div class="memory-box">এই chapter-এর মূল flow মনে রাখো:</div>
+<div class="ascii-tree-container">Problem
+   ↓
+Error
+   ↓
+Detect
+   ↓
+try
+   ↓
+catch
+   ↓
+Handle
+   ↓
+finally
+   ↓
+Cleanup</div>
+<p class="text-p">আর developer হিসেবে:</p>
+<div class="ascii-tree-container">Bug
+ ↓
+Debug
+ ↓
+Console
+ ↓
+DevTools
+ ↓
+Breakpoint
+ ↓
+Inspect Variables
+ ↓
+Find Cause
+ ↓
+Fix</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 সবচেয়ে গুরুত্বপূর্ণ ধারণা</div>
+<div class="def-box">
+  <div class="def-text"><strong>Error Handling = application-এর error properly handle করা।</strong></div>
+</div>
+<div class="def-box">
+  <div class="def-text"><strong>Debugging = error/bug-এর আসল কারণ খুঁজে বের করা।</strong></div>
+</div>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 15 Preview — DOM (Document Object Model)</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        এখন JavaScript-এর পরবর্তী গুরুত্বপূর্ণ ধাপ হলো <strong>Chapter 15 — DOM (Document Object Model)</strong>, যেখানে আমরা JavaScript দিয়ে HTML page-এর element <strong>select, create, change, delete এবং dynamically manipulate</strong> করা শিখব।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 15: DOM — Document Object Model</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      line-height: 1.38;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+    .syn-regex { color: #38bdf8; font-style: italic; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10px;
+      line-height: 1.32;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 15: DOM — DOCUMENT OBJECT MODEL — ARCHITECTURE, MANIPULATION &amp; INTERFACES</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">78 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 09 — Browser Environment &amp; DOM</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Tree Traversal, Query Selection, Node Lifecycle &amp; classList</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">WHATWG DOM Standard / ECMAScript 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">DOM — Document Object Model — HTML-এর সাথে JavaScript-এর যোগাযোগ</h2>
+      <p class="text-p">এখন থেকে JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ practical অংশগুলোর একটি শুরু হচ্ছে — <strong>DOM (Document Object Model)</strong>। এতদিন আমরা JavaScript-এর ভিতরের language concepts শিখেছি। এখন শিখব কীভাবে JavaScript দিয়ে <strong>HTML webpage-এর content, structure, style এবং elements পরিবর্তন করা যায়।</strong></p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">HTML Document &nbsp;→&nbsp; Browser DOM Tree (Nodes &amp; Elements) &nbsp;→&nbsp; JavaScript API &nbsp;→&nbsp; Interactive Webpage</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">ব্রাউজারে যেকোনো আধুনিক ডায়নামিক ওয়েব অ্যাপ্লিকেশন বা রিয়্যাক্ট ফ্রেমওয়ার্কের মূল ভিত্তি হলো এই DOM আর্কিটেকচার। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — DOM Architecture, Nodes &amp; the Document Object (15.1 – 15.10)</div>
+
+    <!-- 15.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">15.1</span> DOM কী? — DOM কীভাবে কাজ করে?</div>
+<p class="text-p"><strong>DOM = Document Object Model</strong></p>
+<p class="text-p">Browser যখন একটি HTML page load করে, তখন HTML document-কে একটি <strong>object-based tree structure</strong> হিসেবে তৈরি করে।</p>
+<p class="text-p">ধরো HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.1 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-kw">&lt;!DOCTYPE html&gt;</span>
+<span class="syn-fn">&lt;html</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;head</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;title</span><span class="syn-fn">&gt;</span>My Page<span class="syn-fn">&lt;/title</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/head</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;body</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;h1</span><span class="syn-fn">&gt;</span>Hello World<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>Welcome to JavaScript<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;button</span><span class="syn-fn">&gt;</span>Click Me<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/body</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/html</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">Browser এটাকে roughly এভাবে চিন্তা করে:</p>
+<div class="ascii-tree-container">Document
+│
+└── html
+    │
+    ├── head
+    │   └── title
+    │
+    └── body
+        │
+        ├── h1
+        │
+        ├── p
+        │
+        └── button</div>
+<p class="text-p">এই structure-টাই DOM Tree।</p>
+    </div>
+
+    <!-- 15.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.2</span> DOM-এর Real-Life Example</div>
+<p class="text-p">ধরো একটি University campus:</p>
+<div class="ascii-tree-container">University
+│
+├── CSE Department
+│   ├── Teacher
+│   ├── Student
+│   └── Lab
+│
+└── EEE Department
+    ├── Teacher
+    └── Lab</div>
+<p class="text-p">এখানে:</p>
+<ul class="bullet-list"><li>University = root</li><li>Department = parent</li><li>Teacher/Student/Lab = child</li></ul>
+<p class="text-p">HTML DOM-ও একই ধরনের hierarchy follow করে।</p>
+    </div>
+
+    <!-- 15.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.3</span> JavaScript কেন DOM ব্যবহার করে?</div>
+<p class="text-p">ধরো HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.3 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;h1</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript দিয়ে তুমি এটাকে পরিবর্তন করতে পারো:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;h1<span class="syn-str">&quot;).textContent = &quot;</span>Welcome Shariar!&quot;;</pre>
+</div>
+<p class="text-p">Browser-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Welcome Shariar!</pre>
+</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">HTML
+ ↓
+DOM
+ ↓
+JavaScript
+ ↓
+Change
+ ↓
+Updated Webpage</div>
+    </div>
+
+    <!-- 15.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.4</span> document` কী?</div>
+<div class="memory-box">DOM-এর সবচেয়ে গুরুত্বপূর্ণ object হলো:</div>
+<div class="code-box">
+  <div class="code-top"><span>15.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span></pre>
+</div>
+<p class="text-p"><code>document</code> পুরো HTML webpage-কে represent করে।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">document</span>);</pre>
+</div>
+<p class="text-p">Browser console-এ পুরো HTML document দেখতে পারবে।</p>
+    </div>
+
+    <!-- 15.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.5</span> document.documentElement</div>
+<p class="text-p">পুরো HTML element পাওয়া যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">document</span>.<span class="syn-fn">documentElement</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.5 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;html</span><span class="syn-fn">&gt;</span>...<span class="syn-fn">&lt;/html</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 15.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.6</span> document.head</div>
+<p class="text-p">HTML-এর <code>&lt;head&gt;</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">document</span>.<span class="syn-fn">head</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.6 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;head</span><span class="syn-fn">&gt;</span>...<span class="syn-fn">&lt;/head</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 15.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.7</span> document.body</div>
+<p class="text-p">HTML-এর <code>&lt;body&gt;</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">document</span>.<span class="syn-fn">body</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.7 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;body</span><span class="syn-fn">&gt;</span>...<span class="syn-fn">&lt;/body</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 15.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.8</span> DOM Element কী?</div>
+<p class="text-p">HTML-এর প্রতিটি element DOM-এর মধ্যে একটি object/node হিসেবে থাকে।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.8 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;h1</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>h1 = DOM Element</pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> heading = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;h1&quot;);
+
+<span class="syn-fn">console</span>.log(heading);</pre>
+</div>
+    </div>
+
+    <!-- 15.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.9</span> DOM Node কী?</div>
+<p class="text-p">DOM শুধু HTML element নিয়ে তৈরি নয়।</p>
+<p class="text-p">DOM-এ বিভিন্ন ধরনের node থাকতে পারে।</p>
+<p class="text-p">যেমন:</p>
+<div class="ascii-tree-container">Document
+Element
+Text
+Comment
+Attribute</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.9 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;h1</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">h1 → Element Node
+Hello → Text Node</div>
+    </div>
+
+    <!-- 15.10 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">15.10</span> DOM Tree</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.10 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;body</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;h1</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>JavaScript<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/body</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">DOM Tree:</p>
+<div class="ascii-tree-container">document
+   │
+   └── html
+       │
+       └── body
+           │
+           ├── h1
+           │    └── &quot;Hello&quot;
+           │
+           └── p
+                └── &quot;JavaScript&quot;</div>
+    </div>
+
+    <div class="part-banner">Part 02 — DOM Element Selection &amp; Query Selectors (15.11 – 15.24)</div>
+
+    <!-- 15.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.11</span> Element Select করা</div>
+<p class="text-p">DOM manipulation-এর প্রথম কাজ হলো:</p>
+<div class="def-box">
+  <div class="def-text">HTML element-কে JavaScript দিয়ে খুঁজে বের করা।</div>
+</div>
+<div class="memory-box">সবচেয়ে গুরুত্বপূর্ণ methods:</div>
+<div class="code-box">
+  <div class="code-top"><span>15.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>()
+<span class="syn-fn">document</span>.<span class="syn-op">getElementsByClassName</span>()
+<span class="syn-fn">document</span>.<span class="syn-op">getElementsByTagName</span>()
+<span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>()
+<span class="syn-fn">document</span>.<span class="syn-op">querySelectorAll</span>()</pre>
+</div>
+    </div>
+
+    <!-- 15.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.12</span> getElementById()</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.12 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;h1</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;title&quot;</span><span class="syn-fn">&gt;</span>Hello World<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> title = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;title&quot;);
+
+<span class="syn-fn">console</span>.log(title);</pre>
+</div>
+<p class="text-p">এটি <code>&lt;h1&gt;</code> element return করবে।</p>
+    </div>
+
+    <!-- 15.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.13</span> ID দিয়ে Content Change</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.13 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;h1</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;title&quot;</span><span class="syn-fn">&gt;</span>Hello World<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> title = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;title<span class="syn-str">&quot;);
+
+title.textContent = &quot;</span>Welcome to JavaScript!&quot;;</pre>
+</div>
+<p class="text-p">Browser:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Welcome to JavaScript!</pre>
+</div>
+    </div>
+
+    <!-- 15.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.14</span> getElementsByClassName()</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.14 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;p</span> <span class="syn-kw">class</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>One<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;p</span> <span class="syn-kw">class</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>Two<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;p</span> <span class="syn-kw">class</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>Three<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> elements = <span class="syn-fn">document</span>.<span class="syn-op">getElementsByClassName</span>(&quot;text&quot;);
+
+<span class="syn-fn">console</span>.log(elements);</pre>
+</div>
+<p class="text-p">এখানে multiple elements পাওয়া যাবে।</p>
+<p class="text-p">এটি একটি <strong>HTMLCollection</strong> return করে।</p>
+    </div>
+
+    <!-- 15.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.15</span> HTMLCollection</div>
+<div class="code-box">
+  <div class="code-top"><span>15.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> elements = <span class="syn-fn">document</span>.<span class="syn-op">getElementsByClassName</span>(&quot;text&quot;);
+
+<span class="syn-fn">console</span>.log(elements.length);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3</pre>
+</div>
+<p class="text-p">Index দিয়ে access:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(elements[<span class="syn-num">0</span>]);</pre>
+</div>
+<p class="text-p">প্রথম <code>&lt;p&gt;</code> পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 15.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.16</span> getElementsByTagName()</div>
+<p class="text-p">Tag name দিয়ে element খুঁজতে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.16 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>JavaScript<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>DOM<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>15.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> paragraphs = <span class="syn-fn">document</span>.<span class="syn-op">getElementsByTagName</span>(&quot;p&quot;);
+
+<span class="syn-fn">console</span>.log(paragraphs.length);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3</pre>
+</div>
+    </div>
+
+    <!-- 15.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.17</span> querySelector()</div>
+<p class="text-p">এটি DOM-এর সবচেয়ে useful selector method-গুলোর একটি।</p>
+<div class="code-box">
+  <div class="code-top"><span>15.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(selector);</pre>
+</div>
+<div class="section-subhead">ID:</div>
+<div class="code-box">
+  <div class="code-top"><span>15.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> title = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#title&quot;);</pre>
+</div>
+<div class="section-subhead">Class:</div>
+<div class="code-box">
+  <div class="code-top"><span>15.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> box = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;.box&quot;);</pre>
+</div>
+<div class="section-subhead">Tag:</div>
+<div class="code-box">
+  <div class="code-top"><span>15.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> heading = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;h1&quot;);</pre>
+</div>
+    </div>
+
+    <!-- 15.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.18</span> querySelector()` প্রথম element দেয়</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.18 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;p</span> <span class="syn-kw">class</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>One<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;p</span> <span class="syn-kw">class</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>Two<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;p</span> <span class="syn-kw">class</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>Three<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>15.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> element = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;.text&quot;);
+
+<span class="syn-fn">console</span>.log(element.<span class="syn-op">textContent</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>One</pre>
+</div>
+<p class="text-p">শুধু প্রথম matching element পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 15.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.19</span> querySelectorAll()</div>
+<p class="text-p">সব matching element পেতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> elements = <span class="syn-fn">document</span>.<span class="syn-op">querySelectorAll</span>(&quot;.text&quot;);
+
+<span class="syn-fn">console</span>.log(elements);</pre>
+</div>
+<p class="text-p">এটি সাধারণত একটি <strong>NodeList</strong> return করে।</p>
+    </div>
+
+    <!-- 15.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.20</span> NodeList</div>
+<div class="code-box">
+  <div class="code-top"><span>15.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> elements = <span class="syn-fn">document</span>.<span class="syn-op">querySelectorAll</span>(&quot;.text&quot;);
+
+<span class="syn-fn">console</span>.log(elements.length);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3</pre>
+</div>
+<p class="text-p">Index:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(elements[<span class="syn-num">1</span>].<span class="syn-op">textContent</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Two</pre>
+</div>
+    </div>
+
+    <!-- 15.21 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">15.21</span> querySelector()<code> বনাম </code>querySelectorAll()</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td><code>querySelector()</code></td><td>প্রথম matching element</td></tr><tr><td><code>querySelectorAll()</code></td><td>সব matching element</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;.box&quot;);</pre>
+</div>
+<p class="text-p">→ প্রথম <code>.box</code></p>
+<div class="code-box">
+  <div class="code-top"><span>15.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">querySelectorAll</span>(&quot;.box&quot;);</pre>
+</div>
+<p class="text-p">→ সব <code>.box</code></p>
+    </div>
+
+    <!-- 15.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.22</span> CSS Selector ব্যবহার</div>
+<p class="text-p"><code>querySelector()</code>-এ CSS selector ব্যবহার করা যায়।</p>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.22 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;container&quot;</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;p</span> <span class="syn-kw">class</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="section-subhead">ID</div>
+<div class="code-box">
+  <div class="code-top"><span>15.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#container&quot;);</pre>
+</div>
+<div class="section-subhead">Class</div>
+<div class="code-box">
+  <div class="code-top"><span>15.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;.text&quot;);</pre>
+</div>
+<div class="section-subhead">Tag</div>
+<div class="code-box">
+  <div class="code-top"><span>15.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;p&quot;);</pre>
+</div>
+<div class="section-subhead">Descendant</div>
+<div class="code-box">
+  <div class="code-top"><span>15.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#container p&quot;);</pre>
+</div>
+    </div>
+
+    <!-- 15.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.23</span> Multiple Selector</div>
+<div class="code-box">
+  <div class="code-top"><span>15.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> element = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;h1, p&quot;);</pre>
+</div>
+<p class="text-p">প্রথম matching <code>h1</code> অথবা <code>p</code> পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 15.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.24</span> Attribute Selector</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.24 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> input = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&#x27;input[type=&quot;email&quot;]&#x27;);</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Content, Attributes &amp; Form Element Value Manipulation (15.25 – 15.37)</div>
+
+    <!-- 15.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.25</span> Content পরিবর্তন — `textContent</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.25 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;h1</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;title&quot;</span><span class="syn-fn">&gt;</span>Old Title<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;title<span class="syn-str">&quot;).textContent = &quot;</span>New Title&quot;;</pre>
+</div>
+<p class="text-p">Browser:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>New Title</pre>
+</div>
+    </div>
+
+    <!-- 15.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.26</span> innerHTML</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.26 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;box&quot;</span><span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;box<span class="syn-str">&quot;).innerHTML = &quot;</span>&lt;h2&gt;Hello&lt;/h2&gt;&quot;;</pre>
+</div>
+<p class="text-p">এখন HTML হবে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.26 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;box&quot;</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;h2</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/h2</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 15.27 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">15.27</span> textContent<code> বনাম </code>innerHTML</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th><code>textContent</code></th><th><code>innerHTML</code></th></tr></thead>
+    <tbody>
+      <tr><td>Text set করে</td><td>HTML set করতে পারে</td></tr><tr><td>HTML parse করে না</td><td>HTML parse করে</td></tr><tr><td>সাধারণত safer</td><td>User input-এর ক্ষেত্রে সাবধান</td></tr><tr><td>Plain text-এর জন্য ভালো</td><td>Dynamic HTML-এর জন্য useful</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.27 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">textContent</span> = <span class="syn-str">&quot;&lt;b&gt;Hello&lt;/b&gt;&quot;</span>;</pre>
+</div>
+<p class="text-p">Browser:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>&lt;b&gt;Hello&lt;/b&gt;</pre>
+</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.27 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">innerHTML</span> = <span class="syn-str">&quot;&lt;b&gt;Hello&lt;/b&gt;&quot;</span>;</pre>
+</div>
+<p class="text-p">Browser:</p>
+<p class="text-p"><strong>Hello</strong> (bold)</p>
+    </div>
+
+    <!-- 15.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.28</span> innerText</div>
+<div class="code-box">
+  <div class="code-top"><span>15.28 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">innerText</span></pre>
+</div>
+<p class="text-p">এটি user-visible text-এর সাথে বেশি সম্পর্কিত।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;p&quot;);
+
+<span class="syn-fn">console</span>.log(text.<span class="syn-op">innerText</span>);</pre>
+</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 সাধারণভাবে মনে রাখো:</div>
+<div class="ascii-tree-container">textContent → DOM-এর text
+innerText   → rendered/visible text-এর দিকে বেশি focused
+innerHTML   → HTML structure সহ</div>
+    </div>
+
+    <!-- 15.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.29</span> Element-এর Attribute</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.29 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;img</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;photo&quot;</span> <span class="syn-kw">src</span><span class="syn-op">=</span><span class="syn-str">&quot;old.jpg&quot;</span> <span class="syn-kw">alt</span><span class="syn-op">=</span><span class="syn-str">&quot;Old&quot;</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> image = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;photo&quot;);
+
+<span class="syn-fn">console</span>.log(image.src);
+<span class="syn-fn">console</span>.log(image.alt);</pre>
+</div>
+    </div>
+
+    <!-- 15.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.30</span> getAttribute()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> image = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;img<span class="syn-str">&quot;);
+
+console.log(image.getAttribute(&quot;</span>src&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>old.jpg</pre>
+</div>
+    </div>
+
+    <!-- 15.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.31</span> setAttribute()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.31 JavaScript</span><span>Run</span></div>
+  <pre>image.<span class="syn-op">setAttribute</span>(&quot;src<span class="syn-str">&quot;, &quot;</span><span class="syn-kw">new</span>.jpg&quot;);</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.31 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;img</span> <span class="syn-kw">src</span><span class="syn-op">=</span><span class="syn-str">&quot;new.jpg&quot;</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 15.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.32</span> hasAttribute()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> image = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;img<span class="syn-str">&quot;);
+
+console.log(image.hasAttribute(&quot;</span>alt&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 15.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.33</span> removeAttribute()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.33 JavaScript</span><span>Run</span></div>
+  <pre>image.<span class="syn-op">removeAttribute</span>(&quot;alt&quot;);</pre>
+</div>
+<p class="text-p">এখন <code>alt</code> attribute remove হয়ে যাবে।</p>
+    </div>
+
+    <!-- 15.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.34</span> Direct Property দিয়ে Attribute পরিবর্তন</div>
+<p class="text-p">অনেক common attribute সরাসরি property দিয়েও পরিবর্তন করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>15.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> image = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;img<span class="syn-str">&quot;);
+
+image.src = &quot;</span><span class="syn-kw">new</span>.jpg<span class="syn-str">&quot;;
+image.alt = &quot;</span>New image&quot;;</pre>
+</div>
+    </div>
+
+    <!-- 15.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.35</span> Input Value</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.35 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;username&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> input = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;username<span class="syn-str">&quot;);
+
+input.value = &quot;</span>Shariar&quot;;</pre>
+</div>
+<p class="text-p">Input box-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<p class="text-p">দেখাবে।</p>
+<p class="text-p">Value পড়তে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(input.value);</pre>
+</div>
+    </div>
+
+    <!-- 15.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.36</span> Checkbox</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.36 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;agree&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;checkbox&quot;</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> checkbox = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;agree&quot;);
+
+<span class="syn-fn">console</span>.log(checkbox.checked);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+<p class="text-p">Check করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.36 JavaScript</span><span>Run</span></div>
+  <pre>checkbox.checked = <span class="syn-bool">true</span>;</pre>
+</div>
+    </div>
+
+    <!-- 15.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.37</span> Select Option</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.37 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;select</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;department&quot;</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;cse&quot;</span><span class="syn-fn">&gt;</span>CSE<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;eee&quot;</span><span class="syn-fn">&gt;</span>EEE<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/select</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> department = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;department&quot;);
+
+<span class="syn-fn">console</span>.log(department.value);</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 04 — CSS Styling &amp; ClassList Dynamic Manipulation (15.38 – 15.45)</div>
+
+    <!-- 15.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.38</span> CSS পরিবর্তন — `style</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.38 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;h1</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;title&quot;</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.38 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> title = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;title<span class="syn-str">&quot;);
+
+title.style.color = &quot;</span>red<span class="syn-str">&quot;;
+title.style.fontSize = &quot;</span>40px&quot;;</pre>
+</div>
+<p class="text-p">এখন heading লাল এবং বড় হবে।</p>
+    </div>
+
+    <!-- 15.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.39</span> CSS Property Naming</div>
+<p class="text-p">CSS:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">15.39 CSS</span><span>Stylesheet</span></div>
+  <pre>  <span class="syn-fn">background-color</span>:<span class="syn-str"> blue;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.39 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">style</span>.backgroundColor = <span class="syn-str">&quot;blue&quot;</span>;</pre>
+</div>
+<p class="text-p">CSS:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">15.39 CSS</span><span>Stylesheet</span></div>
+  <pre>  <span class="syn-fn">font-size</span>:<span class="syn-str"> 30px;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.39 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">style</span>.fontSize = <span class="syn-str">&quot;30px&quot;</span>;</pre>
+</div>
+<p class="text-p">CSS:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">15.39 CSS</span><span>Stylesheet</span></div>
+  <pre>  <span class="syn-fn">margin-top</span>:<span class="syn-str"> 20px;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.39 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">style</span>.marginTop = <span class="syn-str">&quot;20px&quot;</span>;</pre>
+</div>
+<p class="text-p">অর্থাৎ CSS-এর <code>kebab-case</code> → JavaScript-এ <code>camelCase</code>।</p>
+    </div>
+
+    <!-- 15.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.40</span> classList</div>
+<p class="text-p">Direct style পরিবর্তনের চেয়ে অনেক সময় CSS class ব্যবহার করা ভালো।</p>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.40 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;box&quot;</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">CSS:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">15.40 CSS</span><span>Stylesheet</span></div>
+  <pre><span class="syn-kw">.active </span>{<span class="syn-str"></span>
+  <span class="syn-fn">    background-color</span>:<span class="syn-str"> blue;</span>
+  <span class="syn-fn">    color</span>:<span class="syn-str"> white;</span>
+}</pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> box = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;box<span class="syn-str">&quot;);
+
+box.classList.add(&quot;</span>active&quot;);</pre>
+</div>
+    </div>
+
+    <!-- 15.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.41</span> classList.add()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.41 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">classList</span>.<span class="syn-op">add</span>(&quot;active&quot;);</pre>
+</div>
+<p class="text-p">একটি class যোগ করে।</p>
+    </div>
+
+    <!-- 15.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.42</span> classList.remove()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.42 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">classList</span>.<span class="syn-op">remove</span>(&quot;active&quot;);</pre>
+</div>
+<p class="text-p">Class remove করে।</p>
+    </div>
+
+    <!-- 15.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.43</span> classList.toggle()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.43 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">classList</span>.<span class="syn-op">toggle</span>(&quot;active&quot;);</pre>
+</div>
+<p class="text-p">যদি class থাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>remove</pre>
+</div>
+<p class="text-p">না থাকলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>add</pre>
+</div>
+<p class="text-p">এটি খুব useful।</p>
+    </div>
+
+    <!-- 15.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.44</span> classList.contains()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(element.<span class="syn-op">classList</span>.<span class="syn-op">contains</span>(&quot;active&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 15.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.45</span> classList.replace()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.45 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">classList</span>.<span class="syn-op">replace</span>(&quot;old<span class="syn-str">&quot;, &quot;</span><span class="syn-kw">new</span>&quot;);</pre>
+</div>
+<p class="text-p">একটি class অন্য class দিয়ে replace করবে।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Element Creation, Insertion, Removal &amp; Cloning (15.46 – 15.57)</div>
+
+    <!-- 15.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.46</span> Element তৈরি করা</div>
+<p class="text-p">JavaScript দিয়ে নতুন HTML element তৈরি করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>15.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> paragraph = <span class="syn-fn">document</span>.<span class="syn-op">createElement</span>(&quot;p&quot;);</pre>
+</div>
+<p class="text-p">এখন <code>paragraph</code> একটি নতুন DOM element।</p>
+    </div>
+
+    <!-- 15.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.47</span> নতুন Element-এর Content</div>
+<div class="code-box">
+  <div class="code-top"><span>15.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> paragraph = <span class="syn-fn">document</span>.<span class="syn-op">createElement</span>(&quot;p<span class="syn-str">&quot;);
+
+paragraph.textContent = &quot;</span>Hello JavaScript&quot;;</pre>
+</div>
+<p class="text-p">কিন্তু এখনও webpage-এ দেখা যাবে না।</p>
+<p class="text-p">কারণ element-টাকে DOM-এ add করতে হবে।</p>
+    </div>
+
+    <!-- 15.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.48</span> append()</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.48 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;container&quot;</span><span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> container = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;container<span class="syn-str">&quot;);
+
+let paragraph = document.createElement(&quot;</span>p<span class="syn-str">&quot;);
+
+paragraph.textContent = &quot;</span>Hello JavaScript&quot;;
+
+container.<span class="syn-op">append</span>(paragraph);</pre>
+</div>
+<p class="text-p">DOM:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.48 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;container&quot;</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>Hello JavaScript<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 15.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.49</span> appendChild()</div>
+<div class="code-box">
+  <div class="code-top"><span>15.49 JavaScript</span><span>Run</span></div>
+  <pre>container.<span class="syn-op">appendChild</span>(paragraph);</pre>
+</div>
+<p class="text-p">এটিও child element add করে।</p>
+    </div>
+
+    <!-- 15.50 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">15.50</span> append()<code> বনাম </code>appendChild()</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th><code>append()</code></th><th><code>appendChild()</code></th></tr></thead>
+    <tbody>
+      <tr><td>Node এবং text দুটোই নিতে পারে</td><td>Node নেয়</td></tr><tr><td>একাধিক item নিতে পারে</td><td>সাধারণত একটি node</td></tr><tr><td>Modern ও flexible</td><td>Traditional DOM API</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.50 JavaScript</span><span>Run</span></div>
+  <pre>container.<span class="syn-op">append</span>(&quot;Hello&quot;);</pre>
+</div>
+<p class="text-p">এটা সম্ভব।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.50 JavaScript</span><span>Run</span></div>
+  <pre>container.<span class="syn-op">appendChild</span>(&quot;Hello&quot;);</pre>
+</div>
+<p class="text-p">এটা valid node না হওয়ায় কাজ করবে না।</p>
+    </div>
+
+    <!-- 15.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.51</span> prepend()</div>
+<p class="text-p">Parent-এর শুরুতে element যোগ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.51 JavaScript</span><span>Run</span></div>
+  <pre>container.<span class="syn-op">prepend</span>(paragraph);</pre>
+</div>
+    </div>
+
+    <!-- 15.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.52</span> before()</div>
+<p class="text-p">কোনো element-এর আগে কিছু যোগ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.52 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">before</span>(paragraph);</pre>
+</div>
+    </div>
+
+    <!-- 15.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.53</span> after()</div>
+<p class="text-p">কোনো element-এর পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.53 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">after</span>(paragraph);</pre>
+</div>
+    </div>
+
+    <!-- 15.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.54</span> Element Remove</div>
+<p class="text-p">Modern method:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.54 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">remove</span>();</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.54 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> paragraph = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;p&quot;);
+
+paragraph.<span class="syn-op">remove</span>();</pre>
+</div>
+    </div>
+
+    <!-- 15.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.55</span> removeChild()</div>
+<p class="text-p">Parent থেকে child remove:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.55 JavaScript</span><span>Run</span></div>
+  <pre>container.<span class="syn-op">removeChild</span>(paragraph);</pre>
+</div>
+    </div>
+
+    <!-- 15.56 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.56</span> Element Replace</div>
+<div class="code-box">
+  <div class="code-top"><span>15.56 JavaScript</span><span>Run</span></div>
+  <pre>container.replaceChildren(paragraph);</pre>
+</div>
+<p class="text-p">এটি container-এর existing children replace করে।</p>
+<p class="text-p">আর একটি নির্দিষ্ট child replace করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.56 JavaScript</span><span>Run</span></div>
+  <pre>oldElement.<span class="syn-op">replaceWith</span>(newElement);</pre>
+</div>
+    </div>
+
+    <!-- 15.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.57</span> Clone করা</div>
+<p class="text-p">একটি DOM element copy করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.57 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> copy = element.<span class="syn-op">cloneNode</span>(<span class="syn-bool">true</span>);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">true → children-সহ clone
+false → শুধু element clone</div>
+    </div>
+
+    <div class="part-banner">Part 06 — DOM Traversal, Hierarchy &amp; Tree Navigation (15.58 – 15.67)</div>
+
+    <!-- 15.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.58</span> Parent খুঁজে বের করা</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.58 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;parent&quot;</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;p</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;child&quot;</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.58 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> child = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;child&quot;);
+
+<span class="syn-fn">console</span>.log(child.<span class="syn-op">parentElement</span>);</pre>
+</div>
+<p class="text-p"><code>div</code> পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 15.59 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.59</span> Children</div>
+<div class="code-box">
+  <div class="code-top"><span>15.59 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> parent = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;parent&quot;);
+
+<span class="syn-fn">console</span>.log(parent.<span class="syn-op">children</span>);</pre>
+</div>
+<p class="text-p">এটি শুধু element children দেখায়।</p>
+    </div>
+
+    <!-- 15.60 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.60</span> firstElementChild</div>
+<div class="code-box">
+  <div class="code-top"><span>15.60 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(parent.<span class="syn-op">firstElementChild</span>);</pre>
+</div>
+    </div>
+
+    <!-- 15.61 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.61</span> lastElementChild</div>
+<div class="code-box">
+  <div class="code-top"><span>15.61 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(parent.<span class="syn-op">lastElementChild</span>);</pre>
+</div>
+    </div>
+
+    <!-- 15.62 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.62</span> nextElementSibling</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.62 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>One<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;p</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;current&quot;</span><span class="syn-fn">&gt;</span>Two<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>Three<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.62 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> current = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;current&quot;);
+
+<span class="syn-fn">console</span>.log(current.<span class="syn-op">nextElementSibling</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.62 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>Three<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 15.63 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.63</span> previousElementSibling</div>
+<div class="code-box">
+  <div class="code-top"><span>15.63 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(current.<span class="syn-op">previousElementSibling</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.63 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>One<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 15.64 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.64</span> DOM Traversal</div>
+<p class="text-p">DOM traversal মানে DOM Tree-এর মধ্যে এক element থেকে অন্য element-এ যাওয়া।</p>
+<p class="text-p">Important properties:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.64 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">parentElement</span>
+<span class="syn-op">children</span>
+<span class="syn-op">firstElementChild</span>
+<span class="syn-op">lastElementChild</span>
+<span class="syn-op">nextElementSibling</span>
+<span class="syn-op">previousElementSibling</span></pre>
+</div>
+    </div>
+
+    <!-- 15.65 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">15.65</span> children<code> বনাম </code>childNodes</div>
+<div class="code-box">
+  <div class="code-top"><span>15.65 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">children</span></pre>
+</div>
+<p class="text-p">→ শুধু element children।</p>
+<div class="code-box">
+  <div class="code-top"><span>15.65 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">childNodes</span></pre>
+</div>
+<p class="text-p">→ text node, comment node সহ বিভিন্ন node থাকতে পারে।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.65 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;div</span><span class="syn-fn">&gt;</span>
+    Hello
+    <span class="syn-fn">&lt;p</span><span class="syn-fn">&gt;</span>World<span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/div</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">এখানে whitespace/text node থাকার কারণে <code>childNodes</code> এবং <code>children</code>-এর result একই নাও হতে পারে।</p>
+    </div>
+
+    <!-- 15.66 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.66</span> closest()</div>
+<p class="text-p">কোনো element-এর কাছের matching ancestor খুঁজতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.66 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> button = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;button<span class="syn-str">&quot;);
+
+let card = button.closest(&quot;</span>.card&quot;);</pre>
+</div>
+<p class="text-p">Real-world application-এ এটি খুব useful।</p>
+    </div>
+
+    <!-- 15.67 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.67</span> matches()</div>
+<p class="text-p">কোনো element CSS selector match করছে কিনা:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.67 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">if</span> (element.<span class="syn-op">matches</span>(&quot;.active<span class="syn-str">&quot;)) {
+    console.log(&quot;</span>Active&quot;);
+}</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 07 — Hands-On DOM Mini Projects &amp; Custom Dataset (15.68 – 15.71)</div>
+
+    <!-- 15.68 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">15.68</span> DOM Mini Project — Counter</div>
+<p class="text-p">এখন একটি ছোট project করি।</p>
+<div class="section-subhead">HTML</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.68 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;h1</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;count&quot;</span><span class="syn-fn">&gt;</span>0<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;increase&quot;</span><span class="syn-fn">&gt;</span>+<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;decrease&quot;</span><span class="syn-fn">&gt;</span>-<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="section-subhead">JavaScript</div>
+<div class="code-box">
+  <div class="code-top"><span>15.68 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+<span class="syn-kw">let</span> countElement = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;count<span class="syn-str">&quot;);
+
+let increaseButton =
+    document.getElementById(&quot;</span>increase<span class="syn-str">&quot;);
+
+let decreaseButton =
+    document.getElementById(&quot;</span>decrease<span class="syn-str">&quot;);
+
+increaseButton.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+
+    count++;
+
+    countElement.textContent = count;
+
+});
+
+decreaseButton.addEventListener(&quot;</span>click&quot;, <span class="syn-kw">function</span> () {
+
+    count--;
+
+    countElement.<span class="syn-op">textContent</span> = count;
+
+});</pre>
+</div>
+<p class="text-p">এখানে আমরা <code>addEventListener()</code> ব্যবহার করেছি, যেটা Chapter 16-এ বিস্তারিত শিখব।</p>
+    </div>
+
+    <!-- 15.69 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">15.69</span> DOM Mini Project — Dynamic List</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.69 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;taskInput&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;addButton&quot;</span><span class="syn-fn">&gt;</span>Add Task<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;ul</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;taskList&quot;</span><span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/ul</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.69 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> input = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;taskInput<span class="syn-str">&quot;);
+let button = document.getElementById(&quot;</span>addButton<span class="syn-str">&quot;);
+let list = document.getElementById(&quot;</span>taskList<span class="syn-str">&quot;);
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+
+    let task = input.value;
+
+    if (task === &quot;</span><span class="syn-str">&quot;) {
+        return;
+    }
+
+    let li = document.createElement(&quot;</span>li<span class="syn-str">&quot;);
+
+    li.textContent = task;
+
+    list.append(li);
+
+    input.value = &quot;</span>&quot;;
+
+});</pre>
+</div>
+<p class="text-p">User লিখবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Learn JavaScript</pre>
+</div>
+<p class="text-p">তারপর Add চাপলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>• Learn JavaScript</pre>
+</div>
+<p class="text-p">এভাবে dynamic list তৈরি হবে।</p>
+    </div>
+
+    <!-- 15.70 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">15.70</span> DOM Mini Project — Dark Mode</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.70 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;themeButton&quot;</span><span class="syn-fn">&gt;</span>
+    Toggle Dark Mode
+<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">CSS:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#38bdf8;">15.70 CSS</span><span>Stylesheet</span></div>
+  <pre><span class="syn-kw">.dark </span>{<span class="syn-str"></span>
+  <span class="syn-fn">    background-color</span>:<span class="syn-str"> black;</span>
+  <span class="syn-fn">    color</span>:<span class="syn-str"> white;</span>
+}</pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.70 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> button = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;themeButton<span class="syn-str">&quot;);
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+
+    document.body.classList.toggle(&quot;</span>dark&quot;);
+
+});</pre>
+</div>
+<p class="text-p">Button click করলে:</p>
+<div class="ascii-tree-container">Light → Dark
+Dark → Light</div>
+    </div>
+
+    <!-- 15.71 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.71</span> dataset</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.71 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;button</span>
+    <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;product&quot;</span>
+    <span class="syn-kw">data-id</span><span class="syn-op">=</span><span class="syn-str">&quot;101&quot;</span>
+    <span class="syn-kw">data-category</span><span class="syn-op">=</span><span class="syn-str">&quot;laptop&quot;</span><span class="syn-fn">&gt;</span>
+    Laptop
+<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.71 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> product = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;product&quot;);
+
+<span class="syn-fn">console</span>.log(product.<span class="syn-op">dataset</span>.id);
+<span class="syn-fn">console</span>.log(product.<span class="syn-op">dataset</span>.category);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>101
+laptop</pre>
+</div>
+<p class="text-p"><code>data-*</code> attributes custom data রাখার জন্য useful।</p>
+    </div>
+
+    <div class="part-banner">Part 08 — DOM Engine Internals, Security &amp; Execution Lifecycle (15.72 – 15.78)</div>
+
+    <!-- 15.72 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.72</span> DOM-এর কিছু গুরুত্বপূর্ণ Properties</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Property</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>textContent</code></td><td>Text পড়া/লেখা</td></tr><tr><td><code>innerHTML</code></td><td>HTML পড়া/লেখা</td></tr><tr><td><code>innerText</code></td><td>Visible text</td></tr><tr><td><code>value</code></td><td>Input value</td></tr><tr><td><code>style</code></td><td>Inline CSS</td></tr><tr><td><code>classList</code></td><td>CSS class manage</td></tr><tr><td><code>id</code></td><td>Element ID</td></tr><tr><td><code>children</code></td><td>Element children</td></tr><tr><td><code>parentElement</code></td><td>Parent</td></tr><tr><td><code>dataset</code></td><td><code>data-*</code> values</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 15.73 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.73</span> DOM-এর গুরুত্বপূর্ণ Methods</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>getElementById()</code></td><td>ID দিয়ে select</td></tr><tr><td><code>getElementsByClassName()</code></td><td>Class দিয়ে select</td></tr><tr><td><code>getElementsByTagName()</code></td><td>Tag দিয়ে select</td></tr><tr><td><code>querySelector()</code></td><td>প্রথম matching element</td></tr><tr><td><code>querySelectorAll()</code></td><td>সব matching elements</td></tr><tr><td><code>createElement()</code></td><td>Element তৈরি</td></tr><tr><td><code>append()</code></td><td>শেষে add</td></tr><tr><td><code>prepend()</code></td><td>শুরুতে add</td></tr><tr><td><code>remove()</code></td><td>Remove</td></tr><tr><td><code>replaceWith()</code></td><td>Replace</td></tr><tr><td><code>cloneNode()</code></td><td>Clone</td></tr><tr><td><code>closest()</code></td><td>Ancestor খোঁজা</td></tr><tr><td><code>matches()</code></td><td>Selector match check</td></tr><tr><td><code>getAttribute()</code></td><td>Attribute পড়া</td></tr><tr><td><code>setAttribute()</code></td><td>Attribute set</td></tr><tr><td><code>removeAttribute()</code></td><td>Attribute remove</td></tr><tr><td><code>hasAttribute()</code></td><td>Attribute আছে কিনা</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 15.74 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">15.74</span> innerHTML` ব্যবহারে সতর্কতা</div>
+<p class="text-p">ধরো user input:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.74 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> userInput = <span class="syn-str">&quot;&lt;img src=x onerror=alert(&#x27;Hacked&#x27;)&gt;&quot;</span>;</pre>
+</div>
+<p class="text-p">এটা সরাসরি:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.74 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">innerHTML</span> = userInput;</pre>
+</div>
+<p class="text-p">দিলে security problem হতে পারে।</p>
+<p class="text-p">এ ধরনের issue-কে সাধারণভাবে <strong>XSS (Cross-Site Scripting)</strong> বলা হয়।</p>
+<p class="text-p">User-provided plain text দেখানোর ক্ষেত্রে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.74 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">textContent</span> = userInput;</pre>
+</div>
+<p class="text-p">সাধারণত safer approach।</p>
+<p class="text-p">Security chapter-এ আমরা XSS আরও বিস্তারিত দেখব।</p>
+    </div>
+
+    <!-- 15.75 -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">15.75</span> Static vs Live Collections</div>
+<div class="memory-box">এটি একটু advanced কিন্তু গুরুত্বপূর্ণ।</div>
+<p class="text-p"><code>getElementsByClassName()</code> সাধারণত <strong>live HTMLCollection</strong> দেয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>15.75 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> items = <span class="syn-fn">document</span>.<span class="syn-op">getElementsByClassName</span>(&quot;item&quot;);</pre>
+</div>
+<p class="text-p">DOM পরিবর্তন হলে collection-এর content automatically update হতে পারে।</p>
+<p class="text-p">অন্যদিকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.75 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> items = <span class="syn-fn">document</span>.<span class="syn-op">querySelectorAll</span>(&quot;.item&quot;);</pre>
+</div>
+<p class="text-p">সাধারণত <strong>static NodeList</strong> দেয়।</p>
+<p class="text-p">অর্থাৎ পরে DOM-এ নতুন matching element যোগ করলেও আগের NodeList automatically update হবে না।</p>
+    </div>
+
+    <!-- 15.76 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15.76</span> DOM Ready হওয়ার বিষয়</div>
+<p class="text-p">যদি JavaScript HTML element তৈরি হওয়ার আগেই execute করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.76 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> title = <span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;title&quot;);
+
+<span class="syn-fn">console</span>.log(title);</pre>
+</div>
+<p class="text-p">তাহলে <code>null</code> পাওয়া যেতে পারে।</p>
+<p class="text-p">একটি common solution হলো script-কে HTML-এর শেষে রাখা:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">15.76 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;body</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;h1</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;title&quot;</span><span class="syn-fn">&gt;</span>Hello<span class="syn-fn">&lt;/h1</span><span class="syn-fn">&gt;</span>
+
+    <span class="syn-fn">&lt;script</span> <span class="syn-kw">src</span><span class="syn-op">=</span><span class="syn-str">&quot;script.js&quot;</span><span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/script</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;/body</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">আরেকটি approach হলো:</p>
+<div class="code-box">
+  <div class="code-top"><span>15.76 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">addEventListener</span>(&quot;DOMContentLoaded<span class="syn-str">&quot;, function () {
+
+    let title = document.getElementById(&quot;</span>title&quot;);
+
+    <span class="syn-fn">console</span>.log(title);
+
+});</pre>
+</div>
+<p class="text-p"><code>DOMContentLoaded</code> আমরা Events chapter-এ আরও বিস্তারিত দেখব।</p>
+    </div>
+
+    <!-- 15.77 -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">15.77</span> DOM-এর পুরো Mental Model</div>
+<p class="text-p">একটি webpage-কে এভাবে চিন্তা করো:</p>
+<div class="ascii-tree-container">HTML
+  ↓
+Browser parses HTML
+  ↓
+DOM Tree তৈরি
+  ↓
+JavaScript DOM select করে
+  ↓
+Content / Attribute / Style / Structure change
+  ↓
+Browser updated UI দেখায়</div>
+    </div>
+
+    <!-- 15.78 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">15.78</span> Must Know</div>
+<p class="text-p">JavaScript দিয়ে frontend development করতে হলে এগুলো অবশ্যই ভালোভাবে জানতে হবে:</p>
+<div class="section-subhead">Selection</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">getElementById</span>()
+<span class="syn-op">getElementsByClassName</span>()
+<span class="syn-op">getElementsByTagName</span>()
+<span class="syn-op">querySelector</span>()
+<span class="syn-op">querySelectorAll</span>()</pre>
+</div>
+<div class="section-subhead">Content</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">textContent</span>
+<span class="syn-op">innerText</span>
+<span class="syn-op">innerHTML</span></pre>
+</div>
+<div class="section-subhead">Attributes</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">getAttribute</span>()
+<span class="syn-op">setAttribute</span>()
+<span class="syn-op">hasAttribute</span>()
+<span class="syn-op">removeAttribute</span>()</pre>
+</div>
+<div class="section-subhead">Classes</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">classList</span>.<span class="syn-op">add</span>()
+<span class="syn-op">classList</span>.<span class="syn-op">remove</span>()
+<span class="syn-op">classList</span>.<span class="syn-op">toggle</span>()
+<span class="syn-op">classList</span>.<span class="syn-op">contains</span>()
+<span class="syn-op">classList</span>.<span class="syn-op">replace</span>()</pre>
+</div>
+<div class="section-subhead">Style</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre>element.<span class="syn-op">style</span>.color
+element.<span class="syn-op">style</span>.backgroundColor
+element.<span class="syn-op">style</span>.fontSize</pre>
+</div>
+<div class="section-subhead">Create</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">document</span>.<span class="syn-op">createElement</span>()</pre>
+</div>
+<div class="section-subhead">Insert</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">append</span>()
+<span class="syn-op">appendChild</span>()
+<span class="syn-op">prepend</span>()
+<span class="syn-op">before</span>()
+<span class="syn-op">after</span>()</pre>
+</div>
+<div class="section-subhead">Remove</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">remove</span>()
+<span class="syn-op">removeChild</span>()</pre>
+</div>
+<div class="section-subhead">Traversal</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">parentElement</span>
+<span class="syn-op">children</span>
+<span class="syn-op">firstElementChild</span>
+<span class="syn-op">lastElementChild</span>
+<span class="syn-op">nextElementSibling</span>
+<span class="syn-op">previousElementSibling</span>
+<span class="syn-op">closest</span>()</pre>
+</div>
+<div class="section-subhead">Data</div>
+<div class="code-box">
+  <div class="code-top"><span>15.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">dataset</span></pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 09 — Quick Cheat Sheet, Practice Lab (12 Problems) &amp; Final Summary</div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet — Core DOM Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-com">// Select</span>
+<span class="syn-fn">document</span>.<span class="syn-op">getElementById</span>(&quot;title<span class="syn-str">&quot;);
+
+document.querySelector(&quot;</span>.box<span class="syn-str">&quot;);
+
+document.querySelectorAll(&quot;</span>.item<span class="syn-str">&quot;);
+
+// Content
+element.textContent = &quot;</span>Hello<span class="syn-str">&quot;;
+
+element.innerHTML = &quot;</span>&lt;b&gt;Hello&lt;/b&gt;&quot;;
+
+<span class="syn-com">// Attribute</span>
+element.<span class="syn-op">setAttribute</span>(&quot;title<span class="syn-str">&quot;, &quot;</span>Hello<span class="syn-str">&quot;);
+
+element.getAttribute(&quot;</span>title<span class="syn-str">&quot;);
+
+element.removeAttribute(&quot;</span>title<span class="syn-str">&quot;);
+
+// Class
+element.classList.add(&quot;</span>active<span class="syn-str">&quot;);
+
+element.classList.remove(&quot;</span>active<span class="syn-str">&quot;);
+
+element.classList.toggle(&quot;</span>active<span class="syn-str">&quot;);
+
+// Style
+element.style.color = &quot;</span>red<span class="syn-str">&quot;;
+
+// Create
+let div = document.createElement(&quot;</span>div&quot;);
+
+<span class="syn-com">// Add</span>
+parent.<span class="syn-op">append</span>(div);
+
+<span class="syn-com">// Remove</span>
+div.<span class="syn-op">remove</span>();
+
+<span class="syn-com">// Parent</span>
+element.<span class="syn-op">parentElement</span>;
+
+<span class="syn-com">// Children</span>
+element.<span class="syn-op">children</span>;
+
+<span class="syn-com">// Data</span>
+element.<span class="syn-op">dataset</span>.id;</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Chapter 15 Practice Set — 12 Hands-on Problems</div>
+
+      <div style="margin: 8px 0 4px 0;"><span class="sub-badge" style="background: #0284c7; color: white; padding: 2px 8px; font-size: 10px;">LEVEL: BEGINNER</span></div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #0284c7; margin-bottom: 6px;">
+<p class="text-p"><strong>1.</strong> একটি <code>&lt;h1&gt;</code> element তৈরি করে JavaScript দিয়ে তার text পরিবর্তন করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #0284c7; margin-bottom: 6px;">
+<p class="text-p"><strong>2.</strong> একটি paragraph-এর color JavaScript দিয়ে পরিবর্তন করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #0284c7; margin-bottom: 6px;">
+<p class="text-p"><strong>3.</strong> একটি button-এর text পরিবর্তন করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #0284c7; margin-bottom: 6px;">
+<p class="text-p"><strong>4.</strong> একটি image-এর <code>src</code> এবং <code>alt</code> JavaScript দিয়ে পরিবর্তন করো।</p>
+      </div>
+      <div style="margin: 8px 0 4px 0;"><span class="sub-badge" style="background: #d97706; color: white; padding: 2px 8px; font-size: 10px;">LEVEL: INTERMEDIATE</span></div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #d97706; margin-bottom: 6px;">
+<p class="text-p"><strong>5.</strong> একটি input থেকে name নিয়ে <code>&lt;h2&gt;</code>-এ দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #d97706; margin-bottom: 6px;">
+<p class="text-p"><strong>6.</strong> JavaScript দিয়ে নতুন <code>&lt;li&gt;</code> তৈরি করে <code>&lt;ul&gt;</code>-এ add করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #d97706; margin-bottom: 6px;">
+<p class="text-p"><strong>7.</strong> একটি button click করলে একটি CSS class toggle করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #d97706; margin-bottom: 6px;">
+<p class="text-p"><strong>8.</strong> পাঁচটি paragraph select করে প্রত্যেকটির text পরিবর্তন করো।</p>
+      </div>
+      <div style="margin: 8px 0 4px 0;"><span class="sub-badge" style="background: #dc2626; color: white; padding: 2px 8px; font-size: 10px;">LEVEL: ADVANCED</span></div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>9.</strong> একটি dynamic Todo List বানাও:</p>
+<div class="ascii-tree-container">Input
+  ↓
+Add Task
+  ↓
+Task List
+  ↓
+Delete Task</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>10.</strong> একটি Product Card JavaScript দিয়ে dynamically তৈরি করো:</p>
+<div class="ascii-tree-container">Product Image
+Product Name
+Price
+Add to Cart Button</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>11.</strong> <code>data-id</code> ব্যবহার করে প্রতিটি product-এর ID store করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid #dc2626; margin-bottom: 6px;">
+<p class="text-p"><strong>12.</strong> <code>closest()</code> ব্যবহার করে একটি card-এর parent element বের করো।</p>
+      </div>
+    </div>
+
+    <!-- Chapter 15 Final Summary -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 15 Final Summary — DOM Architecture &amp; Lifecycle</div>
+<p class="text-p">আজ পর্যন্ত আমরা JavaScript-এর ভিতরের language concepts থেকে এসে <strong>Browser-এর HTML-এর সাথে JavaScript-এর connection</strong> শিখলাম।</p>
+<div class="memory-box">সবচেয়ে গুরুত্বপূর্ণ flow:</div>
+<div class="ascii-tree-container">document
+   ↓
+Select Element
+   ↓
+Read / Modify
+   ↓
+Content
+Attribute
+Style
+Class
+   ↓
+Create / Add / Remove
+   ↓
+Dynamic Webpage</div>
+<div class="memory-box">আর DOM-এর সবচেয়ে গুরুত্বপূর্ণ ৫টি skill:</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1. Select
+2. Read
+3. Modify
+4. Create
+5. Remove</pre>
+</div>
+<div class="memory-box">একজন <strong>Frontend / Full Stack Developer</strong> হিসেবে DOM খুব ভালোভাবে জানা অত্যন্ত গুরুত্বপূর্ণ, কারণ React শেখার আগেও বুঝতে হবে browser-এর HTML/UI আসলে কীভাবে কাজ করে।</div>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 16 Preview — JavaScript Events &amp; Event Handling</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        <strong>পরবর্তী: Chapter 16 — JavaScript Events &amp; Event Handling</strong>
+এখানে আমরা <code>click</code>, <code>input</code>, <code>change</code>, <code>submit</code>, keyboard events, mouse events, event object, <code>addEventListener()</code>, event bubbling, capturing, delegation, <code>preventDefault()</code>, <code>stopPropagation()</code>—সব বিস্তারিত শিখব।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

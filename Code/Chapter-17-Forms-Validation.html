@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 17: Forms &amp; Form Validation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      line-height: 1.38;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+    .syn-regex { color: #38bdf8; font-style: italic; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10px;
+      line-height: 1.32;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 17: FORMS &amp; FORM VALIDATION — HTML5 CONSTRAINTS, VALIDITY STATE &amp; FORMDATA</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">61 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 11 — Forms, User Input &amp; Validation</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">FormData, Constraint Validation &amp; ValidityState</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">HTML5 Form Standard / ECMAScript 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Forms &amp; Form Validation — ফর্ম তৈরি, ডাটা নেওয়া এবং Validation করা</h2>
+      <p class="text-p">আধুনিক ওয়েব অ্যাপ্লিকেশন বা সিঙ্গেল পেজ অ্যাপে ইউজার ইন্টারঅ্যাকশনের সবচেয়ে গুরুত্বপূর্ণ মাধ্যম হলো <strong>Form</strong>। ব্যবহারকারীর কাছ থেকে লগইন, রেজিস্ট্রেশন, পেমেন্ট বা যেকোনো ইনপুট সুরক্ষিতভাবে গ্রহণ ও যাচাই করার জন্য জাভাস্ক্রিপ্ট ফর্ম হ্যান্ডলিং ও ভ্যালিডেশন অত্যন্ত অপরিহার্য।</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">Form Elements &nbsp;→&nbsp; preventDefault() &nbsp;→&nbsp; Constraint Validation / Regex &nbsp;→&nbsp; FormData API &nbsp;→&nbsp; Clean Payload</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">Frontend ও Backend উভয়ের নিরাপত্তায় নির্ভুল ও ডায়নামিক ক্লায়েন্ট-সাইড ভ্যালিডেশন প্রথম প্রাচীর হিসেবে কাজ করে। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Form Fundamentals, Structure &amp; Form Elements (17.1 – 17.8)</div>
+
+    <!-- 17.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">17.1</span> Form কী?</div>
+<p class="text-p"><strong>Form</strong> হলো এমন একটি UI অংশ যেখানে user information input করে।</p>
+<div class="sub-badge">💡 Real-life example</div>
+<p class="text-p">তুমি কোনো website-এ registration করছো:</p>
+<div class="ascii-tree-container">Name:     Shariar
+Email:    shariar@example.com
+Password: ********
+Phone:    017XXXXXXXX
+
+          [ Register ]</div>
+<p class="text-p">এই পুরো অংশটাই একটি <strong>Form</strong>।</p>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.1 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-fn">/&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;button</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>Register<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 17.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.2</span> Basic Form Structure</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.2 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;registrationForm&quot;</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;label</span> <span class="syn-kw">for</span><span class="syn-op">=</span><span class="syn-str">&quot;name&quot;</span><span class="syn-fn">&gt;</span>Name<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;name&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;label</span> <span class="syn-kw">for</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span><span class="syn-fn">&gt;</span>Email<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;button</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>Register<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-fn">form</span> = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#registrationForm<span class="syn-str">&quot;);
+
+form.addEventListener(&quot;</span>submit<span class="syn-str">&quot;, function (event) {
+  event.preventDefault();
+
+  console.log(&quot;</span>Form submitted!&quot;);
+});</pre>
+</div>
+<div class="ascii-tree-container">Form submitted!</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ এখানে কী হলো?</div>
+<div class="code-box">
+  <div class="code-top"><span>17.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">form</span>.<span class="syn-op">addEventListener</span>(&quot;submit&quot;, ...)</pre>
+</div>
+<p class="text-p">Form submit হলে function চলবে।</p>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.2 JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-op">preventDefault</span>();</pre>
+</div>
+<p class="text-p">browser-এর default form submission বন্ধ করবে।</p>
+    </div>
+
+    <!-- 17.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.3</span> কেন <code>preventDefault()</code> ব্যবহার করি?</div>
+<p class="text-p">Normally form submit করলে browser page reload করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">form</span>.<span class="syn-op">addEventListener</span>(&quot;submit&quot;, <span class="syn-kw">function</span> (event) {
+  event.<span class="syn-op">preventDefault</span>();
+});</pre>
+</div>
+<p class="text-p">এতে browser-এর default behavior বন্ধ হয়।</p>
+<div class="sub-badge">💡 Real-life example</div>
+<p class="text-p">Login form submit করলে তুমি চাও:</p>
+<div class="ascii-tree-container">User clicks Login
+       ↓
+JavaScript data নেয়
+       ↓
+Validation করে
+       ↓
+API-তে data পাঠায়
+       ↓
+Login success</div>
+<p class="text-p">Page reload করানো দরকার নেই।</p>
+    </div>
+
+    <!-- 17.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.4</span> Input থেকে Value নেওয়া</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.4 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;username&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;btn&quot;</span><span class="syn-fn">&gt;</span>Get Name<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>17.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> username = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#username<span class="syn-str">&quot;);
+const button = document.querySelector(&quot;</span>#btn<span class="syn-str">&quot;);
+
+button.addEventListener(&quot;</span>click&quot;, <span class="syn-kw">function</span> () {
+  <span class="syn-fn">console</span>.log(username.<span class="syn-kw" style="color:#fdba74;">value</span>);
+});</pre>
+</div>
+<p class="text-p">User যদি লেখে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 গুরুত্বপূর্ণ</div>
+<p class="text-p">Input-এর value পেতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.4 JavaScript</span><span>Run</span></div>
+  <pre>input.<span class="syn-kw" style="color:#fdba74;">value</span>;</pre>
+</div>
+    </div>
+
+    <!-- 17.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.5</span> Form-এর সব Input Access করা</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.5 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;myForm&quot;</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;username&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;button</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>Submit<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-fn">form</span> = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#myForm&quot;);
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">form</span>.<span class="syn-fn">elements</span>);</pre>
+</div>
+<p class="text-p"><code>form.elements</code> form-এর controls-এর collection দেয়।</p>
+    </div>
+
+    <!-- 17.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.6</span> form.elements` দিয়ে নির্দিষ্ট Input</div>
+<div class="code-box">
+  <div class="code-top"><span>17.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-fn">form</span> = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#myForm&quot;);
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">form</span>.<span class="syn-fn">elements</span>.username.<span class="syn-kw" style="color:#fdba74;">value</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-fn">form</span>.<span class="syn-fn">elements</span>.email.<span class="syn-kw" style="color:#fdba74;">value</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-fn">form</span>.<span class="syn-fn">elements</span>.password.<span class="syn-kw" style="color:#fdba74;">value</span>);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Shariar
+shariar@gmail.com
+12345678</pre>
+</div>
+<div class="memory-box">এখানে <code>name</code> attribute গুরুত্বপূর্ণ।</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.6 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;username&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 17.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.7</span> Label কেন ব্যবহার করি?</div>
+<p class="text-p">ভালো form-এর জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.7 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;label</span> <span class="syn-kw">for</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span><span class="syn-fn">&gt;</span>Email<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p"><code>for=&quot;email&quot;</code> → input-এর <code>id=&quot;email&quot;</code>-এর সাথে সম্পর্ক তৈরি করে।</p>
+<p class="text-p">User label-এ click করলেও input focus হবে।</p>
+    </div>
+
+    <!-- 17.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.8</span> Different Input Types</div>
+<p class="text-p">Form-এ বিভিন্ন ধরনের input আছে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.8 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;number&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;tel&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;date&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;time&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;url&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;checkbox&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;radio&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;file&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;color&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;range&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript দিয়ে এগুলোর value/behavior handle করা যায়।</p>
+    </div>
+
+    <div class="part-banner">Part 02 — HTML5 Constraint Validation &amp; ValidityState API (17.9 – 17.24)</div>
+
+    <!-- 17.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.9</span> required</div>
+<p class="text-p">User যেন field empty রেখে submit করতে না পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.9 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;username&quot;</span> required <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">User empty রেখে submit করলে browser validation message দেখাবে।</p>
+    </div>
+
+    <!-- 17.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.10</span> minlength<code> এবং </code>maxlength</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.10 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-kw">minlength</span><span class="syn-op">=</span><span class="syn-str">&quot;3&quot;</span> <span class="syn-kw">maxlength</span><span class="syn-op">=</span><span class="syn-str">&quot;20&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">এর মানে:</p>
+<div class="ascii-tree-container">Minimum → 3 characters
+Maximum → 20 characters</div>
+    </div>
+
+    <!-- 17.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.11</span> min<code> এবং </code>max</div>
+<p class="text-p">Number-এর ক্ষেত্রে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.11 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;number&quot;</span> <span class="syn-kw">min</span><span class="syn-op">=</span><span class="syn-str">&quot;18&quot;</span> <span class="syn-kw">max</span><span class="syn-op">=</span><span class="syn-str">&quot;60&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">Allowed range:</p>
+<div class="ascii-tree-container">18 → 60</div>
+    </div>
+
+    <!-- 17.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.12</span> pattern</div>
+<p class="text-p">Custom pattern তৈরি করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.12 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-kw">pattern</span><span class="syn-op">=</span><span class="syn-str">&quot;[A-Za-z]+&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">এখানে শুধুমাত্র English alphabet allow করা হচ্ছে।</p>
+    </div>
+
+    <!-- 17.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.13</span> autocomplete</div>
+<p class="text-p">Browser যেন আগের information suggest করতে পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.13 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">autocomplete</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">Password:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.13 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">autocomplete</span><span class="syn-op">=</span><span class="syn-str">&quot;current-password&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">Registration-এর নতুন password:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.13 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">autocomplete</span><span class="syn-op">=</span><span class="syn-str">&quot;new-password&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+    </div>
+
+    <!-- 17.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.14</span> novalidate</div>
+<p class="text-p">Form-এর browser validation বন্ধ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.14 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span> novalidate<span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">এটি ব্যবহার করলে validation JavaScript দিয়ে নিজে করতে পারো।</p>
+    </div>
+
+    <!-- 17.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.15</span> HTML Constraint Validation</div>
+<p class="text-p">HTML নিজেই অনেক validation করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.15 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> required <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;number&quot;</span> <span class="syn-kw">min</span><span class="syn-op">=</span><span class="syn-str">&quot;18&quot;</span> <span class="syn-kw">max</span><span class="syn-op">=</span><span class="syn-str">&quot;60&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;button</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>Submit<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">Browser automatically check করবে:</p>
+<div class="ascii-tree-container">required
+email format
+min
+max
+pattern
+minlength
+maxlength</div>
+    </div>
+
+    <!-- 17.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.16</span> checkValidity()</div>
+<p class="text-p">কোনো form বা input valid কিনা check করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> email = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#email&quot;);
+
+<span class="syn-fn">console</span>.log(email.<span class="syn-op">checkValidity</span>());</pre>
+</div>
+<p class="text-p">Valid হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">Invalid হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 17.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.17</span> Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.17 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> required <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> email = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#email&quot;);
+
+<span class="syn-fn">console</span>.log(email.<span class="syn-op">checkValidity</span>());</pre>
+</div>
+<p class="text-p">Empty হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+<p class="text-p">Valid email দিলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 17.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.18</span> reportValidity()</div>
+<p class="text-p">Browser-এর built-in validation message দেখাতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.18 JavaScript</span><span>Run</span></div>
+  <pre>email.<span class="syn-op">reportValidity</span>();</pre>
+</div>
+<p class="text-p">যদি email invalid হয় browser message দেখাবে।</p>
+    </div>
+
+    <!-- 17.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.19</span> validity` Object</div>
+<div class="memory-box">JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ form validation concepts-এর একটি।</div>
+<div class="code-box">
+  <div class="code-top"><span>17.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(email.<span class="syn-fn">validity</span>);</pre>
+</div>
+<p class="text-p">এখানে অনেক property পাওয়া যায়।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.19 JavaScript</span><span>Run</span></div>
+  <pre>email.<span class="syn-fn">validity</span>.<span class="syn-kw" style="color:#fdba74;">valid</span>;</pre>
+</div>
+    </div>
+
+    <!-- 17.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.20</span> Important Validity Properties</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Property</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>valueMissing</code></td><td>required field empty</td></tr><tr><td><code>typeMismatch</code></td><td>email/url type ভুল</td></tr><tr><td><code>patternMismatch</code></td><td>pattern match করেনি</td></tr><tr><td><code>tooLong</code></td><td>maximum length ছাড়িয়েছে</td></tr><tr><td><code>tooShort</code></td><td>minimum length-এর নিচে</td></tr><tr><td><code>rangeUnderflow</code></td><td>min-এর নিচে</td></tr><tr><td><code>rangeOverflow</code></td><td>max-এর উপরে</td></tr><tr><td><code>stepMismatch</code></td><td>step-এর সাথে match করছে না</td></tr><tr><td><code>badInput</code></td><td>browser input parse করতে পারছে না</td></tr><tr><td><code>customError</code></td><td>custom validation error</td></tr><tr><td><code>valid</code></td><td>সব validation ঠিক</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 17.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.21</span> Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.21 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> required <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> email = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#email&quot;);
+
+<span class="syn-fn">console</span>.log(email.<span class="syn-fn">validity</span>.<span class="syn-kw" style="color:#fdba74;">valueMissing</span>);
+<span class="syn-fn">console</span>.log(email.<span class="syn-fn">validity</span>.<span class="syn-kw" style="color:#fdba74;">typeMismatch</span>);
+<span class="syn-fn">console</span>.log(email.<span class="syn-fn">validity</span>.<span class="syn-kw" style="color:#fdba74;">valid</span>);</pre>
+</div>
+<p class="text-p">Empty থাকলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false
+false</pre>
+</div>
+    </div>
+
+    <!-- 17.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.22</span> validationMessage</div>
+<p class="text-p">Browser-এর validation message পাওয়া যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(email.<span class="syn-kw" style="color:#fdba74;">validationMessage</span>);</pre>
+</div>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Please fill out this field.</pre>
+</div>
+<div class="warn-box">অথবা email ভুল হলে browser অনুযায়ী message আসতে পারে।</div>
+    </div>
+
+    <!-- 17.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.23</span> setCustomValidity()</div>
+<p class="text-p">নিজের custom error message তৈরি করতে পারো।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> username = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#username<span class="syn-str">&quot;);
+
+if (username.value.length &lt; 5) {
+  username.setCustomValidity(&quot;</span>Username must be at least <span class="syn-num">5</span> characters.&quot;);
+} <span class="syn-kw">else</span> {
+  username.<span class="syn-op">setCustomValidity</span>(&quot;&quot;);
+}</pre>
+</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 গুরুত্বপূর্ণ</div>
+<p class="text-p">Error remove করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">setCustomValidity</span>(&quot;&quot;);</pre>
+</div>
+    </div>
+
+    <!-- 17.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.24</span> Complete Custom Validation</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.24 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;username&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;check&quot;</span><span class="syn-fn">&gt;</span>Check<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>17.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> username = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#username<span class="syn-str">&quot;);
+const button = document.querySelector(&quot;</span>#check<span class="syn-str">&quot;);
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+  if (username.value.trim().length &lt; 5) {
+    username.setCustomValidity(&quot;</span>Username must be at least <span class="syn-num">5</span> characters.&quot;);
+
+    username.<span class="syn-op">reportValidity</span>();
+  } <span class="syn-kw">else</span> {
+    username.<span class="syn-op">setCustomValidity</span>(&quot;&quot;);
+
+    <span class="syn-fn">console</span>.log(&quot;Valid username&quot;);
+  }
+});</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — JavaScript Custom Validation Algorithms &amp; Regex (17.25 – 17.31)</div>
+
+    <!-- 17.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.25</span> trim()` কেন ব্যবহার করি?</div>
+<p class="text-p">User accidentally space দিতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">name</span> = <span class="syn-str">&quot;   Shariar   &quot;</span>;
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw" style="color:#fdba74;">name</span>.<span class="syn-op">trim</span>());</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<p class="text-p">Form validation-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-kw" style="color:#fdba74;">name</span> = input.<span class="syn-kw" style="color:#fdba74;">value</span>.<span class="syn-op">trim</span>();</pre>
+</div>
+<p class="text-p">এটি খুব useful।</p>
+    </div>
+
+    <!-- 17.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.26</span> Basic Name Validation</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.26 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;name&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;submitBtn&quot;</span><span class="syn-fn">&gt;</span>Submit<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>17.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> nameInput = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#<span class="syn-kw" style="color:#fdba74;">name</span><span class="syn-str">&quot;);
+const submitBtn = document.querySelector(&quot;</span>#submitBtn<span class="syn-str">&quot;);
+
+submitBtn.addEventListener(&quot;</span>click<span class="syn-str">&quot;, function () {
+  const name = nameInput.value.trim();
+
+  if (name === &quot;</span><span class="syn-str">&quot;) {
+    console.log(&quot;</span>Name is required.&quot;);
+  } <span class="syn-kw">else</span> {
+    <span class="syn-fn">console</span>.log(&quot;Name:&quot;, <span class="syn-kw" style="color:#fdba74;">name</span>);
+  }
+});</pre>
+</div>
+    </div>
+
+    <!-- 17.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.27</span> Email Validation</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.27 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> email = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#email<span class="syn-str">&quot;);
+
+if (!email.checkValidity()) {
+  console.log(&quot;</span>Invalid email<span class="syn-str">&quot;);
+} else {
+  console.log(&quot;</span>Valid email&quot;);
+}</pre>
+</div>
+    </div>
+
+    <!-- 17.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.28</span> Password Validation</div>
+<p class="text-p">ধরি password minimum 8 characters হতে হবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> password = <span class="syn-str">&quot;123456&quot;</span>;
+
+<span class="syn-kw">if</span> (password.length &lt; <span class="syn-num">8</span>) {
+  <span class="syn-fn">console</span>.log(&quot;Password must contain at least <span class="syn-num">8</span> characters.&quot;);
+} <span class="syn-kw">else</span> {
+  <span class="syn-fn">console</span>.log(&quot;Password is <span class="syn-kw" style="color:#fdba74;">valid</span>.&quot;);
+}</pre>
+</div>
+<div class="ascii-tree-container">Password must contain at least 8 characters.</div>
+    </div>
+
+    <!-- 17.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.29</span> Confirm Password</div>
+<p class="text-p">Real-life registration form-এ:</p>
+<div class="ascii-tree-container">Password:
+Confirm Password:</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> password = <span class="syn-str">&quot;Shariar123&quot;</span>;
+<span class="syn-kw">const</span> confirmPassword = <span class="syn-str">&quot;Shariar123&quot;</span>;
+
+<span class="syn-kw">if</span> (password !== confirmPassword) {
+  <span class="syn-fn">console</span>.log(&quot;Passwords <span class="syn-kw">do</span> not <span class="syn-op">match</span>.&quot;);
+} <span class="syn-kw">else</span> {
+  <span class="syn-fn">console</span>.log(&quot;Password matched.&quot;);
+}</pre>
+</div>
+<div class="ascii-tree-container">Password matched.</div>
+    </div>
+
+    <!-- 17.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.30</span> Phone Number Validation</div>
+<p class="text-p">ধরি Bangladesh-এর 11-digit phone number check করব।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> phone = <span class="syn-str">&quot;01712345678&quot;</span>;
+
+<span class="syn-kw">const</span> pattern = <span class="syn-regex">/^01[3-9]\d{8}$/</span>;
+
+<span class="syn-fn">console</span>.log(pattern.<span class="syn-op">test</span>(phone));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="warn-box">ভুল হলে:</div>
+<div class="code-box">
+  <div class="code-top"><span>17.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> phone = <span class="syn-str">&quot;123456&quot;</span>;
+
+<span class="syn-fn">console</span>.log(pattern.<span class="syn-op">test</span>(phone));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 17.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.31</span> Regex দিয়ে Email Validation</div>
+<div class="code-box">
+  <div class="code-top"><span>17.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> emailPattern = <span class="syn-regex">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+
+<span class="syn-kw">const</span> email = <span class="syn-str">&quot;shariar@gmail.com&quot;</span>;
+
+<span class="syn-fn">console</span>.log(emailPattern.<span class="syn-op">test</span>(email));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="warn-box">⚠️ তবে production application-এ email validation-এর জন্য শুধু regex-এর উপর নির্ভর করা উচিত নয়।</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Modern FormData API &amp; Advanced Input Controls (17.32 – 17.49)</div>
+
+    <!-- 17.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.32</span> Form Submit Handling</div>
+<p class="text-p">এখন একটা complete example দেখি।</p>
+<div class="section-subhead">HTML</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.32 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;signupForm&quot;</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;label</span><span class="syn-fn">&gt;</span>Name<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;name&quot;</span> required <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;label</span><span class="syn-fn">&gt;</span>Email<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> required <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;label</span><span class="syn-fn">&gt;</span>Password<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">minlength</span><span class="syn-op">=</span><span class="syn-str">&quot;8&quot;</span> required <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;button</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>Sign Up<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="section-subhead">JavaScript</div>
+<div class="code-box">
+  <div class="code-top"><span>17.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-fn">form</span> = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#signupForm<span class="syn-str">&quot;);
+
+form.addEventListener(&quot;</span>submit<span class="syn-str">&quot;, function (event) {
+  event.preventDefault();
+
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  const name = document.querySelector(&quot;</span>#<span class="syn-kw" style="color:#fdba74;">name</span><span class="syn-str">&quot;).value.trim();
+
+  const email = document.querySelector(&quot;</span>#email<span class="syn-str">&quot;).value.trim();
+
+  console.log(&quot;</span>Name:&quot;, <span class="syn-kw" style="color:#fdba74;">name</span>);
+  <span class="syn-fn">console</span>.log(&quot;Email:&quot;, email);
+});</pre>
+</div>
+<div class="section-subhead">Flow</div>
+<div class="ascii-tree-container">Submit
+   ↓
+preventDefault()
+   ↓
+checkValidity()
+   ↓
+Invalid?
+ ├── Yes → reportValidity()
+ └── No
+       ↓
+Read values
+       ↓
+Process / API</div>
+    </div>
+
+    <!-- 17.33 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.33</span> FormData</div>
+<p class="text-p">Form-এর data একসাথে collect করার জন্য <code>FormData</code> খুব useful।</p>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.33 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;loginForm&quot;</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;button</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>Login<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.33 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-fn">form</span> = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#loginForm<span class="syn-str">&quot;);
+
+form.addEventListener(&quot;</span>submit<span class="syn-str">&quot;, function (event) {
+  event.preventDefault();
+
+  const formData = new FormData(form);
+
+  console.log(formData.get(&quot;</span>email<span class="syn-str">&quot;));
+  console.log(formData.get(&quot;</span>password&quot;));
+});</pre>
+</div>
+    </div>
+
+    <!-- 17.34 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.34</span> FormData.get()</div>
+<div class="code-box">
+  <div class="code-top"><span>17.34 JavaScript</span><span>Run</span></div>
+  <pre>formData.<span class="syn-op">get</span>(&quot;email&quot;);</pre>
+</div>
+<p class="text-p">একটি field-এর value দেয়।</p>
+    </div>
+
+    <!-- 17.35 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.35</span> FormData.has()</div>
+<div class="code-box">
+  <div class="code-top"><span>17.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(formData.<span class="syn-op">has</span>(&quot;email&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 17.36 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.36</span> FormData.set()</div>
+<div class="code-box">
+  <div class="code-top"><span>17.36 JavaScript</span><span>Run</span></div>
+  <pre>formData.<span class="syn-op">set</span>(&quot;email<span class="syn-str">&quot;, &quot;</span>newemail@gmail.com&quot;);</pre>
+</div>
+<p class="text-p">Existing value replace করবে।</p>
+    </div>
+
+    <!-- 17.37 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.37</span> FormData.append()</div>
+<div class="code-box">
+  <div class="code-top"><span>17.37 JavaScript</span><span>Run</span></div>
+  <pre>formData.<span class="syn-op">append</span>(&quot;role<span class="syn-str">&quot;, &quot;</span>student&quot;);</pre>
+</div>
+<p class="text-p">নতুন data যোগ করবে।</p>
+    </div>
+
+    <!-- 17.38 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.38</span> FormData.delete()</div>
+<div class="code-box">
+  <div class="code-top"><span>17.38 JavaScript</span><span>Run</span></div>
+  <pre>formData.<span class="syn-kw">delete</span>(&quot;password&quot;);</pre>
+</div>
+<p class="text-p">Field remove করবে।</p>
+    </div>
+
+    <!-- 17.39 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.39</span> FormData-এর সব Data দেখা</div>
+<div class="code-box">
+  <div class="code-top"><span>17.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">const</span> [key, <span class="syn-kw" style="color:#fdba74;">value</span>] <span class="syn-kw">of</span> formData.<span class="syn-op">entries</span>()) {
+  <span class="syn-fn">console</span>.log(key, <span class="syn-kw" style="color:#fdba74;">value</span>);
+}</pre>
+</div>
+<div class="ascii-tree-container">email shariar@gmail.com
+password 12345678</div>
+    </div>
+
+    <!-- 17.40 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.40</span> FormData → Object</div>
+<p class="text-p">অনেক সময় API-তে JSON পাঠানোর জন্য object দরকার হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = <span class="syn-fn">Object</span>.<span class="syn-op">fromEntries</span>(formData);
+
+<span class="syn-fn">console</span>.log(data);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>17.40 JavaScript</span><span>Run</span></div>
+  <pre>{
+    email: <span class="syn-str">&quot;shariar@gmail.com&quot;</span>,
+    password: <span class="syn-str">&quot;12345678&quot;</span>
+}</pre>
+</div>
+<p class="text-p">এটি খুব useful pattern।</p>
+    </div>
+
+    <!-- 17.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.41</span> Checkbox Handle করা</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.41 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;label</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;checkbox&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;terms&quot;</span> <span class="syn-fn">/&gt;</span>
+
+  I agree to Terms
+<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> terms = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#terms&quot;);
+
+<span class="syn-fn">console</span>.log(terms.<span class="syn-kw" style="color:#fdba74;">checked</span>);</pre>
+</div>
+<p class="text-p">Checked হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">Unchecked হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 17.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.42</span> Checkbox Validation</div>
+<div class="code-box">
+  <div class="code-top"><span>17.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">if</span> (!terms.<span class="syn-kw" style="color:#fdba74;">checked</span>) {
+  <span class="syn-fn">console</span>.log(&quot;You must accept the terms.&quot;);
+}</pre>
+</div>
+    </div>
+
+    <!-- 17.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.43</span> Radio Button</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.43 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;label</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;radio&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;gender&quot;</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;male&quot;</span> <span class="syn-fn">/&gt;</span>
+  Male
+<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+
+<span class="syn-fn">&lt;label</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;radio&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;gender&quot;</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;female&quot;</span> <span class="syn-fn">/&gt;</span>
+  Female
+<span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> selected = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&#x27;input[<span class="syn-kw" style="color:#fdba74;">name</span>=&quot;gender&quot;]:<span class="syn-kw" style="color:#fdba74;">checked</span>&#x27;);
+
+<span class="syn-fn">console</span>.log(selected?.<span class="syn-kw" style="color:#fdba74;">value</span>);</pre>
+</div>
+<p class="text-p">Male select করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>male</pre>
+</div>
+    </div>
+
+    <!-- 17.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.44</span> Select Dropdown</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.44 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;select</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;course&quot;</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;&quot;</span><span class="syn-fn">&gt;</span>Select Course<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;cse&quot;</span><span class="syn-fn">&gt;</span>CSE<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;eee&quot;</span><span class="syn-fn">&gt;</span>EEE<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;option</span> <span class="syn-kw">value</span><span class="syn-op">=</span><span class="syn-str">&quot;bba&quot;</span><span class="syn-fn">&gt;</span>BBA<span class="syn-fn">&lt;/option</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/select</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> course = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#course&quot;);
+
+<span class="syn-fn">console</span>.log(course.<span class="syn-kw" style="color:#fdba74;">value</span>);</pre>
+</div>
+    </div>
+
+    <!-- 17.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.45</span> Select Validation</div>
+<div class="code-box">
+  <div class="code-top"><span>17.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">if</span> (course.<span class="syn-kw" style="color:#fdba74;">value</span> === <span class="syn-str">&quot;&quot;</span>) {
+  <span class="syn-fn">console</span>.log(&quot;Please select a course.&quot;);
+}</pre>
+</div>
+    </div>
+
+    <!-- 17.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.46</span> File Input</div>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.46 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;file&quot;</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;profileImage&quot;</span> <span class="syn-fn">/&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> fileInput = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#profileImage&quot;);
+
+<span class="syn-fn">console</span>.log(fileInput.<span class="syn-kw" style="color:#fdba74;">files</span>);</pre>
+</div>
+<p class="text-p">Selected files:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(fileInput.<span class="syn-kw" style="color:#fdba74;">files</span>[<span class="syn-num">0</span>]);</pre>
+</div>
+<p class="text-p">File-এর নাম:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(fileInput.<span class="syn-kw" style="color:#fdba74;">files</span>[<span class="syn-num">0</span>].<span class="syn-kw" style="color:#fdba74;">name</span>);</pre>
+</div>
+    </div>
+
+    <!-- 17.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.47</span> File Size Check</div>
+<div class="code-box">
+  <div class="code-top"><span>17.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> file = fileInput.<span class="syn-kw" style="color:#fdba74;">files</span>[<span class="syn-num">0</span>];
+
+<span class="syn-kw">if</span> (file) {
+  <span class="syn-kw">const</span> sizeInMB = file.<span class="syn-kw" style="color:#fdba74;">size</span> / (<span class="syn-num">1024</span> * <span class="syn-num">1024</span>);
+
+  <span class="syn-kw">if</span> (sizeInMB &gt; <span class="syn-num">2</span>) {
+    <span class="syn-fn">console</span>.log(&quot;File must be under 2MB.&quot;);
+  }
+}</pre>
+</div>
+    </div>
+
+    <!-- 17.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.48</span> Form Reset</div>
+<p class="text-p">Form-এর সব field reset করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">form</span>.<span class="syn-op">reset</span>();</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">form</span>.<span class="syn-op">addEventListener</span>(&quot;submit<span class="syn-str">&quot;, function (event) {
+  event.preventDefault();
+
+  console.log(&quot;</span>Submitted&quot;);
+
+  <span class="syn-fn">form</span>.<span class="syn-op">reset</span>();
+});</pre>
+</div>
+    </div>
+
+    <!-- 17.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.49</span> Disable Submit Button</div>
+<p class="text-p">Duplicate submission prevent করতে button disable করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> submitButton = <span class="syn-fn">form</span>.<span class="syn-op">querySelector</span>(&#x27;button[<span class="syn-kw" style="color:#fdba74;">type</span>=&quot;submit<span class="syn-str">&quot;]&#x27;);
+
+form.addEventListener(&quot;</span>submit<span class="syn-str">&quot;, function (event) {
+  event.preventDefault();
+
+  submitButton.disabled = true;
+
+  console.log(&quot;</span>Processing...&quot;);
+});</pre>
+</div>
+<p class="text-p">Real-world application-এ API request চলাকালে এটি useful।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — End-to-End Registration Project &amp; Validation Architecture (17.50 – 17.58)</div>
+
+    <!-- 17.50 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.50</span> Complete Registration Form Project</div>
+<p class="text-p">এবার অনেকগুলো concept একসাথে ব্যবহার করি।</p>
+<div class="section-subhead">HTML</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.50 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;form</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;registerForm&quot;</span><span class="syn-fn">&gt;</span>
+  <span class="syn-fn">&lt;h2</span><span class="syn-fn">&gt;</span>Create Account<span class="syn-fn">&lt;/h2</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;label</span> <span class="syn-kw">for</span><span class="syn-op">=</span><span class="syn-str">&quot;name&quot;</span><span class="syn-fn">&gt;</span> Name <span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;name&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;name&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span> <span class="syn-kw">minlength</span><span class="syn-op">=</span><span class="syn-str">&quot;3&quot;</span> required <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span><span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;label</span> <span class="syn-kw">for</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span><span class="syn-fn">&gt;</span> Email <span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> required <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span><span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;label</span> <span class="syn-kw">for</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span><span class="syn-fn">&gt;</span> Password <span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">name</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> <span class="syn-kw">minlength</span><span class="syn-op">=</span><span class="syn-str">&quot;8&quot;</span> required <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span><span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;label</span> <span class="syn-kw">for</span><span class="syn-op">=</span><span class="syn-str">&quot;confirmPassword&quot;</span><span class="syn-fn">&gt;</span> Confirm Password <span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;confirmPassword&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;password&quot;</span> required <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span><span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;label</span><span class="syn-fn">&gt;</span>
+    <span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;terms&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;checkbox&quot;</span> <span class="syn-fn">/&gt;</span>
+
+    I agree to the terms
+  <span class="syn-fn">&lt;/label</span><span class="syn-fn">&gt;</span>
+
+  <span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span><span class="syn-fn">&lt;br</span> <span class="syn-fn">/&gt;</span>
+
+  <span class="syn-fn">&lt;button</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>Register<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;/form</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<div class="section-subhead">JavaScript</div>
+<div class="code-box">
+  <div class="code-top"><span>17.50 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> <span class="syn-fn">form</span> = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#registerForm<span class="syn-str">&quot;);
+
+const password = document.querySelector(&quot;</span>#password<span class="syn-str">&quot;);
+
+const confirmPassword = document.querySelector(&quot;</span>#confirmPassword<span class="syn-str">&quot;);
+
+const terms = document.querySelector(&quot;</span>#terms<span class="syn-str">&quot;);
+
+form.addEventListener(&quot;</span>submit<span class="syn-str">&quot;, function (event) {
+  event.preventDefault();
+
+  // HTML validation
+  if (!form.checkValidity()) {
+    form.reportValidity();
+
+    return;
+  }
+
+  // Password validation
+  if (password.value !== confirmPassword.value) {
+    confirmPassword.setCustomValidity(&quot;</span>Passwords <span class="syn-kw">do</span> not <span class="syn-op">match</span>.&quot;);
+
+    confirmPassword.<span class="syn-op">reportValidity</span>();
+
+    <span class="syn-kw">return</span>;
+  } <span class="syn-kw">else</span> {
+    confirmPassword.<span class="syn-op">setCustomValidity</span>(&quot;&quot;);
+  }
+
+  <span class="syn-com">// Terms validation</span>
+  <span class="syn-kw">if</span> (!terms.<span class="syn-kw" style="color:#fdba74;">checked</span>) {
+    alert(&quot;You must accept the terms.&quot;);
+
+    <span class="syn-kw">return</span>;
+  }
+
+  <span class="syn-com">// Get form data</span>
+  <span class="syn-kw">const</span> formData = <span class="syn-kw">new</span> <span class="syn-fn">FormData</span>(<span class="syn-fn">form</span>);
+
+  <span class="syn-kw">const</span> data = <span class="syn-fn">Object</span>.<span class="syn-op">fromEntries</span>(formData);
+
+  <span class="syn-fn">console</span>.log(data);
+
+  alert(&quot;Registration successful!&quot;);
+});</pre>
+</div>
+    </div>
+
+    <!-- 17.51 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.51</span> এই Project-এর পুরো Flow</div>
+<div class="ascii-tree-container">User fills form
+       ↓
+Submit
+       ↓
+preventDefault()
+       ↓
+HTML validation
+       ↓
+checkValidity()
+       ↓
+Password match?
+       ↓
+Terms accepted?
+       ↓
+FormData
+       ↓
+Object.fromEntries()
+       ↓
+API / Backend</div>
+<p class="text-p">এটাই real-world registration form-এর basic architecture।</p>
+    </div>
+
+    <!-- 17.52 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">17.52</span> Client-side Validation vs Server-side Validation</div>
+<div class="memory-box">এটা <strong>খুব গুরুত্বপূর্ণ</strong>।</div>
+<p class="text-p">Client-side:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">if</span> (password.length &lt; <span class="syn-num">8</span>) {
+  <span class="syn-com">// error</span>
+}</pre>
+</div>
+<p class="text-p">এটি user experience-এর জন্য ভালো।</p>
+<p class="text-p">কিন্তু security-এর জন্য যথেষ্ট নয়।</p>
+<p class="text-p">কারণ user browser-এর JavaScript modify/disable করতে পারে।</p>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Frontend Validation
+        +
+Backend Validation
+        =
+Proper Validation</pre>
+</div>
+<p class="text-p">Backend-এ আবার validate করতে হবে:</p>
+<div class="ascii-tree-container">Email
+Password
+Phone
+Required fields
+Data type
+Authorization
+Business rules</div>
+    </div>
+
+    <!-- 17.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.53</span> Example: Frontend + Backend</div>
+<p class="text-p">Frontend:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.53 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = {
+  email: <span class="syn-str">&quot;user@gmail.com&quot;</span>,
+  password: <span class="syn-str">&quot;12345678&quot;</span>,
+};</pre>
+</div>
+<p class="text-p">API request:</p>
+<div class="ascii-tree-container">POST /api/register</div>
+<p class="text-p">Backend:</p>
+<div class="ascii-tree-container">Receive data
+    ↓
+Validate
+    ↓
+Sanitize/process
+    ↓
+Check existing user
+    ↓
+Hash password
+    ↓
+Save database</div>
+<p class="text-p">Frontend validation কখনোই backend validation-এর replacement নয়।</p>
+    </div>
+
+    <!-- 17.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.54</span> aria-invalid</div>
+<p class="text-p">Accessibility-এর জন্য invalid field indicate করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.54 JavaScript</span><span>Run</span></div>
+  <pre>email.<span class="syn-op">setAttribute</span>(&quot;aria-invalid<span class="syn-str">&quot;, &quot;</span><span class="syn-bool">true</span>&quot;);</pre>
+</div>
+<p class="text-p">Valid হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.54 JavaScript</span><span>Run</span></div>
+  <pre>email.<span class="syn-op">setAttribute</span>(&quot;aria-invalid<span class="syn-str">&quot;, &quot;</span><span class="syn-bool">false</span>&quot;);</pre>
+</div>
+    </div>
+
+    <!-- 17.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.55</span> Error Message দেখানোর Better Way</div>
+<p class="text-p">শুধু:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.55 JavaScript</span><span>Run</span></div>
+  <pre>alert(&quot;Invalid email&quot;);</pre>
+</div>
+<p class="text-p">এর পরিবর্তে UI-তে message দেখানো ভালো।</p>
+<p class="text-p">HTML:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">17.55 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-fn">/&gt;</span>
+
+<span class="syn-fn">&lt;p</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;emailError&quot;</span><span class="syn-fn">&gt;</span><span class="syn-fn">&lt;/p</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>17.55 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> email = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#email<span class="syn-str">&quot;);
+
+const error = document.querySelector(&quot;</span>#emailError<span class="syn-str">&quot;);
+
+if (!email.checkValidity()) {
+  error.textContent = &quot;</span>Please enter a <span class="syn-kw" style="color:#fdba74;">valid</span> email.&quot;;
+} <span class="syn-kw">else</span> {
+  error.textContent = <span class="syn-str">&quot;&quot;</span>;
+}</pre>
+</div>
+<p class="text-p">এতে user সরাসরি field-এর নিচে error দেখতে পাবে।</p>
+    </div>
+
+    <!-- 17.56 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.56</span> input` Event দিয়ে Live Validation</div>
+<p class="text-p">User typing করার সময় validation করতে পারি।</p>
+<div class="code-box">
+  <div class="code-top"><span>17.56 JavaScript</span><span>Run</span></div>
+  <pre>email.<span class="syn-op">addEventListener</span>(&quot;input<span class="syn-str">&quot;, function () {
+  if (email.validity.typeMismatch) {
+    console.log(&quot;</span>Invalid email<span class="syn-str">&quot;);
+  } else {
+    console.log(&quot;</span>Valid email&quot;);
+  }
+});</pre>
+</div>
+<p class="text-p">Real-life:</p>
+<div class="ascii-tree-container">user@gmail
+       ↓
+Invalid
+
+user@gmail.com
+       ↓
+Valid</div>
+    </div>
+
+    <!-- 17.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17.57</span> Password Strength Checker</div>
+<div class="code-box">
+  <div class="code-top"><span>17.57 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> passwordInput = <span class="syn-fn">document</span>.<span class="syn-op">querySelector</span>(&quot;#password<span class="syn-str">&quot;);
+
+passwordInput.addEventListener(&quot;</span>input<span class="syn-str">&quot;, function () {
+  const password = passwordInput.value;
+
+  if (password.length &lt; 8) {
+    console.log(&quot;</span>Weak<span class="syn-str">&quot;);
+  } else if (password.length &lt; 12) {
+    console.log(&quot;</span>Medium<span class="syn-str">&quot;);
+  } else {
+    console.log(&quot;</span>Strong&quot;);
+  }
+});</pre>
+</div>
+    </div>
+
+    <!-- 17.58 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">17.58</span> Form Validation-এর Common Mistakes</div>
+<div class="sub-badge" style="background:#fff1f2; color:#be123c;">⚠️ ❌ Mistake 1</div>
+<p class="text-p">শুধু frontend validation-এর উপর depend করা।</p>
+<div class="sub-badge" style="background:#fff1f2; color:#be123c;">⚠️ ❌ Mistake 2</div>
+<p class="text-p">Password plaintext database-এ save করা।</p>
+<div class="sub-badge" style="background:#fff1f2; color:#be123c;">⚠️ ❌ Mistake 3</div>
+<p class="text-p">User input blindly <code>innerHTML</code>-এ বসানো।</p>
+<div class="sub-badge" style="background:#fff1f2; color:#be123c;">⚠️ ❌ Mistake 4</div>
+<p class="text-p"><code>trim()</code> না করা।</p>
+<div class="sub-badge" style="background:#fff1f2; color:#be123c;">⚠️ ❌ Mistake 5</div>
+<p class="text-p">Duplicate form submission allow করা।</p>
+<div class="sub-badge" style="background:#fff1f2; color:#be123c;">⚠️ ❌ Mistake 6</div>
+<p class="text-p">শুধু regex দিয়ে সব validation করার চেষ্টা করা।</p>
+    </div>
+
+    <div class="part-banner">Part 06 — Form Validation Mastery: Must Know, Cheat Sheet, Practice Lab &amp; Mental Map</div>
+
+    <!-- 17.59 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 17.59 Must Know — Form Architecture &amp; Security</div>
+<p class="text-p">এই chapter থেকে অবশ্যই জানতে হবে:</p>
+<div class="ascii-tree-container">&lt;form&gt;</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>submit event</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>event.<span class="syn-op">preventDefault</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>input.<span class="syn-kw" style="color:#fdba74;">value</span>;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">form</span>.<span class="syn-fn">elements</span>;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>required;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>minlength;
+maxlength;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>min;
+max;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>pattern;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">checkValidity</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">reportValidity</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">validity</span>;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw" style="color:#fdba74;">validationMessage</span>;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-op">setCustomValidity</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">FormData</span>;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>formData.<span class="syn-op">get</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>formData.<span class="syn-op">set</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>formData.<span class="syn-op">append</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>formData.<span class="syn-kw">delete</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.<span class="syn-op">fromEntries</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">form</span>.<span class="syn-op">reset</span>();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>input.<span class="syn-kw" style="color:#fdba74;">checked</span>;</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>input.<span class="syn-kw" style="color:#fdba74;">files</span>;</pre>
+</div>
+    </div>
+
+    <!-- 17.60 Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 17.60 Quick Cheat Sheet — Form Attributes &amp; Methods</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>কাজ</th><th>JavaScript</th></tr></thead>
+    <tbody>
+      <tr><td>Input value</td><td><code>input.value</code></td></tr><tr><td>Checkbox</td><td><code>input.checked</code></td></tr><tr><td>File</td><td><code>input.files</code></td></tr><tr><td>Form elements</td><td><code>form.elements</code></td></tr><tr><td>Submit event</td><td><code>&quot;submit&quot;</code></td></tr><tr><td>Default submit বন্ধ</td><td><code>event.preventDefault()</code></td></tr><tr><td>Valid কিনা</td><td><code>checkValidity()</code></td></tr><tr><td>Browser message</td><td><code>reportValidity()</code></td></tr><tr><td>Validation info</td><td><code>input.validity</code></td></tr><tr><td>Error message</td><td><code>validationMessage</code></td></tr><tr><td>Custom error</td><td><code>setCustomValidity()</code></td></tr><tr><td>Form data</td><td><code>new FormData(form)</code></td></tr><tr><td>Data নেওয়া</td><td><code>formData.get()</code></td></tr><tr><td>Data যোগ</td><td><code>formData.append()</code></td></tr><tr><td>Data replace</td><td><code>formData.set()</code></td></tr><tr><td>Data delete</td><td><code>formData.delete()</code></td></tr><tr><td>সব data</td><td><code>formData.entries()</code></td></tr><tr><td>Form reset</td><td><code>form.reset()</code></td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 17.61 Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 17.61 Practice Set — 5 Hands-on Production Projects</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 1 — Login Form</h4>
+<p class="text-p">তৈরি করো:</p>
+<div class="ascii-tree-container">Email
+Password
+Login Button</div>
+<p class="text-p">Validation:</p>
+<div class="ascii-tree-container">Email required
+Valid email
+Password minimum 8 characters</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 2 — Registration Form</h4>
+<p class="text-p">Fields:</p>
+<div class="ascii-tree-container">Name
+Email
+Phone
+Password
+Confirm Password
+Gender
+Course
+Terms</div>
+<p class="text-p">সব validation implement করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 3 — Password Strength</h4>
+<div class="ascii-tree-container">&lt; 8       → Weak
+8–11      → Medium
+12+       → Strong</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 4 — Contact Form</h4>
+<p class="text-p">Fields:</p>
+<div class="ascii-tree-container">Name
+Email
+Subject
+Message</div>
+<p class="text-p">Rules:</p>
+<div class="ascii-tree-container">Name → required
+Email → valid email
+Subject → minimum 5 characters
+Message → minimum 20 characters</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 5 — Student Registration</h4>
+<div class="ascii-tree-container">Student Name
+Student ID
+Email
+Department
+Semester
+Phone</div>
+<p class="text-p">সব data <code>FormData</code> দিয়ে collect করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.<span class="syn-op">fromEntries</span>(formData);</pre>
+</div>
+<p class="text-p">এর মাধ্যমে object তৈরি করো।</p>
+      </div>
+    </div>
+
+    <!-- Chapter 17 Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 17 Final Mental Map — Form Lifecycle &amp; Validation Flow</div>
+<div class="ascii-tree-container">                  FORM
+                   │
+          ┌────────┴────────┐
+          ↓                 ↓
+       INPUTS             BUTTON
+          │                 │
+          ↓                 ↓
+       value             submit
+          │                 │
+          └────────┬────────┘
+                   ↓
+          preventDefault()
+                   ↓
+            VALIDATION
+                   │
+       ┌───────────┼───────────┐
+       ↓           ↓           ↓
+    required     pattern    custom JS
+       │           │           │
+       └───────────┼───────────┘
+                   ↓
+            checkValidity()
+                   ↓
+               FormData
+                   ↓
+          Object.fromEntries()
+                   ↓
+             API / Backend
+                   ↓
+               Database</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 ⭐ সবচেয়ে গুরুত্বপূর্ণ কথা</div>
+<div class="memory-box"><strong>Form Handling</strong> হলো frontend development-এর অত্যন্ত গুরুত্বপূর্ণ একটি অংশ। তুমি যখন React/Next.js দিয়ে <strong>Login, Registration, Contact Form, Dashboard, Admin Panel, Checkout, Student Portal</strong> বানাবে—এই JavaScript fundamentals-গুলোই ভিতরে কাজ করবে।</div>
+<p class="text-p"><strong>Chapter 17 complete.</strong></p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 18 Preview — Browser Storage &amp; Cookies</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায়ে আমরা ব্রাউজারের বিভিন্ন ক্লায়েন্ট-সাইড স্টোরেজ মেকানিজম নিয়ে বিস্তারিত শিখব—<strong>localStorage, sessionStorage, Cookies, IndexedDB</strong>, স্টোরেজ ইভেন্ট, লিমিটেশন এবং স্টোরেজ সিকিউরিটি সেরা প্র্যাকটিস।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
