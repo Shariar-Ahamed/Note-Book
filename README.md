@@ -33,6 +33,7 @@ Comprehensive, production-grade JavaScript study notes, interactive HTML documen
 | **23** | Advanced Regular Expressions | [HTML](Code/Chapter-23-Advanced-Regex.html) | [PDF](PDF/Chapter-23-Advanced-Regex.pdf) | ✅ Complete |
 | **24** | OOP & JavaScript Classes | [HTML](Code/Chapter-24-OOP-Classes.html) | [PDF](PDF/Chapter-24-OOP-Classes.pdf) | ✅ Complete |
 | **25** | Functional JavaScript | [HTML](Code/Chapter-25-Functional-JavaScript.html) | [PDF](PDF/Chapter-25-Functional-JavaScript.pdf) | ✅ Complete |
+| **26** | Closures, IIFE, Currying & Function Composition | [HTML](Code/Chapter-26-Closures-IIFE-Currying.html) | [PDF](PDF/Chapter-26-Closures-IIFE-Currying.pdf) | ✅ Complete |
 
 ---
 

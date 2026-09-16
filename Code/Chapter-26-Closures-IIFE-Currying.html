@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 26 — Closures, IIFE, Currying &amp; Function Composition | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-weight: 900;
+      font-size: 13px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      flex-shrink: 0;
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 13.5px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 7.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bae6fd;
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 1px;
+    }
+
+    /* Chapter Opening Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px 8px;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: 1px solid #e0f2fe;
+    }
+    .roadmap-item {
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--blue-accent);
+      padding-left: 5px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+    .warn-box {
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #991b1b;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    th {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      padding: 5px 8px;
+      border: 1px solid #334155;
+      text-align: left;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      line-height: 1.35;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Boxes */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-box-error {
+      border: 1px solid #ef4444 !important;
+    }
+    .code-box-correct {
+      border: 1px solid #10b981 !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.32;
+      padding: 5px 8px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+    }
+    p code, li code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Invalid Token Wave Highlight */
+    .invalid-token {
+      text-decoration: underline wavy #ef4444 !important;
+      text-decoration-skip-ink: none !important;
+      color: #fca5a5 !important;
+      font-weight: 700 !important;
+      background: rgba(239, 68, 68, 0.25) !important;
+      padding: 0 3px !important;
+      border-radius: 3px !important;
+    }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams */
+    .ascii-tree-container {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.25;
+      padding: 6px 10px;
+      border-radius: 5px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 5px;
+      padding: 6px 9px;
+      margin-bottom: 6px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-26-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .output-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 26</span>
+        </div>
+      </div>
+      <div class="banner-sub">CLOSURES, IIFE, CURRYING &amp; FUNCTION COMPOSITION — ADVANCED PATTERNS &amp; ARCHITECTURE</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">59 Modules + Practice Lab</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 20 — Advanced Functions &amp; Closures</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Closures, Lexical Scope, IIFE &amp; Currying</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / Modern V8 Internals</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🎯</span> Advanced Functions — Closure থেকে Advanced Function Patterns
+      </div>
+      <p class="text-p">
+        Chapter 6-এ আমরা Function-এর basic concept এবং Chapter 25-এ Functional JavaScript শিখেছি। এখন সেই foundation-এর ওপর দাঁড়িয়ে JavaScript-এর <strong>সবচেয়ে গুরুত্বপূর্ণ advanced function concepts</strong>—Scope Chain, Closures, IIFE, Currying, Function Composition, Pipelines, Memoization এবং Throttling/Debouncing—নিখুঁতভাবে শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Scope Recap</div>
+        <div class="roadmap-item"><span>📌</span> 2. Lexical Scope</div>
+        <div class="roadmap-item"><span>📌</span> 3. Scope Chain</div>
+        <div class="roadmap-item"><span>📌</span> 4. Closure Mechanics</div>
+        <div class="roadmap-item"><span>📌</span> 5. Private Variables</div>
+        <div class="roadmap-item"><span>📌</span> 6. Data Encapsulation</div>
+        <div class="roadmap-item"><span>📌</span> 7. Factory Functions</div>
+        <div class="roadmap-item"><span>📌</span> 8. IIFE Patterns</div>
+        <div class="roadmap-item"><span>📌</span> 9. Private State (IIFE)</div>
+        <div class="roadmap-item"><span>📌</span> 10. Returning Functions</div>
+        <div class="roadmap-item"><span>📌</span> 11. Currying (N-ary)</div>
+        <div class="roadmap-item"><span>📌</span> 12. Partial Application</div>
+        <div class="roadmap-item"><span>📌</span> 13. compose() Pipeline</div>
+        <div class="roadmap-item"><span>📌</span> 14. pipe() Flow</div>
+        <div class="roadmap-item"><span>📌</span> 15. Memoization Cache</div>
+        <div class="roadmap-item"><span>📌</span> 16. Function Decorators</div>
+        <div class="roadmap-item"><span>📌</span> 17. Execution Timing</div>
+        <div class="roadmap-item"><span>📌</span> 18. Debounce Logic</div>
+        <div class="roadmap-item"><span>📌</span> 19. Throttle Interval</div>
+        <div class="roadmap-item"><span>📌</span> 20. Loop Binding (let/var)</div>
+        <div class="roadmap-item"><span>📌</span> 21. Memory Management</div>
+        <div class="roadmap-item"><span>📌</span> 22. Permission Factory</div>
+        <div class="roadmap-item"><span>📌</span> 23. ID Generator</div>
+        <div class="roadmap-item"><span>📌</span> 24. Mini Project (Counter)</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Scope, Lexical Environment &amp; Scope Chain (26.1 – 26.3)</div>
+    <div class="study-card" id="sec-26-1">
+      <div class="card-title"><span class="badge-num">26.1</span> Scope কী?</div>
+      <p class="text-p"><strong>Scope</strong> হলো কোনো variable কোথা থেকে access করা যাবে তার সীমা। JavaScript-এ প্রধানত:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Global Scope
+Function Scope
+Block Scope
+Module Scope</div>      <p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(name);
+}
+
+greet();</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Ripon</pre>
+</div>      <p class="text-p">কারণ <code>greet()</code> function তার বাইরের scope-এর <code>name</code> access করতে পারছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.2</span> Lexical Scope</div>
+      <p class="text-p">JavaScript-এ function <strong>যেখানে লেখা হয়েছে</strong>, সেই জায়গার scope-এর ওপর তার access নির্ভর করে। এটাকে বলা হয়: &gt; <strong>Lexical Scope</strong> Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-kw">function</span> outer() {
+
+    <span class="syn-kw">function</span> inner() {
+        <span class="syn-fn">console</span>.log(name);
+    }
+
+    inner();
+}
+
+outer();</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Ripon</pre>
+</div>      <p class="text-p"><code>inner()</code> তার parent scope এবং তার বাইরের scope থেকে variable খুঁজে নেয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.3</span> Scope Chain</div>
+      <p class="text-p">যখন JavaScript কোনো variable খুঁজে, তখন সাধারণত:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Current Scope
+      ↓
+Parent Scope
+      ↓
+Grandparent Scope
+      ↓
+Global Scope</div>      <p class="text-p">এভাবে খুঁজতে থাকে। Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> a = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> outer() {
+    <span class="syn-kw">const</span> b = <span class="syn-num">20</span>;
+
+    <span class="syn-kw">function</span> inner() {
+        <span class="syn-kw">const</span> c = <span class="syn-num">30</span>;
+
+        <span class="syn-fn">console</span>.log(a);
+        <span class="syn-fn">console</span>.log(b);
+        <span class="syn-fn">console</span>.log(c);
+    }
+
+    inner();
+}
+
+outer();</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10
+20
+30</pre>
+</div>    </div>
+    <div class="part-banner">Part 02 — Closures, Private State, Factories &amp; Loop Bindings (26.4 – 26.19)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.4</span> Closure কী?</div>
+      <p class="text-p">এখন আসি এই chapter-এর সবচেয়ে গুরুত্বপূর্ণ concept-এ। &gt; <strong>Closure হলো এমন একটি function, যা তার lexical scope-এর variable-গুলোকে মনে রাখতে পারে, এমনকি outer function execution শেষ হয়ে যাওয়ার পরেও।</strong> সহজভাবে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Outer Function
+      ↓
+Inner Function
+      ↓
+Inner function remembers outer variables</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.5</span> প্রথম Closure Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> outer() {
+
+    <span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello&quot;</span>;
+
+    <span class="syn-kw">function</span> inner() {
+        <span class="syn-fn">console</span>.log(message);
+    }
+
+    <span class="syn-kw">return</span> inner;
+}
+
+<span class="syn-kw">const</span> greet = outer();
+
+greet();</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>outer();</code></pre>
+</div>      <p class="text-p">শেষ হয়ে গেছে। তারপরও:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>greet();</code></pre>
+</div>      <p class="text-p"><code>message</code> access করতে পারছে। <strong>এটাই Closure।</strong></p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.6</span> কীভাবে কাজ করছে?</div>
+      <p class="text-p">এই code:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> outer() {
+
+    <span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello&quot;</span>;
+
+    <span class="syn-kw">function</span> inner() {
+        <span class="syn-fn">console</span>.log(message);
+    }
+
+    <span class="syn-kw">return</span> inner;
+}</code></pre>
+</div>      <p class="text-p">যখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> greet = outer();</code></pre>
+</div>      <p class="text-p">হয়:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+outer()
+   ↓
+message = &quot;Hello&quot;
+   ↓
+inner function তৈরি
+   ↓
+inner return
+   ↓
+greet → inner function</div>      <p class="text-p">তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>greet();</code></pre>
+</div>      <p class="text-p">হলে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+greet()
+  ↓
+inner()
+  ↓
+message
+  ↓
+&quot;Hello&quot;</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.7</span> Closure Visual Model</div>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+┌────────────────────────────┐
+│ outer()                    │
+│                            │
+│ message = &quot;Hello&quot;          │
+│                            │
+│   ┌────────────────────┐   │
+│   │ inner()            │   │
+│   │ console.log(message)│  │
+│   └────────────────────┘   │
+│                            │
+└─────────────┬──────────────┘
+              │
+              ↓
+          return inner
+              │
+              ↓
+         const greet
+              │
+              ↓
+       remembers message</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.8</span> Closure-এর Real-Life Example</div>
+      <p class="text-p">ধরো ATM machine। User বাইরে থেকে সরাসরি account balance পরিবর্তন করতে পারবে না।</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+ATM Account
+     │
+     ├── balance
+     │
+     ├── deposit()
+     │
+     └── withdraw()</div>      <p class="text-p">এখানে balance private রাখা যায় Closure দিয়ে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.9</span> Private Variable with Closure</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createAccount(initialBalance) {
+
+    <span class="syn-kw">let</span> balance = initialBalance;
+
+    <span class="syn-kw">return</span> {
+        deposit(amount) {
+            balance += amount;
+        },
+
+        withdraw(amount) {
+            <span class="syn-kw">if</span> (amount &lt;= balance) {
+                balance -= amount;
+            }
+        },
+
+        getBalance() {
+            <span class="syn-kw">return</span> balance;
+        }
+    };
+}</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> account = createAccount(<span class="syn-num">1000</span>);
+
+account.deposit(<span class="syn-num">500</span>);
+
+<span class="syn-fn">console</span>.log(account.getBalance());</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1500</pre>
+</div>      <p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(account.balance);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>undefined</pre>
+</div>      <p class="text-p">কারণ <code>balance</code> directly accessible নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.10</span> কেন Closure ব্যবহার করব?</div>
+      <p class="text-p">Closure দিয়ে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>private data রাখা যায়</li>
+        <li>state maintain করা যায়</li>
+        <li>factory function বানানো যায়</li>
+        <li>callback state মনে রাখতে পারে</li>
+        <li>event handler state ধরে রাখতে পারে</li>
+        <li>memoization করা যায়</li>
+        <li>function factory তৈরি করা যায়</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.11</span> Closure দিয়ে Counter</div>
+      <p class="text-p">এটি অত্যন্ত গুরুত্বপূর্ণ example।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createCounter() {
+
+    <span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>() {
+        count++;
+        <span class="syn-kw">return</span> count;
+    };
+}
+
+<span class="syn-kw">const</span> counter = createCounter();
+
+<span class="syn-fn">console</span>.log(counter());
+<span class="syn-fn">console</span>.log(counter());
+<span class="syn-fn">console</span>.log(counter());</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3</pre>
+</div>      <p class="text-p">এখানে <code>count</code> কোথাও global variable নয়। তবুও function সেটাকে মনে রাখছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.12</span> Multiple Closures</div>
+      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> counter1 = createCounter();
+<span class="syn-kw">const</span> counter2 = createCounter();
+
+<span class="syn-fn">console</span>.log(counter1());
+<span class="syn-fn">console</span>.log(counter1());
+
+<span class="syn-fn">console</span>.log(counter2());
+<span class="syn-fn">console</span>.log(counter2());</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+1
+2</pre>
+</div>      <p class="text-p">কারণ প্রতিটি <code>createCounter()</code> আলাদা closure তৈরি করেছে।</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+counter1 → count = 2
+
+counter2 → count = 2</div>      <p class="text-p">দুটো আলাদা state।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.13</span> Closure + Parameters</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createGreeting(name) {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>() {
+        <span class="syn-fn">console</span>.log(`Hello ${name}`);
+    };
+}
+
+<span class="syn-kw">const</span> greetRipon = createGreeting(&quot;Ripon<span class="syn-str">&quot;);
+const greetRahim = createGreeting(&quot;</span>Rahim&quot;);
+
+greetRipon();
+greetRahim();</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello Ripon
+Hello Rahim</pre>
+</div>      <p class="text-p">প্রতিটি returned function নিজের <code>name</code> মনে রেখেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.14</span> Function Factory</div>
+      <p class="text-p">যে function অন্য function তৈরি করে তাকে <strong>Function Factory</strong> বলা যায়। Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createMultiplier(number) {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(value) {
+        <span class="syn-kw">return</span> value * number;
+    };
+}</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> double = createMultiplier(<span class="syn-num">2</span>);
+<span class="syn-kw">const</span> triple = createMultiplier(<span class="syn-num">3</span>);
+
+<span class="syn-fn">console</span>.log(double(<span class="syn-num">10</span>));
+<span class="syn-fn">console</span>.log(triple(<span class="syn-num">10</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>20
+30</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.15</span> Real-Life Function Factory</div>
+      <p class="text-p">Discount calculator:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createDiscount(rate) {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(price) {
+        <span class="syn-kw">return</span> price - price * rate;
+    };
+}
+
+<span class="syn-kw">const</span> tenPercentOff = createDiscount(<span class="syn-num">0.10</span>);
+<span class="syn-kw">const</span> twentyPercentOff = createDiscount(<span class="syn-num">0.20</span>);
+
+<span class="syn-fn">console</span>.log(tenPercentOff(<span class="syn-num">1000</span>));
+<span class="syn-fn">console</span>.log(twentyPercentOff(<span class="syn-num">1000</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>900
+800</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.16</span> Closure with <code>setTimeout()</code></div>
+      <p class="text-p">Closure asynchronous JavaScript-এও খুব গুরুত্বপূর্ণ।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> greetLater(name) {
+
+    <span class="syn-fn">setTimeout</span>(<span class="syn-kw">function</span>() {
+        <span class="syn-fn">console</span>.log(`Hello ${name}`);
+    }, <span class="syn-num">1000</span>);
+}
+
+greetLater(&quot;Ripon&quot;);</code></pre>
+</div>      <p class="text-p">এক সেকেন্ড পরে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello Ripon</pre>
+</div>      <p class="text-p"><code>setTimeout()</code> callback <code>name</code> variable-টিকে মনে রেখেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.17</span> Closure with Event Listener</div>
+      <p class="text-p">Browser-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> setupButton(name) {
+
+    <span class="syn-fn">document</span>
+        .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">getElementById</span>(&quot;btn<span class="syn-str">&quot;)
+        .addEventListener(&quot;</span>click<span class="syn-str">&quot;, function() {
+
+            console.log(`Hello ${name}`);
+
+        });
+}
+
+setupButton(&quot;</span>Ripon&quot;);</code></pre>
+</div>      <p class="text-p">Button click করলে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello Ripon</pre>
+</div>      <p class="text-p">এখানেও callback <code>name</code> মনে রেখেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.18</span> Closure-এর সবচেয়ে Common Example: Loop</div>
+      <p class="text-p">JavaScript-এ বহুল পরিচিত একটি ক্লাসিক ট্র্যাপ হলো লুপে <code>var</code> ব্যবহার করে Closure তৈরি করা:</p>
+      <div class="warn-box">
+        <strong>সতর্কতা:</strong> <code>var</code> কীওয়ার্ড ফাংশন-স্কোপড হওয়ায় সবকটি টাইমআউট কলব্যাক একই ভ্যারিয়েবল রেফারেন্স শেয়ার করে। ফলে লুপ শেষ হয়ে <code>i</code>-এর মান যখন 4 হয়, তখন সব কলব্যাক একই মান 4 প্রিন্ট করে।
+      </div>
+      <p class="text-p">একটি classic problem:</p>
+<div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">❌ Loop with var (Shared Reference)</span><span>❌ Trap / Antipattern</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">var</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">3</span>; i++) {
+
+    <span class="syn-fn">setTimeout</span>(<span class="syn-kw">function</span>() {
+        <span class="syn-fn">console</span>.log(i);
+    }, <span class="syn-num">1000</span>);
+}</code></pre>
+</div>      <p class="text-p">অনেক ক্ষেত্রে output হবে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>4
+4
+4</pre>
+</div>      <p class="text-p">কারণ <code>var</code> function-scoped এবং callbacks একই variable binding-এর দিকে তাকিয়ে থাকে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.19</span> <code>let</code> ব্যবহার করলে</div>
+      <p class="text-p">Modern JavaScript-এ (ES6+) ব্লক-স্কোপড <code>let</code> ব্যবহার করলে প্রতি লুপ ইটারেশনে একটি করে নতুন লেক্সিক্যাল বাইন্ডিং তৈরি হয়:</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">✅ Loop with let (Per-Iteration Lexical Binding)</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">3</span>; i++) {
+
+    <span class="syn-fn">setTimeout</span>(<span class="syn-kw">function</span>() {
+        <span class="syn-fn">console</span>.log(i);
+    }, <span class="syn-num">1000</span>);
+}</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3</pre>
+</div>      <p class="text-p">কারণ <code>let</code> loop iteration-এর জন্য আলাদা binding তৈরি করে।</p>
+      <div class="def-box">
+        <div class="def-text">Key Takeaway: <code>let</code> প্রতিটি ইটারেশনের জন্য ক্লোজারের ভিতরে একটি স্বতন্ত্র মেমরি রেফারেন্স সংরক্ষণ করে, যা প্রত্যাশিত 1, 2, 3 আউটপুট নিশ্চিত করে।</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 03 — Immediately Invoked Function Expressions (IIFE) (26.20 – 26.26)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.20</span> IIFE কী?</div>
+      <p class="text-p"><strong>IIFE = Immediately Invoked Function Expression</strong> এমন function expression যা define করার সাথে সাথে execute হয়। Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>(<span class="syn-kw">function</span>() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+})();</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.21</span> IIFE কীভাবে কাজ করে?</div>
+      <p class="text-p">সাধারণ function:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}
+
+greet();</code></pre>
+</div>      <p class="text-p">IIFE:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>(<span class="syn-kw">function</span>() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+})();</code></pre>
+</div>      <p class="text-p">এক statement-এর মধ্যেই:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Function তৈরি
+     ↓
+Immediately execute</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.22</span> IIFE with Arrow Function</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Hello <span class="syn-kw">from</span> IIFE&quot;);
+})();</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello from IIFE</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.23</span> IIFE কেন ব্যবহার করা হতো?</div>
+      <p class="text-p">আগে JavaScript-এ module system শক্তিশালী হওয়ার আগে global namespace pollution এড়াতে IIFE অনেক ব্যবহার করা হতো। Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>(<span class="syn-kw">function</span>() {
+
+    <span class="syn-kw">const</span> secret = <span class="syn-str">&quot;12345&quot;</span>;
+
+    <span class="syn-fn">console</span>.log(secret);
+
+})();</code></pre>
+</div>      <p class="text-p">বাইরে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(secret);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>ReferenceError</pre>
+</div>      <p class="text-p">কারণ <code>secret</code> IIFE-এর ভিতরের scope-এ আছে। বর্তমানে <strong>ES Modules</strong> অনেক ক্ষেত্রে এই কাজের আরও ভালো solution।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.24</span> IIFE with Parameters</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>(<span class="syn-kw">function</span>(name) {
+    <span class="syn-fn">console</span>.log(`Hello ${name}`);
+})(&quot;Ripon&quot;);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello Ripon</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.25</span> IIFE দিয়ে Private State</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> counter = (<span class="syn-kw">function</span>() {
+
+    <span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">return</span> {
+        increment() {
+            count++;
+        },
+
+        getCount() {
+            <span class="syn-kw">return</span> count;
+        }
+    };
+
+})();</code></pre>
+</div>      <p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>counter.increment();
+counter.increment();
+
+<span class="syn-fn">console</span>.log(counter.getCount());</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>2</pre>
+</div>      <p class="text-p">এখানে <code>count</code> বাইরে থেকে directly accessible নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.26</span> Closure vs IIFE</div>
+      <div class="table-wrap"><table><thead><tr><th>Closure</th><th>IIFE</th></tr></thead><tbody><tr><td>Scope মনে রাখে</td><td>Immediately execute হয়</td></tr><tr><td>সাধারণত returned function দেখা যায়</td><td>Function immediately run করে</td></tr><tr><td>Private state তৈরি করতে পারে</td><td>Private scope তৈরি করতে পারে</td></tr><tr><td>Long-lived হতে পারে</td><td>একবার execute হওয়া common</td></tr><tr><td><code>createCounter()</code> example</td><td><code>(function(){})()</code></td></tr></tbody></table></div>
+      <p class="text-p">একটি গুরুত্বপূর্ণ বিষয়: &gt; <strong>IIFE এবং Closure একই জিনিস নয়।</strong> IIFE হলো execution pattern। Closure হলো lexical environment ধরে রাখার behavior। একটি IIFE closure তৈরি করতেও পারে।</p>
+    </div>
+    <div class="part-banner">Part 04 — Currying, Partial Application &amp; Function Transformation (26.27 – 26.33)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.27</span> Function Returning Function</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> outer() {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> inner() {
+        <span class="syn-kw">return</span> <span class="syn-str">&quot;Hello&quot;</span>;
+    };
+}
+
+<span class="syn-kw">const</span> result = outer();
+
+<span class="syn-fn">console</span>.log(result());</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello</pre>
+</div>      <p class="text-p">এটি closure, factory এবং currying-এর foundation।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.28</span> Currying</div>
+      <p class="text-p">Chapter 25-এ basic দেখেছিলাম। এবার গভীরভাবে বুঝি। Normal function:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b, c) {
+    <span class="syn-kw">return</span> a + b + c;
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>));</code></pre>
+</div>      <p class="text-p">Curried:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a) {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(b) {
+
+        <span class="syn-kw">return</span> <span class="syn-kw">function</span>(c) {
+
+            <span class="syn-kw">return</span> a + b + c;
+
+        };
+
+    };
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>)(<span class="syn-num">20</span>)(<span class="syn-num">30</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>60</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.29</span> Arrow Currying</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> add = a =&gt; b =&gt; c =&gt; a + b + c;
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>)(<span class="syn-num">20</span>)(<span class="syn-num">30</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>60</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.30</span> Currying-এর সুবিধা</div>
+      <p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> add = a =&gt; b =&gt; c =&gt; a + b + c;</code></pre>
+</div>      <p class="text-p">আমরা partial function তৈরি করতে পারি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> add10 = add(<span class="syn-num">10</span>);</code></pre>
+</div>      <p class="text-p">তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(add10(<span class="syn-num">20</span>)(<span class="syn-num">30</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>60</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.31</span> Practical Currying — Tax</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> calculateTax = rate =&gt; price =&gt;
+    price * rate;</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> vat = calculateTax(<span class="syn-num">0.15</span>);
+
+<span class="syn-fn">console</span>.log(vat(<span class="syn-num">1000</span>));
+<span class="syn-fn">console</span>.log(vat(<span class="syn-num">2000</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>150
+300</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.32</span> Partial Application</div>
+      <p class="text-p">Partial application হলো কিছু argument আগে দিয়ে একটি নতুন function তৈরি করা।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> multiply(a, b, c) {
+    <span class="syn-kw">return</span> a * b * c;
+}
+
+<span class="syn-kw">function</span> multiplyBy(a) {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(b, c) {
+        <span class="syn-kw">return</span> multiply(a, b, c);
+    };
+
+}
+
+<span class="syn-kw">const</span> multiplyBy2 = multiplyBy(<span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(multiplyBy2(<span class="syn-num">3</span>, <span class="syn-num">4</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>24</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.33</span> Currying vs Partial Application</div>
+      <div class="table-wrap"><table><thead><tr><th>Currying</th><th>Partial Application</th></tr></thead><tbody><tr><td>একবারে একটি argument</td><td>কিছু argument আগে দেওয়া যায়</td></tr><tr><td><code>f(a)(b)(c)</code></td><td><code>f(a)</code> → remaining args</td></tr><tr><td>Function transformation</td><td>Pre-configured function</td></tr></tbody></table></div>
+    </div>
+    <div class="part-banner">Part 05 — Function Composition, Pipelines, Memoization &amp; Rate Limiting (26.34 – 26.53)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.34</span> Function Composition</div>
+      <p class="text-p">একটি function-এর output আরেকটি function-এর input হলে composition করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> double = x =&gt; x * <span class="syn-num">2</span>;
+<span class="syn-kw">const</span> square = x =&gt; x * x;
+
+<span class="syn-fn">console</span>.log(square(double(<span class="syn-num">5</span>)));</code></pre>
+</div><div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+5
+↓
+double
+↓
+10
+↓
+square
+↓
+100</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.35</span> <code>compose()</code> Function</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">compose</span> = (f, g) =&gt; value =&gt;
+    f(g(value));</code></pre>
+</div>      <p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> double = x =&gt; x * <span class="syn-num">2</span>;
+<span class="syn-kw">const</span> square = x =&gt; x * x;
+
+<span class="syn-kw">const</span> process = <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">compose</span>(square, double);
+
+<span class="syn-fn">console</span>.log(process(<span class="syn-num">5</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>100</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+process(5)
+    ↓
+double(5)
+    ↓
+10
+    ↓
+square(10)
+    ↓
+100</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.36</span> Multiple Function Compose</div>
+      <p class="text-p">একাধিক function handle করার জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">compose</span> = (...functions) =&gt; value =&gt;
+    functions.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduceRight</span>(
+        (result, fn) =&gt; fn(result),
+        value
+    );</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> double = x =&gt; x * <span class="syn-num">2</span>;
+<span class="syn-kw">const</span> add10 = x =&gt; x + <span class="syn-num">10</span>;
+<span class="syn-kw">const</span> square = x =&gt; x * x;
+
+<span class="syn-kw">const</span> process = <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">compose</span>(
+    square,
+    add10,
+    double
+);
+
+<span class="syn-fn">console</span>.log(process(<span class="syn-num">5</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>400</pre>
+</div>      <p class="text-p">Execution:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+5
+↓
+double → 10
+↓
+add10 → 20
+↓
+square → 400</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.37</span> <code>pipe()</code></div>
+      <p class="text-p"><code>pipe()</code> সাধারণত left-to-right।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">pipe</span> = (...functions) =&gt; value =&gt;
+    functions.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>(
+        (result, fn) =&gt; fn(result),
+        value
+    );</code></pre>
+</div>      <p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> process = <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">pipe</span>(
+    double,
+    add10,
+    square
+);
+
+<span class="syn-fn">console</span>.log(process(<span class="syn-num">5</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>400</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.38</span> <code>compose()</code> vs <code>pipe()</code></div>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+compose:
+right → left
+
+pipe:
+left → right</div>      <p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fp" style="color: #38bdf8; font-weight: 600;">compose</span>(square, add10, double)</code></pre>
+</div>      <p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+double → add10 → square</div>      <p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fp" style="color: #38bdf8; font-weight: 600;">pipe</span>(double, add10, square)</code></pre>
+</div>      <p class="text-p">সরাসরি:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+double → add10 → square</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.39</span> Memoization</div>
+      <p class="text-p"><strong>Memoization</strong> হলো কোনো expensive function-এর result cache করে রাখা। ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> square(n) {
+    <span class="syn-fn">console</span>.log(&quot;Calculating...&quot;);
+    <span class="syn-kw">return</span> n * n;
+}</code></pre>
+</div>      <p class="text-p">একই input বারবার দিলে বারবার calculation হচ্ছে। Memoization দিয়ে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> memoize(fn) {
+
+    <span class="syn-kw">const</span> cache = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(value) {
+
+        <span class="syn-kw">if</span> (cache.has(value)) {
+            <span class="syn-kw">return</span> cache.get(value);
+        }
+
+        <span class="syn-kw">const</span> result = fn(value);
+
+        cache.set(value, result);
+
+        <span class="syn-kw">return</span> result;
+    };
+}</code></pre>
+</div>      <p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> memoizedSquare = memoize(n =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Calculating...&quot;);
+    <span class="syn-kw">return</span> n * n;
+});
+
+<span class="syn-fn">console</span>.log(memoizedSquare(<span class="syn-num">5</span>));
+<span class="syn-fn">console</span>.log(memoizedSquare(<span class="syn-num">5</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Calculating...
+25
+25</pre>
+</div>      <p class="text-p">দ্বিতীয়বার calculation হয়নি।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.40</span> Memoization কীভাবে কাজ করে?</div>
+      <p class="text-p">প্রথমবার:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+5
+↓
+Calculation
+↓
+25
+↓
+Cache</div>      <p class="text-p">দ্বিতীয়বার:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+5
+↓
+Cache আছে?
+↓
+Yes
+↓
+25</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.41</span> Memoization কোথায় Useful?</div>
+      <p class="text-p">যেখানে calculation expensive:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>mathematical calculations</li>
+        <li>recursive algorithms</li>
+        <li>expensive transformations</li>
+        <li>repeated API-derived calculations</li>
+        <li>data processing</li>
+      </ul>
+      <p class="text-p">তবে cache সবসময় memory ব্যবহার করে—তাই অযথা memoization করা উচিত নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.42</span> Decorator Pattern</div>
+      <p class="text-p">একটি function-এর মূল behavior না বদলে তার চারপাশে additional behavior যোগ করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-kw">return</span> <span class="syn-str">`Hello ${name}`</span>;
+}</code></pre>
+</div>      <p class="text-p">Decorator:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> logFunction(fn) {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(...args) {
+
+        <span class="syn-fn">console</span>.log(&quot;Function called<span class="syn-str">&quot;);
+
+        const result = fn(...args);
+
+        console.log(&quot;</span>Function finished&quot;);
+
+        <span class="syn-kw">return</span> result;
+    };
+}</code></pre>
+</div>      <p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> loggedGreet = logFunction(greet);
+
+<span class="syn-fn">console</span>.log(loggedGreet(&quot;Ripon&quot;));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Function called
+Function finished
+Hello Ripon</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.43</span> Decorator-এর Real-Life Use</div>
+      <p class="text-p">Decorator-style wrapper দিয়ে করা যায়:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Logging
+Authentication
+Timing
+Caching
+Validation
+Permission checking
+Error handling</pre>
+</div>      <p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> withLogging(fn) {
+    <span class="syn-kw">return</span> (...args) =&gt; {
+        <span class="syn-fn">console</span>.log(&quot;Arguments:&quot;, args);
+
+        <span class="syn-kw">const</span> result = fn(...args);
+
+        <span class="syn-fn">console</span>.log(&quot;Result:&quot;, result);
+
+        <span class="syn-kw">return</span> result;
+    };
+}</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.44</span> Function Timing</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> withTiming(fn) {
+
+    <span class="syn-kw">return</span> (...args) =&gt; {
+
+        <span class="syn-kw">const</span> start = <span class="syn-fn">performance</span>.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">now</span>();
+
+        <span class="syn-kw">const</span> result = fn(...args);
+
+        <span class="syn-kw">const</span> end = <span class="syn-fn">performance</span>.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">now</span>();
+
+        <span class="syn-fn">console</span>.log(
+            <span class="syn-str">`Execution time: ${end - start}ms`</span>
+        );
+
+        <span class="syn-kw">return</span> result;
+    };
+}</code></pre>
+</div>      <p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> calculate = withTiming(() =&gt; {
+    <span class="syn-kw">let</span> total = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">1000000</span>; i++) {
+        total += i;
+    }
+
+    <span class="syn-kw">return</span> total;
+});
+
+<span class="syn-fn">console</span>.log(calculate());</code></pre>
+</div>      <p class="text-p">এখানে wrapper function execution time measure করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.45</span> Debouncing</div>
+      <p class="text-p">Debouncing খুব গুরুত্বপূর্ণ web development concept। ধরো search box:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>User types:
+
+R
+Ri
+Rip
+Ripo
+Ripon</pre>
+</div>      <p class="text-p">প্রতিটি keypress-এ API call করলে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+5 keystrokes
+↓
+5 API requests</div>      <p class="text-p">এটা unnecessary হতে পারে। Debounce বলে: &gt; User typing থামানোর পর function execute করো। Basic implementation:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> debounce(fn, delay) {
+
+    <span class="syn-kw">let</span> timer;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(...args) {
+
+        <span class="syn-fn">clearTimeout</span>(timer);
+
+        timer = <span class="syn-fn">setTimeout</span>(() =&gt; {
+            fn(...args);
+        }, delay);
+
+    };
+}</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.46</span> Debounce Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> search = debounce(<span class="syn-kw">function</span>(query) {
+    <span class="syn-fn">console</span>.log(&quot;Searching:&quot;, query);
+}, <span class="syn-num">500</span>);</code></pre>
+</div>      <p class="text-p">User:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>R
+Ri
+Rip
+Ripo
+Ripon</pre>
+</div>      <p class="text-p">দ্রুত type করলে previous timers cancel হবে। শেষে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Searching: Ripon</pre>
+</div>      <p class="text-p">একবার execute হতে পারে। React search box-এ এই concept খুব useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.47</span> Throttling</div>
+      <p class="text-p"><strong>Throttling</strong> মানে নির্দিষ্ট সময়ের মধ্যে function সর্বোচ্চ একটি নির্দিষ্ট frequency-তে চালানো। যেমন scroll event:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+User scroll করছে খুব দ্রুত
+↓
+অনেক scroll events
+↓
+Throttle
+↓
+নির্দিষ্ট interval-এ function</div>      <p class="text-p">Basic:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> throttle(fn, delay) {
+
+    <span class="syn-kw">let</span> waiting = <span class="syn-bool">false</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(...args) {
+
+        <span class="syn-kw">if</span> (waiting) <span class="syn-kw">return</span>;
+
+        fn(...args);
+
+        waiting = <span class="syn-bool">true</span>;
+
+        <span class="syn-fn">setTimeout</span>(() =&gt; {
+            waiting = <span class="syn-bool">false</span>;
+        }, delay);
+    };
+}</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.48</span> Debounce vs Throttle</div>
+      <div class="table-wrap"><table><thead><tr><th>Debounce</th><th>Throttle</th></tr></thead><tbody><tr><td>শেষ event-এর পর execute</td><td>নির্দিষ্ট interval-এ execute</td></tr><tr><td>Search input</td><td>Scroll</td></tr><tr><td>Resize শেষে</td><td>Mouse movement</td></tr><tr><td>Typing</td><td>Continuous events</td></tr></tbody></table></div>
+      <p class="text-p">সহজভাবে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Debounce:
+&quot;থামলে কাজ করো&quot;
+
+Throttle:
+&quot;চলতে থাকলেও নির্দিষ্ট সময় পরপর কাজ করো&quot;</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.49</span> Closure + Debounce</div>
+      <p class="text-p">খেয়াল করো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> debounce(fn, delay) {
+
+    <span class="syn-kw">let</span> timer;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(...args) {
+        <span class="syn-fn">clearTimeout</span>(timer);
+
+        timer = <span class="syn-fn">setTimeout</span>(() =&gt; {
+            fn(...args);
+        }, delay);
+    };
+}</code></pre>
+</div>      <p class="text-p">এখানে returned function:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">return</span> <span class="syn-kw">function</span>(...)</code></pre>
+</div>      <p class="text-p"><code>timer</code> variable-টিকে মনে রাখছে। এটাই Closure-এর practical power।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.50</span> Closure + Private Data</div>
+      <p class="text-p">আরেকটি strong example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createBankAccount(balance) {
+
+    <span class="syn-kw">return</span> {
+        deposit(amount) {
+            balance += amount;
+        },
+
+        withdraw(amount) {
+
+            <span class="syn-kw">if</span> (amount &lt;= balance) {
+                balance -= amount;
+            }
+        },
+
+        getBalance() {
+            <span class="syn-kw">return</span> balance;
+        }
+    };
+}</code></pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>balance</pre>
+</div>      <p class="text-p">private। শুধু methods-এর মাধ্যমে access করা যাচ্ছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.51</span> Encapsulation</div>
+      <p class="text-p"><strong>Encapsulation</strong> মানে data এবং সেই data-এর operations-কে একসাথে রাখা এবং internal implementation hide করা। Closure দিয়ে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> account = createBankAccount(<span class="syn-num">1000</span>);</code></pre>
+</div>      <p class="text-p">User জানে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>account.deposit(<span class="syn-num">500</span>);
+account.withdraw(<span class="syn-num">200</span>);
+account.getBalance();</code></pre>
+</div>      <p class="text-p">কিন্তু internal:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>balance</pre>
+</div>      <p class="text-p">কীভাবে রাখা হয়েছে সেটা বাইরে থেকে directly manipulate করা যায় না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.52</span> Closure Memory Consideration</div>
+      <p class="text-p">Closure outer variables ধরে রাখতে পারে। তাই unnecessary বড় data ধরে রাখলে memory usage বাড়তে পারে। Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createSomething() {
+
+    <span class="syn-kw">const</span> hugeData = <span class="syn-kw">new</span> <span class="syn-fn">Array</span>(<span class="syn-num">1000000</span>).fill(&quot;data&quot;);
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>() {
+        <span class="syn-fn">console</span>.log(hugeData.length);
+    };
+}</code></pre>
+</div>      <p class="text-p">Returned function <code>hugeData</code>-এর reference ধরে রাখছে। তাই closure ব্যবহার করার সময়: &gt; প্রয়োজনের চেয়ে বেশি data unnecessarily ধরে রাখা উচিত নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.53</span> Closure-এর Common Mistakes</div>
+      <p class="text-p">Closure ব্যবহারের সময় সচরাচর যেসব ভুল এবং ব্যাড-প্র্যাকটিস দেখা যায়:</p>
+      <div class="section-subhead">🔹 Mistake 1 — গ্লোবাল স্টেট পরিবর্তন (Variable Mutation)</div>
+<div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">❌ ভুল: গ্লোবাল ভ্যারিয়েবল মিউটেশন</span><span>❌ Trap / Antipattern</span></div>
+  <pre><code><span class="syn-kw">let</span> count = <span class="syn-num">0</span>; <span class="syn-com">// ❌ Global variable leakage</span>
+
+<span class="syn-kw">function</span> increment() {
+    count++;
+}</code></pre>
+</div>      <div class="warn-box">গ্লোবাল স্টেট বাইরের যেকোনো কোড দিয়ে অনিচ্ছাকৃতভাবে বদলে যেতে পারে।</div>
+      <p class="text-p"><strong>সঠিক সমাধান:</strong> ফাংশন স্কোপের ভেতরে প্রাইভেট স্টেট হিসেবে রাখা:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">✅ সঠিক: Closure Encapsulated State</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">function</span> createCounter() {
+    <span class="syn-kw">let</span> count = <span class="syn-num">0</span>; <span class="syn-com">// ✅ Private lexical state</span>
+    <span class="syn-kw">return</span> () =&gt; ++count;
+}</code></pre>
+</div>
+      <div class="section-subhead">🔹 Mistake 2 — লুপে <code>var</code> ব্যবহারের ফাঁদ</div>
+<div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">❌ ভুল: var লুপ ট্র্যাপ</span><span>❌ Trap / Antipattern</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">var</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">3</span>; i++) {
+    <span class="syn-fn">setTimeout</span>(() =&gt; <span class="syn-fn">console</span>.log(i), <span class="syn-num">100</span>); <span class="syn-com">// ❌ Output: 3, 3, 3</span>
+}</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>3
+3
+3</pre>
+</div>      <p class="text-p"><strong>Modern JavaScript সমাধান:</strong> <code>let</code> দিয়ে পার-ইটারেশন ব্লক স্কোপিং নিশ্চিত করা:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">✅ সঠিক: let ব্লক স্কোপিং</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">3</span>; i++) {
+    <span class="syn-fn">setTimeout</span>(() =&gt; <span class="syn-fn">console</span>.log(i), <span class="syn-num">100</span>); <span class="syn-com">// ✅ Output: 0, 1, 2</span>
+}</code></pre>
+</div>
+      <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>0
+1
+2</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 06 — Real-World Architectures, Mini-Project &amp; Mastery Lab (26.54 – 26.59 + Lab)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.54</span> Advanced Real-Life Example — Permission Factory</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createPermission(role) {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(action) {
+
+        <span class="syn-kw">if</span> (role === <span class="syn-str">&quot;admin&quot;</span>) {
+            <span class="syn-kw">return</span> <span class="syn-bool">true</span>;
+        }
+
+        <span class="syn-kw">if</span> (role === <span class="syn-str">&quot;editor&quot;</span> &amp;&amp; action === <span class="syn-str">&quot;edit&quot;</span>) {
+            <span class="syn-kw">return</span> <span class="syn-bool">true</span>;
+        }
+
+        <span class="syn-kw">return</span> <span class="syn-bool">false</span>;
+    };
+}</code></pre>
+</div>      <p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> adminPermission = createPermission(&quot;admin<span class="syn-str">&quot;);
+const editorPermission = createPermission(&quot;</span>editor<span class="syn-str">&quot;);
+
+console.log(adminPermission(&quot;</span><span class="syn-kw">delete</span><span class="syn-str">&quot;));
+console.log(editorPermission(&quot;</span>edit<span class="syn-str">&quot;));
+console.log(editorPermission(&quot;</span><span class="syn-kw">delete</span>&quot;));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>true
+true
+false</pre>
+</div>      <p class="text-p">এখানে <code>role</code> closure-এর মাধ্যমে মনে রাখা হয়েছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.55</span> Advanced Real-Life Example — ID Generator</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createIdGenerator() {
+
+    <span class="syn-kw">let</span> id = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>() {
+        id++;
+        <span class="syn-kw">return</span> id;
+    };
+}
+
+<span class="syn-kw">const</span> generateId = createIdGenerator();
+
+<span class="syn-fn">console</span>.log(generateId());
+<span class="syn-fn">console</span>.log(generateId());
+<span class="syn-fn">console</span>.log(generateId());</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3</pre>
+</div>      <p class="text-p">এ ধরনের pattern application-level temporary state তৈরি করতে কাজে লাগতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.56</span> Complete Mini Project — Counter</div>
+      <div class="section-subhead">🔹 HTML</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTML Structure</span><span>JavaScript</span></div>
+  <pre><code>&lt;button id=&quot;increase<span class="syn-str">&quot;&gt;+&lt;/button&gt;
+&lt;button id=&quot;</span>decrease<span class="syn-str">&quot;&gt;-&lt;/button&gt;
+&lt;button id=&quot;</span>reset<span class="syn-str">&quot;&gt;Reset&lt;/button&gt;
+
+&lt;h2 id=&quot;</span>display&quot;&gt;<span class="syn-num">0</span>&lt;/h2&gt;</code></pre>
+</div>      <div class="section-subhead">🔹 JavaScript</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createCounter() {
+
+    <span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">return</span> {
+        increase() {
+            count++;
+        },
+
+        decrease() {
+            count--;
+        },
+
+        reset() {
+            count = <span class="syn-num">0</span>;
+        },
+
+        getValue() {
+            <span class="syn-kw">return</span> count;
+        }
+    };
+}
+
+<span class="syn-kw">const</span> counter = createCounter();
+
+<span class="syn-kw">const</span> display = <span class="syn-fn">document</span>.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">getElementById</span>(&quot;display<span class="syn-str">&quot;);
+
+document.getElementById(&quot;</span>increase<span class="syn-str">&quot;).addEventListener(&quot;</span>click<span class="syn-str">&quot;, () =&gt; {
+    counter.increase();
+    display.textContent = counter.getValue();
+});
+
+document.getElementById(&quot;</span>decrease<span class="syn-str">&quot;).addEventListener(&quot;</span>click<span class="syn-str">&quot;, () =&gt; {
+    counter.decrease();
+    display.textContent = counter.getValue();
+});
+
+document.getElementById(&quot;</span>reset<span class="syn-str">&quot;).addEventListener(&quot;</span>click&quot;, () =&gt; {
+    counter.reset();
+    display.textContent = counter.getValue();
+});</code></pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+createCounter()
+      ↓
+private count
+      ↓
+methods
+      ↓
+UI</div>      <p class="text-p">এটি Closure + Encapsulation-এর real-world example।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.57</span> Closure বনাম Class</div>
+      <p class="text-p">Private state দু&#x27;ভাবেই করা যায়।</p>
+      <div class="section-subhead">🔹 Closure</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createUser(name) {
+
+    <span class="syn-kw">return</span> {
+        getName() {
+            <span class="syn-kw">return</span> name;
+        }
+    };
+}</code></pre>
+</div>      <div class="section-subhead">🔹 Class</div>
+      <p class="text-p">Modern JavaScript class-এ private field:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">class</span> User {
+
+    #name;
+
+    constructor(name) {
+        <span class="syn-kw">this</span>.#name = name;
+    }
+
+    getName() {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>.#name;
+    }
+}</code></pre>
+</div>      <p class="text-p">দুটোরই use case আছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.58</span> Closure বনাম Global Variable</div>
+      <div class="section-subhead">🔹 Global</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+<span class="syn-kw">function</span> increment() {
+    count++;
+}</code></pre>
+</div>      <p class="text-p">যে code access করতে পারে, state modify করার সুযোগ পেতে পারে।</p>
+      <div class="section-subhead">🔹 Closure</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createCounter() {
+
+    <span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">return</span> () =&gt; ++count;
+}</code></pre>
+</div>      <p class="text-p"><code>count</code> encapsulated থাকে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.59</span> Chapter 26 — Complete Concept Map</div>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Advanced Functions
+                        │
+        ┌───────────────┼────────────────┐
+        ↓               ↓                ↓
+      Scope          Closure            IIFE
+        │               │                │
+        ↓               ↓                ↓
+ Lexical Scope    Private State     Private Scope
+ Scope Chain      Factory           Immediate Execute
+        │               │
+        └───────┬───────┘
+                ↓
+       Function Returning Function
+                │
+       ┌────────┴─────────┐
+       ↓                  ↓
+    Currying        Partial Application
+       │
+       ↓
+ Function Composition
+       │
+   ┌───┴────┐
+   ↓        ↓
+compose()  pipe()
+   │
+   ↓
+Advanced Patterns
+   │
+ ┌─┼──────────────┬────────────┐
+ ↓ ↓              ↓            ↓
+Memoization    Decorator    Debounce
+                             │
+                             ↓
+                          Throttle</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.Must</span> 🔥 Must Know — Chapter 26 এর সবচেয়ে গুরুত্বপূর্ণ কনসেপ্টসমূহ</div>
+      <p class="text-p">Chapter 26 থেকে ইন্টারভিউ ও প্রোডাকশন কোডিংয়ের জন্য অপরিহার্য মূল বিষয়গুলোর সারসংক্ষেপ:</p>
+      
+      <div class="section-subhead">🔹 Scope &amp; Lexical Environment</div>
+      <ul style="margin: 2px 0 6px 16px; color: #334155; font-size: 10.5px;">
+        <li><strong>Scope:</strong> ভ্যারিয়েবল ও ফাংশনের ভিজিবিলিটি বা এক্সেসিবিলিটি বাউন্ডারি।</li>
+        <li><strong>Lexical Scope:</strong> কোড যেখানে লিখিত হয়েছে, সেই ফিজিক্যাল লোকেশনের ওপর স্কোপ নির্ধারিত হয়।</li>
+        <li><strong>Scope Chain:</strong> কারেন্ট স্কোপ থেকে প্যারেন্ট স্কোপ হয়ে গ্লোবাল পর্যন্ত আইডেন্টিফায়ার খোঁজার চেইন।</li>
+      </ul>
+
+      <div class="section-subhead">🔹 Closure &amp; Encapsulation</div>
+      <ul style="margin: 2px 0 6px 16px; color: #334155; font-size: 10.5px;">
+        <li><strong>Closure:</strong> একটি ফাংশন ও তার লেক্সিক্যাল এনভায়রনমেন্টের রেফারেন্স সংরক্ষণ করে রাখার ক্ষমতা।</li>
+        <li><strong>Private Variables:</strong> বাইরে থেকে অ্যাক্সেস অযোগ্য ডেটা এনক্যাপসুলেশন তৈরি।</li>
+        <li><strong>Function Factory:</strong> প্যারামিটার পাস করে স্পেশালাইজড ডায়নামিক ফাংশন জেনারেশন।</li>
+        <li><strong>Async Closure:</strong> <code>setTimeout</code>, ইভেন্ট লিসেনার ও ডিবাউন্সারে স্টেট ধরে রাখা।</li>
+      </ul>
+
+      <div class="section-subhead">🔹 Immediately Invoked Function Expressions (IIFE)</div>
+      <ul style="margin: 2px 0 6px 16px; color: #334155; font-size: 10.5px;">
+        <li><strong>IIFE Syntax:</strong> <code>(function() { ... })();</code> বা অ্যারো সিনট্যাক্স <code>(() => { ... })();</code></li>
+        <li><strong>Private Scope:</strong> গ্লোবাল নেমস্পেসকে পলিউশন থেকে রক্ষা করা এবং ইনিশিয়ালাইজেশন কোড একবারে চালানো।</li>
+      </ul>
+
+      <div class="section-subhead">🔹 Advanced Function Patterns</div>
+      <ul style="margin: 2px 0 6px 16px; color: #334155; font-size: 10.5px;">
+        <li><strong>Currying:</strong> <code>f(a, b, c)</code>-কে রূপান্তর করে <code>f(a)(b)(c)</code> এ একবারে একটি আর্গুমেন্ট গ্রহণকারী ফাংশন চেইন বানানো।</li>
+        <li><strong>Partial Application:</strong> কিছু আর্গুমেন্ট আগে বাইন্ড করে নতুন স্পেশালাইজড ফাংশন তৈরি করা।</li>
+        <li><strong>Composition:</strong> <code>compose(f, g)(x) = f(g(x))</code> (Right to Left ডেটা ট্রান্সফরমেশন)।</li>
+        <li><strong>Pipe:</strong> <code>pipe(f, g)(x) = g(f(x))</code> (Left to Right স্বাভাবিক পঠনযোগ্য ডেটা পাইপলাইন)।</li>
+        <li><strong>Memoization:</strong> পূর্বের ইনপুট ও ফলাফলের ক্যাশ সংরক্ষণ করে কর্মক্ষমতা অপ্টিমাইজেশন।</li>
+        <li><strong>Debounce &amp; Throttle:</strong> উচ্চ-ফ্রিকোয়েন্সি ইভেন্টকে রেট-লিমিট ও অপ্টিমাইজ করার ক্লোজার প্যাটার্ন।</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.Cheat</span> 🧠 Quick Cheat Sheet — Code Pattern Reference</div>
+      <p class="text-p">Chapter 26-এর ৯টি প্রধান ফাংশনাল প্যাটার্নের আল্ট্রা-কম্প্যাক্ট প্রোডাকশন রেফারেন্স:</p>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">1. Closure (State Retention)</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// Closure</span>
+<span class="syn-kw">function</span> outer() {
+    <span class="syn-kw">let</span> value = <span class="syn-num">10</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>() {
+        <span class="syn-kw">return</span> value;
+    };
+}</code></pre>
+</div>
+        </div>
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">2. IIFE (Immediate Execution)</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// IIFE</span>
+(<span class="syn-kw">function</span>() {
+    <span class="syn-fn">console</span>.log(&quot;Run&quot;);
+})();</code></pre>
+</div>
+        </div>
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">3. Currying (Unary Chaining)</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// Currying</span>
+<span class="syn-kw">const</span> add = a =&gt; b =&gt; a + b;
+
+add(<span class="syn-num">10</span>)(<span class="syn-num">20</span>);</code></pre>
+</div>
+        </div>
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">4. Function Factory</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// Function Factory</span>
+<span class="syn-kw">const</span> multiplyBy = x =&gt; y =&gt; x * y;
+
+<span class="syn-kw">const</span> double = multiplyBy(<span class="syn-num">2</span>);</code></pre>
+</div>
+        </div>
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">5. compose() (Right to Left)</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// Composition</span>
+<span class="syn-kw">const</span> <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">compose</span> = (f, g) =&gt; x =&gt; f(g(x));</code></pre>
+</div>
+        </div>
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">6. pipe() (Left to Right)</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// Pipe</span>
+<span class="syn-kw">const</span> <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">pipe</span> = (...fns) =&gt; x =&gt;
+    fns.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>((v, fn) =&gt; fn(v), x);</code></pre>
+</div>
+        </div>
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">7. Memoization (Cache Store)</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// Memoization</span>
+<span class="syn-kw">const</span> cache = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();</code></pre>
+</div>
+        </div>
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">8. Debounce Pattern</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// Debounce</span>
+<span class="syn-fn">clearTimeout</span>(timer);
+timer = <span class="syn-fn">setTimeout</span>(fn, delay);</code></pre>
+</div>
+        </div>
+        <div>
+          <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">9. Throttle Pattern</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// Throttle</span>
+<span class="syn-kw">if</span> (waiting) <span class="syn-kw">return</span>;</code></pre>
+</div>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.Lab</span> 📝 Hands-On Practice Lab — 7 Production Mastery Challenges</div>
+      <p class="text-p">Closure, Currying, Composition এবং Rate Limiting কনসেপ্টগুলোকে সম্পূর্ণ আয়ত্তে আনতে নিচে ৭টি প্র্যাকটিক্যাল চ্যালেঞ্জের সম্পূর্ণ মডেল সলিউশন দেওয়া হলো:</p>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 1: Counter Closure — Private State Management</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> এমন <code>createCounter()</code> ফাংশন তৈরি করো যাতে প্রতিবার কল করলে 1, 2, 3 রিটার্ন করে এবং ভেতরের কাউন্ট বাইরে থেকে মডিফাই করা না যায়।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 1 Solution</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">function</span> createCounter() {
+    <span class="syn-kw">let</span> count = <span class="syn-num">0</span>; <span class="syn-com">// Private state</span>
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>() {
+        count++;
+        <span class="syn-kw">return</span> count;
+    };
+}
+
+<span class="syn-kw">const</span> counter = createCounter();
+<span class="syn-fn">console</span>.log(counter()); <span class="syn-com">// 1</span>
+<span class="syn-fn">console</span>.log(counter()); <span class="syn-com">// 2</span>
+<span class="syn-fn">console</span>.log(counter()); <span class="syn-com">// 3</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 2: Private Balance — Encapsulated Bank Account</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> <code>createAccount(5000)</code> ফাংশন তৈরি করো যার মধ্যে <code>deposit(amount)</code>, <code>withdraw(amount)</code> এবং <code>getBalance()</code> মেথড থাকবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 2 Solution</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">function</span> createAccount(initialBalance) {
+    <span class="syn-kw">let</span> balance = initialBalance; <span class="syn-com">// Encapsulated private balance</span>
+
+    <span class="syn-kw">return</span> {
+        deposit(amount) {
+            balance += amount;
+            <span class="syn-kw">return</span> balance;
+        },
+        withdraw(amount) {
+            <span class="syn-kw">if</span> (amount &lt;= balance) {
+                balance -= amount;
+            } <span class="syn-kw">else</span> {
+                <span class="syn-fn">console</span>.log(&quot;Insufficient funds<span class="syn-str">&quot;);
+            }
+            return balance;
+        },
+        getBalance() {
+            return balance;
+        }
+    };
+}
+
+const account = createAccount(5000);
+account.deposit(1000);
+account.withdraw(500);
+console.log(&quot;</span>Final Balance:&quot;, account.getBalance());</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Final Balance: 5500</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 3: Multiplier Factory — Higher-Order Function</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি <code>createMultiplier(multiplier)</code> ফাংশন ফ্যাক্টরি তৈরি করো যা নতুন মাল্টিপ্লায়ার ফাংশন জেনারেট করে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 3 Solution</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">const</span> createMultiplier = multiplier =&gt; number =&gt; number * multiplier;
+
+<span class="syn-kw">const</span> triple = createMultiplier(<span class="syn-num">3</span>);
+<span class="syn-kw">const</span> quadruple = createMultiplier(<span class="syn-num">4</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Triple <span class="syn-num">10</span>:&quot;, triple(<span class="syn-num">10</span>));
+<span class="syn-fn">console</span>.log(&quot;Quadruple <span class="syn-num">5</span>:&quot;, quadruple(<span class="syn-num">5</span>));</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Triple 10: 30
+Quadruple 5: 20</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 4: Currying Function — Unary Parameter Pipeline</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> কারিং স্টাইলে <code>add(10)(20)(30)</code> কল করে 60 আউটপুট পাওয়ার মতো ফাংশন তৈরি করো।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 4 Solution</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">const</span> add = a =&gt; b =&gt; c =&gt; a + b + c;
+
+<span class="syn-kw">const</span> result = add(<span class="syn-num">10</span>)(<span class="syn-num">20</span>)(<span class="syn-num">30</span>);
+<span class="syn-fn">console</span>.log(&quot;Curried Add Result:&quot;, result);
+
+<span class="syn-com">// Partial utilization</span>
+<span class="syn-kw">const</span> add10 = add(<span class="syn-num">10</span>);
+<span class="syn-kw">const</span> add10And20 = add10(<span class="syn-num">20</span>);
+<span class="syn-fn">console</span>.log(&quot;Partially Applied Result:&quot;, add10And20(<span class="syn-num">30</span>));</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Curried Add Result: 60
+Partially Applied Result: 60</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 5: Pipeline Composition — Left-to-Right Data Flow</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> <code>double</code>, <code>add10</code>, <code>square</code> তিনটি ফাংশনকে <code>pipe()</code> দিয়ে যুক্ত করে 5 থেকে 400 ফলাফল তৈরি করো (5 → 10 → 20 → 400)।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 5 Solution</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">const</span> <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">pipe</span> = (...fns) =&gt; initialVal =&gt;
+    fns.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>((val, fn) =&gt; fn(val), initialVal);
+
+<span class="syn-kw">const</span> double = x =&gt; x * <span class="syn-num">2</span>;
+<span class="syn-kw">const</span> add10 = x =&gt; x + <span class="syn-num">10</span>;
+<span class="syn-kw">const</span> square = x =&gt; x * x;
+
+<span class="syn-kw">const</span> compute = <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">pipe</span>(double, add10, square);
+
+<span class="syn-fn">console</span>.log(&quot;Pipeline Output (<span class="syn-num">5</span> -&gt; <span class="syn-num">10</span> -&gt; <span class="syn-num">20</span> -&gt; <span class="syn-num">400</span>):&quot;, compute(<span class="syn-num">5</span>));</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Pipeline Output (5 -&gt; 10 -&gt; 20 -&gt; 400): 400</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 6: Memoization Function — Cache Optimization</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> এমন <code>memoize(fn)</code> ফাংশন তৈরি করো যাতে একই আর্গুমেন্ট দিলে পূর্বে ক্যাশ করা মান ফেরত আসে এবং পুনরায় ক্যালকুলেশন না হয়।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 6 Solution</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">function</span> memoize(fn) {
+    <span class="syn-kw">const</span> cache = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(...args) {
+        <span class="syn-kw">const</span> key = <span class="syn-fn">JSON</span>.stringify(args);
+        <span class="syn-kw">if</span> (cache.has(key)) {
+            <span class="syn-fn">console</span>.log(&quot;[Cache Hit] Returning cached result <span class="syn-kw">for</span>:&quot;, key);
+            <span class="syn-kw">return</span> cache.get(key);
+        }
+        <span class="syn-fn">console</span>.log(&quot;[Computing] Calculating fresh result <span class="syn-kw">for</span>:&quot;, key);
+        <span class="syn-kw">const</span> result = fn(...args);
+        cache.set(key, result);
+        <span class="syn-kw">return</span> result;
+    };
+}
+
+<span class="syn-kw">const</span> slowSquare = n =&gt; n * n;
+<span class="syn-kw">const</span> memoizedSquare = memoize(slowSquare);
+
+<span class="syn-fn">console</span>.log(memoizedSquare(<span class="syn-num">12</span>)); <span class="syn-com">// Computing</span>
+<span class="syn-fn">console</span>.log(memoizedSquare(<span class="syn-num">12</span>)); <span class="syn-com">// Cache Hit</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[Computing] Calculating fresh result for: [12]
+144
+[Cache Hit] Returning cached result for: [12]
+144</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 7: Debounce Function — Rate Limiting Keystrokes</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি <code>debounce(fn, delay)</code> ফাংশন তৈরি করো যা ইউজার টাইপিং থামানোর 500ms পর এক্সিকিউট হবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 7 Solution</span><span>✅ Best Practice</span></div>
+  <pre><code><span class="syn-kw">function</span> debounce(fn, delay) {
+    <span class="syn-kw">let</span> timer;
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span>(...args) {
+        <span class="syn-fn">clearTimeout</span>(timer); <span class="syn-com">// Cancel previous timer</span>
+        timer = <span class="syn-fn">setTimeout</span>(() =&gt; {
+            fn.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">apply</span>(<span class="syn-kw">this</span>, args);
+        }, delay);
+    };
+}
+
+<span class="syn-kw">const</span> performSearch = debounce(query =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Searching:&quot;, query);
+}, <span class="syn-num">500</span>);
+
+<span class="syn-com">// Simulating rapid user typing</span>
+performSearch(&quot;R<span class="syn-str">&quot;);
+performSearch(&quot;</span>Ri<span class="syn-str">&quot;);
+performSearch(&quot;</span>Rip<span class="syn-str">&quot;);
+performSearch(&quot;</span>Ripon&quot;); <span class="syn-com">// Only this triggers after 500ms</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Searching: Ripon</pre>
+</div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26.Map</span> 🎯 Final Mental Map &amp; Core Architecture Flow</div>
+      <p class="text-p">JavaScript Advanced Functions-এর মানসিক মডেল এবং কনসেপ্টসমূহের প্রাকৃতিক সংযোগ প্রবাহ:</p>
+      <div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Advanced Functions Architecture & Paradigm Map</div>
+Scope
+  ↓
+Lexical Scope
+  ↓
+Closure
+  ↓
+Private State
+  ↓
+Function Factory
+  ↓
+IIFE
+  ↓
+Function Returning Function
+  ↓
+Currying
+  ↓
+Partial Application
+  ↓
+Composition
+  ↓
+Memoization
+  ↓
+Decorator
+  ↓
+Debounce / Throttle</div>
+      
+      <div class="section-subhead">⭐ এক নজরে Chapter 26 এর মূল টেক-অ্যাওয়ে</div>
+      <div class="def-box" style="margin-top: 6px;">
+        <div class="def-text">Key Takeaway: JavaScript-এ ফাংশন কেবল কোড এক্সিকিউট করার ব্লক নয়—ফাংশন নিজেই প্রথম-শ্রেণীর ডেটা (First-Class Citizen), যা অন্য ফাংশন তৈরি করতে পারে (Higher-Order), নিজের আশপাশের স্টেট সারাজীবন মনে রাখতে পারে (Closure), ডেটাকে সুরক্ষিত এনক্যাপসুলেশনে আবদ্ধ রাখতে পারে (Private State), এবং একাধিক স্বাধীন ফাংশনকে যুক্ত করে শক্তিশালী ও টেস্টেবল প্রসেসিং পাইপলাইন তৈরি করতে পারে।</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
