@@ -788,12 +788,14 @@ for idx in range(1, 51):
       {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: this.name ব্যবহার')}
 ''')
     else:
-        chunks = re.split(r'(```[\s\S]*?```|###[^\n]+)', body_text)
+        chunks = re.split(r'(```[\s\S]*?```|###[^\n]+|\|[^\n]+\|\n\|[\s:-|-]+\|\n(?:\|[^\n]+\|\n?)+)', body_text)
         for ch in chunks:
             ch_str = ch.strip()
             if not ch_str:
                 continue
-            if ch_str.startswith('```'):
+            if ch_str.startswith('|') and '\n|' in ch_str:
+                html_parts.append(f'      {render_table(ch_str)}\n')
+            elif ch_str.startswith('```'):
                 cb_match = re.match(r'```([a-zA-Z0-9_-]*)\n([\s\S]*?)```', ch_str)
                 if cb_match:
                     clang = cb_match.group(1).lower()
@@ -821,10 +823,18 @@ for idx in range(1, 51):
                     ls = l.strip()
                     if not ls:
                         continue
+                    if ls == '---' or ls.startswith('---') or ls == '***':
+                        continue
+                    if ls.endswith('---'):
+                        ls = ls[:-3].strip()
+                    if not ls:
+                        continue
                     if ls.startswith('* ') or ls.startswith('- '):
                         if not in_list:
                             if p_acc:
-                                html_parts.append(f'      <p class="text-p">{inline_format(" ".join(p_acc))}</p>\n')
+                                p_text = " ".join(p_acc).strip()
+                                if p_text and p_text != '---':
+                                    html_parts.append(f'      <p class="text-p">{inline_format(p_text)}</p>\n')
                                 p_acc = []
                             html_parts.append('      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">\n')
                             in_list = True
@@ -837,7 +847,9 @@ for idx in range(1, 51):
                 if in_list:
                     html_parts.append('      </ul>\n')
                 if p_acc:
-                    html_parts.append(f'      <p class="text-p">{inline_format(" ".join(p_acc))}</p>\n')
+                    p_text = " ".join(p_acc).strip()
+                    if p_text and p_text != '---':
+                        html_parts.append(f'      <p class="text-p">{inline_format(p_text)}</p>\n')
                     
     html_parts.append('    </div>\n')
 
@@ -1100,13 +1112,6 @@ html_parts.append(f'''    <div class="study-card">
         <div class="def-text">Key Takeaway: JavaScript-এ class কোনো সম্পূর্ণ নতুন অবজেক্ট মডেল নয়; এটি আসলে JavaScript-এর বিদ্যমান Prototypal Inheritance সিস্টেমের ওপর নির্মিত অত্যন্ত মার্জিত এবং আধুনিক সিনট্যাকটিক সুগার (Syntactic Sugar)। এই কনসেপ্টটি আয়ত্ত করলে React এর ক্লাস কম্পোনেন্ট, TypeScript এর ক্লাস মডেলিং এবং Node.js/NestJS আর্কিটেকচার বোঝা অত্যন্ত সহজ হয়ে যাবে।</div>
       </div>
     </div>
-''')
-
-# Footer
-html_parts.append('''    <footer style="text-align: center; padding: 14px 0; color: #64748b; font-size: 10px; border-top: 1px solid #e2e8f0; margin-top: 20px;">
-      <p>JavaScript Master Study Documentation • Chapter 24: OOP &amp; JavaScript Classes</p>
-      <p>Verified with 100% Zero-Skipping Policy • Standard Master Book Edition</p>
-    </footer>
 
   </div>
 
