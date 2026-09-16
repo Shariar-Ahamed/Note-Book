@@ -98,8 +98,9 @@ def render_code_box(code_text, lang='javascript', title=None, is_invalid=False, 
 def render_ascii_box(text, title="Architecture / Concept Flow"):
     text = html.escape(text.strip())
     return f'''<div class="ascii-tree-container">
-<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 {title}</div>
-{text}</div>'''
+  <div class="ascii-tree-header">🧭 {title}</div>
+  <pre class="ascii-tree-content">{text}</pre>
+</div>'''
 
 def render_output_box(text):
     text = html.escape(text.strip())
@@ -586,15 +587,34 @@ html_parts.append('''<!DOCTYPE html>
     /* ASCII Diagrams */
     .ascii-tree-container {
       background: #0f172a;
-      color: #38bdf8;
-      font-family: var(--font-code);
-      font-size: 9px;
-      line-height: 1.25;
-      padding: 6px 10px;
+      border: 1px solid #1e293b;
       border-radius: 5px;
       margin: 4px 0;
+      overflow: hidden;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 3px 8px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    .ascii-tree-content {
+      color: #38bdf8 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9px !important;
+      line-height: 1.28 !important;
+      padding: 6px 10px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
     }
 
     /* Practice Lab Items */

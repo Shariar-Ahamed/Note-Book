@@ -98,8 +98,9 @@ def render_code_box(code_text, lang='javascript', title=None, is_invalid=False, 
 def render_ascii_box(text, title="Architecture / Concept Flow"):
     text = html.escape(text.strip())
     return f'''<div class="ascii-tree-container">
-<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 {title}</div>
-{text}</div>'''
+  <div class="ascii-tree-header">🧭 {title}</div>
+  <pre class="ascii-tree-content">{text}</pre>
+</div>'''
 
 def render_output_box(text):
     text = html.escape(text.strip())
@@ -586,15 +587,34 @@ html_parts.append('''<!DOCTYPE html>
     /* ASCII Diagrams */
     .ascii-tree-container {
       background: #0f172a;
-      color: #38bdf8;
-      font-family: var(--font-code);
-      font-size: 9px;
-      line-height: 1.25;
-      padding: 6px 10px;
+      border: 1px solid #1e293b;
       border-radius: 5px;
       margin: 4px 0;
+      overflow: hidden;
       page-break-inside: avoid !important;
       break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 3px 8px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    .ascii-tree-content {
+      color: #38bdf8 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9px !important;
+      line-height: 1.28 !important;
+      padding: 6px 10px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
     }
 
     /* Practice Lab Items */
@@ -1113,31 +1133,23 @@ html_parts.append(f'''    <div class="study-card">
       <p class="text-p">JavaScript Iteration Ecosystem-এর সম্পূর্ণ মেমরি ও কনসেপ্ট কাঠামোর চূড়ান্ত চিত্র:</p>
       {render_ascii_box(ascii_map, title="Iterators & Generators Ecosystem Map")}
       
-      <div class="section-subhead">⭐ সবচেয়ে গুরুত্বপূর্ণ ৫টি টেক-অ্যাওয়ে</div>
-      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 4px 0;">
-        <div class="def-box" style="margin: 0; padding: 4px;">
-          <div style="font-weight: 700; font-size: 9px; color: #065f46;">1️⃣ Iterable</div>
-          <div style="font-size: 8px; color: #047857;">[Symbol.iterator]() ফাংশন থাকে যা ইটারেটর রিটার্ন করে।</div>
-        </div>
-        <div class="def-box" style="margin: 0; padding: 4px;">
-          <div style="font-weight: 700; font-size: 9px; color: #065f46;">2️⃣ Iterator</div>
-          <div style="font-size: 8px; color: #047857;">next() মেথড থাকে যা সিকোয়েন্সিয়াল ভ্যালু দেয়।</div>
-        </div>
-        <div class="def-box" style="margin: 0; padding: 4px;">
-          <div style="font-weight: 700; font-size: 9px; color: #065f46;">3️⃣ Result</div>
-          <div style="font-size: 8px; color: #047857;">&#123; value, done &#125; অবজেক্ট আকারে আউটপুট দেয়।</div>
-        </div>
-        <div class="def-box" style="margin: 0; padding: 4px;">
-          <div style="font-weight: 700; font-size: 9px; color: #065f46;">4️⃣ Generator</div>
-          <div style="font-size: 8px; color: #047857;">function* সিনট্যাক্স দিয়ে পজেবল ইটারেটর তৈরি।</div>
-        </div>
-        <div class="def-box" style="margin: 0; padding: 4px;">
-          <div style="font-weight: 700; font-size: 9px; color: #065f46;">5️⃣ yield</div>
-          <div style="font-size: 8px; color: #047857;">মান সরবরাহ করে স্টেট পজ করে, next() তা রিজ্যুম করে।</div>
-        </div>
+      <div class="section-subhead">⭐ সবচেয়ে গুরুত্বপূর্ণ ৫টি Concept</div>
+      <p class="text-p">যদি Chapter 27 থেকে শুধু ৫টা জিনিস মনে রাখতে চাও:</p>
+      <div class="code-box output-box" style="margin: 4px 0;">
+        <div class="code-top"><span class="out-label">🎯 CORE CONCEPTS TAKEAWAY</span><span>Quick Recall</span></div>
+        <pre style="color: #38bdf8; font-size: 10px; line-height: 1.45; white-space: pre !important;">1️⃣ Iterable → Symbol.iterator
+2️⃣ Iterator → next()
+3️⃣ next() → &#123; value, done &#125;
+4️⃣ Generator → function*
+5️⃣ yield → value দেয় + execution pause করে</pre>
       </div>
-      <div class="def-box" style="margin-top: 6px;">
-        <div class="def-text">Core Relationship Formula: <code>for...of</code> &nbsp;→&nbsp; Iterable (<code>Symbol.iterator</code>) &nbsp;→&nbsp; Iterator &nbsp;→&nbsp; <code>next()</code> &nbsp;→&nbsp; <code>&#123; value, done &#125;</code></div>
+
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #f0fdf4; border-left: 3px solid #10b981;">
+        <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">📌 সবচেয়ে গুরুত্বপূর্ণ Relationship:</div>
+        <div style="font-family: var(--font-code); font-size: 11px; font-weight: 700; color: #047857; margin: 3px 0;">
+          <code>for...of</code> &nbsp;→&nbsp; Iterable &nbsp;→&nbsp; Iterator &nbsp;→&nbsp; <code>next()</code>
+        </div>
+        <div style="font-size: 9.5px; color: #065f46;">এটা বুঝে ফেললে Chapter 27-এর মূল concept তোমার পরিষ্কার হয়ে যাবে।</div>
       </div>
     </div>
 
