@@ -1,0 +1,2746 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 09: Arrays &amp; Modern Collections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10.5px;
+      line-height: 1.4;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 09: ARRAYS &amp; MODERN COLLECTIONS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">89 Modules + 3 Projects</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 04 — Core Data Structures (2/3)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Indexing, Mutability, Iteration &amp; FP</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Arrays — একসাথে অনেক Data সংরক্ষণ</h2>
+      <p class="text-p">JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ data structures-এর একটি হলো <strong>Array</strong>। এতদিন আমরা একটি variable-এ একটি value রাখতাম:</p>
+      <div class="code-box" style="margin: 4px 0;">
+        <div class="code-top"><span>JavaScript</span><span>Single Value</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Shariar"</span>;</pre>
+      </div>
+      <p class="text-p">কিন্তু ধরো ১০০ জন student-এর নাম রাখতে হবে। আলাদা ১০০টা variable বানানো practical নয়। তখন আমরা Array ব্যবহার করব:</p>
+      <div class="code-box" style="margin: 4px 0;">
+        <div class="code-top"><span>JavaScript</span><span>Multiple Values Array</span></div>
+        <pre><span class="syn-kw">let</span> students = [
+    <span class="syn-str">"Shariar"</span>,
+    <span class="syn-str">"Rahim"</span>,
+    <span class="syn-str">"Karim"</span>,
+    <span class="syn-str">"Sakib"</span>
+];</pre>
+      </div>
+    </div>
+
+    <div class="part-banner">Part 01 — Array Fundamentals, Creation, Indexing & Basic Mutation (9.1 – 9.17)</div>
+
+    <!-- 9.1 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.1</span> Array কী?</div>
+<div class="def-box">
+  <div class="def-text"><strong>Array হলো একটি ordered collection যেখানে একাধিক value একটি variable-এর মধ্যে রাখা যায়।</strong></div>
+</div>
+<div class="sub-badge">💡 Real-life Example</div>
+<p class="text-p">একটি shopping cart:</p>
+<div class="ascii-tree-container">🛒 Shopping Cart
+│
+├── Laptop
+├── Mouse
+├── Keyboard
+└── Headphone</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.1 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> cart = [
+    <span class="syn-str">&quot;Laptop&quot;</span>,
+    <span class="syn-str">&quot;Mouse&quot;</span>,
+    <span class="syn-str">&quot;Keyboard&quot;</span>,
+    <span class="syn-str">&quot;Headphone&quot;</span>
+];</pre>
+</div>
+    </div>
+
+    <!-- 9.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.2</span> Array তৈরি করা</div>
+<p class="text-p">সবচেয়ে common syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Banana&quot;, &quot;Mango&quot;]</pre>
+</div>
+<p class="text-p">আরেকভাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = <span class="syn-kw">new</span> <span class="syn-fn">Array</span>(&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;);</pre>
+</div>
+<p class="text-p">তবে modern JavaScript-এ সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.2 JavaScript</span><span>Run</span></div>
+  <pre>[]</pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+    </div>
+
+    <!-- 9.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.3</span> Array Index</div>
+<p class="text-p">Array-এর index শুরু হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0</pre>
+</div>
+<p class="text-p">থেকে।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];</pre>
+</div>
+<p class="text-p">এটি:</p>
+<div class="ascii-tree-container">Index:    0         1         2
+          ↓         ↓         ↓
+Value:  Apple    Banana     Mango</div>
+    </div>
+
+    <!-- 9.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.4</span> Array থেকে Value Access</div>
+<div class="code-box">
+  <div class="code-top"><span>9.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-fn">console</span>.log(fruits[<span class="syn-num">0</span>]);
+<span class="syn-fn">console</span>.log(fruits[<span class="syn-num">1</span>]);
+<span class="syn-fn">console</span>.log(fruits[<span class="syn-num">2</span>]);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Apple
+Banana
+Mango</pre>
+</div>
+    </div>
+
+    <!-- 9.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.5</span> প্রথম Element</div>
+<div class="code-box">
+  <div class="code-top"><span>9.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript&quot;];
+
+<span class="syn-fn">console</span>.log(skills[<span class="syn-num">0</span>]);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>HTML</pre>
+</div>
+    </div>
+
+    <!-- 9.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.6</span> শেষ Element</div>
+<div class="code-box">
+  <div class="code-top"><span>9.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript&quot;];
+
+<span class="syn-fn">console</span>.log(skills[skills.length - <span class="syn-num">1</span>]);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>JavaScript</pre>
+</div>
+<p class="text-p">অথবা modern JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(skills.at(-<span class="syn-num">1</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>JavaScript</pre>
+</div>
+    </div>
+
+    <!-- 9.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.7</span> Array Length</div>
+<div class="code-box">
+  <div class="code-top"><span>9.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-fn">console</span>.log(fruits.length);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3</pre>
+</div>
+<p class="text-p"><code>length</code> হলো মোট element সংখ্যা।</p>
+    </div>
+
+    <!-- 9.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.8</span> Array-তে বিভিন্ন ধরনের Data রাখা যায়</div>
+<p class="text-p">JavaScript Array-তে একই Array-তে বিভিন্ন type রাখা সম্ভব।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> data = [
+    <span class="syn-str">&quot;Shariar&quot;</span>,
+    <span class="syn-num">23</span>,
+    <span class="syn-bool">true</span>,
+    <span class="syn-bool">null</span>
+];
+
+<span class="syn-fn">console</span>.log(data);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Shariar&quot;, 23, true, null]</pre>
+</div>
+<p class="text-p">এমনকি object/function-ও রাখা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> data = [
+    <span class="syn-str">&quot;Ripon&quot;</span>,
+    <span class="syn-num">23</span>,
+    { city: <span class="syn-str">&quot;Dhaka&quot;</span> },
+    <span class="syn-kw">function</span> () {
+        <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+    }
+];</pre>
+</div>
+<p class="text-p">তবে real-world application-এ একই ধরনের data রাখা সাধারণত বেশি পরিষ্কার।</p>
+    </div>
+
+    <!-- 9.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.9</span> Array Element পরিবর্তন</div>
+<p class="text-p">Array-এর element directly পরিবর্তন করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.9 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango<span class="syn-str">&quot;];
+
+fruits[1] = &quot;</span>Orange&quot;;
+
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Orange&quot;, &quot;Mango&quot;]</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">Banana → Orange</div>
+<p class="text-p">হয়ে গেছে।</p>
+    </div>
+
+    <!-- 9.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.10</span> নতুন Element যোগ করা</div>
+<p class="text-p">শেষে element যোগ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.10 JavaScript</span><span>Run</span></div>
+  <pre>push()</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>9.10 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;];
+
+fruits.push(&quot;</span>Mango&quot;);
+
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Banana&quot;, &quot;Mango&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.11</span> <code>push()</code> একাধিক Element</div>
+<div class="code-box">
+  <div class="code-top"><span>9.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;];
+
+fruits.push(&quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango<span class="syn-str">&quot;, &quot;</span>Orange&quot;);
+
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Banana&quot;, &quot;Mango&quot;, &quot;Orange&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.12</span> <code>push()</code> কী Return করে?</div>
+<div class="memory-box">এটা গুরুত্বপূর্ণ।</div>
+<div class="code-box">
+  <div class="code-top"><span>9.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;];
+
+let result = fruits.push(&quot;</span>Mango&quot;);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3</pre>
+</div>
+<p class="text-p"><code>push()</code> নতুন Array length return করে।</p>
+    </div>
+
+    <!-- 9.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.13</span> শেষ Element Remove — <code>pop()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>9.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">let</span> removed = fruits.pop();
+
+<span class="syn-fn">console</span>.log(removed);
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Mango
+[&quot;Apple&quot;, &quot;Banana&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.14</span> <code>pop()</code> কী Return করে?</div>
+<p class="text-p"><code>pop()</code> যে element remove করে, সেটিই return করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];
+
+<span class="syn-kw">let</span> removed = numbers.pop();
+
+<span class="syn-fn">console</span>.log(removed);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>30</pre>
+</div>
+    </div>
+
+    <!-- 9.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.15</span> প্রথমে Element যোগ — <code>unshift()</code></div>
+<p class="text-p">Array-এর শুরুতে element যোগ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Banana<span class="syn-str">&quot;, &quot;</span>Mango<span class="syn-str">&quot;];
+
+fruits.unshift(&quot;</span>Apple&quot;);
+
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Banana&quot;, &quot;Mango&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.16</span> প্রথম Element Remove — <code>shift()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>9.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">let</span> removed = fruits.shift();
+
+<span class="syn-fn">console</span>.log(removed);
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Apple
+[&quot;Banana&quot;, &quot;Mango&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.17</span> Array-এর ৪টি Basic Method</div>
+<div class="memory-box">এগুলো খুব ভালোভাবে মনে রাখবে:</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>push()</code></td><td>শেষে যোগ</td></tr><tr><td><code>pop()</code></td><td>শেষ থেকে remove</td></tr><tr><td><code>unshift()</code></td><td>শুরুতে যোগ</td></tr><tr><td><code>shift()</code></td><td>শুরু থেকে remove</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Visual:</p>
+<div class="ascii-tree-container">             push()
+               ↓
+[ A, B, C ] → [ A, B, C, D ]
+
+             pop()
+               ↓
+[ A, B, C ] ← [ A, B, C, D ]
+
+
+          unshift()
+             ↓
+[ A, B, C ] → [ X, A, B, C ]
+
+           shift()
+             ↓
+[ A, B, C ] ← [ X, A, B, C ]</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Looping, Searching & Slicing vs Splicing (9.18 – 9.35)</div>
+
+    <!-- 9.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.18</span> Array Loop — <code>for</code></div>
+<div class="memory-box">Array-এর প্রতিটি element নিয়ে কাজ করতে loop খুব গুরুত্বপূর্ণ।</div>
+<div class="code-box">
+  <div class="code-top"><span>9.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; fruits.length; i++) {
+    <span class="syn-fn">console</span>.log(fruits[i]);
+}</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Apple
+Banana
+Mango</pre>
+</div>
+    </div>
+
+    <!-- 9.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.19</span> <code>for...of</code></div>
+<p class="text-p">Array-এর value সরাসরি পাওয়ার জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> fruit <span class="syn-kw">of</span> fruits) {
+    <span class="syn-fn">console</span>.log(fruit);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Apple
+Banana
+Mango</pre>
+</div>
+<p class="text-p">Beginner-এর জন্য এটি খুব readable।</p>
+    </div>
+
+    <!-- 9.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.20</span> <code>for...in</code></div>
+<p class="text-p">Array-এর index পাওয়ার জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> index <span class="syn-kw">in</span> fruits) {
+    <span class="syn-fn">console</span>.log(index);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0
+1
+2</pre>
+</div>
+<p class="text-p">Array-এর value দরকার হলে সাধারণত <code>for...of</code> বেশি appropriate।</p>
+    </div>
+
+    <!-- 9.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.21</span> <code>for...of</code> vs <code>for...in</code></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কী পাওয়া যায়</th></tr></thead>
+    <tbody>
+      <tr><td><code>for...of</code></td><td>Value</td></tr><tr><td><code>for...in</code></td><td>Key/Index</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>9.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> value <span class="syn-kw">of</span> fruits) {
+    <span class="syn-fn">console</span>.log(value);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>9.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> index <span class="syn-kw">in</span> fruits) {
+    <span class="syn-fn">console</span>.log(index);
+}</pre>
+</div>
+    </div>
+
+    <!-- 9.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.22</span> <code>includes()</code></div>
+<p class="text-p">Array-এর মধ্যে কোনো value আছে কিনা:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;];
+
+console.log(skills.includes(&quot;</span>JavaScript&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">না থাকলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(skills.includes(&quot;Python&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 9.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.23</span> <code>indexOf()</code></div>
+<p class="text-p">কোন index-এ value আছে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;];
+
+console.log(skills.indexOf(&quot;</span>CSS&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1</pre>
+</div>
+<p class="text-p">না থাকলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(skills.indexOf(&quot;Python&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>-1</pre>
+</div>
+    </div>
+
+    <!-- 9.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.24</span> <code>lastIndexOf()</code></div>
+<p class="text-p">একই value একাধিকবার থাকলে শেষ occurrence:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">10</span>, <span class="syn-num">30</span>, <span class="syn-num">10</span>];
+
+<span class="syn-fn">console</span>.log(numbers.lastIndexOf(<span class="syn-num">10</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>4</pre>
+</div>
+    </div>
+
+    <!-- 9.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.25</span> <code>slice()</code></div>
+<p class="text-p">Array-এর একটি অংশ copy করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [
+    <span class="syn-str">&quot;Apple&quot;</span>,
+    <span class="syn-str">&quot;Banana&quot;</span>,
+    <span class="syn-str">&quot;Mango&quot;</span>,
+    <span class="syn-str">&quot;Orange&quot;</span>
+];
+
+<span class="syn-kw">let</span> result = fruits.slice(<span class="syn-num">1</span>, <span class="syn-num">3</span>);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Banana&quot;, &quot;Mango&quot;]</pre>
+</div>
+<div class="memory-box">মনে রাখবে:</div>
+<div class="def-box">
+  <div class="def-text"><code>end</code> index include হয় না।</div>
+</div>
+    </div>
+
+    <!-- 9.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.26</span> <code>slice()</code> Original Array পরিবর্তন করে না</div>
+<div class="code-box">
+  <div class="code-top"><span>9.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">let</span> result = fruits.slice(<span class="syn-num">0</span>, <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(result);
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Banana&quot;]
+[&quot;Apple&quot;, &quot;Banana&quot;, &quot;Mango&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.27</span> Negative <code>slice()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>9.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [
+    <span class="syn-str">&quot;Apple&quot;</span>,
+    <span class="syn-str">&quot;Banana&quot;</span>,
+    <span class="syn-str">&quot;Mango&quot;</span>,
+    <span class="syn-str">&quot;Orange&quot;</span>
+];
+
+<span class="syn-fn">console</span>.log(fruits.slice(-<span class="syn-num">2</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Mango&quot;, &quot;Orange&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.28 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">9.28</span> <code>splice()</code> — খুব গুরুত্বপূর্ণ 🔥</div>
+<p class="text-p"><code>splice()</code> Array-এর মধ্যে:</p>
+<ul class="bullet-list"><li>add</li><li>remove</li><li>replace</li></ul>
+<p class="text-p">সবই করতে পারে।</p>
+<p class="text-p">Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.28 JavaScript</span><span>Run</span></div>
+  <pre>array.splice(start, deleteCount, item1, item2, ...);</pre>
+</div>
+    </div>
+
+    <!-- 9.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.29</span> <code>splice()</code> দিয়ে Remove</div>
+<div class="code-box">
+  <div class="code-top"><span>9.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+fruits.splice(<span class="syn-num">1</span>, <span class="syn-num">1</span>);
+
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Mango&quot;]</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>start = 1
+deleteCount = 1</pre>
+</div>
+<p class="text-p">তাই <code>Banana</code> remove হয়েছে।</p>
+    </div>
+
+    <!-- 9.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.30</span> <code>splice()</code> দিয়ে Add</div>
+<div class="code-box">
+  <div class="code-top"><span>9.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Mango<span class="syn-str">&quot;];
+
+fruits.splice(1, 0, &quot;</span>Banana&quot;);
+
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Banana&quot;, &quot;Mango&quot;]</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">1 → কোন index থেকে
+0 → কিছু remove করব না
+&quot;Banana&quot; → নতুন value</div>
+    </div>
+
+    <!-- 9.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.31</span> <code>splice()</code> দিয়ে Replace</div>
+<div class="code-box">
+  <div class="code-top"><span>9.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango<span class="syn-str">&quot;];
+
+fruits.splice(1, 1, &quot;</span>Orange&quot;);
+
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Orange&quot;, &quot;Mango&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.32</span> <code>splice()</code> কী Return করে?</div>
+<p class="text-p">যে elements remove হয়েছে, সেগুলো একটি Array হিসেবে return করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">let</span> removed = fruits.splice(<span class="syn-num">1</span>, <span class="syn-num">1</span>);
+
+<span class="syn-fn">console</span>.log(removed);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Banana&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.33</span> <code>slice()</code> vs <code>splice()</code></div>
+<p class="text-p">এটা Interview-এ খুব common।</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th><code>slice()</code></th><th><code>splice()</code></th></tr></thead>
+    <tbody>
+      <tr><td>Copy/Extract</td><td>Add/Remove/Replace</td></tr><tr><td>Original Array পরিবর্তন করে না</td><td>Original Array পরিবর্তন করে</td></tr><tr><td>নতুন Array return করে</td><td>Removed elements-এর Array return করে</td></tr><tr><td><code>slice(start,end)</code></td><td><code>splice(start,deleteCount,...)</code></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="section-subhead">সহজে মনে রাখো:</div>
+<div class="def-box">
+  <div class="def-text"><strong>slice = কেটে copy নেওয়া</strong></div>
+</div>
+<div class="def-box">
+  <div class="def-text"><strong>splice = মূল Array-তে operation করা</strong></div>
+</div>
+    </div>
+
+    <!-- 9.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.34</span> <code>join()</code></div>
+<p class="text-p">Array → String করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;];
+
+console.log(skills.join(&quot;</span>, &quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>HTML, CSS, JavaScript</pre>
+</div>
+    </div>
+
+    <!-- 9.35 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">9.35</span> <code>join()</code> Real-life Example</div>
+<div class="code-box">
+  <div class="code-top"><span>9.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> tags = [&quot;web<span class="syn-str">&quot;, &quot;</span>javascript<span class="syn-str">&quot;, &quot;</span>frontend<span class="syn-str">&quot;];
+
+let result = tags.join(&quot;</span> #&quot;);
+
+<span class="syn-fn">console</span>.log(&quot;#&quot; + result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>#web #javascript #frontend</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Reversal, Sorting & Functional Iteration — forEach, map, filter (9.36 – 9.48)</div>
+
+    <!-- 9.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.36</span> <code>reverse()</code></div>
+<p class="text-p">Array-এর order উল্টে দেয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>];
+
+numbers.reverse();
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[4, 3, 2, 1]</pre>
+</div>
+<div class="warn-box">⚠️ <code>reverse()</code> original Array পরিবর্তন করে।</div>
+    </div>
+
+    <!-- 9.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.37</span> <code>sort()</code></div>
+<p class="text-p">Array sort করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Mango<span class="syn-str">&quot;, &quot;</span>Apple<span class="syn-str">&quot;, &quot;</span>Banana&quot;];
+
+fruits.sort();
+
+<span class="syn-fn">console</span>.log(fruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Banana&quot;, &quot;Mango&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.38 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">9.38</span> গুরুত্বপূর্ণ — Number Sort</div>
+<p class="text-p">এই জায়গায় beginner-রা অনেক ভুল করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.38 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">2</span>, <span class="syn-num">30</span>, <span class="syn-num">5</span>];
+
+numbers.sort();
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<p class="text-p">Output হতে পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[10, 2, 30, 5]</pre>
+</div>
+<p class="text-p">কারণ default <code>sort()</code> values-কে String হিসেবে compare করে।</p>
+    </div>
+
+    <!-- 9.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.39</span> Numeric Sort — Ascending</div>
+<div class="code-box">
+  <div class="code-top"><span>9.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">2</span>, <span class="syn-num">30</span>, <span class="syn-num">5</span>];
+
+numbers.sort((a, b) =&gt; a - b);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[2, 5, 10, 30]</pre>
+</div>
+    </div>
+
+    <!-- 9.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.40</span> Numeric Sort — Descending</div>
+<div class="code-box">
+  <div class="code-top"><span>9.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">2</span>, <span class="syn-num">30</span>, <span class="syn-num">5</span>];
+
+numbers.sort((a, b) =&gt; b - a);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[30, 10, 5, 2]</pre>
+</div>
+    </div>
+
+    <!-- 9.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.41</span> <code>forEach()</code></div>
+<p class="text-p">Array-এর প্রতিটি element-এর উপর function চালাতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+fruits.forEach(<span class="syn-kw">function</span> (fruit) {
+    <span class="syn-fn">console</span>.log(fruit);
+});</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Apple
+Banana
+Mango</pre>
+</div>
+    </div>
+
+    <!-- 9.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.42</span> <code>forEach()</code> with Arrow Function</div>
+<p class="text-p">Modern style:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+fruits.forEach(fruit =&gt; {
+    <span class="syn-fn">console</span>.log(fruit);
+});</pre>
+</div>
+    </div>
+
+    <!-- 9.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.43</span> <code>forEach()</code> Index</div>
+<div class="code-box">
+  <div class="code-top"><span>9.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+fruits.forEach((fruit, index) =&gt; {
+    <span class="syn-fn">console</span>.log(index, fruit);
+});</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0 Apple
+1 Banana
+2 Mango</pre>
+</div>
+    </div>
+
+    <!-- 9.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.44</span> <code>map()</code> 🔥</div>
+<p class="text-p"><code>map()</code> একটি Array-এর প্রতিটি element transform করে <strong>নতুন Array</strong> তৈরি করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>];
+
+<span class="syn-kw">let</span> doubled = numbers.map(number =&gt; number * <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(doubled);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[2, 4, 6, 8]</pre>
+</div>
+    </div>
+
+    <!-- 9.45 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">9.45</span> <code>map()</code> Real-life Example</div>
+<p class="text-p">Product price:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> prices = [<span class="syn-num">100</span>, <span class="syn-num">200</span>, <span class="syn-num">300</span>];
+
+<span class="syn-kw">let</span> discountedPrices = prices.map(price =&gt; price * <span class="syn-num">0.9</span>);
+
+<span class="syn-fn">console</span>.log(discountedPrices);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[90, 180, 270]</pre>
+</div>
+    </div>
+
+    <!-- 9.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.46</span> <code>forEach()</code> vs <code>map()</code></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th><code>forEach()</code></th><th><code>map()</code></th></tr></thead>
+    <tbody>
+      <tr><td>প্রতিটি element-এর জন্য কাজ করে</td><td>প্রতিটি element transform করে</td></tr><tr><td>নতুন Array return করে না</td><td>নতুন Array return করে</td></tr><tr><td>Side effects-এর জন্য useful</td><td>Data transformation-এর জন্য useful</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 9.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.47</span> <code>filter()</code> 🔥</div>
+<p class="text-p">কোনো condition অনুযায়ী elements বেছে নিতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>, <span class="syn-num">6</span>];
+
+<span class="syn-kw">let</span> evenNumbers = numbers.filter(number =&gt; number % <span class="syn-num">2</span> === <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(evenNumbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[2, 4, 6]</pre>
+</div>
+    </div>
+
+    <!-- 9.48 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">9.48</span> <code>filter()</code> Real-life Example</div>
+<div class="code-box">
+  <div class="code-top"><span>9.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> products = [
+    { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">70000</span> },
+    { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span> },
+    { name: <span class="syn-str">&quot;Keyboard&quot;</span>, price: <span class="syn-num">3000</span> }
+];
+
+<span class="syn-kw">let</span> expensive = products.filter(product =&gt; product.price &gt; <span class="syn-num">5000</span>);
+
+<span class="syn-fn">console</span>.log(expensive);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Laptop</pre>
+</div>
+<p class="text-p">বাস্তবে object নিয়ে কাজ করলে পুরো object-ই থাকবে filtered Array-তে।</p>
+    </div>
+
+    <div class="part-banner">Part 04 — Advanced Search & Aggregation — find, some, every, reduce (9.49 – 9.57)</div>
+
+    <!-- 9.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.49</span> <code>find()</code></div>
+<p class="text-p">Condition অনুযায়ী <strong>প্রথম matching element</strong> বের করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];
+
+<span class="syn-kw">let</span> result = numbers.find(number =&gt; number &gt; <span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>30</pre>
+</div>
+<p class="text-p">কারণ প্রথম <code>20</code>-এর পর <code>30</code> condition satisfy করেছে।</p>
+    </div>
+
+    <!-- 9.50 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.50</span> <code>find()</code> না পেলে</div>
+<div class="code-box">
+  <div class="code-top"><span>9.50 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];
+
+<span class="syn-kw">let</span> result = numbers.find(number =&gt; number &gt; <span class="syn-num">100</span>);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>undefined</pre>
+</div>
+    </div>
+
+    <!-- 9.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.51</span> <code>findIndex()</code></div>
+<p class="text-p">Matching element-এর index:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.51 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];
+
+<span class="syn-kw">let</span> index = numbers.findIndex(number =&gt; number &gt; <span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(index);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>2</pre>
+</div>
+    </div>
+
+    <!-- 9.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.52</span> <code>some()</code></div>
+<p class="text-p">কমপক্ষে <strong>একটি</strong> element condition satisfy করে কিনা:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">3</span>, <span class="syn-num">5</span>, <span class="syn-num">8</span>];
+
+<span class="syn-fn">console</span>.log(numbers.some(number =&gt; number % <span class="syn-num">2</span> === <span class="syn-num">0</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কারণ <code>8</code> even।</p>
+    </div>
+
+    <!-- 9.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.53</span> <code>every()</code></div>
+<p class="text-p"><strong>সবগুলো</strong> element condition satisfy করে কিনা:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.53 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">2</span>, <span class="syn-num">4</span>, <span class="syn-num">6</span>, <span class="syn-num">8</span>];
+
+<span class="syn-fn">console</span>.log(numbers.every(number =&gt; number % <span class="syn-num">2</span> === <span class="syn-num">0</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.53 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">2</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>, <span class="syn-num">8</span>];
+
+<span class="syn-fn">console</span>.log(numbers.every(number =&gt; number % <span class="syn-num">2</span> === <span class="syn-num">0</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 9.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.54</span> <code>reduce()</code> 🔥🔥</div>
+<p class="text-p"><code>reduce()</code> Array-এর অনেকগুলো value থেকে একটি final result তৈরি করতে ব্যবহৃত হয়।</p>
+<div class="sub-badge">💡 Example — Sum</div>
+<div class="code-box">
+  <div class="code-top"><span>9.54 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];
+
+<span class="syn-kw">let</span> total = numbers.reduce((sum, number) =&gt; {
+    <span class="syn-kw">return</span> sum + number;
+}, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(total);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>100</pre>
+</div>
+    </div>
+
+    <!-- 9.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.55</span> <code>reduce()</code> কীভাবে কাজ করে?</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Initial = 0
+
+0 + 10 = 10
+10 + 20 = 30
+30 + 30 = 60
+60 + 40 = 100</pre>
+</div>
+<p class="text-p">শেষে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>100</pre>
+</div>
+    </div>
+
+    <!-- 9.56 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">9.56</span> <code>reduce()</code> Real-life — Shopping Cart</div>
+<div class="code-box">
+  <div class="code-top"><span>9.56 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> prices = [<span class="syn-num">1000</span>, <span class="syn-num">2000</span>, <span class="syn-num">3000</span>];
+
+<span class="syn-kw">let</span> total = prices.reduce((sum, price) =&gt; {
+    <span class="syn-kw">return</span> sum + price;
+}, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(total);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>6000</pre>
+</div>
+<p class="text-p">এটি shopping cart-এর total price calculation-এর basic idea।</p>
+    </div>
+
+    <!-- 9.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.57</span> <code>reduce()</code> দিয়ে Maximum</div>
+<div class="code-box">
+  <div class="code-top"><span>9.57 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">50</span>, <span class="syn-num">20</span>, <span class="syn-num">80</span>, <span class="syn-num">30</span>];
+
+<span class="syn-kw">let</span> max = numbers.reduce((highest, number) =&gt; {
+    <span class="syn-kw">return</span> number &gt; highest ? number : highest;
+}, numbers[<span class="syn-num">0</span>]);
+
+<span class="syn-fn">console</span>.log(max);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>80</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 05 — Modern Syntax — Destructuring, Spread, Rest & Memory References (9.58 – 9.74)</div>
+
+    <!-- 9.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.58</span> Array Destructuring</div>
+<p class="text-p">Array থেকে সরাসরি variable তৈরি করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.58 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> colors = [&quot;Red<span class="syn-str">&quot;, &quot;</span>Green<span class="syn-str">&quot;, &quot;</span>Blue&quot;];
+
+<span class="syn-kw">let</span> [first, second, third] = colors;
+
+<span class="syn-fn">console</span>.log(first);
+<span class="syn-fn">console</span>.log(second);
+<span class="syn-fn">console</span>.log(third);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Red
+Green
+Blue</pre>
+</div>
+    </div>
+
+    <!-- 9.59 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.59</span> Destructuring Skip</div>
+<div class="code-box">
+  <div class="code-top"><span>9.59 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> colors = [&quot;Red<span class="syn-str">&quot;, &quot;</span>Green<span class="syn-str">&quot;, &quot;</span>Blue&quot;];
+
+<span class="syn-kw">let</span> [first, , third] = colors;
+
+<span class="syn-fn">console</span>.log(first);
+<span class="syn-fn">console</span>.log(third);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Red
+Blue</pre>
+</div>
+    </div>
+
+    <!-- 9.60 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.60</span> Destructuring Default Value</div>
+<div class="code-box">
+  <div class="code-top"><span>9.60 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> colors = [&quot;Red<span class="syn-str">&quot;];
+
+let [first, second = &quot;</span>Blue&quot;] = colors;
+
+<span class="syn-fn">console</span>.log(first);
+<span class="syn-fn">console</span>.log(second);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Red
+Blue</pre>
+</div>
+    </div>
+
+    <!-- 9.61 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.61</span> Rest with Array Destructuring</div>
+<div class="code-box">
+  <div class="code-top"><span>9.61 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>];
+
+<span class="syn-kw">let</span> [first, second, ...remaining] = numbers;
+
+<span class="syn-fn">console</span>.log(first);
+<span class="syn-fn">console</span>.log(second);
+<span class="syn-fn">console</span>.log(remaining);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1
+2
+[3, 4, 5]</pre>
+</div>
+    </div>
+
+    <!-- 9.62 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.62</span> Spread Operator with Array</div>
+<p class="text-p">Array copy করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.62 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana&quot;];
+
+<span class="syn-kw">let</span> newFruits = [...fruits];
+
+<span class="syn-fn">console</span>.log(newFruits);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Apple&quot;, &quot;Banana&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.63 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.63</span> Array Combine</div>
+<div class="code-box">
+  <div class="code-top"><span>9.63 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> frontend = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;];
+let backend = [&quot;</span>Node.js<span class="syn-str">&quot;, &quot;</span>Express&quot;];
+
+<span class="syn-kw">let</span> skills = [...frontend, ...backend];
+
+<span class="syn-fn">console</span>.log(skills);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;HTML&quot;, &quot;CSS&quot;, &quot;Node.js&quot;, &quot;Express&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.64 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.64</span> Array Copy — Important</div>
+<div class="code-box">
+  <div class="code-top"><span>9.64 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> original = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">let</span> copy = [...original];
+
+copy.push(<span class="syn-num">4</span>);
+
+<span class="syn-fn">console</span>.log(original);
+<span class="syn-fn">console</span>.log(copy);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 2, 3]
+[1, 2, 3, 4]</pre>
+</div>
+    </div>
+
+    <!-- 9.65 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.65</span> Nested Array</div>
+<p class="text-p">একটি Array-এর ভিতরে আরেকটি Array থাকতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.65 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> matrix = [
+    [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>],
+    [<span class="syn-num">4</span>, <span class="syn-num">5</span>, <span class="syn-num">6</span>],
+    [<span class="syn-num">7</span>, <span class="syn-num">8</span>, <span class="syn-num">9</span>]
+];
+
+<span class="syn-fn">console</span>.log(matrix);</pre>
+</div>
+    </div>
+
+    <!-- 9.66 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.66</span> Nested Array Access</div>
+<div class="code-box">
+  <div class="code-top"><span>9.66 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> matrix = [
+    [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>],
+    [<span class="syn-num">4</span>, <span class="syn-num">5</span>, <span class="syn-num">6</span>]
+];
+
+<span class="syn-fn">console</span>.log(matrix[<span class="syn-num">0</span>][<span class="syn-num">1</span>]);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>2</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">matrix[0] → [1, 2, 3]
+
+matrix[0][1] → 2</div>
+    </div>
+
+    <!-- 9.67 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">9.67</span> 2D Array Real-life Example</div>
+<p class="text-p">একটি classroom-এর marks:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.67 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> marks = [
+    [<span class="syn-num">80</span>, <span class="syn-num">75</span>, <span class="syn-num">90</span>],
+    [<span class="syn-num">70</span>, <span class="syn-num">85</span>, <span class="syn-num">88</span>],
+    [<span class="syn-num">92</span>, <span class="syn-num">89</span>, <span class="syn-num">95</span>]
+];</pre>
+</div>
+<p class="text-p">এখানে প্রতিটি inner Array একজন student-এর marks হতে পারে।</p>
+    </div>
+
+    <!-- 9.68 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.68</span> Array-এর মধ্যে Object</div>
+<p class="text-p">Real-world JavaScript application-এ এটি খুব common:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.68 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> students = [
+    {
+        name: <span class="syn-str">&quot;Shariar&quot;</span>,
+        age: <span class="syn-num">23</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Rahim&quot;</span>,
+        age: <span class="syn-num">22</span>
+    }
+];
+
+<span class="syn-fn">console</span>.log(students[<span class="syn-num">0</span>].name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<div class="memory-box">এই concept React/Node.js-এ অত্যন্ত গুরুত্বপূর্ণ।</div>
+    </div>
+
+    <!-- 9.69 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.69</span> <code>Array.isArray()</code></div>
+<p class="text-p">কোনো value Array কিনা check করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.69 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS&quot;];
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Array</span>.isArray(skills));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.69 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Array</span>.isArray(&quot;Hello&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 9.70 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.70</span> Array বনাম Object</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Array</th><th>Object</th></tr></thead>
+    <tbody>
+      <tr><td>Ordered collection</td><td>Key-value data</td></tr><tr><td>Index ব্যবহার করে</td><td>Key ব্যবহার করে</td></tr><tr><td><code>users[0]</code></td><td><code>user.name</code></td></tr><tr><td>List-এর জন্য useful</td><td>Entity/data model-এর জন্য useful</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.70 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JS&quot;];</pre>
+</div>
+<p class="text-p">Object:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.70 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};</pre>
+</div>
+    </div>
+
+    <!-- 9.71 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.71</span> Empty Array</div>
+<div class="code-box">
+  <div class="code-top"><span>9.71 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> items = [];
+
+<span class="syn-fn">console</span>.log(items.length);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0</pre>
+</div>
+<p class="text-p">তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.71 JavaScript</span><span>Run</span></div>
+  <pre>items.push(&quot;Laptop&quot;);
+
+<span class="syn-fn">console</span>.log(items);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Laptop&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.72 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.72</span> Sparse Array</div>
+<div class="code-box">
+  <div class="code-top"><span>9.72 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [];
+
+numbers[<span class="syn-num">3</span>] = <span class="syn-num">100</span>;
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<p class="text-p">এতে মাঝখানে empty slots তৈরি হতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[empty, empty, empty, 100]</pre>
+</div>
+<p class="text-p">এভাবে Array তৈরি করা সাধারণত avoid করা ভালো।</p>
+    </div>
+
+    <!-- 9.73 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.73</span> Array Reference</div>
+<div class="memory-box">এটা খুব গুরুত্বপূর্ণ।</div>
+<div class="code-box">
+  <div class="code-top"><span>9.73 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> a = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">let</span> b = a;
+
+b.push(<span class="syn-num">4</span>);
+
+<span class="syn-fn">console</span>.log(a);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 2, 3, 4]</pre>
+</div>
+<p class="text-p">কেন?</p>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">a ──────┐
+        ↓
+      [1,2,3]
+        ↑
+        │
+b ──────┘</div>
+<p class="text-p"><code>a</code> এবং <code>b</code> একই Array object-কে reference করছে।</p>
+    </div>
+
+    <!-- 9.74 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.74</span> Array Copy করার সঠিক উপায়</div>
+<div class="code-box">
+  <div class="code-top"><span>9.74 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> a = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">let</span> b = [...a];
+
+b.push(<span class="syn-num">4</span>);
+
+<span class="syn-fn">console</span>.log(a);
+<span class="syn-fn">console</span>.log(b);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 2, 3]
+[1, 2, 3, 4]</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 06 — Advanced Methods, Constructors & Ecosystem Reference (9.75 – 9.89)</div>
+
+    <!-- 9.75 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.75</span> <code>concat()</code></div>
+<p class="text-p">দুটি Array combine:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.75 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> a = [<span class="syn-num">1</span>, <span class="syn-num">2</span>];
+<span class="syn-kw">let</span> b = [<span class="syn-num">3</span>, <span class="syn-num">4</span>];
+
+<span class="syn-kw">let</span> result = a.concat(b);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 2, 3, 4]</pre>
+</div>
+<p class="text-p">Spread দিয়েও:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.75 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> result = [...a, ...b];</pre>
+</div>
+    </div>
+
+    <!-- 9.76 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.76</span> <code>flat()</code></div>
+<p class="text-p">Nested Array flatten করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.76 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, [<span class="syn-num">3</span>, <span class="syn-num">4</span>], [<span class="syn-num">5</span>, <span class="syn-num">6</span>]];
+
+<span class="syn-fn">console</span>.log(numbers.flat());</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 2, 3, 4, 5, 6]</pre>
+</div>
+    </div>
+
+    <!-- 9.77 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.77</span> Deep Nested <code>flat()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>9.77 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [
+    <span class="syn-num">1</span>,
+    [<span class="syn-num">2</span>, [<span class="syn-num">3</span>, [<span class="syn-num">4</span>]]]
+];
+
+<span class="syn-fn">console</span>.log(numbers.flat(Infinity));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 2, 3, 4]</pre>
+</div>
+    </div>
+
+    <!-- 9.78 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.78</span> <code>Array.from()</code></div>
+<p class="text-p">Array-like বা iterable data থেকে Array তৈরি করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;Hello&quot;</span>;
+
+<span class="syn-kw">let</span> chars = <span class="syn-fn">Array</span>.from(text);
+
+<span class="syn-fn">console</span>.log(chars);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;H&quot;, &quot;e&quot;, &quot;l&quot;, &quot;l&quot;, &quot;o&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 9.79 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.79</span> <code>Array.of()</code></div>
+<p class="text-p">Values দিয়ে Array তৈরি:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.79 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = <span class="syn-fn">Array</span>.<span class="syn-kw">of</span>(<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[10, 20, 30]</pre>
+</div>
+    </div>
+
+    <!-- 9.80 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.80</span> <code>Array.from()</code> দিয়ে Generate</div>
+<div class="code-box">
+  <div class="code-top"><span>9.80 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = <span class="syn-fn">Array</span>.from(
+    { length: <span class="syn-num">5</span> },
+    (_, index) =&gt; index + <span class="syn-num">1</span>
+);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 2, 3, 4, 5]</pre>
+</div>
+    </div>
+
+    <!-- 9.81 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.81</span> Important: <code>fill()</code></div>
+<p class="text-p">Array-এর নির্দিষ্ট জায়গায় একই value বসাতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.81 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>];
+
+numbers.fill(<span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[0, 0, 0, 0, 0]</pre>
+</div>
+    </div>
+
+    <!-- 9.82 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.82</span> <code>fill()</code> Partial</div>
+<div class="code-box">
+  <div class="code-top"><span>9.82 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>];
+
+numbers.fill(<span class="syn-num">0</span>, <span class="syn-num">1</span>, <span class="syn-num">3</span>);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 0, 0, 4, 5]</pre>
+</div>
+    </div>
+
+    <!-- 9.83 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.83</span> <code>copyWithin()</code></div>
+<p class="text-p">Array-এর ভিতরের কিছু element অন্য জায়গায় copy করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.83 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>];
+
+numbers.copyWithin(<span class="syn-num">0</span>, <span class="syn-num">3</span>);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[4, 5, 3, 4, 5]</pre>
+</div>
+<p class="text-p">এটি তুলনামূলকভাবে কম ব্যবহৃত method, কিন্তু JavaScript Array API-এর অংশ হিসেবে জানা ভালো।</p>
+    </div>
+
+    <!-- 9.84 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.84</span> <code>flatMap()</code></div>
+<p class="text-p"><code>map()</code> + <code>flat()</code> একসাথে করার মতো।</p>
+<div class="code-box">
+  <div class="code-top"><span>9.84 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">let</span> result = numbers.flatMap(number =&gt; [number, number * <span class="syn-num">2</span>]);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[1, 2, 2, 4, 3, 6]</pre>
+</div>
+    </div>
+
+    <!-- 9.85 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.85</span> <code>entries()</code></div>
+<p class="text-p">Index এবং value দুটো একসাথে:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.85 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> [index, fruit] <span class="syn-kw">of</span> fruits.entries()) {
+    <span class="syn-fn">console</span>.log(index, fruit);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0 Apple
+1 Banana
+2 Mango</pre>
+</div>
+    </div>
+
+    <!-- 9.86 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.86</span> <code>keys()</code></div>
+<p class="text-p">Index পাওয়া যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.86 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> key <span class="syn-kw">of</span> fruits.keys()) {
+    <span class="syn-fn">console</span>.log(key);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0
+1
+2</pre>
+</div>
+    </div>
+
+    <!-- 9.87 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.87</span> <code>values()</code></div>
+<p class="text-p">Values:</p>
+<div class="code-box">
+  <div class="code-top"><span>9.87 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> value <span class="syn-kw">of</span> fruits.values()) {
+    <span class="syn-fn">console</span>.log(value);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Apple
+Banana
+Mango</pre>
+</div>
+    </div>
+
+    <!-- 9.88 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9.88</span> Array Method Categories 🧠</div>
+<div class="section-subhead">Add / Remove</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>push()
+pop()
+shift()
+unshift()
+splice()</pre>
+</div>
+<div class="section-subhead">Search</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>includes()
+indexOf()
+lastIndexOf()
+find()
+findIndex()</pre>
+</div>
+<div class="section-subhead">Transform</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>map()
+flatMap()</pre>
+</div>
+<div class="section-subhead">Filter / Check</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>filter()
+some()
+every()</pre>
+</div>
+<div class="section-subhead">Calculation</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>reduce()</pre>
+</div>
+<div class="section-subhead">Copy / Extract</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>slice()
+concat()</pre>
+</div>
+<div class="section-subhead">Ordering</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>sort()
+reverse()</pre>
+</div>
+<div class="section-subhead">Convert</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>join()
+flat()</pre>
+</div>
+    </div>
+
+    <!-- 9.89 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">9.89</span> Array Methods — সবচেয়ে গুরুত্বপূর্ণ Table</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th><th>Original Array পরিবর্তন?</th></tr></thead>
+    <tbody>
+      <tr><td><code>push()</code></td><td>শেষে যোগ</td><td>✅</td></tr><tr><td><code>pop()</code></td><td>শেষে remove</td><td>✅</td></tr><tr><td><code>shift()</code></td><td>শুরু থেকে remove</td><td>✅</td></tr><tr><td><code>unshift()</code></td><td>শুরুতে যোগ</td><td>✅</td></tr><tr><td><code>splice()</code></td><td>add/remove/replace</td><td>✅</td></tr><tr><td><code>slice()</code></td><td>অংশ copy</td><td>❌</td></tr><tr><td><code>map()</code></td><td>transform</td><td>❌</td></tr><tr><td><code>filter()</code></td><td>filter</td><td>❌</td></tr><tr><td><code>find()</code></td><td>প্রথম match</td><td>❌</td></tr><tr><td><code>findIndex()</code></td><td>প্রথম match-এর index</td><td>❌</td></tr><tr><td><code>some()</code></td><td>অন্তত একটি match</td><td>❌</td></tr><tr><td><code>every()</code></td><td>সব match</td><td>❌</td></tr><tr><td><code>reduce()</code></td><td>single result</td><td>❌</td></tr><tr><td><code>includes()</code></td><td>value আছে কিনা</td><td>❌</td></tr><tr><td><code>indexOf()</code></td><td>index খোঁজা</td><td>❌</td></tr><tr><td><code>join()</code></td><td>Array → String</td><td>❌</td></tr><tr><td><code>concat()</code></td><td>Array combine</td><td>❌</td></tr><tr><td><code>reverse()</code></td><td>reverse</td><td>✅</td></tr><tr><td><code>sort()</code></td><td>sort</td><td>✅</td></tr><tr><td><code>fill()</code></td><td>value fill</td><td>✅</td></tr><tr><td><code>flat()</code></td><td>nested flatten</td><td>❌</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <div class="part-banner">Part 07 — Real-Life Mini Projects, Core Concepts, Practice Lab &amp; Summary</div>
+
+    <!-- Mini Project: Shopping Cart -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">PROJECT 1</span> 🔥 Real-life Mini Project — Shopping Cart</div>
+<p class="text-p">এখন Array-এর অনেক concept একসাথে ব্যবহার করি।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> cart = [
+    {
+        name: <span class="syn-str">&quot;Laptop&quot;</span>,
+        price: <span class="syn-num">70000</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Mouse&quot;</span>,
+        price: <span class="syn-num">1000</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Keyboard&quot;</span>,
+        price: <span class="syn-num">3000</span>
+    }
+];
+
+<span class="syn-fn">console</span>.log(&quot;Products:&quot;);
+
+cart.forEach(product =&gt; {
+    <span class="syn-fn">console</span>.log(product.name);
+});
+
+<span class="syn-kw">let</span> total = cart.reduce((sum, product) =&gt; {
+    <span class="syn-kw">return</span> sum + product.price;
+}, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Total:&quot;, total);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Products:
+Laptop
+Mouse
+Keyboard
+
+Total: 74000</pre>
+</div>
+<p class="text-p">এখানে আমরা ব্যবহার করেছি:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Array
+Object
+forEach()
+reduce()</pre>
+</div>
+<p class="text-p">এই pattern বাস্তব e-commerce application-এ খুব common।</p>
+    </div>
+
+    <!-- Mini Project: Student Result -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">PROJECT 2</span> 🔥 Real-life Mini Project — Student Result</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> marks = [<span class="syn-num">80</span>, <span class="syn-num">75</span>, <span class="syn-num">90</span>, <span class="syn-num">65</span>, <span class="syn-num">88</span>];
+
+<span class="syn-kw">let</span> total = marks.reduce((sum, mark) =&gt; sum + mark, <span class="syn-num">0</span>);
+
+<span class="syn-kw">let</span> average = total / marks.length;
+
+<span class="syn-kw">let</span> passed = marks.filter(mark =&gt; mark &gt;= <span class="syn-num">40</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Total:&quot;, total);
+<span class="syn-fn">console</span>.log(&quot;Average:&quot;, average);
+<span class="syn-fn">console</span>.log(&quot;Passed:&quot;, passed);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Total: 398
+Average: 79.6
+Passed: [80, 75, 90, 65, 88]</pre>
+</div>
+    </div>
+
+    <!-- Mini Project: Search Products -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">PROJECT 3</span> 🔥 Real-life Mini Project — Search Products</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> products = [
+    <span class="syn-str">&quot;HP Laptop&quot;</span>,
+    <span class="syn-str">&quot;Dell Laptop&quot;</span>,
+    <span class="syn-str">&quot;Logitech Mouse&quot;</span>,
+    <span class="syn-str">&quot;Mechanical Keyboard&quot;</span>
+];
+
+<span class="syn-kw">let</span> search = <span class="syn-str">&quot;laptop&quot;</span>;
+
+<span class="syn-kw">let</span> result = products.filter(product =&gt;
+    product.toLowerCase().includes(search.toLowerCase())
+);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>[
+    &quot;HP Laptop&quot;,
+    &quot;Dell Laptop&quot;
+]</pre>
+</div>
+<p class="text-p">এটি basic product search-এর ধারণা।</p>
+    </div>
+
+    <!-- Chapter 9 Core Concepts -->
+    <div class="study-card" style="border-left: 4px solid #ef4444;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">CORE CONCEPTS</span> 🧠 Chapter 9 — সবচেয়ে গুরুত্বপূর্ণ Concepts</div>
+<p class="text-p">তোমাকে এগুলো অবশ্যই ভালোভাবে আয়ত্ত করতে হবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1. Array কী
+2. Array Index
+3. length
+4. Accessing elements
+5. Updating elements
+6. push()
+7. pop()
+8. shift()
+9. unshift()
+10. for loop
+11. for...of
+12. forEach()
+13. includes()
+14. indexOf()
+15. slice()
+16. splice()
+17. join()
+18. reverse()
+19. sort()
+20. map()
+21. filter()
+22. find()
+23. findIndex()
+24. some()
+25. every()
+26. reduce()
+27. Array Destructuring
+28. Spread Operator
+29. Nested Arrays
+30. Array of Objects
+31. Array Reference
+32. Array Copy
+33. concat()
+34. flat()
+35. flatMap()
+36. Array.from()
+37. Array.of()
+38. fill()
+39. entries()
+40. keys()
+41. values()
+42. Array.isArray()</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Chapter 9 — Practice Set</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 1 — Basic Array</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];</pre>
+</div>
+<p class="text-p">এগুলো বের করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Apple
+Mango
+3</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 2 — Add &amp; Remove</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS&quot;];</pre>
+</div>
+<p class="text-p"><code>JavaScript</code> এবং <code>React</code> যোগ করো।</p>
+<p class="text-p">তারপর শেষের element remove করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 3 — Search</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> skills = [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;, &quot;</span>React&quot;];</pre>
+</div>
+<p class="text-p">Check করো:</p>
+<div class="ascii-tree-container">JavaScript আছে → true
+Python আছে → false</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 4 — Filter</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">15</span>, <span class="syn-num">20</span>, <span class="syn-num">25</span>, <span class="syn-num">30</span>, <span class="syn-num">35</span>];</pre>
+</div>
+<p class="text-p">শুধু even numbers বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[10, 20, 30]</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 5 — Map</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>];</pre>
+</div>
+<p class="text-p">প্রতিটি number-এর double বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[2, 4, 6, 8, 10]</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 6 — Reduce</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> prices = [<span class="syn-num">100</span>, <span class="syn-num">200</span>, <span class="syn-num">300</span>, <span class="syn-num">400</span>];</pre>
+</div>
+<p class="text-p">Total বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1000</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 7 — Find</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">25</span>, <span class="syn-num">40</span>, <span class="syn-num">55</span>, <span class="syn-num">70</span>];</pre>
+</div>
+<p class="text-p"><code>50</code>-এর বেশি প্রথম number বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>55</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 8 — Sort</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">50</span>, <span class="syn-num">10</span>, <span class="syn-num">80</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];</pre>
+</div>
+<p class="text-p">Ascending:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[10, 20, 30, 50, 80]</pre>
+</div>
+<p class="text-p">Descending:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[80, 50, 30, 20, 10]</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 9 — Destructuring</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> student = [&quot;Shariar<span class="syn-str">&quot;, 23, &quot;</span>CSE&quot;];</pre>
+</div>
+<p class="text-p">Destructuring করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name
+age
+department</pre>
+</div>
+<p class="text-p">আলাদা variable বানাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 10 — Mini Project 🛒</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> cart = [
+    { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">70000</span> },
+    { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span> },
+    { name: <span class="syn-str">&quot;Keyboard&quot;</span>, price: <span class="syn-num">3000</span> },
+    { name: <span class="syn-str">&quot;Monitor&quot;</span>, price: <span class="syn-num">15000</span> }
+];</pre>
+</div>
+<p class="text-p">এমন program তৈরি করো যা:</p>
+<ul class="bullet-list"><li>সব product-এর নাম দেখাবে</li><li>সব product-এর total price বের করবে</li><li><code>5000</code> টাকার বেশি product বের করবে</li><li>সবচেয়ে বেশি দামের product বের করবে</li><li>product-এর নামগুলো একটি নতুন Array-তে রাখবে</li></ul>
+      </div>
+    </div>
+
+    <!-- Chapter 9 Final Summary Overview -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 9 Final Summary — এক নজরে Array</div>
+<p class="text-p">এক কথায়:</p>
+<div class="def-box">
+  <div class="def-text"><strong>Array = এক variable-এর মধ্যে ordered multiple values রাখার ব্যবস্থা।</strong></div>
+</div>
+<div class="memory-box">সবচেয়ে বেশি মনে রাখবে:</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];</pre>
+</div>
+<p class="text-p">তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>fruits.push(&quot;Orange<span class="syn-str">&quot;);       // Add
+fruits.pop();                // Remove last
+fruits.unshift(&quot;</span>Orange&quot;);    <span class="syn-com">// Add first</span>
+fruits.shift();              <span class="syn-com">// Remove first</span></pre>
+</div>
+<p class="text-p">Search:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>fruits.includes(&quot;Apple<span class="syn-str">&quot;);
+fruits.indexOf(&quot;</span>Apple&quot;);</pre>
+</div>
+<p class="text-p">Extract:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>fruits.slice(<span class="syn-num">0</span>, <span class="syn-num">2</span>);</pre>
+</div>
+<p class="text-p">Modify:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>fruits.splice(<span class="syn-num">1</span>, <span class="syn-num">1</span>);</pre>
+</div>
+<p class="text-p">Transform:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>fruits.map(...);</pre>
+</div>
+<p class="text-p">Filter:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>fruits.filter(...);</pre>
+</div>
+<p class="text-p">Find:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>fruits.find(...);</pre>
+</div>
+<p class="text-p">Calculate:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>numbers.reduce(...);</pre>
+</div>
+<p class="text-p">Loop:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>fruits.forEach(...);</pre>
+</div>
+<p class="text-p">Combine:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>[...array1, ...array2];</pre>
+</div>
+<p class="text-p">Destructure:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> [a, b, c] = array;</pre>
+</div>
+    </div>
+
+    <!-- Chapter 9 Top 8 Methods -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b; background: #fffbeb;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">TOP 8</span> 🚀 Chapter 9-এর সবচেয়ে গুরুত্বপূর্ণ ৮টি Method</div>
+<p class="text-p">যদি এখনই সব method মুখস্থ না হয়, অন্তত এগুলো শক্ত করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1. push()
+2. pop()
+3. slice()
+4. splice()
+5. forEach()
+6. map()
+7. filter()
+8. reduce()</pre>
+</div>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 🚀 Chapter 10 Preview — Objects</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        এরপর <strong>Chapter 10 — Objects</strong>-এ আমরা JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ data structure-এর আরেকটি অংশ শিখব: <strong>Object, Properties, Methods, Nested Objects, Object Access, Add/Update/Delete, <code>this</code>, Object Destructuring, Spread, <code>Object.keys()</code>, <code>Object.values()</code>, <code>Object.entries()</code>, Optional Chaining, Object References, Shallow Copy, এবং Array of Objects</strong>।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

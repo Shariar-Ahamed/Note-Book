@@ -13,8 +13,12 @@ Comprehensive, production-grade JavaScript study notes, interactive HTML documen
 | **03** | Operators & Expressions | [HTML](Code/Chapter-03-Operators-Expressions.html) | [PDF](PDF/Chapter-03-Operators-Expressions.pdf) | ✅ Complete |
 | **04** | Control Flow & Decision Making | [HTML](Code/Chapter-04-Control-Flow-Decision-Making.html) | [PDF](PDF/Chapter-04-Control-Flow-Decision-Making.pdf) | ✅ Complete |
 | **05** | Loops & Iteration | [HTML](Code/Chapter-05-Loops-Iteration.html) | [PDF](PDF/Chapter-05-Loops-Iteration.pdf) | ✅ Complete |
-| **06** | Functions & Functional Programming | Coming Soon | Coming Soon | 📝 In Progress |
-| **07** | Objects, Prototypes & OOP | Coming Soon | Coming Soon | 📝 Draft |
+| **06** | Functions & Execution Engine | [HTML](Code/Chapter-06-Functions.html) | [PDF](PDF/Chapter-06-Functions.pdf) | ✅ Complete |
+| **07** | Scope & Hoisting | [HTML](Code/Chapter-07-Scope-Hoisting.html) | [PDF](PDF/Chapter-07-Scope-Hoisting.pdf) | ✅ Complete |
+| **08** | Strings & Text Processing | [HTML](Code/Chapter-08-Strings.html) | [PDF](PDF/Chapter-08-Strings.pdf) | ✅ Complete |
+| **09** | Arrays & Modern Collections | [HTML](Code/Chapter-09-Arrays.html) | [PDF](PDF/Chapter-09-Arrays.pdf) | ✅ Complete |
+| **10** | Objects & Properties | [HTML](Code/Chapter-10-Objects.html) | [PDF](PDF/Chapter-10-Objects.pdf) | ✅ Complete |
+| **11** | Prototypes & Prototype Chain | [HTML](Code/Chapter-11-Prototypes.html) | [PDF](PDF/Chapter-11-Prototypes.pdf) | ✅ Complete |
 
 ---
 

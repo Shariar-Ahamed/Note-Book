@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 08: Strings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-dark: #0b2545;
+      --navy-mid: #134074;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-subtle: #f0f9ff;
+      --teal-accent: #0d9488;
+      --green-accent: #059669;
+      --green-light: #ecfdf5;
+      --amber-accent: #d97706;
+      --amber-light: #fefce8;
+      --amber-border: #fef08a;
+      --red-accent: #dc2626;
+      --red-light: #fef2f2;
+      --purple-accent: #7c3aed;
+      --purple-light: #f5f3ff;
+      --text-dark: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #475569;
+      --text-sub: #64748b;
+      --card-bg: #ffffff;
+      --page-bg: #f1f5f9;
+      --border-card: #e2e8f0;
+      --border-subtle: #cbd5e1;
+      --code-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-body);
+      font-size: 12px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .action-bar .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    }
+    .print-btn:hover {
+      background: #0284c7;
+    }
+
+    /* Document Sheet */
+    .doc-page {
+      max-width: 820px;
+      margin: 20px auto;
+      background: var(--card-bg);
+      padding: 32px 36px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-card);
+    }
+
+    /* Header Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #0b2545 0%, #0d3b66 55%, #0284c7 100%);
+      border-radius: 8px;
+      padding: 14px 20px;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #38bdf8;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .banner-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 12px;
+      color: #93c5fd;
+      margin-bottom: 10px;
+      margin-left: 40px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 8px;
+    }
+    .meta-item .meta-label {
+      font-size: 10px;
+      color: #7dd3fc;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .meta-item .meta-val {
+      font-size: 11px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: var(--blue-light);
+      border-left: 4px solid var(--blue-accent);
+      color: #0369a1;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 12px 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 9px 13px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.015);
+    }
+    .card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* Section Sub-labels */
+    .tag-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 5px 0 2px 0;
+      display: block;
+    }
+    .tag-label.cyan { color: #0284c7; }
+    .tag-label.green { color: #059669; }
+    .tag-label.amber { color: #d97706; }
+    .tag-label.purple { color: #6366f1; }
+    .tag-label.red { color: #dc2626; }
+
+    p.text-p {
+      margin-bottom: 3px;
+      font-size: 11.5px;
+      color: var(--text-body);
+      line-height: 1.5;
+    }
+
+    ul.clean-list {
+      margin-left: 18px;
+      margin-bottom: 4px;
+    }
+    ul.clean-list li {
+      margin-bottom: 2px;
+      font-size: 11.5px;
+    }
+
+    /* Definition Alert inside card */
+    .def-box {
+      border-radius: 4px;
+      padding: 5px 9px;
+      margin: 4px 0;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .def-box.english {
+      background: var(--blue-subtle);
+      border-left: 3px solid var(--blue-accent);
+      color: #0c4a6e;
+    }
+    .def-box.bangla {
+      background: #faf5ff;
+      border-left: 3px solid #9333ea;
+      color: #581c87;
+    }
+
+    /* Memory / Rule box */
+    .memory-box {
+      background: var(--amber-light);
+      border: 1px solid var(--amber-border);
+      border-left: 4px solid #eab308;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #713f12;
+      margin: 5px 0 4px 0;
+    }
+
+    /* Error / Warning box */
+    .warn-box {
+      background: var(--red-light);
+      border: 1px solid #fecaca;
+      border-left: 4px solid var(--red-accent);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #7f1d1d;
+      margin: 5px 0 4px 0;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 6px 0 8px 0;
+      border: 1px solid var(--border-card);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: left;
+    }
+    thead th {
+      background: #f8fafc;
+      color: var(--text-dark);
+      font-weight: 700;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+    tbody tr:nth-child(even) {
+      background: #fbfcfe;
+    }
+    tbody td {
+      padding: 5px 8px;
+      color: var(--text-body);
+    }
+
+    /* Code & Terminal */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    pre {
+      margin: 0;
+      padding: 6px 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      line-height: 1.4;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 10.5px;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .output-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-left: 3px solid #64748b;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      color: #334155;
+      margin: 3px 0 6px 0;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 08: STRINGS &amp; TEXT PROCESSING</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">75 Modules + Projects</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 04 — Core Data Structures (1/3)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Immutability, Unicode &amp; Text Parsing</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Strings — String / টেক্সট নিয়ে কাজ</h2>
+      <p class="text-p">JavaScript-এ <strong>String</strong> হলো text বা character-এর sequence। যেমন:</p>
+      <div class="code-box" style="margin: 4px 0;">
+        <div class="code-top"><span>JavaScript</span><span>Examples</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Shariar"</span>;
+<span class="syn-kw">let</span> university = <span class="syn-str">"Daffodil International University"</span>;
+<span class="syn-kw">let</span> message = <span class="syn-str">"Hello JavaScript!"</span>;</pre>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">এগুলো সবই <strong>String</strong>।</p>
+    </div>
+
+    <div class="part-banner">Part 01 — String Creation, Quotes & Escape Characters (8.1 – 8.9)</div>
+
+    <!-- 8.1 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.1</span> String কী?</div>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Definition:</strong> <strong>String = এক বা একাধিক character-এর collection যা text represent করে।</strong></div>
+<span class="tag-label cyan">Real-Life Example</span>
+<p class="text-p">একটি website-এ:</p>
+<div class="ascii-tree-container">Name: Shariar Ahamed Ripon
+Email: ripon@example.com
+Address: Dhaka, Bangladesh</div>
+<p class="text-p">এখানে <code>Name</code>, <code>Email</code>, <code>Address</code>-এর value—সবই String।</p>
+    </div>
+
+    <!-- 8.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.2</span> String তৈরি করার ৩টি উপায়</div>
+<p class="text-p">JavaScript-এ String সাধারণত তিনভাবে লেখা যায়:</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">1. Double Quotes</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>1. Double Quotes</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">2. Single Quotes</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>2. Single Quotes</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&#x27;Shariar&#x27;</span>;</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">3. Backticks</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>3. Backticks</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">`Shariar`</span>;</pre>
+</div>
+<p class="text-p">তিনটিই valid।</p>
+    </div>
+
+    <!-- 8.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.3</span> Single Quote vs Double Quote</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name1 = <span class="syn-str">&quot;Shariar&quot;</span>;
+<span class="syn-kw">let</span> name2 = <span class="syn-str">&#x27;Shariar&#x27;</span>;
+
+<span class="syn-fn">console</span>.log(name1);
+<span class="syn-fn">console</span>.log(name2);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar
+Shariar</div>
+<p class="text-p">কাজের দিক থেকে দুটোই প্রায় একই।</p>
+    </div>
+
+    <!-- 8.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.4</span> Backticks</div>
+<p class="text-p">Backtick:</p>
+<div class="ascii-tree-container">`</div>
+<p class="text-p">এটি বিশেষভাবে গুরুত্বপূর্ণ কারণ এর মাধ্যমে <strong>Template Literal</strong> ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">`Shariar`</span>;
+
+<span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Shariar</div>
+<p class="text-p">Template Literal আমরা পরে বিস্তারিত দেখব।</p>
+    </div>
+
+    <!-- 8.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.5</span> String-এর মধ্যে Quote ব্যবহার</div>
+<p class="text-p">ধরো text-এর মধ্যে quotation mark লাগবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-str">&#x27;He said &quot;Hello&quot;&#x27;</span>;
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">He said &quot;Hello&quot;</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-str">&quot;It&#x27;s a beautiful day&quot;</span>;
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">It&#x27;s a beautiful day</div>
+    </div>
+
+    <!-- 8.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.6</span> Escape Character</div>
+<p class="text-p">String-এর মধ্যে একই ধরনের quote ব্যবহার করতে হলে <code>\</code> ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-str">&quot;He said \&quot;Hello\&quot;&quot;</span>;
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">He said &quot;Hello&quot;</div>
+<p class="text-p">এখানে:</p>
+<div class="output-box">\&quot;</div>
+<p class="text-p">মানে quote-টিকে String-এর শেষ হিসেবে না ধরে character হিসেবে ব্যবহার করো।</p>
+    </div>
+
+    <!-- 8.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.7</span> Common Escape Characters</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Escape</th><th>অর্থ</th></tr></thead>
+    <tbody>
+      <tr><td><code>\&quot;</code></td><td>Double quote</td></tr><tr><td><code>\&#x27;</code></td><td>Single quote</td></tr><tr><td><code>\\</code></td><td>Backslash</td></tr><tr><td><code>\n</code></td><td>New line</td></tr><tr><td><code>\t</code></td><td>Tab</td></tr><tr><td><code>\r</code></td><td>Carriage return</td></tr><tr><td><code>\b</code></td><td>Backspace</td></tr><tr><td><code>\f</code></td><td>Form feed</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 8.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.8</span> New Line — <code>\n</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello\nJavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello
+JavaScript</div>
+<p class="text-p">Real-life example:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> address = <span class="syn-str">&quot;Dhaka\nBangladesh&quot;</span>;
+
+<span class="syn-fn">console</span>.log(address);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Dhaka
+Bangladesh</div>
+    </div>
+
+    <!-- 8.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.9</span> Tab — <code>\t</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(&quot;Name:\tShariar&quot;);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Name:   Shariar</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Length, Indexing & Character Access (8.10 – 8.20)</div>
+
+    <!-- 8.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.10</span> String Length</div>
+<p class="text-p">String-এর character সংখ্যা জানতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>.length</pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name.length);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">7</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">S h a r i a r
+1 2 3 4 5 6 7</div>
+    </div>
+
+    <!-- 8.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.11</span> Space-ও Character</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar Ahamed&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name.length);</pre>
+</div>
+<p class="text-p">Space-ও count হবে।</p>
+    </div>
+
+    <!-- 8.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.12</span> String Index</div>
+<p class="text-p">JavaScript-এ String-এর প্রতিটি character-এর একটি index থাকে।</p>
+<p class="text-p">Index শুরু হয়:</p>
+<div class="ascii-tree-container">0</div>
+<p class="text-p">থেকে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;</pre>
+</div>
+<p class="text-p">এটা:</p>
+<div class="ascii-tree-container">R i p o n
+0 1 2 3 4</div>
+    </div>
+
+    <!-- 8.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.13</span> Character Access — <code>[]</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name[<span class="syn-num">0</span>]);
+<span class="syn-fn">console</span>.log(name[<span class="syn-num">1</span>]);
+<span class="syn-fn">console</span>.log(name[<span class="syn-num">4</span>]);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">R
+i
+n</div>
+    </div>
+
+    <!-- 8.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.14</span> প্রথম Character</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name[<span class="syn-num">0</span>]);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">J</div>
+    </div>
+
+    <!-- 8.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.15</span> শেষ Character</div>
+<p class="text-p">শেষ character বের করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name[name.length - <span class="syn-num">1</span>]);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">t</div>
+<p class="text-p">কারণ length:</p>
+<div class="output-box">10</div>
+<p class="text-p">শেষ index:</p>
+<div class="ascii-tree-container">10 - 1 = 9</div>
+    </div>
+
+    <!-- 8.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.16</span> <code>.at()</code> Method</div>
+<p class="text-p">শেষ character আরও সহজে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name.at(-<span class="syn-num">1</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">t</div>
+<p class="text-p"><code>at()</code> negative index support করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(name.at(-<span class="syn-num">2</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">p</div>
+    </div>
+
+    <!-- 8.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.17</span> <code>charAt()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name.charAt(<span class="syn-num">0</span>));
+<span class="syn-fn">console</span>.log(name.charAt(<span class="syn-num">2</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">R
+p</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>[]</code> বনাম <code>charAt()</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>[] বনাম charAt()</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name[<span class="syn-num">10</span>]);
+<span class="syn-fn">console</span>.log(name.charAt(<span class="syn-num">10</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">undefined</div>
+<p class="text-p"><code>charAt()</code> invalid index-এ empty string (<code>&quot;&quot;</code>) দেয়, আর <code>[]</code> সাধারণত <code>undefined</code> দেয়।</p>
+    </div>
+
+    <!-- 8.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.18</span> String Concatenation</div>
+<p class="text-p">দুই বা তার বেশি String একসাথে যুক্ত করাকে <strong>Concatenation</strong> বলে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> firstName = <span class="syn-str">&quot;Shariar&quot;</span>;
+<span class="syn-kw">let</span> lastName = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-kw">let</span> fullName = firstName + <span class="syn-str">&quot; &quot;</span> + lastName;
+
+<span class="syn-fn">console</span>.log(fullName);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar Ripon</div>
+    </div>
+
+    <!-- 8.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.19</span> String + Number</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-num">23</span>;
+
+<span class="syn-fn">console</span>.log(&quot;Age: &quot; + age);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Age: 23</div>
+<p class="text-p">JavaScript এখানে number-কে String-এর সাথে concatenate করেছে।</p>
+    </div>
+
+    <!-- 8.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.20</span> <code>+=</code> দিয়ে String যোগ</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello&quot;</span>;
+
+message += <span class="syn-str">&quot; &quot;</span>;
+message += <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hello JavaScript</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Template Literals & Case Transformation (8.21 – 8.31)</div>
+
+    <!-- 8.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.21</span> Template Literals</div>
+<p class="text-p">Modern JavaScript-এ String তৈরি করার সবচেয়ে useful featureগুলোর একটি হলো:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Definition:</strong> <strong>Template Literal</strong></div>
+<p class="text-p">Backtick ব্যবহার করতে হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-str">` `</span></pre>
+</div>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;
+<span class="syn-kw">let</span> age = <span class="syn-num">23</span>;
+
+<span class="syn-kw">let</span> message = <span class="syn-str">`My name is ${name} and I am ${age} years old.`</span>;
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">My name is Shariar and I am 23 years old.</div>
+    </div>
+
+    <!-- 8.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.22</span> <code>${}</code> কী?</div>
+<p class="text-p">Template Literal-এর মধ্যে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>${variable}</pre>
+</div>
+<p class="text-p">ব্যবহার করে variable-এর value বসানো যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> product = <span class="syn-str">&quot;Laptop&quot;</span>;
+<span class="syn-kw">let</span> price = <span class="syn-num">75000</span>;
+
+<span class="syn-fn">console</span>.log(`Product: ${product}`);
+<span class="syn-fn">console</span>.log(`Price: ${price} BDT`);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Product: Laptop
+Price: 75000 BDT</div>
+    </div>
+
+    <!-- 8.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.23</span> Expression-এর ব্যবহার</div>
+<p class="text-p">শুধু variable নয়, expression-ও দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> a = <span class="syn-num">10</span>;
+<span class="syn-kw">let</span> b = <span class="syn-num">20</span>;
+
+<span class="syn-fn">console</span>.log(`Total = ${a + b}`);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Total = 30</div>
+    </div>
+
+    <!-- 8.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.24</span> Function-এর Result</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> getName() {
+    <span class="syn-kw">return</span> <span class="syn-str">&quot;Shariar&quot;</span>;
+}
+
+<span class="syn-fn">console</span>.log(`Hello ${getName()}`);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hello Shariar</div>
+    </div>
+
+    <!-- 8.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.25</span> Multiline String</div>
+<p class="text-p">Normal quote-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello
+JavaScript&quot;</span>;</pre>
+</div>
+<p class="text-p">এভাবে সরাসরি লিখলে error হবে।</p>
+<p class="text-p">কিন্তু Template Literal:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-str">`Hello
+JavaScript
+World`</span>;
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hello
+JavaScript
+World</div>
+    </div>
+
+    <!-- 8.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.26</span> <code>toUpperCase()</code></div>
+<p class="text-p">String-এর সব letter uppercase করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;shariar&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name.toUpperCase());</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">SHARIAR</div>
+    </div>
+
+    <!-- 8.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.27</span> <code>toLowerCase()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;SHARIAR&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name.toLowerCase());</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">shariar</div>
+    </div>
+
+    <!-- 8.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.28</span> Real-life Example — Login</div>
+<p class="text-p">User email:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> email = <span class="syn-str">&quot;USER@GMAIL.COM&quot;</span>;
+
+<span class="syn-fn">console</span>.log(email.toLowerCase());</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">user@gmail.com</div>
+<p class="text-p">Login system-এ case normalization-এর মতো কাজে এটি useful হতে পারে।</p>
+    </div>
+
+    <!-- 8.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.29</span> <code>trim()</code></div>
+<p class="text-p">User input-এর শুরু বা শেষে extra space থাকলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> username = <span class="syn-str">&quot;   Shariar   &quot;</span>;
+
+<span class="syn-fn">console</span>.log(username.trim());</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Shariar</div>
+<p class="text-p">এটি:</p>
+<div class="ascii-tree-container">&quot;   Shariar   &quot;</div>
+<p class="text-p">কে:</p>
+<div class="ascii-tree-container">&quot;Shariar&quot;</div>
+<p class="text-p">করে।</p>
+    </div>
+
+    <!-- 8.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.30</span> <code>trimStart()</code></div>
+<p class="text-p">শুধু শুরু থেকে whitespace remove:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;   Hello&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.trimStart());</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Hello</div>
+    </div>
+
+    <!-- 8.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.31</span> <code>trimEnd()</code></div>
+<p class="text-p">শুধু শেষ থেকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;Hello   &quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.trimEnd());</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Hello</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Searching, Checking & Substring Extraction (8.32 – 8.45)</div>
+
+    <!-- 8.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.32</span> <code>includes()</code></div>
+<p class="text-p">কোনো String-এর মধ্যে নির্দিষ্ট text আছে কিনা check করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> message = <span class="syn-str">&quot;I love JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(message.includes(&quot;JavaScript&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">না থাকলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(message.includes(&quot;Python&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+    </div>
+
+    <!-- 8.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.33</span> Real-life Example — Search</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> title = <span class="syn-str">&quot;JavaScript Complete Course&quot;</span>;
+
+<span class="syn-kw">let</span> search = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-kw">if</span> (title.includes(search)) {
+    <span class="syn-fn">console</span>.log(&quot;Match found&quot;);
+}</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Match found</div>
+    </div>
+
+    <!-- 8.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.34</span> <code>startsWith()</code></div>
+<p class="text-p">String কোনো নির্দিষ্ট text দিয়ে শুরু হয়েছে কিনা:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> url = <span class="syn-str">&quot;https://example.com&quot;</span>;
+
+<span class="syn-fn">console</span>.log(url.startsWith(&quot;https&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+    </div>
+
+    <!-- 8.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.35</span> <code>endsWith()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> file = <span class="syn-str">&quot;profile.jpg&quot;</span>;
+
+<span class="syn-fn">console</span>.log(file.endsWith(&quot;.jpg&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">Real-life:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> file = <span class="syn-str">&quot;document.pdf&quot;</span>;
+
+<span class="syn-kw">if</span> (file.endsWith(&quot;.pdf<span class="syn-str">&quot;)) {
+    console.log(&quot;</span>PDF file&quot;);
+}</pre>
+</div>
+    </div>
+
+    <!-- 8.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.36</span> <code>indexOf()</code></div>
+<p class="text-p">কোনো text কোথায় আছে তা বের করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;I love JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.indexOf(&quot;JavaScript&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">7</div>
+<p class="text-p">কারণ <code>&quot;JavaScript&quot;</code> শুরু হয়েছে index <code>7</code> থেকে।</p>
+    </div>
+
+    <!-- 8.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.37</span> <code>indexOf()</code> না পেলে</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;I love JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.indexOf(&quot;Python&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">-1</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">-1 = পাওয়া যায়নি</div>
+    </div>
+
+    <!-- 8.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.38</span> <code>lastIndexOf()</code></div>
+<p class="text-p">একই text একাধিকবার থাকলে শেষ occurrence-এর index পাওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;JavaScript is great. JavaScript is powerful.&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.lastIndexOf(&quot;JavaScript&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">21</div>
+    </div>
+
+    <!-- 8.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.39</span> <code>search()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;I love JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.search(&quot;JavaScript&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">7</div>
+<p class="text-p"><code>search()</code> পরে Regex-এর সাথে আরও useful হবে।</p>
+    </div>
+
+    <!-- 8.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.40</span> <code>slice()</code></div>
+<p class="text-p">String-এর একটি অংশ বের করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>slice(start, end)</pre>
+</div>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.slice(<span class="syn-num">0</span>, <span class="syn-num">4</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Java</div>
+<p class="text-p">মনে রাখবে:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Definition:</strong> <code>end</code> index include হয় না।</div>
+    </div>
+
+    <!-- 8.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.41</span> <code>slice()</code> Example</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.slice(<span class="syn-num">4</span>, <span class="syn-num">10</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Script</div>
+<p class="text-p">Index:</p>
+<div class="ascii-tree-container">J a v a S c r i p t
+0 1 2 3 4 5 6 7 8 9</div>
+    </div>
+
+    <!-- 8.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.42</span> Negative <code>slice()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.slice(-<span class="syn-num">6</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Script</div>
+<p class="text-p">শেষ ৬টি character।</p>
+    </div>
+
+    <!-- 8.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.43</span> <code>substring()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.substring(<span class="syn-num">0</span>, <span class="syn-num">4</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Java</div>
+<p class="text-p"><code>substring()</code> negative index-কে <code>0</code> হিসেবে treat করে।</p>
+    </div>
+
+    <!-- 8.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.44</span> <code>slice()</code> vs <code>substring()</code></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Feature</th><th><code>slice()</code></th><th><code>substring()</code></th></tr></thead>
+    <tbody>
+      <tr><td>Negative index</td><td>✅</td><td>❌</td></tr><tr><td>End excluded</td><td>✅</td><td>✅</td></tr><tr><td>সাধারণ ব্যবহার</td><td>বেশি</td><td>কম</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Modern code-এ অনেক ক্ষেত্রে <code>slice()</code> বেশি convenient।</p>
+    </div>
+
+    <!-- 8.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.45</span> <code>substr()</code> — পুরোনো Method</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>text.substr(start, length)</pre>
+</div>
+<p class="text-p">এটি পুরোনো/deprecated API।</p>
+<p class="text-p">নতুন code-এ সাধারণত ব্যবহার না করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>slice()</pre>
+</div>
+<p class="text-p">ব্যবহার করা ভালো।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Replacing, Splitting, Padding & Immutability (8.46 – 8.58)</div>
+
+    <!-- 8.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.46</span> <code>replace()</code></div>
+<p class="text-p">String-এর একটি অংশ replace করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;I love JavaScript&quot;</span>;
+
+<span class="syn-kw">let</span> result = text.replace(&quot;JavaScript<span class="syn-str">&quot;, &quot;</span>Python&quot;);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">I love Python</div>
+    </div>
+
+    <!-- 8.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.47</span> Important — <code>replace()</code> Original String পরিবর্তন করে না</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;Hello World&quot;</span>;
+
+<span class="syn-kw">let</span> result = text.replace(&quot;World<span class="syn-str">&quot;, &quot;</span>JavaScript&quot;);
+
+<span class="syn-fn">console</span>.log(text);
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hello World
+Hello JavaScript</div>
+<p class="text-p">কারণ String <strong>immutable</strong>।</p>
+    </div>
+
+    <!-- 8.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.48</span> String Immutability</div>
+<p class="text-p">এটি খুব গুরুত্বপূর্ণ।</p>
+<p class="text-p">String তৈরি হওয়ার পর তার character সরাসরি পরিবর্তন করা যায় না।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+name[<span class="syn-num">0</span>] = <span class="syn-str">&quot;S&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Ripon</div>
+<p class="text-p"><code>R</code> → <code>S</code> হয়নি।</p>
+    </div>
+
+    <!-- 8.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.49</span> তাহলে String পরিবর্তন কীভাবে হয়?</div>
+<p class="text-p">নতুন String তৈরি হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+name = <span class="syn-str">&quot;Shariar&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<p class="text-p">এখানে পুরোনো String পরিবর্তন না হয়ে নতুন value assign হয়েছে।</p>
+    </div>
+
+    <!-- 8.50 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.50</span> <code>replaceAll()</code></div>
+<p class="text-p">সব occurrence replace করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;apple apple apple&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.replaceAll(&quot;apple<span class="syn-str">&quot;, &quot;</span>banana&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">banana banana banana</div>
+    </div>
+
+    <!-- 8.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.51</span> <code>concat()</code></div>
+<p class="text-p">দুটি String যুক্ত করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> first = <span class="syn-str">&quot;Hello&quot;</span>;
+<span class="syn-kw">let</span> second = <span class="syn-str">&quot;World&quot;</span>;
+
+<span class="syn-fn">console</span>.log(first.concat(&quot; &quot;, second));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hello World</div>
+<p class="text-p">তবে modern JavaScript-এ সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>first + <span class="syn-str">&quot; &quot;</span> + second</pre>
+</div>
+<p class="text-p">অথবা template literal বেশি readable।</p>
+    </div>
+
+    <!-- 8.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.52</span> <code>split()</code></div>
+<p class="text-p">String-কে Array-তে ভাগ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;HTML CSS JavaScript&quot;</span>;
+
+<span class="syn-kw">let</span> result = text.split(&quot; &quot;);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">[&quot;HTML&quot;, &quot;CSS&quot;, &quot;JavaScript&quot;]</div>
+    </div>
+
+    <!-- 8.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.53</span> <code>split()</code> with Comma</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> skills = <span class="syn-str">&quot;HTML,CSS,JavaScript,React&quot;</span>;
+
+<span class="syn-fn">console</span>.log(skills.split(&quot;,&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">[&quot;HTML&quot;, &quot;CSS&quot;, &quot;JavaScript&quot;, &quot;React&quot;]</div>
+<p class="text-p">এটি real-world data processing-এ খুব useful।</p>
+    </div>
+
+    <!-- 8.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.54</span> String → Array → String</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> skills = <span class="syn-str">&quot;HTML,CSS,JavaScript&quot;</span>;
+
+<span class="syn-kw">let</span> arr = skills.split(&quot;,&quot;);
+
+<span class="syn-fn">console</span>.log(arr);
+
+<span class="syn-kw">let</span> result = arr.join(&quot; | &quot;);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">[&quot;HTML&quot;, &quot;CSS&quot;, &quot;JavaScript&quot;]
+
+HTML | CSS | JavaScript</div>
+    </div>
+
+    <!-- 8.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.55</span> <code>repeat()</code></div>
+<p class="text-p">একটি String নির্দিষ্ট সংখ্যকবার repeat করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;Hi &quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.repeat(<span class="syn-num">3</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hi Hi Hi</div>
+    </div>
+
+    <!-- 8.56 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.56</span> <code>padStart()</code></div>
+<p class="text-p">String-এর শুরুতে character যোগ করে নির্দিষ্ট length করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> number = <span class="syn-str">&quot;5&quot;</span>;
+
+<span class="syn-fn">console</span>.log(number.padStart(<span class="syn-num">3</span>, <span class="syn-str">&quot;0&quot;</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">005</div>
+    </div>
+
+    <!-- 8.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.57</span> <code>padEnd()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> number = <span class="syn-str">&quot;5&quot;</span>;
+
+<span class="syn-fn">console</span>.log(number.padEnd(<span class="syn-num">3</span>, <span class="syn-str">&quot;0&quot;</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">500</div>
+    </div>
+
+    <!-- 8.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.58</span> Real-life Example — Invoice Number</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> invoiceNumber = <span class="syn-str">&quot;25&quot;</span>;
+
+<span class="syn-kw">let</span> formatted = invoiceNumber.padStart(<span class="syn-num">5</span>, <span class="syn-str">&quot;0&quot;</span>);
+
+<span class="syn-fn">console</span>.log(formatted);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">00025</div>
+    </div>
+
+    <div class="part-banner">Part 06 — Unicode, Objects, Conversion & Real-Life Projects (8.59 – 8.75)</div>
+
+    <!-- 8.59 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.59</span> <code>charCodeAt()</code></div>
+<p class="text-p">Character-এর UTF-16 code unit value পাওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> letter = <span class="syn-str">&quot;A&quot;</span>;
+
+<span class="syn-fn">console</span>.log(letter.charCodeAt(<span class="syn-num">0</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">65</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(&quot;a&quot;.charCodeAt(<span class="syn-num">0</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">97</div>
+    </div>
+
+    <!-- 8.60 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.60</span> <code>String.fromCharCode()</code></div>
+<p class="text-p">Code value থেকে String character তৈরি করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">String</span>.fromCharCode(<span class="syn-num">65</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">A</div>
+    </div>
+
+    <!-- 8.61 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.61</span> Unicode</div>
+<p class="text-p">JavaScript String Unicode text handle করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;বাংলাদেশ&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">বাংলাদেশ</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;Hello 👋&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hello 👋</div>
+    </div>
+
+    <!-- 8.62 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.62</span> <code>localeCompare()</code></div>
+<p class="text-p">দুটি String compare করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(&quot;apple<span class="syn-str">&quot;.localeCompare(&quot;</span>banana&quot;));</pre>
+</div>
+<p class="text-p">সাধারণত negative result পাওয়া যাবে, কারণ <code>&quot;apple&quot;</code> আগে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(&quot;banana<span class="syn-str">&quot;.localeCompare(&quot;</span>apple&quot;));</pre>
+</div>
+<p class="text-p">সাধারণত positive result।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(&quot;apple<span class="syn-str">&quot;.localeCompare(&quot;</span>apple&quot;));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">0</div>
+<p class="text-p">Sorting-এর সময় এটি useful।</p>
+    </div>
+
+    <!-- 8.63 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.63</span> Case-sensitive Comparison</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(&quot;hello<span class="syn-str">&quot; === &quot;</span>Hello&quot;);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">h ≠ H</div>
+    </div>
+
+    <!-- 8.64 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.64</span> Case-insensitive Comparison</div>
+<p class="text-p">দুটিকে একই case-এ convert করে compare করতে পারো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> a = <span class="syn-str">&quot;Hello&quot;</span>;
+<span class="syn-kw">let</span> b = <span class="syn-str">&quot;HELLO&quot;</span>;
+
+<span class="syn-fn">console</span>.log(a.toLowerCase() === b.toLowerCase());</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+    </div>
+
+    <!-- 8.65 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.65</span> String Object বনাম Primitive String</div>
+<p class="text-p">সাধারণভাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;</pre>
+</div>
+<p class="text-p">এটি primitive String।</p>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-kw">new</span> <span class="syn-fn">String</span>(&quot;Ripon&quot;);</pre>
+</div>
+<p class="text-p">এটি String object।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Important</h4>
+<p class="text-p">সাধারণ application code-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Important</span></div>
+  <pre><span class="syn-kw">new</span> <span class="syn-fn">String</span>()</pre>
+</div>
+<p class="text-p">ব্যবহার না করাই ভালো।</p>
+<p class="text-p">Primitive String ব্যবহার করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Important</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;</pre>
+</div>
+    </div>
+
+    <!-- 8.66 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.66</span> <code>typeof String</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> name);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">string</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-kw">new</span> <span class="syn-fn">String</span>(&quot;Ripon&quot;);
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> name);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">object</div>
+    </div>
+
+    <!-- 8.67 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.67</span> String Conversion</div>
+<p class="text-p">Number → String:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-num">23</span>;
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">String</span>(age));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">&quot;23&quot;</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(age.toString());</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">&quot;23&quot;</div>
+    </div>
+
+    <!-- 8.68 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.68</span> Real-life Example — User Input</div>
+<p class="text-p">Browser-এর form input সাধারণত String হিসেবে আসে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-str">&quot;23&quot;</span>;
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> age);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">string</div>
+<p class="text-p">Number হিসেবে দরকার হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> numericAge = <span class="syn-fn">Number</span>(age);
+
+<span class="syn-fn">console</span>.log(numericAge);
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> numericAge);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">23
+number</div>
+    </div>
+
+    <!-- 8.69 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.69</span> String Methods একসাথে</div>
+<p class="text-p">একটি String:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;  JavaScript is Awesome  &quot;</span>;</pre>
+</div>
+<p class="text-p">এর উপর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(text.trim());
+<span class="syn-fn">console</span>.log(text.toUpperCase());
+<span class="syn-fn">console</span>.log(text.toLowerCase());
+<span class="syn-fn">console</span>.log(text.includes(&quot;JavaScript<span class="syn-str">&quot;));
+console.log(text.startsWith(&quot;</span>  Java<span class="syn-str">&quot;));
+console.log(text.endsWith(&quot;</span>  &quot;));</pre>
+</div>
+<p class="text-p">এভাবে বিভিন্ন operation করা যায়।</p>
+    </div>
+
+    <!-- 8.70 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">8.70</span> Real-life Project Example — Username Formatter</div>
+<p class="text-p">ধরো user লিখেছে:</p>
+<div class="ascii-tree-container">   SHARIAR AHAMED RIPON</div>
+<p class="text-p">আমরা চাই:</p>
+<div class="ascii-tree-container">shariar ahamed ripon</div>
+<p class="text-p">Code:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> username = <span class="syn-str">&quot;   SHARIAR AHAMED RIPON   &quot;</span>;
+
+<span class="syn-kw">let</span> formattedUsername = username
+    .trim()
+    .toLowerCase();
+
+<span class="syn-fn">console</span>.log(formattedUsername);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">shariar ahamed ripon</div>
+    </div>
+
+    <!-- 8.71 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.71</span> Real-life Example — Email Normalization</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> email = <span class="syn-str">&quot;   USER@GMAIL.COM   &quot;</span>;
+
+email = email.trim().toLowerCase();
+
+<span class="syn-fn">console</span>.log(email);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">user@gmail.com</div>
+    </div>
+
+    <!-- 8.72 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.72</span> Real-life Example — File Extension</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> fileName = <span class="syn-str">&quot;profile.png&quot;</span>;
+
+<span class="syn-kw">if</span> (fileName.endsWith(&quot;.png<span class="syn-str">&quot;)) {
+    console.log(&quot;</span>PNG image detected&quot;);
+}</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">PNG image detected</div>
+    </div>
+
+    <!-- 8.73 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.73</span> Real-life Example — Search Box</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> product = <span class="syn-str">&quot;HP Laptop Core i5&quot;</span>;
+
+<span class="syn-kw">let</span> search = <span class="syn-str">&quot;laptop&quot;</span>;
+
+<span class="syn-kw">if</span> (product.toLowerCase().includes(search.toLowerCase())) {
+    <span class="syn-fn">console</span>.log(&quot;Product found&quot;);
+}</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Product found</div>
+<p class="text-p">এটি e-commerce search functionality-এর basic concept।</p>
+    </div>
+
+    <!-- 8.74 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8.74</span> Real-life Example — Generate Profile Message</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;
+<span class="syn-kw">let</span> skill = <span class="syn-str">&quot;Full Stack Development&quot;</span>;
+<span class="syn-kw">let</span> experience = <span class="syn-num">1</span>;
+
+<span class="syn-kw">let</span> message = <span class="syn-str">`
+Hello, I am ${name}.
+I am learning ${skill}.
+Experience: ${experience} year.
+`</span>;
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hello, I am Shariar.
+I am learning Full Stack Development.
+Experience: 1 year.</div>
+    </div>
+
+    <!-- 8.75 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">8.75</span> String Methods Cheat Sheet 🧠</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>.length</code></td><td>String-এর length</td></tr><tr><td><code>[index]</code></td><td>Character access</td></tr><tr><td><code>.at()</code></td><td>Character access</td></tr><tr><td><code>.charAt()</code></td><td>Character access</td></tr><tr><td><code>.toUpperCase()</code></td><td>Uppercase</td></tr><tr><td><code>.toLowerCase()</code></td><td>Lowercase</td></tr><tr><td><code>.trim()</code></td><td>দুই পাশের whitespace remove</td></tr><tr><td><code>.trimStart()</code></td><td>শুরু থেকে whitespace remove</td></tr><tr><td><code>.trimEnd()</code></td><td>শেষ থেকে whitespace remove</td></tr><tr><td><code>.includes()</code></td><td>text আছে কিনা</td></tr><tr><td><code>.startsWith()</code></td><td>শুরু check</td></tr><tr><td><code>.endsWith()</code></td><td>শেষ check</td></tr><tr><td><code>.indexOf()</code></td><td>প্রথম occurrence-এর index</td></tr><tr><td><code>.lastIndexOf()</code></td><td>শেষ occurrence-এর index</td></tr><tr><td><code>.search()</code></td><td>Search</td></tr><tr><td><code>.slice()</code></td><td>অংশ বের করা</td></tr><tr><td><code>.substring()</code></td><td>অংশ বের করা</td></tr><tr><td><code>.replace()</code></td><td>একটি occurrence replace</td></tr><tr><td><code>.replaceAll()</code></td><td>সব occurrence replace</td></tr><tr><td><code>.concat()</code></td><td>String যোগ</td></tr><tr><td><code>.split()</code></td><td>String → Array</td></tr><tr><td><code>.repeat()</code></td><td>Repeat</td></tr><tr><td><code>.padStart()</code></td><td>শুরুতে padding</td></tr><tr><td><code>.padEnd()</code></td><td>শেষে padding</td></tr><tr><td><code>.charCodeAt()</code></td><td>Character code</td></tr><tr><td><code>String.fromCharCode()</code></td><td>Code → Character</td></tr><tr><td><code>.localeCompare()</code></td><td>String comparison</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <div class="part-banner">Part 07 — Comprehensive Mental Map, Key Concepts &amp; Practice Lab</div>
+
+    <!-- String Architecture Tree -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">MENTAL MAP</span> 🔥 String-এর সবচেয়ে গুরুত্বপূর্ণ বিষয় (Architecture Tree)</div>
+<p class="text-p">এই flow-টা মনে রাখো:</p>
+<div class="ascii-tree-container">String
+ │
+ ├── Create
+ │    ├── &quot;Hello&quot;
+ │    ├── &#x27;Hello&#x27;
+ │    └── `Hello`
+ │
+ ├── Access
+ │    ├── [index]
+ │    ├── at()
+ │    └── charAt()
+ │
+ ├── Information
+ │    └── length
+ │
+ ├── Transform
+ │    ├── toUpperCase()
+ │    ├── toLowerCase()
+ │    ├── trim()
+ │    └── replace()
+ │
+ ├── Search
+ │    ├── includes()
+ │    ├── indexOf()
+ │    ├── startsWith()
+ │    └── endsWith()
+ │
+ ├── Extract
+ │    ├── slice()
+ │    └── substring()
+ │
+ ├── Convert
+ │    └── split()
+ │
+ └── Template
+      └── `${}`</div>
+    </div>
+
+    <!-- Critical Concepts -->
+    <div class="study-card" style="border-left: 4px solid #ef4444;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">CORE CONCEPTS</span> 🧠 খুব গুরুত্বপূর্ণ Concept</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">String Immutable</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>String Immutable</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;Hello&quot;</span>;
+
+text[<span class="syn-num">0</span>] = <span class="syn-str">&quot;Y&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Hello</div>
+<p class="text-p">String-এর character সরাসরি পরিবর্তন করা যায় না।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>slice()</code> end index include করে না</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>slice() end index include করে না</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.slice(<span class="syn-num">0</span>, <span class="syn-num">4</span>));</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Java</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>includes()</code> Boolean দেয়</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>includes() Boolean দেয়</span></div>
+  <pre><span class="syn-str">&quot;JavaScript&quot;</span>.includes(&quot;Script&quot;);</pre>
+</div>
+<p class="text-p">Result:</p>
+<div class="output-box">true</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>indexOf()</code> না পেলে <code>-1</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>indexOf() না পেলে -1</span></div>
+  <pre><span class="syn-str">&quot;Hello&quot;</span>.indexOf(&quot;x&quot;);</pre>
+</div>
+<p class="text-p">Result:</p>
+<div class="output-box">-1</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>split()</code> String-কে Array বানায়</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>split() String-কে Array বানায়</span></div>
+  <pre><span class="syn-str">&quot;HTML,CSS,JS&quot;</span>.split(&quot;,&quot;);</pre>
+</div>
+<p class="text-p">Result:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>split() String-কে Array বানায়</span></div>
+  <pre>[&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JS&quot;]</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — Chapter 8</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 1</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name.length);
+<span class="syn-fn">console</span>.log(name[<span class="syn-num">0</span>]);
+<span class="syn-fn">console</span>.log(name[name.length - <span class="syn-num">1</span>]);</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 2</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;Hello JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.toUpperCase());
+<span class="syn-fn">console</span>.log(text.toLowerCase());</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 3</h4>
+<p class="text-p">User input:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> username = <span class="syn-str">&quot;   SHARIAR   &quot;</span>;</pre>
+</div>
+<p class="text-p">এমন code লেখো যাতে output হয়:</p>
+<div class="output-box">shariar</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 4</h4>
+<p class="text-p">Check করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> email = <span class="syn-str">&quot;user@gmail.com&quot;</span>;</pre>
+</div>
+<p class="text-p">Email-এর মধ্যে <code>@</code> আছে কিনা।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 5</h4>
+<p class="text-p">Check করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> file = <span class="syn-str">&quot;profile.jpg&quot;</span>;</pre>
+</div>
+<p class="text-p">এটি <code>.jpg</code> file কিনা।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 6</h4>
+<p class="text-p">এই String থেকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> text = <span class="syn-str">&quot;JavaScript&quot;</span>;</pre>
+</div>
+<p class="text-p">শুধু:</p>
+<div class="output-box">Script</div>
+<p class="text-p">বের করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 7</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> skills = <span class="syn-str">&quot;HTML,CSS,JavaScript,React&quot;</span>;</pre>
+</div>
+<p class="text-p">এটিকে Array বানাও।</p>
+<p class="text-p">Expected:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>[&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;, &quot;</span>React&quot;]</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 8</h4>
+<p class="text-p">নিচের output তৈরি করো:</p>
+<div class="ascii-tree-container">My name is Shariar.
+I am 23 years old.
+I am learning JavaScript.</div>
+<p class="text-p"><strong>Template Literal</strong> ব্যবহার করে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 9 — Mini Project 💻</h4>
+<p class="text-p">একটি product data:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> productName = <span class="syn-str">&quot;  HP LAPTOP  &quot;</span>;
+<span class="syn-kw">let</span> price = <span class="syn-num">75000</span>;
+<span class="syn-kw">let</span> category = <span class="syn-str">&quot;electronics&quot;</span>;</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Product: HP LAPTOP
+Price: 75000 BDT
+Category: ELECTRONICS</div>
+<p class="text-p">এখানে ব্যবহার করবে:</p>
+<ul class="clean-list"><li><code>trim()</code></li><li><code>toUpperCase()</code></li><li>Template Literal</li></ul>
+      </div>
+    </div>
+
+    <!-- Chapter 8 Final Summary -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 8 Final Summary</div>
+<p class="text-p">এই chapter-এ আমরা শিখলাম:</p>
+<div class="ascii-tree-container">✅ String কী
+✅ Single / Double / Backtick
+✅ Escape Characters
+✅ String Length
+✅ Indexing
+✅ at()
+✅ charAt()
+✅ Concatenation
+✅ Template Literals
+✅ ${expression}
+✅ Multiline Strings
+✅ toUpperCase()
+✅ toLowerCase()
+✅ trim()
+✅ includes()
+✅ startsWith()
+✅ endsWith()
+✅ indexOf()
+✅ lastIndexOf()
+✅ search()
+✅ slice()
+✅ substring()
+✅ replace()
+✅ replaceAll()
+✅ concat()
+✅ split()
+✅ repeat()
+✅ padStart()
+✅ padEnd()
+✅ charCodeAt()
+✅ Unicode
+✅ localeCompare()
+✅ String Conversion
+✅ String Immutability</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">⭐ সবচেয়ে বেশি ব্যবহার হবে</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>⭐ সবচেয়ে বেশি ব্যবহার হবে</span></div>
+  <pre>length
+[]
+at()
+toUpperCase()
+toLowerCase()
+trim()
+includes()
+startsWith()
+endsWith()
+indexOf()
+slice()
+replace()
+split()</pre>
+</div>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 🚀 Chapter 9 Preview — Arrays</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায় হবে <strong>📘 Chapter 9 — Arrays</strong>, যেখানে আমরা Array তৈরি, indexing, <code>push()</code>, <code>pop()</code>, <code>shift()</code>, <code>unshift()</code>, <code>slice()</code>, <code>splice()</code>, <code>find()</code>, <code>filter()</code>, <code>map()</code>, <code>reduce()</code>, <code>sort()</code>, <code>forEach()</code>, nested arrays, array destructuring এবং real-life projectsসহ বিস্তারিত শিখব।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 07: Scope &amp; Hoisting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-dark: #0b2545;
+      --navy-mid: #134074;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-subtle: #f0f9ff;
+      --teal-accent: #0d9488;
+      --green-accent: #059669;
+      --green-light: #ecfdf5;
+      --amber-accent: #d97706;
+      --amber-light: #fefce8;
+      --amber-border: #fef08a;
+      --red-accent: #dc2626;
+      --red-light: #fef2f2;
+      --purple-accent: #7c3aed;
+      --purple-light: #f5f3ff;
+      --text-dark: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #475569;
+      --text-sub: #64748b;
+      --card-bg: #ffffff;
+      --page-bg: #f1f5f9;
+      --border-card: #e2e8f0;
+      --border-subtle: #cbd5e1;
+      --code-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-body);
+      font-size: 12px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .action-bar .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    }
+    .print-btn:hover {
+      background: #0284c7;
+    }
+
+    /* Document Sheet */
+    .doc-page {
+      max-width: 820px;
+      margin: 20px auto;
+      background: var(--card-bg);
+      padding: 32px 36px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-card);
+    }
+
+    /* Header Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #0b2545 0%, #0d3b66 55%, #0284c7 100%);
+      border-radius: 8px;
+      padding: 14px 20px;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #38bdf8;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .banner-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 12px;
+      color: #93c5fd;
+      margin-bottom: 10px;
+      margin-left: 40px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 8px;
+    }
+    .meta-item .meta-label {
+      font-size: 10px;
+      color: #7dd3fc;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .meta-item .meta-val {
+      font-size: 11px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: var(--blue-light);
+      border-left: 4px solid var(--blue-accent);
+      color: #0369a1;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 12px 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 9px 13px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.015);
+    }
+    .card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* Section Sub-labels */
+    .tag-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 5px 0 2px 0;
+      display: block;
+    }
+    .tag-label.cyan { color: #0284c7; }
+    .tag-label.green { color: #059669; }
+    .tag-label.amber { color: #d97706; }
+    .tag-label.purple { color: #6366f1; }
+    .tag-label.red { color: #dc2626; }
+
+    p.text-p {
+      margin-bottom: 3px;
+      font-size: 11.5px;
+      color: var(--text-body);
+      line-height: 1.5;
+    }
+
+    ul.clean-list {
+      margin-left: 18px;
+      margin-bottom: 4px;
+    }
+    ul.clean-list li {
+      margin-bottom: 2px;
+      font-size: 11.5px;
+    }
+
+    /* Definition Alert inside card */
+    .def-box {
+      border-radius: 4px;
+      padding: 5px 9px;
+      margin: 4px 0;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .def-box.english {
+      background: var(--blue-subtle);
+      border-left: 3px solid var(--blue-accent);
+      color: #0c4a6e;
+    }
+    .def-box.bangla {
+      background: #faf5ff;
+      border-left: 3px solid #9333ea;
+      color: #581c87;
+    }
+
+    /* Memory / Rule box */
+    .memory-box {
+      background: var(--amber-light);
+      border: 1px solid var(--amber-border);
+      border-left: 4px solid #eab308;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #713f12;
+      margin: 5px 0 4px 0;
+    }
+
+    /* Error / Warning box */
+    .warn-box {
+      background: var(--red-light);
+      border: 1px solid #fecaca;
+      border-left: 4px solid var(--red-accent);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #7f1d1d;
+      margin: 5px 0 4px 0;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 6px 0 8px 0;
+      border: 1px solid var(--border-card);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: left;
+    }
+    thead th {
+      background: #f8fafc;
+      color: var(--text-dark);
+      font-weight: 700;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+    tbody tr:nth-child(even) {
+      background: #fbfcfe;
+    }
+    tbody td {
+      padding: 5px 8px;
+      color: var(--text-body);
+    }
+
+    /* Code & Terminal */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    pre {
+      margin: 0;
+      padding: 6px 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      line-height: 1.4;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 10.5px;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .output-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-left: 3px solid #64748b;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      color: #334155;
+      margin: 3px 0 6px 0;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 07: SCOPE &amp; HOISTING</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">47 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 03 — Core Mechanics (3/3)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Lexical Scope, Closures &amp; Hoisting</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Scope &amp; Hoisting — Scope এবং Hoisting</h2>
+      <p class="text-p">Chapter 6-এ আমরা <strong>Functions</strong> শিখেছি। এখন JavaScript-এর খুব গুরুত্বপূর্ণ একটি বিষয় হলো <strong>Scope</strong> এবং <strong>Hoisting</strong>।</p>
+      <p class="text-p" style="font-weight: 600; color: #0369a1;">এই chapter ভালোভাবে বুঝলে পরবর্তীতে <strong>Closures, Modules, Async JavaScript, React, Node.js</strong>—সবকিছু বুঝতে অনেক সহজ হবে।</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Core Scopes: Global, Function & Block Scopes (7.1 – 7.10)</div>
+
+    <!-- 7.1 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.1</span> Scope কী?</div>
+<div class="def-box bangla"><strong>Scope</strong> মানে হলো—কোন variable বা function-কে <strong>কোথা থেকে access করা যাবে</strong>, সেই সীমা বা area।</div>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Rule:</strong> <strong>Scope = কোন জায়গা থেকে কোন variable ব্যবহার করা যাবে।</strong></div>
+<span class="tag-label cyan">Real-Life Example</span>
+<p class="text-p">ধরো একটি বিশ্ববিদ্যালয়ে:</p>
+<ul class="clean-list"><li>University-এর main gate → সবাই access করতে পারে</li><li>Department-এর room → শুধু department-এর মানুষ</li><li>Teacher&#x27;s personal room → আরও limited access</li></ul>
+<p class="text-p">JavaScript-এও variable-এর access একইভাবে সীমাবদ্ধ হতে পারে।</p>
+    </div>
+
+    <!-- 7.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.2</span> JavaScript-এ Scope-এর প্রধান ধরন</div>
+<p class="text-p">JavaScript-এ আমরা প্রধানত এগুলো দেখতে পাই:</p>
+<ul class="clean-list"><li>Global Scope</li><li>Function Scope</li><li>Block Scope</li><li>Lexical Scope</li><li>Module Scope</li></ul>
+    </div>
+
+    <!-- 7.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.3</span> Global Scope</div>
+<p class="text-p">যে variable কোনো function বা block-এর বাইরে declare করা হয়, সেটি সাধারণত <strong>Global Scope</strong>-এ থাকে।</p>
+<span class="tag-label purple">Code</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;
+
+<span class="syn-kw">function</span> showName() {
+    <span class="syn-fn">console</span>.log(name);
+}
+
+showName();
+<span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar
+Shariar</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Explanation</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Explanation</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;</pre>
+</div>
+<p class="text-p">এটি function-এর বাইরে আছে।</p>
+<p class="text-p">তাই function-এর ভেতর থেকেও:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Explanation</span></div>
+  <pre><span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<p class="text-p">access করা যাচ্ছে।</p>
+<span class="tag-label cyan">Real-Life Example</span>
+<p class="text-p">University-এর notice board-এ যদি কোনো notice দেওয়া থাকে, তাহলে অনেক department-এর মানুষ সেটা দেখতে পারে।</p>
+<p class="text-p">ঠিক তেমনি global variable অনেক জায়গা থেকে accessible হতে পারে।</p>
+    </div>
+
+    <!-- 7.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.4</span> Global Variable-এর সমস্যা</div>
+<p class="text-p">Global variable বেশি ব্যবহার করা ভালো practice নয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> username = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-kw">function</span> changeName() {
+    username = <span class="syn-str">&quot;Shariar&quot;</span>;
+}
+
+changeName();
+
+<span class="syn-fn">console</span>.log(username);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar</div>
+<p class="text-p">Function-এর ভিতর থেকে global variable পরিবর্তন হয়ে গেছে।</p>
+<p class="text-p">বড় application-এ এমন অনেক global variable থাকলে debugging কঠিন হয়ে যেতে পারে।</p>
+    </div>
+
+    <!-- 7.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.5</span> Function Scope</div>
+<p class="text-p">কোনো variable যদি function-এর ভিতরে declare করা হয়, তাহলে সেটি সাধারণত সেই function-এর মধ্যেই accessible।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+    <span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello JavaScript&quot;</span>;
+
+    <span class="syn-fn">console</span>.log(message);
+}
+
+test();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello JavaScript</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+    <span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello JavaScript&quot;</span>;
+}
+
+test();
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">ReferenceError</div>
+<p class="text-p">কারণ <code>message</code> function-এর বাইরে accessible নয়।</p>
+    </div>
+
+    <!-- 7.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.6</span> <code>var</code> এবং Function Scope</div>
+<p class="text-p"><code>var</code> হলো function-scoped।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+    <span class="syn-kw">var</span> x = <span class="syn-num">10</span>;
+
+    <span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+        <span class="syn-kw">var</span> x = <span class="syn-num">20</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(x);
+}
+
+test();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">20</div>
+<p class="text-p">কারণ <code>var</code> block scope মানে না।</p>
+    </div>
+
+    <!-- 7.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.7</span> Block Scope</div>
+<p class="text-p"><code>{ }</code> দ্বারা তৈরি block-এর ভিতরে থাকা scope-কে <strong>Block Scope</strong> বলা হয়।</p>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+    <span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello&quot;</span>;
+    <span class="syn-fn">console</span>.log(message);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+    <span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello&quot;</span>;
+}
+
+<span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">ReferenceError</div>
+<p class="text-p">কারণ <code>message</code> শুধু ওই block-এর ভিতরে accessible।</p>
+    </div>
+
+    <!-- 7.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.8</span> <code>let</code> এবং <code>const</code> হলো Block Scoped</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+    <span class="syn-kw">let</span> a = <span class="syn-num">10</span>;
+    <span class="syn-kw">const</span> b = <span class="syn-num">20</span>;
+
+    <span class="syn-fn">console</span>.log(a);
+    <span class="syn-fn">console</span>.log(b);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">10
+20</div>
+<p class="text-p">কিন্তু বাইরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(a);
+<span class="syn-fn">console</span>.log(b);</pre>
+</div>
+<p class="text-p">access করা যাবে না।</p>
+    </div>
+
+    <!-- 7.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.9</span> <code>var</code> vs <code>let</code> vs <code>const</code></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Feature</th><th><code>var</code></th><th><code>let</code></th><th><code>const</code></th></tr></thead>
+    <tbody>
+      <tr><td>Scope</td><td>Function</td><td>Block</td><td>Block</td></tr><tr><td>Reassign</td><td>✅</td><td>✅</td><td>❌</td></tr><tr><td>Redeclare same scope</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td>Hoisted</td><td>✅</td><td>✅*</td><td>✅*</td></tr><tr><td>TDZ</td><td>❌</td><td>✅</td><td>✅</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p"><code>*</code> এখানে hoisting হয়, কিন্তু <code>let</code>/<code>const</code> declaration initialization-এর আগে access করা যায় না।</p>
+<p class="text-p">এটা আমরা একটু পরেই বিস্তারিত দেখব।</p>
+    </div>
+
+    <!-- 7.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.10</span> Block Scope-এর Real-life Example</div>
+<p class="text-p">ধরো একটি company-তে:</p>
+<div class="ascii-tree-container">Company
+│
+├── HR Department
+│
+├── Development Department
+│
+└── Marketing Department</div>
+<p class="text-p">Development department-এর private variable Marketing department সরাসরি ব্যবহার করতে পারবে না।</p>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>{
+    <span class="syn-kw">let</span> developer = <span class="syn-str">&quot;Ripon&quot;</span>;
+}
+
+<span class="syn-fn">console</span>.log(developer);</pre>
+</div>
+<p class="text-p">এখানে <code>developer</code> block-এর বাইরে পাওয়া যাবে না।</p>
+    </div>
+
+    <div class="part-banner">Part 02 — Scope Chain, Lexical Scope & Variable Shadowing (7.11 – 7.19)</div>
+
+    <!-- 7.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.11</span> Nested Scope</div>
+<p class="text-p">একটি scope-এর ভিতরে আরেকটি scope থাকতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> university = <span class="syn-str">&quot;DIU&quot;</span>;
+
+<span class="syn-kw">function</span> department() {
+
+    <span class="syn-kw">let</span> dept = <span class="syn-str">&quot;CSE&quot;</span>;
+
+    <span class="syn-kw">function</span> student() {
+
+        <span class="syn-kw">let</span> studentName = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+        <span class="syn-fn">console</span>.log(university);
+        <span class="syn-fn">console</span>.log(dept);
+        <span class="syn-fn">console</span>.log(studentName);
+    }
+
+    student();
+}
+
+department();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">DIU
+CSE
+Ripon</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">Global Scope
+    ↓
+department Scope
+    ↓
+student Scope</div>
+    </div>
+
+    <!-- 7.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.12</span> Scope Chain</div>
+<p class="text-p">JavaScript কোনো variable খুঁজলে প্রথমে <strong>বর্তমান scope</strong>-এ খোঁজে।</p>
+<p class="text-p">না পেলে outer scope-এ যায়।</p>
+<p class="text-p">আবার না পেলে আরও outer scope-এ যায়।</p>
+<p class="text-p">এটাকে বলা হয়:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Rule:</strong> <strong>Scope Chain</strong></div>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> university = <span class="syn-str">&quot;DIU&quot;</span>;
+
+<span class="syn-kw">function</span> department() {
+
+    <span class="syn-kw">let</span> dept = <span class="syn-str">&quot;CSE&quot;</span>;
+
+    <span class="syn-kw">function</span> student() {
+
+        <span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+        <span class="syn-fn">console</span>.log(name);
+        <span class="syn-fn">console</span>.log(dept);
+        <span class="syn-fn">console</span>.log(university);
+    }
+
+    student();
+}
+
+department();</pre>
+</div>
+<p class="text-p">JavaScript <code>name</code> খুঁজবে:</p>
+<div class="ascii-tree-container">student scope
+    ↓
+department scope
+    ↓
+global scope</div>
+    </div>
+
+    <!-- 7.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.13</span> Scope Chain Real-life Example</div>
+<p class="text-p">ধরো তুমি তোমার room-এ একটি mobile খুঁজছো।</p>
+<p class="text-p">প্রথমে:</p>
+<div class="ascii-tree-container">নিজের Room</div>
+<p class="text-p">না পেলে:</p>
+<div class="ascii-tree-container">বাসার অন্য জায়গা</div>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">অন্য জায়গা</div>
+<p class="text-p">JavaScript variable খোঁজার ক্ষেত্রেও একই ধরনের ধারণা কাজ করে।</p>
+    </div>
+
+    <!-- 7.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.14</span> Inner Scope → Outer Scope Access</div>
+<p class="text-p">Inner scope outer variable access করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> test() {
+
+    <span class="syn-kw">let</span> y = <span class="syn-num">20</span>;
+
+    <span class="syn-fn">console</span>.log(x);
+    <span class="syn-fn">console</span>.log(y);
+}
+
+test();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">10
+20</div>
+<p class="text-p">কিন্তু outer scope inner variable access করতে পারে না।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+    <span class="syn-kw">let</span> y = <span class="syn-num">20</span>;
+}
+
+test();
+
+<span class="syn-fn">console</span>.log(y);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">ReferenceError</div>
+    </div>
+
+    <!-- 7.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.15</span> Lexical Scope</div>
+<p class="text-p">JavaScript-এর scope <strong>code কোথায় লেখা হয়েছে</strong> তার ওপর নির্ভর করে।</p>
+<p class="text-p">এটাকে বলা হয়:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Rule:</strong> <strong>Lexical Scope</strong></div>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-kw">function</span> outer() {
+
+    <span class="syn-kw">let</span> university = <span class="syn-str">&quot;DIU&quot;</span>;
+
+    <span class="syn-kw">function</span> inner() {
+        <span class="syn-fn">console</span>.log(name);
+        <span class="syn-fn">console</span>.log(university);
+    }
+
+    inner();
+}
+
+outer();</pre>
+</div>
+<p class="text-p"><code>inner()</code> function যেখানে লেখা হয়েছে, সেই জায়গার lexical environment অনুযায়ী সে outer variable access করতে পারে।</p>
+    </div>
+
+    <!-- 7.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.16</span> Important: Function কোথায় Call করা হচ্ছে সেটা নয়</div>
+<p class="text-p">JavaScript lexical scope follow করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> x = <span class="syn-str">&quot;Global&quot;</span>;
+
+<span class="syn-kw">function</span> show() {
+    <span class="syn-fn">console</span>.log(x);
+}
+
+<span class="syn-kw">function</span> test() {
+    <span class="syn-kw">let</span> x = <span class="syn-str">&quot;Local&quot;</span>;
+    show();
+}
+
+test();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Global</div>
+<p class="text-p">অনেকে ভাবতে পারে:</p>
+<div class="ascii-tree-container">test()
+  ↓
+show()</div>
+<p class="text-p">তাই <code>show()</code> local <code>x</code> পাবে।</p>
+<p class="text-p">কিন্তু তা নয়।</p>
+<p class="text-p"><code>show()</code> কোথায় <strong>defined</strong> হয়েছে সেটাই গুরুত্বপূর্ণ।</p>
+    </div>
+
+    <!-- 7.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.17</span> Shadowing</div>
+<p class="text-p">Outer scope এবং inner scope-এ একই নামের variable থাকলে inner variable outer variable-কে <strong>shadow</strong> করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Global&quot;</span>;
+
+<span class="syn-kw">function</span> test() {
+
+    <span class="syn-kw">let</span> name = <span class="syn-str">&quot;Local&quot;</span>;
+
+    <span class="syn-fn">console</span>.log(name);
+}
+
+test();
+
+<span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Local
+Global</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">কী হলো?</h4>
+<p class="text-p">Function-এর ভিতরের:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>কী হলো?</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Local&quot;</span>;</pre>
+</div>
+<p class="text-p">outer:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>কী হলো?</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Global&quot;</span>;</pre>
+</div>
+<p class="text-p">কে shadow করেছে।</p>
+    </div>
+
+    <!-- 7.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.18</span> Real-life Shadowing Example</div>
+<p class="text-p">ধরো:</p>
+<div class="ascii-tree-container">University Name = DIU
+Department Name = CSE</div>
+<p class="text-p">কোনো department-এর ভিতরে আবার:</p>
+<div class="ascii-tree-container">Department Name = SWE</div>
+<p class="text-p">Department-এর ভিতরে জিজ্ঞেস করলে local নাম পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 7.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.19</span> Illegal Shadowing</div>
+<p class="text-p"><code>let</code> এবং <code>var</code> একসাথে কিছু scope situation-এ conflict করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+
+{
+    <span class="syn-kw">var</span> x = <span class="syn-num">20</span>;
+}</pre>
+</div>
+<p class="text-p">এটি error দেবে।</p>
+<p class="text-p">কারণ <code>var</code> block scope মানে না এবং একই scope binding conflict তৈরি করে।</p>
+    </div>
+
+    <div class="part-banner">Part 03 — Hoisting Mechanics & Temporal Dead Zone (TDZ) (7.20 – 7.30)</div>
+
+    <!-- 7.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.20</span> Hoisting কী?</div>
+<p class="text-p">এখন আসি JavaScript-এর খুব famous concept:</p>
+<p class="text-p"># 🚀 Hoisting</p>
+<p class="text-p">সহজ ভাষায়:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Rule:</strong> JavaScript execution শুরু হওয়ার আগে কিছু declaration-এর জন্য memory setup করে রাখে।</div>
+<p class="text-p">তাই কিছু ক্ষেত্রে declaration-এর আগে code লিখলেও JavaScript error না দিয়ে কাজ করতে পারে।</p>
+    </div>
+
+    <!-- 7.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.21</span> <code>var</code> Hoisting</div>
+<p class="text-p">দেখো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(x);
+
+<span class="syn-kw">var</span> x = <span class="syn-num">10</span>;</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">undefined</div>
+<p class="text-p">এখানে error হয়নি।</p>
+<p class="text-p">Conceptually JavaScript এটাকে এমনভাবে দেখে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> x;
+
+<span class="syn-fn">console</span>.log(x);
+
+x = <span class="syn-num">10</span>;</pre>
+</div>
+<p class="text-p">তাই প্রথমে <code>x</code>-এর value:</p>
+<div class="output-box">undefined</div>
+    </div>
+
+    <!-- 7.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.22</span> <code>let</code> Hoisting</div>
+<p class="text-p">এবার:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(x);
+
+<span class="syn-kw">let</span> x = <span class="syn-num">10</span>;</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">ReferenceError</div>
+<p class="text-p">অনেকে বলে:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Rule:</strong> &quot;<code>let</code> hoist হয় না।&quot;</div>
+<p class="text-p">এটি পুরোপুরি accurate নয়।</p>
+<p class="text-p"><code>let</code> declaration-ও execution context তৈরি হওয়ার সময় binding পায়, কিন্তু initialization-এর আগে access করা যায় না।</p>
+<p class="text-p">এই সময়টাকে বলা হয়:</p>
+<p class="text-p"># Temporal Dead Zone — TDZ</p>
+    </div>
+
+    <!-- 7.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.23</span> Temporal Dead Zone — TDZ</div>
+<p class="text-p"><strong>TDZ</strong> হলো:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Rule:</strong> <code>let</code> বা <code>const</code> declaration শুরু হওয়ার আগের সেই সময়, যখন variable-কে access করলে error হয়।</div>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-fn">console</span>.log(name);
+
+<span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;</pre>
+</div>
+<p class="text-p"><code>name</code> declaration-এর আগে access করা হয়েছে।</p>
+<p class="text-p">তাই:</p>
+<div class="output-box">ReferenceError</div>
+    </div>
+
+    <!-- 7.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.24</span> TDZ Visual</div>
+<div class="ascii-tree-container">let name = &quot;Ripon&quot;;
+
+        ↑
+        |
+   Declaration</div>
+<p class="text-p">Declaration-এর আগে:</p>
+<div class="ascii-tree-container">TDZ</div>
+<p class="text-p">Declaration-এর পরে:</p>
+<div class="output-box">Accessible</div>
+    </div>
+
+    <!-- 7.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.25</span> <code>const</code> এবং Hoisting</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(age);
+
+<span class="syn-kw">const</span> age = <span class="syn-num">23</span>;</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">ReferenceError</div>
+<p class="text-p">কারণ <code>const</code>-ও TDZ-এর মধ্যে থাকে declaration-এর আগে।</p>
+    </div>
+
+    <!-- 7.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.26</span> Function Declaration Hoisting</div>
+<p class="text-p">Function declaration hoisted হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>sayHello();
+
+<span class="syn-kw">function</span> sayHello() {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello!</div>
+<p class="text-p">এটি কাজ করে।</p>
+    </div>
+
+    <!-- 7.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.27</span> Function Expression Hoisting</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>sayHello();
+
+<span class="syn-kw">const</span> sayHello = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+};</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">ReferenceError</div>
+<p class="text-p">কারণ এখানে <code>sayHello</code> একটি <code>const</code> variable-এর মধ্যে function রাখা হয়েছে।</p>
+    </div>
+
+    <!-- 7.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.28</span> <code>var</code> দিয়ে Function Expression</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>sayHello();
+
+<span class="syn-kw">var</span> sayHello = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+};</pre>
+</div>
+<p class="text-p">এখানে সাধারণত:</p>
+<div class="ascii-tree-container">TypeError: sayHello is not a function</div>
+<p class="text-p">কারণ conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> sayHello;
+
+sayHello();
+
+sayHello = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+};</pre>
+</div>
+<p class="text-p">Call করার সময় <code>sayHello</code>-এর value এখনো function হয়নি।</p>
+    </div>
+
+    <!-- 7.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.29</span> Hoisting Summary</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>var</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>var</span></div>
+  <pre><span class="syn-fn">console</span>.log(x);
+<span class="syn-kw">var</span> x = <span class="syn-num">10</span>;</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">undefined</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>let</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>let</span></div>
+  <pre><span class="syn-fn">console</span>.log(x);
+<span class="syn-kw">let</span> x = <span class="syn-num">10</span>;</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">ReferenceError</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>const</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>const</span></div>
+  <pre><span class="syn-fn">console</span>.log(x);
+<span class="syn-kw">const</span> x = <span class="syn-num">10</span>;</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">ReferenceError</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Function Declaration</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Function Declaration</span></div>
+  <pre>hello();
+
+<span class="syn-kw">function</span> hello() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Hello</div>
+    </div>
+
+    <!-- 7.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.30</span> Declaration বনাম Initialization</div>
+<p class="text-p">এই দুইটা একই জিনিস নয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-num">23</span>;</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">let age</div>
+<p class="text-p">= Declaration</p>
+<p class="text-p">আর:</p>
+<div class="ascii-tree-container">age = 23</div>
+<p class="text-p">= Initialization/Assignment</p>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Rule:</strong> Declaration = variable-এর নাম তৈরি করা Initialization = প্রথম value দেওয়া</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Redeclaration, Reassignment & Mutability (7.31 – 7.38)</div>
+
+    <!-- 7.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.31</span> Hoisting-এর সময় <code>var</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> age = <span class="syn-num">23</span>;</pre>
+</div>
+<p class="text-p">Conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> age;   <span class="syn-com">// declaration</span>
+
+age = <span class="syn-num">23</span>;  <span class="syn-com">// initialization</span></pre>
+</div>
+<p class="text-p">Hoisting-এর কারণে declaration অংশ আগে setup হয়।</p>
+    </div>
+
+    <!-- 7.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.32</span> <code>var</code> Redeclaration</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">var</span> x = <span class="syn-num">20</span>;
+
+<span class="syn-fn">console</span>.log(x);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">20</div>
+<p class="text-p"><code>var</code> একই scope-এ redeclare করতে পারে।</p>
+    </div>
+
+    <!-- 7.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.33</span> <code>let</code> Redeclaration</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">let</span> x = <span class="syn-num">20</span>;</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">SyntaxError</div>
+<p class="text-p">একই scope-এ <code>let</code> redeclare করা যায় না।</p>
+    </div>
+
+    <!-- 7.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.34</span> <code>const</code> Redeclaration</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">const</span> x = <span class="syn-num">20</span>;</pre>
+</div>
+<p class="text-p">এটিও:</p>
+<div class="ascii-tree-container">SyntaxError</div>
+    </div>
+
+    <!-- 7.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.35</span> <code>let</code> Reassignment</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> age = <span class="syn-num">23</span>;
+
+age = <span class="syn-num">24</span>;
+
+<span class="syn-fn">console</span>.log(age);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">24</div>
+<p class="text-p"><code>let</code> reassign করা যায়।</p>
+    </div>
+
+    <!-- 7.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.36</span> <code>const</code> Reassignment</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> age = <span class="syn-num">23</span>;
+
+age = <span class="syn-num">24</span>;</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">TypeError</div>
+<p class="text-p">কারণ <code>const</code> binding reassign করা যায় না।</p>
+    </div>
+
+    <!-- 7.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.37</span> কিন্তু <code>const</code> Object পরিবর্তন করা যায় কেন?</div>
+<p class="text-p">এটা খুব গুরুত্বপূর্ণ।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+user.name = <span class="syn-str">&quot;Shariar&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user.name);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar</div>
+<p class="text-p">কারণ <code>const</code> object-এর reference পরিবর্তন করতে দেয় না, কিন্তু object-এর property পরিবর্তন করা যায়।</p>
+    </div>
+
+    <!-- 7.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.38</span> Example</div>
+<p class="text-p">এটা করা যাবে না:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};</pre>
+</div>
+<p class="text-p">কারণ পুরো reference পরিবর্তন করা হচ্ছে।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>user.name = <span class="syn-str">&quot;Shariar&quot;</span>;</pre>
+</div>
+<p class="text-p">allowed।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Scope & Hoisting Combined, Golden Rules & Best Practices (7.39 – 7.47)</div>
+
+    <!-- 7.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.39</span> Global Scope বনাম Block Scope</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Global&quot;</span>;
+
+<span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+
+    <span class="syn-kw">let</span> name = <span class="syn-str">&quot;Block&quot;</span>;
+
+    <span class="syn-fn">console</span>.log(name);
+}
+
+<span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Block
+Global</div>
+    </div>
+
+    <!-- 7.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.40</span> Function Scope বনাম Block Scope</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+
+    <span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+        <span class="syn-kw">var</span> a = <span class="syn-num">10</span>;
+        <span class="syn-kw">let</span> b = <span class="syn-num">20</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(a);
+    <span class="syn-fn">console</span>.log(b);
+}
+
+test();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">10
+ReferenceError</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">var → function scoped
+let → block scoped</div>
+    </div>
+
+    <!-- 7.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.41</span> Scope + Hoisting একসাথে</div>
+<p class="text-p">এখন একটি গুরুত্বপূর্ণ example:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> test() {
+
+    <span class="syn-fn">console</span>.log(x);
+
+    <span class="syn-kw">var</span> x = <span class="syn-num">20</span>;
+
+    <span class="syn-fn">console</span>.log(x);
+}
+
+test();</pre>
+</div>
+<p class="text-p">অনেকে ভাবতে পারে প্রথম <code>console.log(x)</code> এ <code>10</code> আসবে।</p>
+<p class="text-p">কিন্তু output:</p>
+<div class="ascii-tree-container">undefined
+20</div>
+<p class="text-p">কেন?</p>
+<p class="text-p">কারণ function-এর ভিতরের:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> x;</pre>
+</div>
+<p class="text-p">hoisted হয়ে যায়।</p>
+<p class="text-p">Conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> test() {
+
+    <span class="syn-kw">var</span> x;
+
+    <span class="syn-fn">console</span>.log(x);
+
+    x = <span class="syn-num">20</span>;
+
+    <span class="syn-fn">console</span>.log(x);
+}
+
+test();</pre>
+</div>
+    </div>
+
+    <!-- 7.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.42</span> খুব গুরুত্বপূর্ণ Interview Question</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Question:</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Question:</span></div>
+  <pre><span class="syn-kw">var</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> test() {
+
+    <span class="syn-fn">console</span>.log(x);
+
+    <span class="syn-kw">var</span> x = <span class="syn-num">20</span>;
+}
+
+test();</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Answer:</h4>
+<div class="output-box">undefined</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">কারণ:</h4>
+<p class="text-p">Function scope-এর local <code>x</code> hoisted হয়েছে।</p>
+    </div>
+
+    <!-- 7.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.43</span> <code>let</code> দিয়ে একই Example</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> test() {
+
+    <span class="syn-fn">console</span>.log(x);
+
+    <span class="syn-kw">let</span> x = <span class="syn-num">20</span>;
+}
+
+test();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">ReferenceError</div>
+<p class="text-p">কারণ local <code>x</code> TDZ-এর মধ্যে রয়েছে।</p>
+    </div>
+
+    <!-- 7.44 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">7.44</span> Scope-এর Golden Rule 🏆</div>
+<p class="text-p">মনে রাখবে:</p>
+<div class="ascii-tree-container">Global
+   ↓
+Outer Function
+   ↓
+Inner Function
+   ↓
+Block</div>
+<p class="text-p">Inner scope সাধারণত outer scope access করতে পারে।</p>
+<p class="text-p">কিন্তু outer scope inner scope-এর variable সরাসরি access করতে পারে না।</p>
+    </div>
+
+    <!-- 7.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.45</span> Scope-এর Real-life Full Example</div>
+<p class="text-p">ধরো একটি e-commerce website:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> shopName = <span class="syn-str">&quot;Tech Shop&quot;</span>;
+
+<span class="syn-kw">function</span> customer() {
+
+    <span class="syn-kw">let</span> customerName = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+    <span class="syn-kw">function</span> order() {
+
+        <span class="syn-kw">let</span> product = <span class="syn-str">&quot;Laptop&quot;</span>;
+
+        <span class="syn-fn">console</span>.log(shopName);
+        <span class="syn-fn">console</span>.log(customerName);
+        <span class="syn-fn">console</span>.log(product);
+    }
+
+    order();
+}
+
+customer();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Tech Shop
+Ripon
+Laptop</div>
+<p class="text-p">এখানে:</p>
+<div class="output-box">Global
+  shopName
+
+customer()
+  customerName
+
+order()
+  product</div>
+<p class="text-p"><code>order()</code> সব outer scope access করতে পারে।</p>
+    </div>
+
+    <!-- 7.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7.46</span> কেন Scope গুরুত্বপূর্ণ?</div>
+<p class="text-p">Real-world application-এ scope ব্যবহার হয়:</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">1. Data protection</h4>
+<p class="text-p">সব variable global না রেখে নির্দিষ্ট জায়গায় রাখা যায়।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">2. Name conflict কমানো</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>2. Name conflict কমানো</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;A&quot;</span>;</pre>
+</div>
+<p class="text-p">অন্য scope-এ আবার:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>2. Name conflict কমানো</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;B&quot;</span>;</pre>
+</div>
+<p class="text-p">থাকতে পারে।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">3. Code maintainability</h4>
+<p class="text-p">বড় project-এ কোন variable কোথায় ব্যবহার করা যাবে তা পরিষ্কার থাকে।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">4. Security/encapsulation</h4>
+<p class="text-p">Internal data বাইরে expose না করে রাখা যায়।</p>
+    </div>
+
+    <!-- 7.47 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">7.47</span> Best Practice</div>
+<p class="text-p">Modern JavaScript-এ সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span></pre>
+</div>
+<p class="text-p">প্রথম পছন্দ।</p>
+<p class="text-p">Value পরিবর্তন করতে হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span></pre>
+</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span></pre>
+</div>
+<p class="text-p">সাধারণত avoid করা হয় modern code-এ।</p>
+<span class="tag-label green">Example</span>
+<p class="text-p">❌ পুরোনো style:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">var</span> username = <span class="syn-str">&quot;Ripon&quot;</span>;</pre>
+</div>
+<p class="text-p">✅ Modern:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">const</span> username = <span class="syn-str">&quot;Ripon&quot;</span>;</pre>
+</div>
+<p class="text-p">যদি value পরিবর্তন হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> score = <span class="syn-num">0</span>;
+
+score = <span class="syn-num">10</span>;</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 06 — Comprehensive Cheat Sheet, Must Know &amp; Practice Lab</div>
+
+    <!-- Chapter 7 Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Concept</th><th>সহজ অর্থ</th></tr></thead>
+    <tbody>
+      <tr><td>Scope</td><td>Variable কোথায় accessible</td></tr><tr><td>Global Scope</td><td>প্রায় পুরো script/module-এর top-level scope</td></tr><tr><td>Function Scope</td><td>Function-এর ভিতরের scope</td></tr><tr><td>Block Scope</td><td><code>{ }</code> block-এর scope</td></tr><tr><td>Scope Chain</td><td>এক scope থেকে outer scope-এ variable খোঁজা</td></tr><tr><td>Lexical Scope</td><td>Code কোথায় লেখা হয়েছে তার ভিত্তিতে scope</td></tr><tr><td>Shadowing</td><td>Inner variable outer variable-কে আড়াল করে</td></tr><tr><td>Hoisting</td><td>Execution-এর আগে declaration setup</td></tr><tr><td>TDZ</td><td><code>let</code>/<code>const</code> declaration-এর আগের inaccessible period</td></tr><tr><td><code>var</code></td><td>Function scoped</td></tr><tr><td><code>let</code></td><td>Block scoped</td></tr><tr><td><code>const</code></td><td>Block scoped + reassignment করা যায় না</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- Chapter 7 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 Chapter 7 — Must Know</div>
+<p class="text-p">এই chapter থেকে অবশ্যই এগুলো ভালোভাবে জানতে হবে:</p>
+<div class="ascii-tree-container">1. Scope কী?
+2. Global Scope
+3. Function Scope
+4. Block Scope
+5. var vs let vs const
+6. Nested Scope
+7. Scope Chain
+8. Lexical Scope
+9. Shadowing
+10. Hoisting
+11. var Hoisting
+12. let/const + TDZ
+13. Function Hoisting
+14. Function Declaration vs Function Expression
+15. Declaration vs Initialization</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 1</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> test() {
+    <span class="syn-kw">let</span> x = <span class="syn-num">20</span>;
+    <span class="syn-fn">console</span>.log(x);
+}
+
+test();
+<span class="syn-fn">console</span>.log(x);</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 2</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+    <span class="syn-kw">var</span> x = <span class="syn-num">20</span>;
+}
+
+<span class="syn-fn">console</span>.log(x);</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 3</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">if</span> (<span class="syn-bool">true</span>) {
+    <span class="syn-kw">let</span> x = <span class="syn-num">20</span>;
+    <span class="syn-fn">console</span>.log(x);
+}
+
+<span class="syn-fn">console</span>.log(x);</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 4</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(a);
+
+<span class="syn-kw">var</span> a = <span class="syn-num">100</span>;</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 5</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(a);
+
+<span class="syn-kw">let</span> a = <span class="syn-num">100</span>;</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 6</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>hello();
+
+<span class="syn-kw">function</span> hello() {
+    <span class="syn-fn">console</span>.log(&quot;Hello JavaScript&quot;);
+}</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 7</h4>
+<p class="text-p">Output কী হবে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">var</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> test() {
+    <span class="syn-fn">console</span>.log(x);
+
+    <span class="syn-kw">var</span> x = <span class="syn-num">20</span>;
+}
+
+test();</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 8</h4>
+<p class="text-p">এই code-এ error কেন হচ্ছে?</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+    <span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+}
+
+test();
+
+<span class="syn-fn">console</span>.log(name);</pre>
+</div>
+      </div>
+    </div>
+
+    <!-- Chapter 7 Final Summary -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 7-এর মূল ধারণা এক লাইনে</div>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Rule:</strong> <strong>Scope বলে variable কোথায় ব্যবহার করা যাবে, আর Hoisting বোঝায় JavaScript execution-এর আগে declaration কীভাবে setup করে।</strong></div>
+<p class="text-p">পরের chapter হবে:</p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 🚀 Chapter 8 Preview — Strings</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        <strong>String তৈরি → indexing → length → methods → slicing → searching → replacing → splitting → joining → template literals → escape characters → Unicode → string immutability → practical projects</strong>.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

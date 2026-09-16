@@ -1,0 +1,2421 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 10: Objects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10.5px;
+      line-height: 1.4;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 10: OBJECTS &amp; KEY-VALUE ARCHITECTURE</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">68 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 04 — Core Data Structures (3/3)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Key-Value Pairs, 'this' &amp; References</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Objects — Object / Key-Value Data</h2>
+      <p class="text-p">JavaScript শেখার সময় <strong>Objects</strong> একটি অত্যন্ত গুরুত্বপূর্ণ topic। তুমি যেহেতু পরে <strong>React + Node.js + API + MongoDB</strong> নিয়ে কাজ করবে, তাই Object ভালোভাবে বোঝা খুব জরুরি।</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Object Creation, Properties & Access Notations (10.1 – 10.15)</div>
+
+    <!-- 10.1 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.1</span> Object কী?</div>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box">
+  <div class="def-text"><strong>Object হলো related data এবং functionality-কে key-value pair আকারে এক জায়গায় রাখার একটি structure।</strong></div>
+</div>
+<div class="sub-badge">💡 Real-life Example</div>
+<p class="text-p">একজন Student-এর তথ্য:</p>
+<div class="ascii-tree-container">Name      → Shariar
+Age       → 23
+Department → CSE
+University → DIU</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.1 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> student = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    department: <span class="syn-str">&quot;CSE&quot;</span>,
+    university: <span class="syn-str">&quot;DIU&quot;</span>
+};</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">name       → key
+&quot;Shariar&quot;  → value
+
+age        → key
+23         → value</div>
+    </div>
+
+    <!-- 10.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.2</span> Object তৈরি করার Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span>10.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+};</pre>
+</div>
+<p class="text-p">Object-এর structure:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    key: value,
+    key: value,
+    key: value
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.3</span> Object Property</div>
+<p class="text-p">Object-এর ভিতরের key-value pair-কে সাধারণত <strong>Property</strong> বলা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">name → property
+age  → property</div>
+    </div>
+
+    <!-- 10.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.4</span> Object Property Access</div>
+<p class="text-p">Object-এর property access করার দুটি প্রধান উপায় আছে:</p>
+<ul class="bullet-list"><li>Dot notation</li><li>Bracket notation</li></ul>
+    </div>
+
+    <!-- 10.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.5</span> Dot Notation</div>
+<div class="code-box">
+  <div class="code-top"><span>10.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-fn">console</span>.log(user.name);
+<span class="syn-fn">console</span>.log(user.age);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Shariar
+23</pre>
+</div>
+<p class="text-p">Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.5 JavaScript</span><span>Run</span></div>
+  <pre>object.property</pre>
+</div>
+    </div>
+
+    <!-- 10.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.6</span> Bracket Notation</div>
+<div class="code-box">
+  <div class="code-top"><span>10.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-fn">console</span>.log(user[&quot;name<span class="syn-str">&quot;]);
+console.log(user[&quot;</span>age&quot;]);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar
+23</pre>
+</div>
+    </div>
+
+    <!-- 10.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.7</span> Dot vs Bracket</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Dot Notation</th><th>Bracket Notation</th></tr></thead>
+    <tbody>
+      <tr><td><code>user.name</code></td><td><code>user[&quot;name&quot;]</code></td></tr><tr><td>Simple</td><td>Dynamic access-এর জন্য useful</td></tr><tr><td>Property name সরাসরি লিখতে হয়</td><td>String/expression ব্যবহার করা যায়</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 10.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.8</span> Dynamic Property Access 🔥</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">let</span> property = <span class="syn-str">&quot;name&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user[property]);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Shariar</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.8 JavaScript</span><span>Run</span></div>
+  <pre>user[property]</pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.8 JavaScript</span><span>Run</span></div>
+  <pre>user[&quot;name&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 10.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.9</span> কেন Dot Notation কাজ করবে না?</div>
+<div class="code-box">
+  <div class="code-top"><span>10.9 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> property = <span class="syn-str">&quot;name&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user.property);</pre>
+</div>
+<p class="text-p">এটি খুঁজবে:</p>
+<div class="ascii-tree-container">user[&quot;property&quot;]</div>
+<p class="text-p"><code>name</code> নয়।</p>
+<p class="text-p">তাই dynamic property হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.9 JavaScript</span><span>Run</span></div>
+  <pre>user[property]</pre>
+</div>
+<p class="text-p">ব্যবহার করতে হবে।</p>
+    </div>
+
+    <!-- 10.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.10</span> Property Add করা</div>
+<p class="text-p">Object তৈরি করার পর নতুন property যোগ করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.10 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+user.age = <span class="syn-num">23</span>;
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 23
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.11</span> Bracket দিয়ে Property Add</div>
+<div class="code-box">
+  <div class="code-top"><span>10.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+user[&quot;city<span class="syn-str">&quot;] = &quot;</span>Dhaka&quot;;
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    city: &quot;Dhaka&quot;
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.12</span> Property Update</div>
+<div class="code-box">
+  <div class="code-top"><span>10.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+user.age = <span class="syn-num">24</span>;
+
+<span class="syn-fn">console</span>.log(user.age);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>24</pre>
+</div>
+    </div>
+
+    <!-- 10.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.13</span> Property Delete</div>
+<div class="code-box">
+  <div class="code-top"><span>10.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+};
+
+<span class="syn-kw">delete</span> user.city;
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 23
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.14</span> Property আছে কিনা Check</div>
+<p class="text-p"><code>in</code> operator:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-fn">console</span>.log(&quot;name<span class="syn-str">&quot; in user);
+console.log(&quot;</span>email&quot; <span class="syn-kw">in</span> user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false</pre>
+</div>
+    </div>
+
+    <!-- 10.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.15</span> <code>hasOwnProperty()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-fn">console</span>.log(user.hasOwnProperty(&quot;name<span class="syn-str">&quot;));
+console.log(user.hasOwnProperty(&quot;</span>email&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false</pre>
+</div>
+<p class="text-p">Modern code-এ আরও robust approach হিসেবে <code>Object.hasOwn()</code>-ও আছে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.hasOwn(user, <span class="syn-str">&quot;name&quot;</span>));</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Data Types, Nesting & Array Integration (10.16 – 10.20)</div>
+
+    <!-- 10.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.16</span> Object-এর মধ্যে বিভিন্ন Data Type</div>
+<p class="text-p">Object property-এর value যেকোনো valid JavaScript value হতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    isStudent: <span class="syn-bool">true</span>,
+    skills: [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript&quot;],
+    address: <span class="syn-bool">null</span>
+};
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>String
+Number
+Boolean
+Array
+null</pre>
+</div>
+<p class="text-p">সবই আছে।</p>
+    </div>
+
+    <!-- 10.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.17</span> Object-এর মধ্যে Object</div>
+<p class="text-p">এটাকে <strong>Nested Object</strong> বলে।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    address: {
+        city: <span class="syn-str">&quot;Dhaka&quot;</span>,
+        country: <span class="syn-str">&quot;Bangladesh&quot;</span>
+    }
+};
+
+<span class="syn-fn">console</span>.log(user.address.city);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Dhaka</pre>
+</div>
+    </div>
+
+    <!-- 10.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.18</span> Nested Object Access</div>
+<div class="code-box">
+  <div class="code-top"><span>10.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> student = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    university: {
+        name: <span class="syn-str">&quot;Daffodil International University&quot;</span>,
+        department: <span class="syn-str">&quot;CSE&quot;</span>
+    }
+};
+
+<span class="syn-fn">console</span>.log(student.university.name);
+<span class="syn-fn">console</span>.log(student.university.department);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Daffodil International University
+CSE</pre>
+</div>
+    </div>
+
+    <!-- 10.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.19</span> Object-এর মধ্যে Array</div>
+<div class="code-box">
+  <div class="code-top"><span>10.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    skills: [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;, &quot;</span>React&quot;]
+};
+
+<span class="syn-fn">console</span>.log(user.skills[<span class="syn-num">0</span>]);
+<span class="syn-fn">console</span>.log(user.skills[<span class="syn-num">3</span>]);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>HTML
+React</pre>
+</div>
+    </div>
+
+    <!-- 10.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.20</span> Array-এর মধ্যে Object 🔥</div>
+<p class="text-p">এটি real-world JavaScript-এ খুব common।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> users = [
+    {
+        name: <span class="syn-str">&quot;Shariar&quot;</span>,
+        age: <span class="syn-num">23</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Rahim&quot;</span>,
+        age: <span class="syn-num">22</span>
+    }
+];
+
+<span class="syn-fn">console</span>.log(users[<span class="syn-num">0</span>].name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<p class="text-p">API response-এ তুমি এই ধরনের structure অনেক দেখতে পাবে।</p>
+    </div>
+
+    <div class="part-banner">Part 03 — Object Methods, Shorthands & The 'this' Keyword (10.21 – 10.27)</div>
+
+    <!-- 10.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.21</span> Object Method</div>
+<p class="text-p">Object-এর property-এর value যদি function হয়, সেটিকে সাধারণত <strong>Method</strong> বলা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+
+    sayHello: <span class="syn-kw">function</span> () {
+        <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+    }
+};
+
+user.sayHello();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Hello!</pre>
+</div>
+    </div>
+
+    <!-- 10.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.22</span> Method-এর Short Syntax</div>
+<p class="text-p">Modern JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+
+    sayHello() {
+        <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+    }
+};
+
+user.sayHello();</pre>
+</div>
+<p class="text-p">এটি cleaner syntax।</p>
+    </div>
+
+    <!-- 10.23 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">10.23</span> Object Method-এ <code>this</code> 🔥🔥</div>
+<div class="memory-box">এখন খুব গুরুত্বপূর্ণ concept:</div>
+<div class="code-box">
+  <div class="code-top"><span>10.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+
+    introduce() {
+        <span class="syn-fn">console</span>.log(`My name is ${<span class="syn-kw">this</span>.name}`);
+    }
+};
+
+user.introduce();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>My name is Shariar</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">this</span>.name</pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">যে object method-টি call করেছে, সেই object&#x27;s <code>name</code> property।</div>
+</div>
+    </div>
+
+    <!-- 10.24 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">10.24</span> <code>this</code> সহজভাবে</div>
+<div class="code-box">
+  <div class="code-top"><span>10.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+
+    showName() {
+        <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name);
+    }
+};</pre>
+</div>
+<p class="text-p">যখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.24 JavaScript</span><span>Run</span></div>
+  <pre>user.showName();</pre>
+</div>
+<p class="text-p">তখন:</p>
+<div class="ascii-tree-container">this → user</div>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">this</span>.name</pre>
+</div>
+<p class="text-p">হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.24 JavaScript</span><span>Run</span></div>
+  <pre>user.name</pre>
+</div>
+    </div>
+
+    <!-- 10.25 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">10.25</span> <code>this</code> এবং Arrow Function</div>
+<p class="text-p">Object method-এ arrow function ব্যবহার করলে <code>this</code> সাধারণত object-কে refer করে না।</p>
+<p class="text-p">❌ এই pattern এড়িয়ে চলো:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+
+    sayHello: () =&gt; {
+        <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name);
+    }
+};
+
+user.sayHello();</pre>
+</div>
+<p class="text-p">এখানে <code>this</code> lexical context থেকে আসে।</p>
+<p class="text-p">Object method-এর জন্য সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.25 JavaScript</span><span>Run</span></div>
+  <pre>sayHello() {
+    <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name);
+}</pre>
+</div>
+<p class="text-p">ব্যবহার করা সহজ ও সঠিক।</p>
+    </div>
+
+    <!-- 10.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.26</span> Object Property Shorthand</div>
+<p class="text-p">যদি variable এবং property-এর নাম একই হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;
+<span class="syn-kw">let</span> age = <span class="syn-num">23</span>;
+
+<span class="syn-kw">let</span> user = {
+    name,
+    age
+};
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 23
+}</pre>
+</div>
+<p class="text-p">আগে লিখতে হতো:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: name,
+    age: age
+};</pre>
+</div>
+<p class="text-p">Modern JavaScript-এ shorthand ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 10.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.27</span> Computed Property Names</div>
+<p class="text-p">Property name dynamically তৈরি করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> key = <span class="syn-str">&quot;username&quot;</span>;
+
+<span class="syn-kw">let</span> user = {
+    [key]: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="ascii-tree-container">{
+    username: &quot;Shariar&quot;
+}</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Object Iteration, Inspection & Destructuring (10.28 – 10.37)</div>
+
+    <!-- 10.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.28</span> Object.keys()</div>
+<p class="text-p">Object-এর সব property name-এর Array:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.keys(user));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;name&quot;, &quot;age&quot;, &quot;city&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 10.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.29</span> Object.values()</div>
+<p class="text-p">সব value:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.values(user));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Shariar&quot;, 23, &quot;Dhaka&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 10.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.30</span> Object.entries()</div>
+<p class="text-p">Key + value pair:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.entries(user));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[
+    [&quot;name&quot;, &quot;Shariar&quot;],
+    [&quot;age&quot;, 23],
+    [&quot;city&quot;, &quot;Dhaka&quot;]
+]</pre>
+</div>
+    </div>
+
+    <!-- 10.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.31</span> Object-এর উপর Loop</div>
+<div class="section-subhead"><code>for...in</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+};
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> key <span class="syn-kw">in</span> user) {
+    <span class="syn-fn">console</span>.log(key, user[key]);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name Shariar
+age 23
+city Dhaka</pre>
+</div>
+    </div>
+
+    <!-- 10.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.32</span> <code>Object.entries()</code> + <code>for...of</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> [key, value] <span class="syn-kw">of</span> <span class="syn-fn">Object</span>.entries(user)) {
+    <span class="syn-fn">console</span>.log(key, value);
+}</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name Shariar
+age 23
+city Dhaka</pre>
+</div>
+    </div>
+
+    <!-- 10.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.33</span> Object Destructuring 🔥</div>
+<p class="text-p">Object থেকে property সরাসরি variable-এ নেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.33 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">let</span> { name, age } = user;
+
+<span class="syn-fn">console</span>.log(name);
+<span class="syn-fn">console</span>.log(age);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar
+23</pre>
+</div>
+    </div>
+
+    <!-- 10.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.34</span> Destructuring Rename</div>
+<div class="code-box">
+  <div class="code-top"><span>10.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">let</span> { name: userName, age: userAge } = user;
+
+<span class="syn-fn">console</span>.log(userName);
+<span class="syn-fn">console</span>.log(userAge);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar
+23</pre>
+</div>
+    </div>
+
+    <!-- 10.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.35</span> Destructuring Default Value</div>
+<div class="code-box">
+  <div class="code-top"><span>10.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">let</span> { name, age = <span class="syn-num">23</span> } = user;
+
+<span class="syn-fn">console</span>.log(name);
+<span class="syn-fn">console</span>.log(age);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar
+23</pre>
+</div>
+    </div>
+
+    <!-- 10.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.36</span> Nested Destructuring</div>
+<div class="code-box">
+  <div class="code-top"><span>10.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    address: {
+        city: <span class="syn-str">&quot;Dhaka&quot;</span>,
+        country: <span class="syn-str">&quot;Bangladesh&quot;</span>
+    }
+};
+
+<span class="syn-kw">let</span> {
+    address: { city, country }
+} = user;
+
+<span class="syn-fn">console</span>.log(city);
+<span class="syn-fn">console</span>.log(country);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Dhaka
+Bangladesh</pre>
+</div>
+    </div>
+
+    <!-- 10.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.37</span> Rest Property</div>
+<p class="text-p">Object-এর কিছু property আলাদা করে বাকি property নিতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>,
+    country: <span class="syn-str">&quot;Bangladesh&quot;</span>
+};
+
+<span class="syn-kw">let</span> { name, ...others } = user;
+
+<span class="syn-fn">console</span>.log(name);
+<span class="syn-fn">console</span>.log(others);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar
+
+{
+    age: 23,
+    city: &quot;Dhaka&quot;,
+    country: &quot;Bangladesh&quot;
+}</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 05 — Spread, References, Memory & Immutability (10.38 – 10.53)</div>
+
+    <!-- 10.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.38</span> Spread Operator — Object</div>
+<p class="text-p">Object copy:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.38 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">let</span> copy = { ...user };
+
+<span class="syn-fn">console</span>.log(copy);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 23
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.39</span> Object Combine</div>
+<div class="code-box">
+  <div class="code-top"><span>10.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> personal = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">let</span> professional = {
+    role: <span class="syn-str">&quot;Web Developer&quot;</span>,
+    skill: <span class="syn-str">&quot;JavaScript&quot;</span>
+};
+
+<span class="syn-kw">let</span> profile = {
+    ...personal,
+    ...professional
+};
+
+<span class="syn-fn">console</span>.log(profile);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 23,
+    role: &quot;Web Developer&quot;,
+    skill: &quot;JavaScript&quot;
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.40</span> Spread-এর মাধ্যমে Property Override</div>
+<div class="code-box">
+  <div class="code-top"><span>10.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">let</span> updatedUser = {
+    ...user,
+    age: <span class="syn-num">24</span>
+};
+
+<span class="syn-fn">console</span>.log(updatedUser);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 24
+}</pre>
+</div>
+<p class="text-p">শেষের property আগের value override করে।</p>
+    </div>
+
+    <!-- 10.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.41</span> Object Reference 🔥</div>
+<div class="memory-box">এটা Array-এর মতোই গুরুত্বপূর্ণ।</div>
+<div class="code-box">
+  <div class="code-top"><span>10.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user1 = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">let</span> user2 = user1;
+
+user2.name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user1.name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Ripon</pre>
+</div>
+<p class="text-p">কারণ দুটো variable একই object reference করছে।</p>
+    </div>
+
+    <!-- 10.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.42</span> Object Copy</div>
+<div class="code-box">
+  <div class="code-top"><span>10.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user1 = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">let</span> user2 = { ...user1 };
+
+user2.name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user1.name);
+<span class="syn-fn">console</span>.log(user2.name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar
+Ripon</pre>
+</div>
+    </div>
+
+    <!-- 10.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.43</span> Shallow Copy</div>
+<p class="text-p">Spread operator:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.43 JavaScript</span><span>Run</span></div>
+  <pre>{ ...object }</pre>
+</div>
+<p class="text-p">একটি <strong>shallow copy</strong> তৈরি করে।</p>
+<p class="text-p">যদি nested object থাকে, তাহলে বিষয়টি একটু আলাদা।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user1 = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    address: {
+        city: <span class="syn-str">&quot;Dhaka&quot;</span>
+    }
+};
+
+<span class="syn-kw">let</span> user2 = { ...user1 };
+
+user2.address.city = <span class="syn-str">&quot;Chittagong&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user1.address.city);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Chittagong</pre>
+</div>
+<p class="text-p">কারণ nested <code>address</code> object-এর reference একই থাকতে পারে।</p>
+    </div>
+
+    <!-- 10.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.44</span> Deep Copy — Basic Approach</div>
+<p class="text-p">Simple JSON-compatible data-এর জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user1 = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    address: {
+        city: <span class="syn-str">&quot;Dhaka&quot;</span>
+    }
+};
+
+<span class="syn-kw">let</span> user2 = JSON.parse(JSON.stringify(user1));
+
+user2.address.city = <span class="syn-str">&quot;Chittagong&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user1.address.city);
+<span class="syn-fn">console</span>.log(user2.address.city);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Dhaka
+Chittagong</pre>
+</div>
+<p class="text-p">তবে modern JavaScript-এ structured data-এর জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">structuredClone</span>()</pre>
+</div>
+<p class="text-p">আরও ভালো option হতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user2 = <span class="syn-fn">structuredClone</span>(user1);</pre>
+</div>
+    </div>
+
+    <!-- 10.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.45</span> Optional Chaining <code>?.</code></div>
+<p class="text-p">Nested property না থাকলে error এড়াতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user.address?.city);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>undefined</pre>
+</div>
+<p class="text-p">Without optional chaining:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(user.address.city);</pre>
+</div>
+<p class="text-p">এতে error হতে পারে কারণ <code>address</code> undefined।</p>
+    </div>
+
+    <!-- 10.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.46</span> Nullish Coalescing + Object</div>
+<div class="code-box">
+  <div class="code-top"><span>10.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">let</span> city = user.address?.city ?? <span class="syn-str">&quot;Unknown&quot;</span>;
+
+<span class="syn-fn">console</span>.log(city);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Unknown</pre>
+</div>
+    </div>
+
+    <!-- 10.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.47</span> Object.freeze()</div>
+<p class="text-p">Object-এর property পরিবর্তন বন্ধ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-fn">Object</span>.freeze(user);
+
+user.age = <span class="syn-num">24</span>;
+
+<span class="syn-fn">console</span>.log(user.age);</pre>
+</div>
+<p class="text-p">Output সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>23</pre>
+</div>
+<p class="text-p">Strict mode-এ illegal modification error-ও হতে পারে।</p>
+    </div>
+
+    <!-- 10.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.48</span> <code>Object.isFrozen()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.isFrozen(user));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 10.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.49</span> Object.seal()</div>
+<p class="text-p"><code>seal()</code> করলে:</p>
+<ul class="bullet-list"><li>নতুন property add করা যায় না</li><li>property delete করা যায় না</li><li>existing writable property পরিবর্তন করা যায়</li></ul>
+<div class="code-box">
+  <div class="code-top"><span>10.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-fn">Object</span>.seal(user);
+
+user.age = <span class="syn-num">24</span>;
+<span class="syn-kw">delete</span> user.name;
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 24
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.50 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.50</span> <code>Object.isSealed()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.50 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.isSealed(user));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 10.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.51</span> Object.assign()</div>
+<p class="text-p">একটি Object-এর properties অন্য Object-এ copy করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.51 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">let</span> extra = {
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-fn">Object</span>.assign(user, extra);
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 23
+}</pre>
+</div>
+<p class="text-p">Spread operator-এর কারণে modern JavaScript-এ অনেক ক্ষেত্রে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.51 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    ...user,
+    ...extra
+};</pre>
+</div>
+<p class="text-p">ধরনের approach বেশি দেখা যায়।</p>
+    </div>
+
+    <!-- 10.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.52</span> Object.create()</div>
+<p class="text-p">Prototype-based object তৈরি করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> person = {
+    greet() {
+        <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+    }
+};
+
+<span class="syn-kw">let</span> user = <span class="syn-fn">Object</span>.create(person);
+
+user.greet();</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Hello</pre>
+</div>
+<p class="text-p">এটি পরে <strong>Prototypes</strong> chapter-এ বিস্তারিত শিখব।</p>
+    </div>
+
+    <!-- 10.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.53</span> Object Constructor</div>
+<p class="text-p"><code>new Object()</code> দিয়ে Object তৈরি করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.53 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Object</span>();
+
+user.name = <span class="syn-str">&quot;Shariar&quot;</span>;
+user.age = <span class="syn-num">23</span>;
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<p class="text-p">তবে সাধারণ object literal:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.53 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};</pre>
+</div>
+<p class="text-p">বেশি clean এবং common।</p>
+    </div>
+
+    <div class="part-banner">Part 06 — Special Keys, API Patterns & Functional Methods (10.54 – 10.68)</div>
+
+    <!-- 10.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.54</span> Object-এর Property Name হিসেবে Number</div>
+<div class="code-box">
+  <div class="code-top"><span>10.54 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> data = {
+    <span class="syn-num">1</span>: <span class="syn-str">&quot;One&quot;</span>,
+    <span class="syn-num">2</span>: <span class="syn-str">&quot;Two&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(data[<span class="syn-num">1</span>]);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>One</pre>
+</div>
+<p class="text-p">Object keys internally সাধারণত String বা Symbol হিসেবে handled হয়।</p>
+    </div>
+
+    <!-- 10.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.55</span> Property Name-এ Space</div>
+<div class="code-box">
+  <div class="code-top"><span>10.55 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    <span class="syn-str">&quot;full name&quot;</span>: <span class="syn-str">&quot;Shariar Ahamed&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user[&quot;full name&quot;]);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.55 JavaScript</span><span>Run</span></div>
+  <pre>user.full name</pre>
+</div>
+<p class="text-p">লেখা যাবে না।</p>
+<p class="text-p">তাই bracket notation ব্যবহার করতে হবে।</p>
+    </div>
+
+    <!-- 10.56 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.56</span> Object-এর মধ্যে Function</div>
+<div class="code-box">
+  <div class="code-top"><span>10.56 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> calculator = {
+
+    add(a, b) {
+        <span class="syn-kw">return</span> a + b;
+    },
+
+    subtract(a, b) {
+        <span class="syn-kw">return</span> a - b;
+    }
+};
+
+<span class="syn-fn">console</span>.log(calculator.add(<span class="syn-num">10</span>, <span class="syn-num">5</span>));
+<span class="syn-fn">console</span>.log(calculator.subtract(<span class="syn-num">10</span>, <span class="syn-num">5</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>15
+5</pre>
+</div>
+    </div>
+
+    <!-- 10.57 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">10.57</span> Real-life Example — User Object</div>
+<div class="code-box">
+  <div class="code-top"><span>10.57 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    id: <span class="syn-num">101</span>,
+    name: <span class="syn-str">&quot;Shariar Ahamed Ripon&quot;</span>,
+    email: <span class="syn-str">&quot;ripon@example.com&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    isStudent: <span class="syn-bool">true</span>,
+    skills: [
+        <span class="syn-str">&quot;HTML&quot;</span>,
+        <span class="syn-str">&quot;CSS&quot;</span>,
+        <span class="syn-str">&quot;JavaScript&quot;</span>,
+        <span class="syn-str">&quot;React&quot;</span>
+    ],
+    address: {
+        city: <span class="syn-str">&quot;Dhaka&quot;</span>,
+        country: <span class="syn-str">&quot;Bangladesh&quot;</span>
+    },
+
+    introduce() {
+        <span class="syn-fn">console</span>.log(`Hi, I am ${<span class="syn-kw">this</span>.name}`);
+    }
+};
+
+<span class="syn-fn">console</span>.log(user.name);
+<span class="syn-fn">console</span>.log(user.skills[<span class="syn-num">2</span>]);
+<span class="syn-fn">console</span>.log(user.address.city);
+
+user.introduce();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Shariar Ahamed Ripon
+JavaScript
+Dhaka
+Hi, I am Shariar Ahamed Ripon</pre>
+</div>
+<p class="text-p">এখানে একসাথে ব্যবহার হয়েছে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Object
+Array
+Nested Object
+Method
+this
+Template Literal</pre>
+</div>
+    </div>
+
+    <!-- 10.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.58</span> API Response-এর মতো Object</div>
+<p class="text-p">Web development-এ তুমি প্রায়ই এমন data পাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.58 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> response = {
+    success: <span class="syn-bool">true</span>,
+    message: <span class="syn-str">&quot;User fetched successfully&quot;</span>,
+    data: {
+        id: <span class="syn-num">101</span>,
+        name: <span class="syn-str">&quot;Shariar&quot;</span>,
+        email: <span class="syn-str">&quot;shariar@example.com&quot;</span>
+    }
+};
+
+<span class="syn-fn">console</span>.log(response.data.name);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar</pre>
+</div>
+<p class="text-p">React/Node.js-এ এই ধরনের nested object প্রচুর ব্যবহার হবে।</p>
+    </div>
+
+    <!-- 10.59 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.59</span> Object + Array + <code>map()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.59 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> users = [
+    {
+        name: <span class="syn-str">&quot;Shariar&quot;</span>,
+        age: <span class="syn-num">23</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Rahim&quot;</span>,
+        age: <span class="syn-num">22</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Karim&quot;</span>,
+        age: <span class="syn-num">24</span>
+    }
+];
+
+<span class="syn-kw">let</span> names = users.map(user =&gt; user.name);
+
+<span class="syn-fn">console</span>.log(names);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Shariar&quot;, &quot;Rahim&quot;, &quot;Karim&quot;]</pre>
+</div>
+<p class="text-p">এটি real-world frontend development-এর খুব common pattern।</p>
+    </div>
+
+    <!-- 10.60 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.60</span> Object + <code>filter()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.60 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> users = [
+    { name: <span class="syn-str">&quot;Shariar&quot;</span>, age: <span class="syn-num">23</span> },
+    { name: <span class="syn-str">&quot;Rahim&quot;</span>, age: <span class="syn-num">17</span> },
+    { name: <span class="syn-str">&quot;Karim&quot;</span>, age: <span class="syn-num">25</span> }
+];
+
+<span class="syn-kw">let</span> adults = users.filter(user =&gt; user.age &gt;= <span class="syn-num">18</span>);
+
+<span class="syn-fn">console</span>.log(adults);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[
+    { name: &quot;Shariar&quot;, age: 23 },
+    { name: &quot;Karim&quot;, age: 25 }
+]</pre>
+</div>
+    </div>
+
+    <!-- 10.61 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.61</span> Object + <code>find()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.61 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> users = [
+    { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;Shariar&quot;</span> },
+    { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;Rahim&quot;</span> },
+    { id: <span class="syn-num">3</span>, name: <span class="syn-str">&quot;Karim&quot;</span> }
+];
+
+<span class="syn-kw">let</span> user = users.find(user =&gt; user.id === <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    id: 2,
+    name: &quot;Rahim&quot;
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.62 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.62</span> Object + <code>reduce()</code></div>
+<p class="text-p">ধরো product list:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.62 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> products = [
+    { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">70000</span> },
+    { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span> },
+    { name: <span class="syn-str">&quot;Keyboard&quot;</span>, price: <span class="syn-num">3000</span> }
+];
+
+<span class="syn-kw">let</span> total = products.reduce((sum, product) =&gt; {
+    <span class="syn-kw">return</span> sum + product.price;
+}, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(total);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>74000</pre>
+</div>
+    </div>
+
+    <!-- 10.63 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.63</span> <code>Object.keys()</code> + <code>map()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>10.63 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+};
+
+<span class="syn-kw">let</span> keys = <span class="syn-fn">Object</span>.keys(user);
+
+<span class="syn-kw">let</span> upperKeys = keys.map(key =&gt; key.toUpperCase());
+
+<span class="syn-fn">console</span>.log(upperKeys);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;NAME&quot;, &quot;AGE&quot;, &quot;CITY&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 10.64 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">10.64</span> Object-এর গুরুত্বপূর্ণ Static Methods</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>Object.keys()</code></td><td>সব keys</td></tr><tr><td><code>Object.values()</code></td><td>সব values</td></tr><tr><td><code>Object.entries()</code></td><td>key-value pairs</td></tr><tr><td><code>Object.assign()</code></td><td>Object copy/merge</td></tr><tr><td><code>Object.freeze()</code></td><td>modification বন্ধ</td></tr><tr><td><code>Object.seal()</code></td><td>add/delete বন্ধ</td></tr><tr><td><code>Object.isFrozen()</code></td><td>frozen কিনা</td></tr><tr><td><code>Object.isSealed()</code></td><td>sealed কিনা</td></tr><tr><td><code>Object.hasOwn()</code></td><td>own property check</td></tr><tr><td><code>Object.create()</code></td><td>prototype-based object</td></tr><tr><td><code>Object.fromEntries()</code></td><td>entries → Object</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 10.65 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.65</span> <code>Object.fromEntries()</code></div>
+<p class="text-p"><code>Object.entries()</code>-এর বিপরীত ধারণা।</p>
+<div class="code-box">
+  <div class="code-top"><span>10.65 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> entries = [
+    [&quot;name<span class="syn-str">&quot;, &quot;</span>Shariar<span class="syn-str">&quot;],
+    [&quot;</span>age&quot;, <span class="syn-num">23</span>]
+];
+
+<span class="syn-kw">let</span> user = <span class="syn-fn">Object</span>.fromEntries(entries);
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    name: &quot;Shariar&quot;,
+    age: 23
+}</pre>
+</div>
+    </div>
+
+    <!-- 10.66 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.66</span> Object-এর Key Order</div>
+<p class="text-p">Modern JavaScript-এ property ordering-এর defined rules আছে, তবে সাধারণ application code-এ Object-কে ordered collection হিসেবে rely না করে data structure অনুযায়ী Array/Map ব্যবহার করা ভালো।</p>
+<div class="memory-box">যদি order গুরুত্বপূর্ণ হয়, বিশেষ করে arbitrary key-value collection-এর ক্ষেত্রে <code>Map</code> অনেক ক্ষেত্রে বেশি appropriate।</div>
+<p class="text-p"><code>Map</code> আমরা পরের collection-related chapter-এ বিস্তারিত দেখব।</p>
+    </div>
+
+    <!-- 10.67 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10.67</span> Object vs Map — Basic Idea</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Object</th><th>Map</th></tr></thead>
+    <tbody>
+      <tr><td>সাধারণ data/entity-এর জন্য</td><td>Key-value collection-এর জন্য</td></tr><tr><td>String/Symbol keys</td><td>যেকোনো value key হতে পারে</td></tr><tr><td><code>user.name</code></td><td><code>map.get(key)</code></td></tr><tr><td>JSON-এর সাথে natural</td><td>Iteration-friendly</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">এখন শুধু ধারণাটা রাখো; পরে বিস্তারিত আসবে।</p>
+    </div>
+
+    <!-- 10.68 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">10.68</span> Object-এর সবচেয়ে গুরুত্বপূর্ণ Pattern</div>
+<p class="text-p">Real-world API data:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.68 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    id: <span class="syn-num">101</span>,
+    profile: {
+        name: <span class="syn-str">&quot;Shariar&quot;</span>,
+        contact: {
+            email: <span class="syn-str">&quot;shariar@example.com&quot;</span>
+        }
+    }
+};</pre>
+</div>
+<p class="text-p">Access:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.68 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(user.profile.name);
+<span class="syn-fn">console</span>.log(user.profile.contact.email);</pre>
+</div>
+<p class="text-p">Optional chaining:</p>
+<div class="code-box">
+  <div class="code-top"><span>10.68 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(user.profile?.contact?.phone);</pre>
+</div>
+<p class="text-p">এটি undefined property-এর ক্ষেত্রে application crash হওয়ার ঝুঁকি কমাতে useful।</p>
+    </div>
+
+    <div class="part-banner">Part 07 — Mental Model, Must-Know Concepts, Practice Lab &amp; Summary</div>
+
+    <!-- Object Mental Model -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">MENTAL MODEL</span> 🧠 Chapter 10 — Object Mental Model</div>
+<p class="text-p">একটি Object এভাবে চিন্তা করো:</p>
+<div class="ascii-tree-container">                 OBJECT
+                    │
+       ┌────────────┼────────────┐
+       ↓            ↓            ↓
+     Property     Property      Method
+       │            │             │
+      name         age          greet()
+       ↓            ↓             ↓
+   &quot;Shariar&quot;       23          function</div>
+<p class="text-p">আর nested হলে:</p>
+<div class="ascii-tree-container">user
+ │
+ ├── name
+ ├── age
+ ├── skills[]
+ │
+ └── address
+      ├── city
+      └── country</div>
+    </div>
+
+    <!-- Must Know Concepts -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 Chapter 10 — Must Know</div>
+<div class="memory-box">এইগুলো অবশ্যই ভালোভাবে আয়ত্ত করবে:</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1. Object কী
+2. Property
+3. Key / Value
+4. Dot notation
+5. Bracket notation
+6. Dynamic property access
+7. Add property
+8. Update property
+9. Delete property
+10. in operator
+11. Object.hasOwn()
+12. Nested Object
+13. Array inside Object
+14. Object inside Array
+15. Methods
+16. this
+17. Property shorthand
+18. Computed properties
+19. Object.keys()
+20. Object.values()
+21. Object.entries()
+22. Object destructuring
+23. Nested destructuring
+24. Rest property
+25. Spread operator
+26. Object reference
+27. Shallow copy
+28. structuredClone()
+29. Optional chaining
+30. Nullish coalescing
+31. Object.freeze()
+32. Object.seal()
+33. Object.assign()
+34. Object.fromEntries()
+35. Array of Objects
+36. Object + map()
+37. Object + filter()
+38. Object + find()
+39. Object + reduce()</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — Chapter 10</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 1 — Basic Object</h4>
+<p class="text-p">এই Object তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Name: Shariar
+Age: 23
+Department: CSE
+University: DIU</pre>
+</div>
+<p class="text-p">তারপর প্রতিটি property console-এ দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 2 — Update</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};</pre>
+</div>
+<p class="text-p"><code>age</code> → <code>24</code> করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 3 — Add</h4>
+<p class="text-p">একই Object-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>city: Dhaka</pre>
+</div>
+<p class="text-p">যোগ করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 4 — Delete</h4>
+<p class="text-p"><code>city</code> property delete করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 5 — Nested Object</h4>
+<p class="text-p">এই structure তৈরি করো:</p>
+<div class="ascii-tree-container">student
+ ├── name
+ ├── age
+ └── address
+      ├── city
+      └── country</div>
+<p class="text-p">তারপর <code>city</code> console-এ দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 6 — Array of Objects</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> students = [
+    { name: <span class="syn-str">&quot;Shariar&quot;</span>, marks: <span class="syn-num">90</span> },
+    { name: <span class="syn-str">&quot;Rahim&quot;</span>, marks: <span class="syn-num">75</span> },
+    { name: <span class="syn-str">&quot;Karim&quot;</span>, marks: <span class="syn-num">85</span> }
+];</pre>
+</div>
+<p class="text-p">শুধু student-এর names বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[&quot;Shariar&quot;, &quot;Rahim&quot;, &quot;Karim&quot;]</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 7 — Filter</h4>
+<p class="text-p">উপরের data থেকে যাদের marks <code>80</code> বা তার বেশি তাদের বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Shariar
+Karim</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 8 — Find</h4>
+<p class="text-p"><code>marks</code> <code>80</code>-এর বেশি এমন প্রথম student বের করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 9 — Destructuring</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+};</pre>
+</div>
+<p class="text-p">Destructuring করে তিনটি variable তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name
+age
+city</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 10 — Mini Project 👨‍💻</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> products = [
+    {
+        name: <span class="syn-str">&quot;Laptop&quot;</span>,
+        price: <span class="syn-num">70000</span>,
+        category: <span class="syn-str">&quot;Computer&quot;</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Mouse&quot;</span>,
+        price: <span class="syn-num">1000</span>,
+        category: <span class="syn-str">&quot;Accessories&quot;</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Keyboard&quot;</span>,
+        price: <span class="syn-num">3000</span>,
+        category: <span class="syn-str">&quot;Accessories&quot;</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Monitor&quot;</span>,
+        price: <span class="syn-num">15000</span>,
+        category: <span class="syn-str">&quot;Computer&quot;</span>
+    }
+];</pre>
+</div>
+<p class="text-p">এমন code লেখো যা:</p>
+<ul class="bullet-list"><li>সব product-এর নাম দেখাবে</li><li>সব product-এর total price বের করবে</li><li><code>5000</code>-এর বেশি price-এর product বের করবে</li><li><code>&quot;Computer&quot;</code> category-এর product বের করবে</li><li>সবচেয়ে expensive product বের করবে</li><li>শুধু product names-এর নতুন Array তৈরি করবে</li></ul>
+      </div>
+    </div>
+
+    <!-- Chapter 10 Final Summary Overview -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 10 Final Summary — Object Cheatsheet</div>
+<div class="section-subhead">Object-এর basic structure:</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};</pre>
+</div>
+<p class="text-p">Access:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>user.name;
+user[&quot;name&quot;];</pre>
+</div>
+<p class="text-p">Update:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>user.age = <span class="syn-num">24</span>;</pre>
+</div>
+<p class="text-p">Add:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>user.city = <span class="syn-str">&quot;Dhaka&quot;</span>;</pre>
+</div>
+<p class="text-p">Delete:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">delete</span> user.city;</pre>
+</div>
+<p class="text-p">Methods:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>user.sayHello();</pre>
+</div>
+<p class="text-p"><code>this</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">this</span>.name;</pre>
+</div>
+<p class="text-p">Keys/values:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.keys(user);
+<span class="syn-fn">Object</span>.values(user);
+<span class="syn-fn">Object</span>.entries(user);</pre>
+</div>
+<p class="text-p">Destructuring:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> { name, age } = user;</pre>
+</div>
+<p class="text-p">Spread:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> copy = { ...user };</pre>
+</div>
+<p class="text-p">Optional chaining:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>user.address?.city;</pre>
+</div>
+    </div>
+
+    <!-- Chapter 10 Top 10 Concepts -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b; background: #fffbeb;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">TOP 10</span> ⭐ Chapter 10-এর সবচেয়ে গুরুত্বপূর্ণ ১০টি</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1. Object = key-value structure
+2. Dot notation
+3. Bracket notation
+4. Nested Object
+5. Array of Objects
+6. Object Methods
+7. this
+8. Object Destructuring
+9. Object.keys / values / entries
+10. Spread + Reference + Shallow Copy</pre>
+</div>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 🚀 Chapter 11 Preview — Prototypes &amp; Prototype Chain</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        <strong>Chapter 9-এর Array + Chapter 10-এর Object</strong>—এই দুইটা একসাথে ভালোভাবে বুঝে ফেললে JavaScript-এর real-world data handling অনেক পরিষ্কার হয়ে যাবে। পরের অধ্যায়ে আমরা <strong>Advanced Objects, Prototypes &amp; Prototype Chain</strong>-এর দিকে যাব, যেখানে JavaScript-এর ভিতরের object system কীভাবে কাজ করে সেটা বুঝব।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

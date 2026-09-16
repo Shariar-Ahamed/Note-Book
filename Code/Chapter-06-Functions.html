@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 06: Functions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-dark: #0b2545;
+      --navy-mid: #134074;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-subtle: #f0f9ff;
+      --teal-accent: #0d9488;
+      --green-accent: #059669;
+      --green-light: #ecfdf5;
+      --amber-accent: #d97706;
+      --amber-light: #fefce8;
+      --amber-border: #fef08a;
+      --red-accent: #dc2626;
+      --red-light: #fef2f2;
+      --purple-accent: #7c3aed;
+      --purple-light: #f5f3ff;
+      --text-dark: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #475569;
+      --text-sub: #64748b;
+      --card-bg: #ffffff;
+      --page-bg: #f1f5f9;
+      --border-card: #e2e8f0;
+      --border-subtle: #cbd5e1;
+      --code-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-body);
+      font-size: 12px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .action-bar .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    }
+    .print-btn:hover {
+      background: #0284c7;
+    }
+
+    /* Document Sheet */
+    .doc-page {
+      max-width: 820px;
+      margin: 20px auto;
+      background: var(--card-bg);
+      padding: 32px 36px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-card);
+    }
+
+    /* Header Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #0b2545 0%, #0d3b66 55%, #0284c7 100%);
+      border-radius: 8px;
+      padding: 14px 20px;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #38bdf8;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .banner-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 12px;
+      color: #93c5fd;
+      margin-bottom: 10px;
+      margin-left: 40px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 8px;
+    }
+    .meta-item .meta-label {
+      font-size: 10px;
+      color: #7dd3fc;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .meta-item .meta-val {
+      font-size: 11px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: var(--blue-light);
+      border-left: 4px solid var(--blue-accent);
+      color: #0369a1;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 12px 0 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 9px 13px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.015);
+    }
+    .card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* Section Sub-labels */
+    .tag-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 5px 0 2px 0;
+      display: block;
+    }
+    .tag-label.cyan { color: #0284c7; }
+    .tag-label.green { color: #059669; }
+    .tag-label.amber { color: #d97706; }
+    .tag-label.purple { color: #6366f1; }
+    .tag-label.red { color: #dc2626; }
+
+    p.text-p {
+      margin-bottom: 3px;
+      font-size: 11.5px;
+      color: var(--text-body);
+      line-height: 1.5;
+    }
+
+    ul.clean-list {
+      margin-left: 18px;
+      margin-bottom: 4px;
+    }
+    ul.clean-list li {
+      margin-bottom: 2px;
+      font-size: 11.5px;
+    }
+
+    /* Definition Alert inside card */
+    .def-box {
+      border-radius: 4px;
+      padding: 5px 9px;
+      margin: 4px 0;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .def-box.english {
+      background: var(--blue-subtle);
+      border-left: 3px solid var(--blue-accent);
+      color: #0c4a6e;
+    }
+    .def-box.bangla {
+      background: #faf5ff;
+      border-left: 3px solid #9333ea;
+      color: #581c87;
+    }
+
+    /* Memory / Rule box */
+    .memory-box {
+      background: var(--amber-light);
+      border: 1px solid var(--amber-border);
+      border-left: 4px solid #eab308;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #713f12;
+      margin: 5px 0 4px 0;
+    }
+
+    /* Error / Warning box */
+    .warn-box {
+      background: var(--red-light);
+      border: 1px solid #fecaca;
+      border-left: 4px solid var(--red-accent);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #7f1d1d;
+      margin: 5px 0 4px 0;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 6px 0 8px 0;
+      border: 1px solid var(--border-card);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: left;
+    }
+    thead th {
+      background: #f8fafc;
+      color: var(--text-dark);
+      font-weight: 700;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+    tbody tr:nth-child(even) {
+      background: #fbfcfe;
+    }
+    tbody td {
+      padding: 5px 8px;
+      color: var(--text-body);
+    }
+
+    /* Code & Terminal */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    pre {
+      margin: 0;
+      padding: 6px 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      line-height: 1.4;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 10.5px;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .output-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-left: 3px solid #64748b;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-family: 'Fira Code', monospace;
+      font-size: 10.5px;
+      color: #334155;
+      margin: 3px 0 6px 0;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 06: FUNCTIONS &amp; EXECUTION ENGINE</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">66 Modules + Projects</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 03 — Core Mechanics (2/3)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Scope, Execution Context &amp; Closures</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Functions — Code একবার লিখে বারবার ব্যবহার করার উপায়</h2>
+      <p class="text-p">JavaScript শেখার ক্ষেত্রে <strong>Function</strong> একটি অত্যন্ত গুরুত্বপূর্ণ concept। তুমি যদি JavaScript দিয়ে:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 12px; margin: 4px 0 6px 12px; font-size: 11px;">
+        <div>• Website</div>
+        <div>• Web App</div>
+        <div>• React Application</div>
+        <div>• Node.js Backend</div>
+        <div>• API</div>
+        <div>• Authentication</div>
+        <div>• Calculator</div>
+        <div>• E-commerce</div>
+        <div>• Dashboard</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1;">ইত্যাদি বানাতে চাও, তাহলে Function ভালোভাবে বুঝতেই হবে।</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Core Function Mechanics, Parameters & Arguments (6.1 – 6.12)</div>
+
+    <!-- 6.1 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.1</span> What is a Function?</div>
+<div class="def-box bangla"><strong>Function</strong> হলো এমন একটি reusable block of code, যেটা একটি নির্দিষ্ট কাজ করার জন্য তৈরি করা হয়।</div>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Concept:</strong> <strong>একবার code লিখবে → প্রয়োজন অনুযায়ী অনেকবার call করবে।</strong></div>
+<span class="tag-label cyan">Real-Life Example</span>
+<p class="text-p">ধরো তোমার বাসায় একটা <strong>washing machine</strong> আছে।</p>
+<p class="text-p">তুমি শুধু:</p>
+<div class="ascii-tree-container">Start</div>
+<p class="text-p">চাপ দিলে machine-এর ভিতরে অনেক কাজ automatically হয়।</p>
+<p class="text-p">Programming-এ function অনেকটা এমন:</p>
+<div class="ascii-tree-container">Function
+   ↓
+Input
+   ↓
+Process
+   ↓
+Output</div>
+    </div>
+
+    <!-- 6.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.2</span> Without Function</div>
+<p class="text-p">ধরো আমাদের 3 জনের জন্য greeting দেখাতে হবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(&quot;Hello Shariar<span class="syn-str">&quot;);
+console.log(&quot;</span>Hello Rahim<span class="syn-str">&quot;);
+console.log(&quot;</span>Hello Karim&quot;);</pre>
+</div>
+<p class="text-p">এটা কাজ করবে।</p>
+<p class="text-p">কিন্তু একই ধরনের কাজ অনেক জায়গায় করতে হলে code repeat করতে হবে।</p>
+    </div>
+
+    <!-- 6.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.3</span> With Function</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.log(&quot;Hello <span class="syn-str">&quot; + name);
+}
+
+greet(&quot;</span>Shariar<span class="syn-str">&quot;);
+greet(&quot;</span>Rahim<span class="syn-str">&quot;);
+greet(&quot;</span>Karim&quot;);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello Shariar
+Hello Rahim
+Hello Karim</div>
+<p class="text-p">একবার function লিখেছি:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.log(&quot;Hello &quot; + name);
+}</pre>
+</div>
+<p class="text-p">তারপর প্রয়োজন অনুযায়ী call করেছি:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>greet(&quot;Shariar<span class="syn-str">&quot;);
+greet(&quot;</span>Rahim<span class="syn-str">&quot;);
+greet(&quot;</span>Karim&quot;);</pre>
+</div>
+<p class="text-p">এটাই <strong>Code Reusability</strong>।</p>
+    </div>
+
+    <!-- 6.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.4</span> Function-এর Basic Structure</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> functionName(parameter) {
+    <span class="syn-com">// code</span>
+}</pre>
+</div>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.log(&quot;Hello &quot; + name);
+}</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>অংশ</th><th>অর্থ</th></tr></thead>
+    <tbody>
+      <tr><td><code>function</code></td><td>Function declare করার keyword</td></tr><tr><td><code>greet</code></td><td>Function-এর নাম</td></tr><tr><td><code>name</code></td><td>Parameter</td></tr><tr><td><code>{ }</code></td><td>Function body</td></tr><tr><td><code>console.log()</code></td><td>Function-এর কাজ</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 6.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.5</span> Function Declaration</div>
+<p class="text-p">এটাকে বলা হয় <strong>Function Declaration</strong>।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> sayHello() {
+    <span class="syn-fn">console</span>.log(&quot;Hello World!&quot;);
+}</pre>
+</div>
+<p class="text-p">এখন function তৈরি হয়েছে।</p>
+<p class="text-p">কিন্তু এখনো execute হয়নি।</p>
+<p class="text-p">Execute করতে হবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>sayHello();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello World!</div>
+    </div>
+
+    <!-- 6.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.6</span> Function Call / Invocation</div>
+<p class="text-p">Function execute করাকে বলা হয়:</p>
+<ul class="clean-list"><li>Function Call</li><li>Function Invocation</li></ul>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+}
+
+greet();</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>greet();</pre>
+</div>
+<p class="text-p">হলো function call।</p>
+    </div>
+
+    <!-- 6.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.7</span> Function একাধিকবার Call করা</div>
+<p class="text-p">একটি function একবার লিখে অনেকবার ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+}
+
+greet();
+greet();
+greet();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello!
+Hello!
+Hello!</div>
+    </div>
+
+    <!-- 6.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.8</span> Parameter</div>
+<p class="text-p">Function-এর ভিতরে input নেওয়ার জন্য <strong>parameter</strong> ব্যবহার করি।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.log(&quot;Hello &quot; + name);
+}</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>name</pre>
+</div>
+<p class="text-p">হলো parameter।</p>
+    </div>
+
+    <!-- 6.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.9</span> Argument</div>
+<p class="text-p">Function call করার সময় যে actual value পাঠানো হয় তাকে <strong>argument</strong> বলে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>greet(&quot;Shariar&quot;);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">name → parameter
+&quot;Shariar&quot; → argument</div>
+<span class="tag-label cyan">সহজভাবে</span>
+<div class="ascii-tree-container">Parameter → Function তৈরি করার সময়
+Argument  → Function call করার সময়</div>
+    </div>
+
+    <!-- 6.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.10</span> Multiple Parameters</div>
+<p class="text-p">একটি function-এ একাধিক parameter থাকতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-fn">console</span>.log(a + b);
+}
+
+add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">30</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">a = 10
+b = 20</div>
+    </div>
+
+    <!-- 6.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.11</span> তিনটি Parameter</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> introduce(name, age, country) {
+    <span class="syn-fn">console</span>.log(
+        <span class="syn-str">&quot;Name:&quot;</span>, name,
+        <span class="syn-str">&quot;Age:&quot;</span>, age,
+        <span class="syn-str">&quot;Country:&quot;</span>, country
+    );
+}
+
+introduce(&quot;Shariar<span class="syn-str">&quot;, 23, &quot;</span>Bangladesh&quot;);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Name: Shariar Age: 23 Country: Bangladesh</div>
+    </div>
+
+    <!-- 6.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.12</span> Function-এর ভিতরে Calculation</div>
+<p class="text-p">Function শুধু message print করার জন্য নয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-fn">console</span>.log(a + b);
+}
+
+add(<span class="syn-num">15</span>, <span class="syn-num">25</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">40</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> multiply(a, b) {
+    <span class="syn-fn">console</span>.log(a * b);
+}
+
+multiply(<span class="syn-num">5</span>, <span class="syn-num">10</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">50</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Return Mechanism, Call Stacks & Default Parameters (6.13 – 6.20)</div>
+
+    <!-- 6.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.13</span> <code>return</code></div>
+<p class="text-p">Function-এর সবচেয়ে গুরুত্বপূর্ণ বিষয়গুলোর একটি হলো <strong><code>return</code></strong>।</p>
+<p class="text-p"><code>return</code> ব্যবহার করে function থেকে কোনো value বাইরে পাঠানো যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">let</span> result = add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">30</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">return</span> a + b;</pre>
+</div>
+<p class="text-p">মানে function result বাইরে পাঠিয়ে দিচ্ছে।</p>
+    </div>
+
+    <!-- 6.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.14</span> <code>console.log()</code> বনাম <code>return</code></div>
+<p class="text-p">এটা খুব গুরুত্বপূর্ণ।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>console.log()</code></h4>
+<p class="text-p">শুধু output console-এ দেখায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>console.log()</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-fn">console</span>.log(a + b);
+}
+
+<span class="syn-kw">let</span> result = add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">30
+undefined</div>
+<p class="text-p">কারণ function কিছু <code>return</code> করেনি।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>return</code></h4>
+<p class="text-p">Value ফেরত দেয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>return</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">let</span> result = add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">30</div>
+<span class="tag-label amber">🧠 মনে রাখার নিয়ম</span>
+<div class="ascii-tree-container">console.log()
+→ দেখায়
+
+return
+→ value ফেরত দেয়</div>
+    </div>
+
+    <!-- 6.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.15</span> <code>return</code> Function Execution বন্ধ করে</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+    <span class="syn-fn">console</span>.log(&quot;Before<span class="syn-str">&quot;);
+
+    return;
+
+    console.log(&quot;</span>After&quot;);
+}
+
+test();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Before</div>
+<p class="text-p"><code>return</code> হওয়ার পর function আর নিচের code execute করে না।</p>
+    </div>
+
+    <!-- 6.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.16</span> Return Value Store করা</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> square(number) {
+    <span class="syn-kw">return</span> number * number;
+}
+
+<span class="syn-kw">let</span> result = square(<span class="syn-num">5</span>);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">25</div>
+    </div>
+
+    <!-- 6.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.17</span> Return Value নিয়ে আরও কাজ করা</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">let</span> result = add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(result * <span class="syn-num">2</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">60</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">add(10, 20)
+→ 30
+
+30 × 2
+→ 60</div>
+    </div>
+
+    <!-- 6.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.18</span> Function-এর ভিতরে Function Call</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">function</span> double(number) {
+    <span class="syn-kw">return</span> number * <span class="syn-num">2</span>;
+}
+
+<span class="syn-kw">let</span> result = double(add(<span class="syn-num">10</span>, <span class="syn-num">20</span>));
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">60</div>
+<p class="text-p">Step:</p>
+<div class="ascii-tree-container">add(10, 20)
+↓
+30
+
+double(30)
+↓
+60</div>
+    </div>
+
+    <!-- 6.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.19</span> Function-এর Default Parameter</div>
+<p class="text-p">কখনো argument না দিলে default value ব্যবহার করতে চাই।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet(name = <span class="syn-str">&quot;Guest&quot;</span>) {
+    <span class="syn-fn">console</span>.log(&quot;Hello &quot; + name);
+}
+
+greet();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello Guest</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>greet(&quot;Shariar&quot;);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Hello Shariar</div>
+    </div>
+
+    <!-- 6.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.20</span> Multiple Default Parameters</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> introduce(
+    name = <span class="syn-str">&quot;Guest&quot;</span>,
+    country = <span class="syn-str">&quot;Unknown&quot;</span>
+) {
+    <span class="syn-fn">console</span>.log(name, country);
+}
+
+introduce();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Guest Unknown</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>introduce(&quot;Shariar<span class="syn-str">&quot;, &quot;</span>Bangladesh&quot;);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Shariar Bangladesh</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Function Expressions, Hoisting & Arrow Functions (6.21 – 6.30)</div>
+
+    <!-- 6.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.21</span> Function Expression</div>
+<p class="text-p">Function declaration ছাড়াও function variable-এর মধ্যে রাখা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> greet = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+};
+
+greet();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello!</div>
+<p class="text-p">এটাকে বলা হয়:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Concept:</strong> <strong>Function Expression</strong></div>
+    </div>
+
+    <!-- 6.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.22</span> Function Declaration বনাম Function Expression</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Function Declaration</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Function Declaration</span></div>
+  <pre><span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Function Expression</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Function Expression</span></div>
+  <pre><span class="syn-kw">const</span> greet = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+};</pre>
+</div>
+<p class="text-p">দুটোই function।</p>
+<p class="text-p">কিন্তু syntax আলাদা।</p>
+    </div>
+
+    <!-- 6.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.23</span> Function Declaration Hoisting</div>
+<p class="text-p">Function declaration-এর একটি বিশেষ feature আছে।</p>
+<p class="text-p">তুমি function call আগে করলেও কাজ করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>greet();
+
+<span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello!</div>
+<p class="text-p">কারণ function declaration hoisted হয়।</p>
+<p class="text-p">⚠️ Hoisting আমরা Scope &amp; Hoisting chapter-এ বিস্তারিতভাবে দেখব।</p>
+    </div>
+
+    <!-- 6.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.24</span> Function Expression আগে Call করলে</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>greet();
+
+<span class="syn-kw">const</span> greet = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+};</pre>
+</div>
+<p class="text-p">এটি কাজ করবে না এবং error হবে।</p>
+<p class="text-p">কারণ <code>const</code> variable initialization-এর আগে access করা যায় না।</p>
+    </div>
+
+    <!-- 6.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.25</span> Arrow Function</div>
+<p class="text-p">Modern JavaScript-এ সবচেয়ে বেশি ব্যবহৃত syntaxগুলোর একটি হলো <strong>Arrow Function</strong>।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Traditional:</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Traditional:</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Arrow:</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Arrow:</span></div>
+  <pre><span class="syn-kw">const</span> add = (a, b) =&gt; {
+    <span class="syn-kw">return</span> a + b;
+};</pre>
+</div>
+<p class="text-p">দুটোই:</p>
+<div class="ascii-tree-container">10 + 20 = 30</div>
+<p class="text-p">return করবে।</p>
+    </div>
+
+    <!-- 6.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.26</span> Arrow Function Short Syntax</div>
+<p class="text-p">যদি function body-তে শুধু একটি expression return করতে হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> add = (a, b) =&gt; a + b;</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">return</span></pre>
+</div>
+<p class="text-p">লিখতে হয় না।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">const</span> square = number =&gt; number * number;
+
+<span class="syn-fn">console</span>.log(square(<span class="syn-num">5</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">25</div>
+    </div>
+
+    <!-- 6.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.27</span> Arrow Function with One Parameter</div>
+<p class="text-p">একটি parameter থাকলে parentheses বাদ দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> double = number =&gt; number * <span class="syn-num">2</span>;
+
+<span class="syn-fn">console</span>.log(double(<span class="syn-num">5</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">10</div>
+<p class="text-p">তবে parentheses দিয়েও লেখা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> double = (number) =&gt; number * <span class="syn-num">2</span>;</pre>
+</div>
+<p class="text-p">দুটোই valid।</p>
+    </div>
+
+    <!-- 6.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.28</span> No Parameter Arrow Function</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> greet = () =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+};
+
+greet();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello!</div>
+    </div>
+
+    <!-- 6.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.29</span> Multiple Parameters</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> add = (a, b) =&gt; a + b;
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>, <span class="syn-num">20</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">30</div>
+    </div>
+
+    <!-- 6.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.30</span> Arrow Function with Multiple Lines</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> calculate = (a, b) =&gt; {
+    <span class="syn-kw">let</span> sum = a + b;
+    <span class="syn-kw">let</span> result = sum * <span class="syn-num">2</span>;
+
+    <span class="syn-kw">return</span> result;
+};
+
+<span class="syn-fn">console</span>.log(calculate(<span class="syn-num">10</span>, <span class="syn-num">20</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">60</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Anonymous Functions, IIFE & First-Class Citizens (6.31 – 6.37)</div>
+
+    <!-- 6.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.31</span> Function-এর বিভিন্ন ধরন</div>
+<p class="text-p">এখন পর্যন্ত আমরা দেখেছি:</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Function Declaration</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Function Declaration</span></div>
+  <pre><span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Function Expression</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Function Expression</span></div>
+  <pre><span class="syn-kw">const</span> greet = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+};</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Arrow Function</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Arrow Function</span></div>
+  <pre><span class="syn-kw">const</span> greet = () =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+};</pre>
+</div>
+    </div>
+
+    <!-- 6.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.32</span> Anonymous Function</div>
+<p class="text-p">যে function-এর কোনো নাম নেই তাকে <strong>Anonymous Function</strong> বলে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> greet = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+};</pre>
+</div>
+<p class="text-p">এখানে function-এর নিজস্ব কোনো নাম নেই।</p>
+<p class="text-p">Function-টি <code>greet</code> variable-এর মধ্যে রাখা হয়েছে।</p>
+    </div>
+
+    <!-- 6.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.33</span> IIFE — Immediately Invoked Function Expression</div>
+<p class="text-p">IIFE এমন function যেটা তৈরি হওয়ার সঙ্গে সঙ্গে execute হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>(<span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+})();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello!</div>
+<p class="text-p">এখানে function আলাদা করে call করা হয়নি।</p>
+<p class="text-p">তৈরি করার সঙ্গে সঙ্গেই execute হয়েছে।</p>
+    </div>
+
+    <!-- 6.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.34</span> IIFE with Parameter</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>(<span class="syn-kw">function</span> (name) {
+    <span class="syn-fn">console</span>.log(&quot;Hello <span class="syn-str">&quot; + name);
+})(&quot;</span>Shariar&quot;);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello Shariar</div>
+    </div>
+
+    <!-- 6.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.35</span> Why IIFE?</div>
+<p class="text-p">পুরনো JavaScript code-এ IIFE ব্যবহার করা হতো private scope তৈরি করার জন্য।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>(<span class="syn-kw">function</span> () {
+    <span class="syn-kw">let</span> secret = <span class="syn-str">&quot;12345&quot;</span>;
+
+    <span class="syn-fn">console</span>.log(secret);
+})();</pre>
+</div>
+<p class="text-p"><code>secret</code> বাইরে accessible হবে না।</p>
+<p class="text-p">Modern JavaScript-এ modules এবং block scope-এর কারণে IIFE আগের মতো বেশি প্রয়োজন হয় না, কিন্তু legacy code বুঝতে এটি জানা দরকার।</p>
+    </div>
+
+    <!-- 6.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.36</span> Function as a Value</div>
+<p class="text-p">JavaScript-এ function শুধু function নয়, একটি <strong>value</strong> হিসেবেও ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">const</span> greet = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+};</pre>
+</div>
+<p class="text-p">এখানে function-টি variable-এর value।</p>
+<p class="text-p">এজন্য function-কে বলা হয়:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Core Concept:</strong> <strong>First-Class Function</strong></div>
+    </div>
+
+    <!-- 6.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.37</span> First-Class Functions</div>
+<p class="text-p">JavaScript-এ function:</p>
+<ul class="clean-list"><li>Variable-এ রাখা যায়</li><li>অন্য function-এ পাঠানো যায়</li><li>Function থেকে return করা যায়</li><li>Array/Object-এর মধ্যে রাখা যায়</li></ul>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">const</span> greet = <span class="syn-kw">function</span> () {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+};
+
+<span class="syn-kw">const</span> anotherFunction = greet;
+
+anotherFunction();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello</div>
+    </div>
+
+    <div class="part-banner">Part 05 — Callbacks, Higher-Order Functions & Rest Parameters (6.38 – 6.51)</div>
+
+    <!-- 6.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.38</span> Function as Argument</div>
+<p class="text-p">একটি function-এর argument হিসেবে আরেকটি function পাঠানো যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.log(&quot;Hello <span class="syn-str">&quot; + name);
+}
+
+function processUser(callback) {
+    callback(&quot;</span>Shariar&quot;);
+}
+
+processUser(greet);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello Shariar</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>greet</pre>
+</div>
+<p class="text-p">কে পাঠানো হয়েছে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>processUser(greet);</pre>
+</div>
+    </div>
+
+    <!-- 6.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.39</span> Callback Function</div>
+<p class="text-p">যে function-কে অন্য function-এর argument হিসেবে পাঠানো হয় তাকে <strong>Callback Function</strong> বলে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.log(&quot;Hello <span class="syn-str">&quot; + name);
+}
+
+function processUser(callback) {
+    callback(&quot;</span>Shariar&quot;);
+}
+
+processUser(greet);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">greet
+↓
+callback
+↓
+processUser()</div>
+<p class="text-p"><code>greet</code> হলো callback function।</p>
+    </div>
+
+    <!-- 6.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.40</span> Callback-এর Real-Life Example</div>
+<p class="text-p">ধরো restaurant-এ তুমি খাবার order দিলে।</p>
+<div class="ascii-tree-container">Order placed
+      ↓
+Wait
+      ↓
+Food ready
+      ↓
+Notify customer</div>
+<p class="text-p">Programming-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> orderFood(callback) {
+    <span class="syn-fn">console</span>.log(&quot;Food ordered.&quot;);
+
+    callback();
+}
+
+<span class="syn-kw">function</span> foodReady() {
+    <span class="syn-fn">console</span>.log(&quot;Food is ready!&quot;);
+}
+
+orderFood(foodReady);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Food ordered.
+Food is ready!</div>
+<p class="text-p">এটা asynchronous JavaScript বোঝার foundation।</p>
+    </div>
+
+    <!-- 6.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.41</span> Callback with Arrow Function</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> processUser(callback) {
+    callback(&quot;Shariar<span class="syn-str">&quot;);
+}
+
+processUser((name) =&gt; {
+    console.log(&quot;</span>Hello &quot; + name);
+});</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello Shariar</div>
+    </div>
+
+    <!-- 6.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.42</span> Higher-Order Function</div>
+<p class="text-p">যে function:</p>
+<p class="text-p">1. অন্য function গ্রহণ করে অথবা 2. অন্য function return করে</p>
+<p class="text-p">তাকে <strong>Higher-Order Function</strong> বলা হয়।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">function</span> process(callback) {
+    callback();
+}
+
+process(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+});</pre>
+</div>
+<p class="text-p"><code>process()</code> একটি higher-order function।</p>
+<p class="text-p">কারণ এটি function argument হিসেবে গ্রহণ করছে।</p>
+    </div>
+
+    <!-- 6.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.43</span> Function Returning Function</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> outer() {
+
+    <span class="syn-kw">function</span> inner() {
+        <span class="syn-fn">console</span>.log(&quot;Hello from inner&quot;);
+    }
+
+    <span class="syn-kw">return</span> inner;
+}
+
+<span class="syn-kw">const</span> result = outer();
+
+result();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello from inner</div>
+<p class="text-p">এখানে <code>outer()</code> একটি function return করছে।</p>
+<p class="text-p">এটিও higher-order function-এর example।</p>
+    </div>
+
+    <!-- 6.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.44</span> Closure-এর Basic Idea</div>
+<p class="text-p">এখানে আমরা closure-এর পুরো chapter করছি না, কিন্তু function-এর সঙ্গে এর connection বুঝে রাখো।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> outer() {
+
+    <span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello&quot;</span>;
+
+    <span class="syn-kw">function</span> inner() {
+        <span class="syn-fn">console</span>.log(message);
+    }
+
+    <span class="syn-kw">return</span> inner;
+}
+
+<span class="syn-kw">const</span> greet = outer();
+
+greet();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Hello</div>
+<p class="text-p"><code>outer()</code> execute শেষ হওয়ার পরও <code>inner()</code> তার outer variable <code>message</code> access করতে পারছে।</p>
+<p class="text-p">এটাই <strong>Closure</strong>-এর basic idea।</p>
+<p class="text-p">Closure পরে আলাদা advanced chapter-এ বিস্তারিত হবে।</p>
+    </div>
+
+    <!-- 6.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.45</span> Rest Parameter</div>
+<p class="text-p">Function-এ কতগুলো argument আসবে জানা না থাকলে <strong>rest parameter</strong> ব্যবহার করা যায়।</p>
+<p class="text-p">Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> functionName(...values) {
+}</pre>
+</div>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">function</span> addAll(...numbers) {
+    <span class="syn-fn">console</span>.log(numbers);
+}
+
+addAll(<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">[10, 20, 30, 40]</div>
+<p class="text-p"><code>...numbers</code> সব arguments-কে একটি array-এর মধ্যে নিয়ে এসেছে।</p>
+    </div>
+
+    <!-- 6.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.46</span> Rest Parameter দিয়ে Sum</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> addAll(...numbers) {
+
+    <span class="syn-kw">let</span> sum = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> number <span class="syn-kw">of</span> numbers) {
+        sum += number;
+    }
+
+    <span class="syn-kw">return</span> sum;
+}
+
+<span class="syn-fn">console</span>.log(addAll(<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">100</div>
+    </div>
+
+    <!-- 6.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.47</span> Rest Parameter vs Spread Operator</div>
+<p class="text-p">দুটো দেখতে একই:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>...</pre>
+</div>
+<p class="text-p">কিন্তু কাজের জায়গা আলাদা।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Rest</h4>
+<p class="text-p">Arguments <strong>collect</strong> করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Rest</span></div>
+  <pre><span class="syn-kw">function</span> add(...numbers) {
+    <span class="syn-fn">console</span>.log(numbers);
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Spread</h4>
+<p class="text-p">Values <strong>spread</strong> করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Spread</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];
+
+<span class="syn-fn">console</span>.log(...numbers);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">10 20 30</div>
+<p class="text-p">এটা আমরা Destructuring, Spread &amp; Rest chapter-এ আরও বিস্তারিত করব।</p>
+    </div>
+
+    <!-- 6.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.48</span> Function-এর Argument কম দিলে কী হয়?</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">NaN</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">a = 10
+b = undefined</div>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-num">10</span> + <span class="syn-bool">undefined</span></pre>
+</div>
+<p class="text-p">→ <code>NaN</code></p>
+    </div>
+
+    <!-- 6.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.49</span> Default Parameter দিয়ে Solve</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b = <span class="syn-num">0</span>) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">10</div>
+    </div>
+
+    <!-- 6.50 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.50</span> Extra Argument দিলে কী হয়?</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">30</div>
+<p class="text-p">এখানে <code>10</code> → <code>a</code></p>
+<p class="text-p"><code>20</code> → <code>b</code></p>
+<p class="text-p"><code>30</code> কোনো parameter পায়নি।</p>
+<p class="text-p">JavaScript সাধারণভাবে extra arguments ignore করে, যদি না <code>arguments</code> বা rest parameter দিয়ে access করা হয়।</p>
+    </div>
+
+    <!-- 6.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.51</span> <code>arguments</code> Object</div>
+<p class="text-p">Traditional function-এর ভিতরে <code>arguments</code> নামে একটি special object-like value থাকে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test(a, b) {
+    <span class="syn-fn">console</span>.log(arguments);
+}
+
+test(<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>);</pre>
+</div>
+<p class="text-p">এতে passed arguments দেখতে পারবে।</p>
+<p class="text-p">⚠️ Arrow function-এর নিজের <code>arguments</code> নেই।</p>
+<p class="text-p">Modern JavaScript-এ variable number of arguments-এর জন্য সাধারণত rest parameter:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test(...args) {
+    <span class="syn-fn">console</span>.log(args);
+}</pre>
+</div>
+<p class="text-p">বেশি পরিষ্কার।</p>
+    </div>
+
+    <div class="part-banner">Part 06 — Scope, Recursion, Best Practices & Mini-Projects (6.52 – 6.66)</div>
+
+    <!-- 6.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.52</span> Pure Function</div>
+<p class="text-p">একটি function যদি:</p>
+<ul class="clean-list"><li>একই input দিলে সবসময় একই output দেয়</li><li>বাইরের state পরিবর্তন না করে</li></ul>
+<p class="text-p">তাহলে তাকে <strong>Pure Function</strong> বলা হয়।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</pre>
+</div>
+<div class="ascii-tree-container">add(10, 20) → 30
+add(10, 20) → 30</div>
+<p class="text-p">সবসময় একই result।</p>
+    </div>
+
+    <!-- 6.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.53</span> Impure Function</div>
+<p class="text-p">যদি function বাইরের data পরিবর্তন করে বা external state-এর ওপর depend করে, তাহলে pure নয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> total = <span class="syn-num">0</span>;
+
+<span class="syn-kw">function</span> addToTotal(amount) {
+    total += amount;
+}</pre>
+</div>
+<p class="text-p">Function বাইরের <code>total</code> পরিবর্তন করছে।</p>
+<p class="text-p">তাই এটি pure function নয়।</p>
+    </div>
+
+    <!-- 6.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.54</span> Function Scope</div>
+<p class="text-p">Function-এর ভিতরে declare করা variable সাধারণত function-এর বাইরে accessible নয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> test() {
+    <span class="syn-kw">let</span> message = <span class="syn-str">&quot;Hello&quot;</span>;
+    
+    <span class="syn-fn">console</span>.log(message);
+}
+
+test();</pre>
+</div>
+<p class="text-p">কাজ করবে।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(message);</pre>
+</div>
+<p class="text-p">করলে error হবে।</p>
+<p class="text-p">কারণ <code>message</code> function scope-এর ভিতরে।</p>
+    </div>
+
+    <!-- 6.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.55</span> Local Variable</div>
+<p class="text-p">Function-এর ভিতরে তৈরি variable-কে সাধারণভাবে local variable বলা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> calculate() {
+    <span class="syn-kw">let</span> result = <span class="syn-num">100</span>;
+
+    <span class="syn-fn">console</span>.log(result);
+}</pre>
+</div>
+<p class="text-p"><code>result</code> বাইরে ব্যবহার করা যাবে না।</p>
+    </div>
+
+    <!-- 6.56 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.56</span> Global Variable</div>
+<p class="text-p">Function-এর বাইরে declare করা variable function-এর ভিতর থেকে access করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;
+
+<span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(name);
+}
+
+greet();</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar</div>
+<p class="text-p">Function বাইরের <code>name</code> access করতে পারছে।</p>
+    </div>
+
+    <!-- 6.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.57</span> Function Parameter Scope</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.log(name);
+}
+
+greet(&quot;Shariar&quot;);</pre>
+</div>
+<p class="text-p"><code>name</code> function-এর local scope-এর অংশ।</p>
+<p class="text-p">Function-এর বাইরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-fn">console</span>.log(name);</pre>
+</div>
+<p class="text-p">কাজ করবে না।</p>
+    </div>
+
+    <!-- 6.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.58</span> Function Composition</div>
+<p class="text-p">একটি function-এর output অন্য function-এর input হিসেবে ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> double(number) {
+    <span class="syn-kw">return</span> number * <span class="syn-num">2</span>;
+}
+
+<span class="syn-kw">function</span> addFive(number) {
+    <span class="syn-kw">return</span> number + <span class="syn-num">5</span>;
+}
+
+<span class="syn-kw">let</span> result = addFive(double(<span class="syn-num">10</span>));
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">25</div>
+<p class="text-p">Step:</p>
+<div class="ascii-tree-container">double(10)
+↓
+20
+
+addFive(20)
+↓
+25</div>
+    </div>
+
+    <!-- 6.59 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.59</span> Recursive Function</div>
+<p class="text-p">যখন একটি function নিজেকেই call করে তাকে <strong>Recursion</strong> বলে।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">function</span> countdown(number) {
+
+    <span class="syn-kw">if</span> (number === <span class="syn-num">0</span>) {
+        <span class="syn-kw">return</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(number);
+
+    countdown(number - <span class="syn-num">1</span>);
+}
+
+countdown(<span class="syn-num">5</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">5
+4
+3
+2
+1</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>countdown()</pre>
+</div>
+<p class="text-p">নিজেকেই call করছে।</p>
+    </div>
+
+    <!-- 6.60 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.60</span> Recursion-এর Base Case</div>
+<p class="text-p">Recursion-এ সবচেয়ে গুরুত্বপূর্ণ বিষয় হলো <strong>Base Case</strong>।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">if</span> (number === <span class="syn-num">0</span>) {
+    <span class="syn-kw">return</span>;
+}</pre>
+</div>
+<p class="text-p">এটা না থাকলে function নিজেকে call করতেই থাকবে এবং eventually:</p>
+<div class="ascii-tree-container">Maximum call stack size exceeded</div>
+<p class="text-p">এর মতো error হতে পারে।</p>
+    </div>
+
+    <!-- 6.61 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.61</span> Factorial using Recursion</div>
+<p class="text-p">Mathematics:</p>
+<div class="ascii-tree-container">5! = 5 × 4 × 3 × 2 × 1
+   = 120</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> factorial(n) {
+
+    <span class="syn-kw">if</span> (n === <span class="syn-num">1</span>) {
+        <span class="syn-kw">return</span> <span class="syn-num">1</span>;
+    }
+
+    <span class="syn-kw">return</span> n * factorial(n - <span class="syn-num">1</span>);
+}
+
+<span class="syn-fn">console</span>.log(factorial(<span class="syn-num">5</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">120</div>
+<p class="text-p">Step:</p>
+<div class="ascii-tree-container">5 × factorial(4)
+↓
+5 × 4 × factorial(3)
+↓
+5 × 4 × 3 × factorial(2)
+↓
+5 × 4 × 3 × 2 × factorial(1)
+↓
+120</div>
+    </div>
+
+    <!-- 6.62 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.62</span> Function-এর Best Practices</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">1. Function-এর নাম meaningful রাখো</h4>
+<p class="text-p">ভালো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>1. Function-এর নাম meaningful রাখো</span></div>
+  <pre>calculateTotal()</pre>
+</div>
+<p class="text-p">খারাপ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>1. Function-এর নাম meaningful রাখো</span></div>
+  <pre>x()</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">2. একটি function ideally একটি clear কাজ করুক</h4>
+<p class="text-p">ভালো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>2. একটি function ideally একটি clear কাজ করুক</span></div>
+  <pre>calculateTotal()</pre>
+</div>
+<p class="text-p">আরেকটি:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>2. একটি function ideally একটি clear কাজ করুক</span></div>
+  <pre>validateUser()</pre>
+</div>
+<p class="text-p">এক function-এ সবকিছু ঢুকিয়ে না দেওয়া ভালো।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">3. Repeated code function-এ রাখো</h4>
+<p class="text-p">যদি একই code বারবার লিখতে হয়:</p>
+<div class="ascii-tree-container">Stop!
+↓
+Function বানাও</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">4. খুব বড় function এড়িয়ে চলো</h4>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>4. খুব বড় function এড়িয়ে চলো</span></div>
+  <pre><span class="syn-kw">function</span> doEverything() {
+    <span class="syn-com">// login</span>
+    <span class="syn-com">// database</span>
+    <span class="syn-com">// payment</span>
+    <span class="syn-com">// email</span>
+    <span class="syn-com">// UI</span>
+    <span class="syn-com">// validation</span>
+    <span class="syn-com">// ...</span>
+}</pre>
+</div>
+<p class="text-p">এর বদলে ছোট ছোট function:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>4. খুব বড় function এড়িয়ে চলো</span></div>
+  <pre>validateUser();
+processPayment();
+sendEmail();
+updateUI();</pre>
+</div>
+    </div>
+
+    <!-- 6.63 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">6.63</span> Real-Life Mini Project — Calculator</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">function</span> subtract(a, b) {
+    <span class="syn-kw">return</span> a - b;
+}
+
+<span class="syn-kw">function</span> multiply(a, b) {
+    <span class="syn-kw">return</span> a * b;
+}
+
+<span class="syn-kw">function</span> divide(a, b) {
+    <span class="syn-kw">return</span> a / b;
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>, <span class="syn-num">5</span>));
+<span class="syn-fn">console</span>.log(subtract(<span class="syn-num">10</span>, <span class="syn-num">5</span>));
+<span class="syn-fn">console</span>.log(multiply(<span class="syn-num">10</span>, <span class="syn-num">5</span>));
+<span class="syn-fn">console</span>.log(divide(<span class="syn-num">10</span>, <span class="syn-num">5</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">15
+5
+50
+2</div>
+<p class="text-p">এখানে calculator-এর প্রতিটি operation আলাদা function।</p>
+<p class="text-p">এটাই clean code-এর basic idea।</p>
+    </div>
+
+    <!-- 6.64 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.64</span> Calculator with Operator</div>
+<p class="text-p">এবার function-এর ভিতরে <code>switch</code> ব্যবহার করি।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> calculate(a, b, operator) {
+
+    <span class="syn-kw">switch</span> (operator) {
+
+        <span class="syn-kw">case</span> <span class="syn-str">&quot;+&quot;</span>:
+            <span class="syn-kw">return</span> a + b;
+
+        <span class="syn-kw">case</span> <span class="syn-str">&quot;-&quot;</span>:
+            <span class="syn-kw">return</span> a - b;
+
+        <span class="syn-kw">case</span> <span class="syn-str">&quot;*&quot;</span>:
+            <span class="syn-kw">return</span> a * b;
+
+        <span class="syn-kw">case</span> <span class="syn-str">&quot;/&quot;</span>:
+            <span class="syn-kw">return</span> a / b;
+
+        <span class="syn-kw">default</span>:
+            <span class="syn-kw">return</span> <span class="syn-str">&quot;Invalid operator&quot;</span>;
+    }
+}
+
+<span class="syn-fn">console</span>.log(calculate(<span class="syn-num">10</span>, <span class="syn-num">5</span>, <span class="syn-str">&quot;+&quot;</span>));
+<span class="syn-fn">console</span>.log(calculate(<span class="syn-num">10</span>, <span class="syn-num">5</span>, <span class="syn-str">&quot;*&quot;</span>));</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">15
+50</div>
+<p class="text-p">🔥 এখানে আমরা Chapter 4 + Chapter 5 + Chapter 6 একসাথে ব্যবহার করেছি।</p>
+    </div>
+
+    <!-- 6.65 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">6.65</span> Real-Life Mini Project — Shopping Cart</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> calculateTotal(cart) {
+
+    <span class="syn-kw">let</span> total = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> product <span class="syn-kw">of</span> cart) {
+        total += product.price;
+    }
+
+    <span class="syn-kw">return</span> total;
+}
+
+<span class="syn-kw">let</span> cart = [
+    {
+        name: <span class="syn-str">&quot;Keyboard&quot;</span>,
+        price: <span class="syn-num">1500</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Mouse&quot;</span>,
+        price: <span class="syn-num">800</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Headphone&quot;</span>,
+        price: <span class="syn-num">2000</span>
+    }
+];
+
+<span class="syn-kw">let</span> total = calculateTotal(cart);
+
+<span class="syn-fn">console</span>.log(&quot;Total:&quot;, total);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Total: 4300</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">Function
+   ↓
+Array
+   ↓
+for...of
+   ↓
+Object
+   ↓
+return</div>
+<p class="text-p">সব একসাথে কাজ করছে।</p>
+    </div>
+
+    <!-- 6.66 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6.66</span> Function-এর Complete Flow</div>
+<p class="text-p">এখন একটা function-এর পুরো lifecycle দেখো:</p>
+<div class="ascii-tree-container">Function Definition
+       ↓
+Parameters
+       ↓
+Function Call
+       ↓
+Arguments
+       ↓
+Function Body
+       ↓
+Processing
+       ↓
+return
+       ↓
+Result</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">let</span> result = add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);</pre>
+</div>
+<p class="text-p">Flow:</p>
+<div class="ascii-tree-container">function add()
+     ↓
+a, b
+     ↓
+add(10, 20)
+     ↓
+a = 10, b = 20
+     ↓
+10 + 20
+     ↓
+return 30
+     ↓
+result = 30</div>
+    </div>
+
+    <div class="part-banner">Part 07 — Comprehensive Cheat Sheet, Must Remember &amp; Practice Lab</div>
+
+    <!-- Chapter 6 Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">CHEAT SHEET</span> 🧠 Chapter 6 — Quick Cheat Sheet</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Concept</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Function</td><td>Reusable block of code</td></tr><tr><td>Function Declaration</td><td><code>function greet() {}</code></td></tr><tr><td>Function Call</td><td><code>greet()</code></td></tr><tr><td>Parameter</td><td>Function-এর input variable</td></tr><tr><td>Argument</td><td>Function call-এর actual value</td></tr><tr><td><code>return</code></td><td>Value ফেরত দেয়</td></tr><tr><td>Default Parameter</td><td>Default input value</td></tr><tr><td>Function Expression</td><td>Variable-এর মধ্যে function</td></tr><tr><td>Arrow Function</td><td>Short modern function syntax</td></tr><tr><td>Anonymous Function</td><td>নাম ছাড়া function</td></tr><tr><td>IIFE</td><td>Immediately executed function</td></tr><tr><td>Callback</td><td>Function passed to another function</td></tr><tr><td>Higher-Order Function</td><td>Function নেয়/return করে</td></tr><tr><td>Rest Parameter</td><td>Multiple arguments collect করে</td></tr><tr><td>Closure</td><td>Function outer scope remember করে</td></tr><tr><td>Recursion</td><td>Function নিজেকে call করে</td></tr><tr><td>Pure Function</td><td>Same input → same output</td></tr><tr><td>Local Variable</td><td>Function-এর ভিতরের variable</td></tr><tr><td>Global Variable</td><td>Outer/global scope-এর variable</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- Chapter 6 Must Remember -->
+    <div class="study-card" style="border-left: 4px solid #ef4444;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST REMEMBER</span> 🔥 Chapter 6 — Must Remember (Core Patterns)</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Function Declaration</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Function Declaration</span></div>
+  <pre><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-kw">return</span> <span class="syn-str">`Hello ${name}`</span>;
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Call</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Call</span></div>
+  <pre><span class="syn-fn">console</span>.log(greet(&quot;Shariar&quot;));</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Function Expression</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Function Expression</span></div>
+  <pre><span class="syn-kw">const</span> greet = <span class="syn-kw">function</span>(name) {
+    <span class="syn-kw">return</span> <span class="syn-str">`Hello ${name}`</span>;
+};</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Arrow Function</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Arrow Function</span></div>
+  <pre><span class="syn-kw">const</span> greet = name =&gt; <span class="syn-str">`Hello ${name}`</span>;</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Default Parameter</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Default Parameter</span></div>
+  <pre><span class="syn-kw">function</span> greet(name = <span class="syn-str">&quot;Guest&quot;</span>) {
+    <span class="syn-kw">return</span> <span class="syn-str">`Hello ${name}`</span>;
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Rest Parameter</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Rest Parameter</span></div>
+  <pre><span class="syn-kw">function</span> add(...numbers) {
+    <span class="syn-com">// numbers is an array</span>
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Callback</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Callback</span></div>
+  <pre><span class="syn-kw">function</span> process(callback) {
+    callback();
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Return</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Return</span></div>
+  <pre><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Chapter 6 — Practice Set</div>
+      <h3 style="font-size: 12.5px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Basic Questions</h3>
+
+      <div class="practice-item">
+        <strong>1.</strong> Function কী?
+      </div>
+      <div class="practice-item">
+        <strong>2.</strong> Function কেন ব্যবহার করা হয়?
+      </div>
+      <div class="practice-item">
+        <strong>3.</strong> Parameter এবং Argument-এর মধ্যে পার্থক্য কী?
+      </div>
+      <div class="practice-item">
+        <strong>4.</strong> <code>return</code> কী করে?
+      </div>
+      <div class="practice-item">
+        <strong>5.</strong> <code>console.log()</code> এবং <code>return</code>-এর মধ্যে পার্থক্য কী?
+      </div>
+      <div class="practice-item">
+        <strong>6.</strong> Function Declaration কী?
+      </div>
+      <div class="practice-item">
+        <strong>7.</strong> Function Expression কী?
+      </div>
+      <div class="practice-item">
+        <strong>8.</strong> Arrow Function কী?
+      </div>
+      <div class="practice-item">
+        <strong>9.</strong> Callback Function কী?
+      </div>
+      <div class="practice-item">
+        <strong>10.</strong> Higher-Order Function কী?
+      </div>
+      <div class="practice-item">
+        <strong>11.</strong> Default Parameter কী?
+      </div>
+      <div class="practice-item">
+        <strong>12.</strong> Rest Parameter কী?
+      </div>
+      <div class="practice-item">
+        <strong>13.</strong> Recursion কী?
+      </div>
+      <div class="practice-item">
+        <strong>14.</strong> Closure কী?
+      </div>
+      <div class="practice-item">
+        <strong>15.</strong> Pure Function কী?
+      </div>
+      <h3 style="font-size: 12.5px; font-weight: 700; color: var(--navy-mid); margin: 14px 0 6px 0;">💻 Coding Practice</h3>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;"># 💻 Coding Practice</h4>
+
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 1 — Greeting Function</h4>
+<p class="text-p">একটি function বানাও:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>greet(&quot;Shariar&quot;);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">Hello Shariar</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 2 — Add Function</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="output-box">30</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 3 — Square</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>square(<span class="syn-num">8</span>);</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="output-box">64</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 4 — Even/Odd Function</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>checkEvenOdd(<span class="syn-num">10</span>);</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="output-box">Even</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 5 — Maximum Function</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>findMax(<span class="syn-num">10</span>, <span class="syn-num">25</span>, <span class="syn-num">15</span>);</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="output-box">25</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 6 — Calculator</h4>
+<p class="text-p">একটি function বানাও:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>calculate(<span class="syn-num">20</span>, <span class="syn-num">5</span>, <span class="syn-str">&quot;+&quot;</span>);
+calculate(<span class="syn-num">20</span>, <span class="syn-num">5</span>, <span class="syn-str">&quot;-&quot;</span>);
+calculate(<span class="syn-num">20</span>, <span class="syn-num">5</span>, <span class="syn-str">&quot;*&quot;</span>);
+calculate(<span class="syn-num">20</span>, <span class="syn-num">5</span>, <span class="syn-str">&quot;/&quot;</span>);</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="ascii-tree-container">25
+15
+100
+4</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 7 — Rest Parameter</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>sum(<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>, <span class="syn-num">50</span>);</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="output-box">150</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 8 — Callback</h4>
+<p class="text-p">একটি function বানাও যেখানে callback পাঠালে callback execute হবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 9 — Factorial</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre>factorial(<span class="syn-num">5</span>);</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="output-box">120</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Problem 10 — Shopping Cart</h4>
+<p class="text-p">এই data:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Code</span></div>
+  <pre><span class="syn-kw">let</span> cart = [
+    { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">70000</span> },
+    { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span> },
+    { name: <span class="syn-str">&quot;Keyboard&quot;</span>, price: <span class="syn-num">2500</span> }
+];</pre>
+</div>
+<p class="text-p">একটি function বানিয়ে total price বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="output-box">73500</div>
+      </div>
+    </div>
+
+    <!-- Chapter 6 Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 6 শেষ করার পর তোমার যা পরিষ্কার হওয়া উচিত</div>
+<p class="text-p">সবচেয়ে important flow:</p>
+<div class="ascii-tree-container">                    FUNCTION
+                        ↓
+              ┌─────────┴─────────┐
+              ↓                   ↓
+         Input নেয়             কাজ করে
+       (parameters)               ↓
+                                  ↓
+                              return
+                                  ↓
+                               Output</div>
+<p class="text-p">আর JavaScript-এর function ecosystem:</p>
+<div class="ascii-tree-container">Function
+   │
+   ├── Declaration
+   ├── Expression
+   ├── Arrow Function
+   ├── Anonymous Function
+   ├── IIFE
+   ├── Callback
+   ├── Higher-Order Function
+   ├── Recursive Function
+   ├── Pure Function
+   ├── Rest Parameter
+   ├── Default Parameter
+   └── Closure</div>
+<p class="text-p"><strong>Chapter 6-এর সবচেয়ে গুরুত্বপূর্ণ ৫টি বিষয়:</strong> <code>parameter vs argument</code> → <code>return</code> → <code>arrow function</code> → <code>callback</code> → <code>higher-order function</code></p>
+<p class="text-p">এগুলো ভালোভাবে বুঝে গেলে পরের chapters-এর অনেক concept অনেক সহজ হয়ে যাবে।</p>
+    </div>
+
+  </div>
+</body>
+</html>

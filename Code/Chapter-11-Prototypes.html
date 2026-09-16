@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 11: Prototypes &amp; Prototype Chain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10.5px;
+      line-height: 1.4;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 11: ADVANCED OBJECTS, PROTOTYPES &amp; CHAIN</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">54 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 05 — Advanced Object Architecture</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Prototype Chain, 'new', ES6 Classes &amp; Descriptors</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Advanced Objects: Prototypes &amp; Prototype Chain</h2>
+      <p class="text-p">Chapter 10-এ আমরা Object-এর basic থেকে advanced অনেক কিছু শিখেছি। এবার JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ <strong>Object-related advanced concept</strong>-গুলোর একটি শিখব:</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">Prototype → Prototype Chain → Constructor Function → <code>new</code> → <code>Object.create()</code> → Inheritance</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">এগুলো ভালোভাবে বুঝলে পরে <strong>Class, OOP, Inheritance, React/Node.js-এর অনেক concept</strong> বুঝতে সহজ হবে।</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Prototypes, Chains & Property Lookups (11.1 – 11.14)</div>
+
+    <!-- 11.1 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.1</span> Prototype কী?</div>
+<p class="text-p">JavaScript-এর প্রতিটি সাধারণ object-এর পেছনে একটি <strong>prototype object</strong> থাকতে পারে।</p>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box">
+  <div class="def-text"><strong>Prototype হলো এমন একটি object, যেখান থেকে অন্য object property ও method খুঁজে পেতে পারে।</strong></div>
+</div>
+<div class="sub-badge">💡 🏠 Real-life Example</div>
+<p class="text-p">ধরো, একটি বিশ্ববিদ্যালয়ের অনেক Student আছে।</p>
+<p class="text-p">প্রত্যেক Student-এর নিজের:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name
+id
+department</pre>
+</div>
+<p class="text-p">আছে।</p>
+<p class="text-p">কিন্তু সবাই একই ধরনের কিছু কাজ করতে পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>study()
+attendClass()
+takeExam()</pre>
+</div>
+<p class="text-p">প্রত্যেক Student object-এর মধ্যে আলাদাভাবে <code>study()</code> লিখে না রেখে একটি common জায়গায় রাখা যায়।</p>
+<p class="text-p">সেই common জায়গাটা prototype-এর মতো।</p>
+    </div>
+
+    <!-- 11.2 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.2</span> Prototype দেখব কীভাবে?</div>
+<p class="text-p">JavaScript-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.getPrototypeOf(user));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>{ ... }</pre>
+</div>
+<p class="text-p">এটি <code>user</code> object-এর prototype দেখাবে।</p>
+<p class="text-p">আরেকটি common syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(user.__proto__);</pre>
+</div>
+<p class="text-p">তবে <code>__proto__</code> legacy/accessor হিসেবে পরিচিত। শেখার সময় দেখতে পারো, কিন্তু code-এ prototype নিয়ে কাজ করার জন্য সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.getPrototypeOf()</pre>
+</div>
+<p class="text-p">এবং</p>
+<div class="code-box">
+  <div class="code-top"><span>11.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.setPrototypeOf()</pre>
+</div>
+<p class="text-p">ব্যবহার করা ভালো।</p>
+    </div>
+
+    <!-- 11.3 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.3</span> Prototype Chain কী?</div>
+<div class="memory-box">এটাই খুব গুরুত্বপূর্ণ। 🔥</div>
+<p class="text-p">যখন JavaScript কোনো object-এর মধ্যে কোনো property বা method খুঁজে পায় না, তখন সে তার prototype-এর মধ্যে খোঁজে।</p>
+<p class="text-p">সেখানেও না পেলে prototype-এর prototype-এ খোঁজে।</p>
+<p class="text-p">এভাবে চলতে থাকে।</p>
+<p class="text-p">এটিই:</p>
+<div class="def-box">
+  <div class="def-text"><strong>Prototype Chain</strong></div>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user.toString());</pre>
+</div>
+<p class="text-p">আমরা <code>user</code> object-এর মধ্যে নিজেরা <code>toString()</code> লিখিনি।</p>
+<p class="text-p">তবুও কাজ করছে।</p>
+<p class="text-p">কেন?</p>
+<p class="text-p">কারণ JavaScript roughly এভাবে খুঁজছে:</p>
+<div class="ascii-tree-container">user
+ ↓
+Object.prototype
+ ↓
+null</div>
+<p class="text-p"><code>user</code>-এ <code>toString()</code> নেই।</p>
+<p class="text-p">তাই:</p>
+<div class="ascii-tree-container">Object.prototype</div>
+<p class="text-p">এ গিয়ে <code>toString()</code> পেয়ে যায়।</p>
+    </div>
+
+    <!-- 11.4 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.4</span> Prototype Chain-এর Visual Idea</div>
+<div class="ascii-tree-container">user
+ │
+ │ prototype
+ ▼
+Object.prototype
+ │
+ │ prototype
+ ▼
+null</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.getPrototypeOf(user)</pre>
+</div>
+<p class="text-p">দিলে <code>Object.prototype</code> পাওয়া যাবে।</p>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.getPrototypeOf(<span class="syn-fn">Object</span>.prototype)</pre>
+</div>
+<p class="text-p">দিলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-bool">null</span></pre>
+</div>
+    </div>
+
+    <!-- 11.5 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.5</span> <code>Object.prototype</code></div>
+<div class="memory-box">JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ built-in prototype-এর একটি হলো:</div>
+<div class="code-box">
+  <div class="code-top"><span>11.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.prototype</pre>
+</div>
+<p class="text-p">এখানে অনেক common method রয়েছে।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.5 JavaScript</span><span>Run</span></div>
+  <pre>toString()
+hasOwnProperty()
+isPrototypeOf()
+propertyIsEnumerable()</pre>
+</div>
+<p class="text-p">তাই অনেক object সরাসরি এগুলো ব্যবহার করতে পারে।</p>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user.hasOwnProperty(&quot;name&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p"><code>user</code> object-এর নিজের property হলো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name</pre>
+</div>
+<p class="text-p">কিন্তু <code>hasOwnProperty()</code> object-এর নিজের property হিসেবে লিখিনি।</p>
+<p class="text-p">এটি prototype chain থেকে পাওয়া।</p>
+    </div>
+
+    <!-- 11.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.6</span> Property Lookup কীভাবে কাজ করে?</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user.age);</pre>
+</div>
+<p class="text-p">JavaScript প্রথমে দেখবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>user.age</pre>
+</div>
+<p class="text-p">আছে?</p>
+<p class="text-p">না।</p>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">user → prototype</div>
+<p class="text-p">prototype-এ <code>age</code> আছে?</p>
+<p class="text-p">না।</p>
+<p class="text-p">তারপর prototype-এর prototype...</p>
+<p class="text-p">শেষে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>null</pre>
+</div>
+<p class="text-p">এ পৌঁছাবে।</p>
+<p class="text-p">তখন result:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-bool">undefined</span></pre>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user.age);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>undefined</pre>
+</div>
+    </div>
+
+    <!-- 11.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.7</span> নিজের Property বনাম Inherited Property</div>
+<p class="text-p">একটি property object-এর নিজের হতে পারে অথবা prototype থেকে inherited হতে পারে।</p>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user.name);
+<span class="syn-fn">console</span>.log(user.toString);</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name</pre>
+</div>
+<p class="text-p">নিজের property।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>toString</pre>
+</div>
+<p class="text-p">prototype থেকে এসেছে।</p>
+    </div>
+
+    <!-- 11.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.8</span> <code>hasOwnProperty()</code></div>
+<p class="text-p">কোনো property object-এর নিজের property কিনা দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(user.hasOwnProperty(&quot;name<span class="syn-str">&quot;));
+console.log(user.hasOwnProperty(&quot;</span>toString&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true
+false</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">name → own property
+toString → inherited property</div>
+    </div>
+
+    <!-- 11.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.9</span> <code>in</code> Operator বনাম <code>hasOwnProperty()</code></div>
+<div class="memory-box">এটা খুব গুরুত্বপূর্ণ।</div>
+<div class="section-subhead"><code>in</code></div>
+<p class="text-p">Prototype-এর property-ও খুঁজবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.9 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(&quot;name<span class="syn-str">&quot; in user);
+console.log(&quot;</span>toString&quot; <span class="syn-kw">in</span> user);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true
+true</pre>
+</div>
+<p class="text-p">কারণ <code>toString()</code> prototype থেকে পাওয়া যায়।</p>
+<div class="section-subhead"><code>hasOwnProperty()</code></div>
+<p class="text-p">শুধু নিজের property check করবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.9 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(user.hasOwnProperty(&quot;name<span class="syn-str">&quot;));
+console.log(user.hasOwnProperty(&quot;</span>toString&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true
+false</pre>
+</div>
+<div class="section-subhead">🧠 মনে রাখো</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>Own Property</th><th>Prototype Property</th></tr></thead>
+    <tbody>
+      <tr><td><code>in</code></td><td>✅</td><td>✅</td></tr><tr><td><code>hasOwnProperty()</code></td><td>✅</td><td>❌</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 11.10 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.10</span> <code>Object.getPrototypeOf()</code></div>
+<p class="text-p">কোনো object-এর prototype দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.10 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.getPrototypeOf(user));</pre>
+</div>
+<p class="text-p">সাধারণ object-এর ক্ষেত্রে সাধারণত:</p>
+<div class="ascii-tree-container">Object.prototype</div>
+<p class="text-p">পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 11.11 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.11</span> <code>Object.setPrototypeOf()</code></div>
+<p class="text-p">একটি object-এর prototype পরিবর্তন করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> person = {
+    greet() {
+        <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+    }
+};
+
+<span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">Object</span>.setPrototypeOf(user, person);
+
+user.greet();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Hello!</pre>
+</div>
+<p class="text-p">কারণ <code>user</code>-এর নিজের মধ্যে <code>greet()</code> নেই।</p>
+<p class="text-p">কিন্তু prototype:</p>
+<div class="ascii-tree-container">person</div>
+<p class="text-p">হওয়ায় সে <code>greet()</code> পেয়েছে।</p>
+    </div>
+
+    <!-- 11.12 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.12</span> Prototype দিয়ে Inheritance</div>
+<p class="text-p">এখন আসল বিষয়।</p>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> person = {
+    greet() {
+        <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+    }
+};
+
+<span class="syn-kw">const</span> student = <span class="syn-fn">Object</span>.create(person);
+
+student.name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+student.greet();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Hello!</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">student
+   ↓
+person
+   ↓
+Object.prototype
+   ↓
+null</div>
+<p class="text-p">এটাই prototype-based inheritance।</p>
+    </div>
+
+    <!-- 11.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.13</span> <code>Object.create()</code></div>
+<p class="text-p"><code>Object.create()</code> দিয়ে নির্দিষ্ট prototype ব্যবহার করে নতুন object তৈরি করা যায়।</p>
+<div class="section-subhead">Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span>11.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.create(prototype);</pre>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> animal = {
+    eat() {
+        <span class="syn-fn">console</span>.log(&quot;Animal is eating<span class="syn-str">&quot;);
+    }
+};
+
+const dog = Object.create(animal);
+
+dog.name = &quot;</span>Tommy&quot;;
+
+<span class="syn-fn">console</span>.log(dog.name);
+dog.eat();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Tommy
+Animal is eating</pre>
+</div>
+<p class="text-p"><code>dog</code>-এর নিজের property:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name</pre>
+</div>
+<p class="text-p">আর inherited method:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>eat()</pre>
+</div>
+    </div>
+
+    <!-- 11.14 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.14</span> Real-Life Example — University</div>
+<div class="code-box">
+  <div class="code-top"><span>11.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> university = {
+    attendClass() {
+        <span class="syn-fn">console</span>.log(&quot;Attending university <span class="syn-kw">class</span><span class="syn-str">&quot;);
+    }
+};
+
+const student = Object.create(university);
+
+student.name = &quot;</span>Ripon<span class="syn-str">&quot;;
+student.department = &quot;</span>CSE&quot;;
+
+<span class="syn-fn">console</span>.log(student.name);
+<span class="syn-fn">console</span>.log(student.department);
+
+student.attendClass();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon
+CSE
+Attending university class</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">student
+   ↓
+university</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Constructor Functions, 'new' Keyword & Prototype Memory (11.15 – 11.29)</div>
+
+    <!-- 11.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.15</span> Constructor Function কী?</div>
+<p class="text-p">Class আসার আগে JavaScript-এ object তৈরির জন্য খুব common technique ছিল:</p>
+<div class="def-box">
+  <div class="def-text"><strong>Constructor Function</strong></div>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name, department) {
+    <span class="syn-kw">this</span>.name = name;
+    <span class="syn-kw">this</span>.department = department;
+}</pre>
+</div>
+<p class="text-p">এটি একটি constructor function হিসেবে ব্যবহার করা যাবে।</p>
+    </div>
+
+    <!-- 11.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.16</span> <code>new</code> Keyword</div>
+<p class="text-p">Constructor function-এর সাথে সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">new</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name, department) {
+    <span class="syn-kw">this</span>.name = name;
+    <span class="syn-kw">this</span>.department = department;
+}
+
+<span class="syn-kw">const</span> student1 = <span class="syn-kw">new</span> Student(&quot;Ripon<span class="syn-str">&quot;, &quot;</span>CSE&quot;);
+
+<span class="syn-fn">console</span>.log(student1);</pre>
+</div>
+<div class="ascii-tree-container">Student {
+    name: &quot;Ripon&quot;,
+    department: &quot;CSE&quot;
+}</div>
+    </div>
+
+    <!-- 11.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.17</span> <code>new</code> কী করে?</div>
+<div class="memory-box">🔥 <code>new</code> keyword-এর কাজ বোঝা খুব গুরুত্বপূর্ণ।</div>
+<p class="text-p">যখন লিখি:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> student1 = <span class="syn-kw">new</span> Student(&quot;Ripon<span class="syn-str">&quot;, &quot;</span>CSE&quot;);</pre>
+</div>
+<p class="text-p">Conceptually JavaScript roughly:</p>
+<div class="section-subhead">Step 1</div>
+<p class="text-p">নতুন empty object তৈরি করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.17 JavaScript</span><span>Run</span></div>
+  <pre>{}</pre>
+</div>
+<div class="section-subhead">Step 2</div>
+<p class="text-p">নতুন object-এর prototype সেট করে:</p>
+<div class="ascii-tree-container">Student.prototype</div>
+<div class="section-subhead">Step 3</div>
+<p class="text-p"><code>this</code> নতুন object-কে refer করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">this</span>.name = <span class="syn-str">&quot;Ripon&quot;</span>;</pre>
+</div>
+<div class="section-subhead">Step 4</div>
+<p class="text-p">Constructor-এর মাধ্যমে object initialize করে।</p>
+<div class="section-subhead">Step 5</div>
+<p class="text-p">নতুন object return করে।</p>
+<p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">new Student()
+      ↓
+new object
+      ↓
+prototype = Student.prototype
+      ↓
+this = new object
+      ↓
+return object</div>
+    </div>
+
+    <!-- 11.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.18</span> Constructor Function-এর Method কোথায় রাখা ভালো?</div>
+<p class="text-p">এভাবে করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name) {
+    <span class="syn-kw">this</span>.name = name;
+
+    <span class="syn-kw">this</span>.study = <span class="syn-kw">function</span>() {
+        <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name + <span class="syn-str">&quot; is studying&quot;</span>);
+    };
+}</pre>
+</div>
+<p class="text-p">প্রতিটি student object-এর জন্য নতুন <code>study()</code> function তৈরি হবে।</p>
+<p class="text-p">যদি হাজার হাজার object থাকে, unnecessary duplication হতে পারে।</p>
+<p class="text-p">তার বদলে prototype ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 11.19 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.19</span> <code>Constructor.prototype</code></div>
+<p class="text-p">প্রতিটি normal constructor function-এর একটি:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.19 JavaScript</span><span>Run</span></div>
+  <pre>prototype</pre>
+</div>
+<p class="text-p">property থাকে।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name) {
+    <span class="syn-kw">this</span>.name = name;
+}
+
+<span class="syn-fn">console</span>.log(Student.prototype);</pre>
+</div>
+    </div>
+
+    <!-- 11.20 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.20</span> Prototype-এ Method যোগ করা</div>
+<div class="code-box">
+  <div class="code-top"><span>11.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name) {
+    <span class="syn-kw">this</span>.name = name;
+}
+
+Student.prototype.study = <span class="syn-kw">function</span>() {
+    <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name + <span class="syn-str">&quot; is studying&quot;</span>);
+};
+
+<span class="syn-kw">const</span> student1 = <span class="syn-kw">new</span> Student(&quot;Ripon<span class="syn-str">&quot;);
+const student2 = new Student(&quot;</span>Rahim&quot;);
+
+student1.study();
+student2.study();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon is studying
+Rahim is studying</pre>
+</div>
+<p class="text-p">এখানে <code>study()</code> দুই object-এর মধ্যে duplicate হয়ে তৈরি হয়নি।</p>
+<p class="text-p">দুইজনই ব্যবহার করছে:</p>
+<div class="ascii-tree-container">Student.prototype.study</div>
+    </div>
+
+    <!-- 11.21 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.21</span> Prototype Method-এর Memory Advantage</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> student1 = <span class="syn-kw">new</span> Student(&quot;Ripon<span class="syn-str">&quot;);
+const student2 = new Student(&quot;</span>Rahim<span class="syn-str">&quot;);
+const student3 = new Student(&quot;</span>Karim&quot;);</pre>
+</div>
+<p class="text-p">যদি method constructor-এর ভিতরে থাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">this</span>.study = <span class="syn-kw">function</span>() {}</pre>
+</div>
+<p class="text-p">তাহলে প্রতিটি instance-এর জন্য আলাদা function তৈরি হতে পারে।</p>
+<p class="text-p">কিন্তু prototype-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.21 JavaScript</span><span>Run</span></div>
+  <pre>Student.prototype.study = <span class="syn-kw">function</span>() {}</pre>
+</div>
+<p class="text-p">একটি shared method ব্যবহার করা হয়।</p>
+<p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">student1 ──┐
+student2 ──┼──&gt; Student.prototype.study()
+student3 ──┘</div>
+    </div>
+
+    <!-- 11.22 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.22</span> Constructor Function-এর Prototype Chain</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name) {
+    <span class="syn-kw">this</span>.name = name;
+}
+
+Student.prototype.study = <span class="syn-kw">function</span>() {
+    <span class="syn-fn">console</span>.log(&quot;Studying...&quot;);
+};
+
+<span class="syn-kw">const</span> student = <span class="syn-kw">new</span> Student(&quot;Ripon&quot;);</pre>
+</div>
+<p class="text-p">তাহলে:</p>
+<div class="ascii-tree-container">student
+   ↓
+Student.prototype
+   ↓
+Object.prototype
+   ↓
+null</div>
+<div class="memory-box">🔥 এই chain খুব গুরুত্বপূর্ণ।</div>
+    </div>
+
+    <!-- 11.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.23</span> <code>constructor</code> Property</div>
+<p class="text-p"><code>Student.prototype</code>-এর মধ্যে সাধারণত একটি:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.23 JavaScript</span><span>Run</span></div>
+  <pre>constructor</pre>
+</div>
+<p class="text-p">property থাকে।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name) {
+    <span class="syn-kw">this</span>.name = name;
+}
+
+<span class="syn-fn">console</span>.log(Student.prototype.constructor === Student);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">Student.prototype.constructor</div>
+<p class="text-p">মূল constructor function-কে refer করে।</p>
+    </div>
+
+    <!-- 11.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.24</span> <code>instanceof</code></div>
+<p class="text-p">কোনো object কোনো constructor-এর instance কিনা দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">instanceof</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name) {
+    <span class="syn-kw">this</span>.name = name;
+}
+
+<span class="syn-kw">const</span> student = <span class="syn-kw">new</span> Student(&quot;Ripon&quot;);
+
+<span class="syn-fn">console</span>.log(student <span class="syn-kw">instanceof</span> Student);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+<div class="sub-badge">💡 আরেকটি Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(student <span class="syn-kw">instanceof</span> <span class="syn-fn">Object</span>);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">student
+ ↓
+Student.prototype
+ ↓
+Object.prototype</div>
+<p class="text-p">তাই <code>Object</code>-এর prototype chain-এর অংশ।</p>
+    </div>
+
+    <!-- 11.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.25</span> <code>instanceof</code> কীভাবে কাজ করে?</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.25 JavaScript</span><span>Run</span></div>
+  <pre>student <span class="syn-kw">instanceof</span> Student</pre>
+</div>
+<p class="text-p">JavaScript দেখে:</p>
+<div class="ascii-tree-container">Student.prototype</div>
+<p class="text-p">prototype chain-এর মধ্যে আছে কি না।</p>
+<p class="text-p">যদি থাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">না থাকলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 11.26 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.26</span> Prototype Inheritance Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Person(name) {
+    <span class="syn-kw">this</span>.name = name;
+}
+
+Person.prototype.sayHello = <span class="syn-kw">function</span>() {
+    <span class="syn-fn">console</span>.log(&quot;Hello, I am <span class="syn-str">&quot; + this.name);
+};
+
+function Student(name, department) {
+    Person.call(this, name);
+    this.department = department;
+}
+
+Student.prototype = Object.create(Person.prototype);
+
+Student.prototype.constructor = Student;
+
+Student.prototype.study = function() {
+    console.log(this.name + &quot;</span> is studying <span class="syn-str">&quot; + this.department);
+};
+
+const student = new Student(&quot;</span>Ripon<span class="syn-str">&quot;, &quot;</span>CSE&quot;);
+
+student.sayHello();
+student.study();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Hello, I am Ripon
+Ripon is studying CSE</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">student
+ ↓
+Student.prototype
+ ↓
+Person.prototype
+ ↓
+Object.prototype
+ ↓
+null</div>
+<p class="text-p">এটাই prototype-based inheritance-এর একটি traditional pattern।</p>
+    </div>
+
+    <!-- 11.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.27</span> <code>Person.call(this, name)</code> কী?</div>
+<p class="text-p">এই line:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.27 JavaScript</span><span>Run</span></div>
+  <pre>Person.call(<span class="syn-kw">this</span>, name);</pre>
+</div>
+<p class="text-p"><code>Person</code> constructor-কে current <code>this</code> context দিয়ে call করছে।</p>
+<p class="text-p"><code>Person</code>-এর মধ্যে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">this</span>.name = name;</pre>
+</div>
+<p class="text-p">ছিল।</p>
+<p class="text-p">তাই Student-এর object-এর মধ্যেও:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.27 JavaScript</span><span>Run</span></div>
+  <pre>name</pre>
+</div>
+<p class="text-p">set হচ্ছে।</p>
+    </div>
+
+    <!-- 11.28 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.28</span> <code>Object.create(Person.prototype)</code> কেন?</div>
+<p class="text-p">এই line:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.28 JavaScript</span><span>Run</span></div>
+  <pre>Student.prototype = <span class="syn-fn">Object</span>.create(Person.prototype);</pre>
+</div>
+<p class="text-p">এর মাধ্যমে বলা হচ্ছে:</p>
+<div class="def-box">
+  <div class="def-text">Student-এর prototype হবে এমন একটি object, যার prototype হলো Person.prototype।</div>
+</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">Student.prototype
+       ↓
+Person.prototype</div>
+    </div>
+
+    <!-- 11.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.29</span> কেন <code>constructor</code> আবার সেট করা হয়?</div>
+<p class="text-p">এই line:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.29 JavaScript</span><span>Run</span></div>
+  <pre>Student.prototype.constructor = Student;</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.29 JavaScript</span><span>Run</span></div>
+  <pre>Student.prototype = <span class="syn-fn">Object</span>.create(Person.prototype);</pre>
+</div>
+<p class="text-p">করার পর <code>constructor</code> reference বদলে যেতে পারে।</p>
+<p class="text-p">তাই explicitly:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.29 JavaScript</span><span>Run</span></div>
+  <pre>Student.prototype.constructor = Student;</pre>
+</div>
+<p class="text-p">দেওয়া হয়।</p>
+    </div>
+
+    <div class="part-banner">Part 03 — Modern ES6 Classes, 'extends', 'super' & Overriding (11.30 – 11.39)</div>
+
+    <!-- 11.30 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.30</span> Modern JavaScript-এ <code>class</code></div>
+<p class="text-p">বর্তমানে JavaScript-এ সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<div class="memory-box">কিন্তু মনে রাখবে:</div>
+<div class="def-box">
+  <div class="def-text">JavaScript-এর <code>class</code> internally prototype-based system-এর উপর কাজ করে।</div>
+</div>
+    </div>
+
+    <!-- 11.31 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.31</span> Class Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Student {
+    constructor(name, department) {
+        <span class="syn-kw">this</span>.name = name;
+        <span class="syn-kw">this</span>.department = department;
+    }
+
+    study() {
+        <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name + <span class="syn-str">&quot; is studying&quot;</span>);
+    }
+}
+
+<span class="syn-kw">const</span> student = <span class="syn-kw">new</span> Student(&quot;Ripon<span class="syn-str">&quot;, &quot;</span>CSE&quot;);
+
+student.study();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon is studying</pre>
+</div>
+    </div>
+
+    <!-- 11.32 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.32</span> Class Method কোথায় থাকে?</div>
+<p class="text-p">এই:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.32 JavaScript</span><span>Run</span></div>
+  <pre>study() {
+    <span class="syn-fn">console</span>.log(&quot;Studying&quot;);
+}</pre>
+</div>
+<p class="text-p">method সাধারণত প্রতিটি instance-এর নিজের property হিসেবে duplicate হয়ে থাকে না।</p>
+<p class="text-p">এটি:</p>
+<div class="ascii-tree-container">Student.prototype</div>
+<p class="text-p">এর মাধ্যমে shared থাকে।</p>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(
+    <span class="syn-fn">Object</span>.getPrototypeOf(student) === Student.prototype
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 11.33 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.33</span> Class এবং Prototype-এর সম্পর্ক</div>
+<div class="code-box">
+  <div class="code-top"><span>11.33 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Student {
+    study() {
+        <span class="syn-fn">console</span>.log(&quot;Studying&quot;);
+    }
+}</pre>
+</div>
+<p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">Student
+   │
+   │ prototype
+   ▼
+Student.prototype
+   │
+   │ study()
+   ▼
+student instance</div>
+<p class="text-p">যখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.33 JavaScript</span><span>Run</span></div>
+  <pre>student.study();</pre>
+</div>
+<p class="text-p">চালানো হয়, JavaScript prototype chain-এর মাধ্যমে <code>study()</code> খুঁজে পায়।</p>
+    </div>
+
+    <!-- 11.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.34</span> Inheritance with <code>extends</code></div>
+<p class="text-p">Modern JavaScript-এ inheritance সহজভাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">extends</span></pre>
+</div>
+<p class="text-p">দিয়ে করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Person {
+    constructor(name) {
+        <span class="syn-kw">this</span>.name = name;
+    }
+
+    sayHello() {
+        <span class="syn-fn">console</span>.log(&quot;Hello, I am <span class="syn-str">&quot; + this.name);
+    }
+}
+
+class Student extends Person {
+    study() {
+        console.log(this.name + &quot;</span> is studying<span class="syn-str">&quot;);
+    }
+}
+
+const student = new Student(&quot;</span>Ripon&quot;);
+
+student.sayHello();
+student.study();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Hello, I am Ripon
+Ripon is studying</pre>
+</div>
+    </div>
+
+    <!-- 11.35 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.35</span> এখানে Prototype Chain কী?</div>
+<div class="ascii-tree-container">student
+   ↓
+Student.prototype
+   ↓
+Person.prototype
+   ↓
+Object.prototype
+   ↓
+null</div>
+<p class="text-p">তাই <code>student</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.35 JavaScript</span><span>Run</span></div>
+  <pre>student.study();</pre>
+</div>
+<p class="text-p">পায় <code>Student.prototype</code> থেকে।</p>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.35 JavaScript</span><span>Run</span></div>
+  <pre>student.sayHello();</pre>
+</div>
+<p class="text-p">পায় <code>Person.prototype</code> থেকে।</p>
+    </div>
+
+    <!-- 11.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.36</span> <code>super</code></div>
+<p class="text-p">Parent class-এর constructor বা method ব্যবহার করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">super</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Person {
+    constructor(name) {
+        <span class="syn-kw">this</span>.name = name;
+    }
+
+    introduce() {
+        <span class="syn-fn">console</span>.log(&quot;My name is <span class="syn-str">&quot; + this.name);
+    }
+}
+
+class Student extends Person {
+    constructor(name, department) {
+        super(name);
+        this.department = department;
+    }
+
+    study() {
+        console.log(this.name + &quot;</span> is studying <span class="syn-str">&quot; + this.department);
+    }
+}
+
+const student = new Student(&quot;</span>Ripon<span class="syn-str">&quot;, &quot;</span>CSE&quot;);
+
+student.introduce();
+student.study();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>My name is Ripon
+Ripon is studying CSE</pre>
+</div>
+    </div>
+
+    <!-- 11.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.37</span> <code>super()</code> কী করে?</div>
+<p class="text-p">Parent class:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.37 JavaScript</span><span>Run</span></div>
+  <pre>Person</pre>
+</div>
+<p class="text-p">এর constructor:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.37 JavaScript</span><span>Run</span></div>
+  <pre>constructor(name) {
+    <span class="syn-kw">this</span>.name = name;
+}</pre>
+</div>
+<p class="text-p">কে call করছে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">super</span>(name);</pre>
+</div>
+<p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">Student
+   ↓
+super(name)
+   ↓
+Person constructor</div>
+    </div>
+
+    <!-- 11.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.38</span> Method Overriding</div>
+<p class="text-p">Child class parent-এর একই method নিজের মতো করে লিখতে পারে।</p>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.38 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Animal {
+    speak() {
+        <span class="syn-fn">console</span>.log(&quot;Animal makes a sound<span class="syn-str">&quot;);
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        console.log(&quot;</span>Dog barks&quot;);
+    }
+}
+
+<span class="syn-kw">const</span> dog = <span class="syn-kw">new</span> Dog();
+
+dog.speak();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Dog barks</pre>
+</div>
+<p class="text-p">Child-এর method priority পায়।</p>
+    </div>
+
+    <!-- 11.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.39</span> <code>super.method()</code></div>
+<p class="text-p">Parent-এর method-ও চাইলে call করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Animal {
+    speak() {
+        <span class="syn-fn">console</span>.log(&quot;Animal makes a sound<span class="syn-str">&quot;);
+    }
+}
+
+class Dog extends Animal {
+    speak() {
+        super.speak();
+        console.log(&quot;</span>Dog barks&quot;);
+    }
+}
+
+<span class="syn-kw">const</span> dog = <span class="syn-kw">new</span> Dog();
+
+dog.speak();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Animal makes a sound
+Dog barks</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Meta-Programming: Descriptors, DefineProperty & Getters/Setters (11.40 – 11.54)</div>
+
+    <!-- 11.40 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.40</span> Prototype Pollution সম্পর্কে Basic ধারণা</div>
+<div class="memory-box">এটি security-related গুরুত্বপূর্ণ concept।</div>
+<p class="text-p">যদি untrusted user input দিয়ে object prototype modify করার সুযোগ তৈরি হয়, application-এর অন্য object-ও প্রভাবিত হতে পারে।</p>
+<p class="text-p">Conceptually dangerous pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.prototype.isAdmin = <span class="syn-bool">true</span>;</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {};
+
+<span class="syn-fn">console</span>.log(user.isAdmin);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">যদিও <code>user</code>-এর মধ্যে আমরা:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.40 JavaScript</span><span>Run</span></div>
+  <pre>isAdmin</pre>
+</div>
+<p class="text-p">লিখিনি।</p>
+<p class="text-p">কারণ এটি:</p>
+<div class="ascii-tree-container">Object.prototype</div>
+<p class="text-p">থেকে এসেছে।</p>
+<div class="warn-box">⚠️ বাস্তব application-এ এভাবে built-in prototypes modify করা উচিত নয়।</div>
+    </div>
+
+    <!-- 11.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.41</span> <code>Object.create(null)</code></div>
+<p class="text-p">Prototype ছাড়া object তৈরি করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = <span class="syn-fn">Object</span>.create(<span class="syn-bool">null</span>);
+
+data.name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(data.name);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.getPrototypeOf(data)</pre>
+</div>
+<p class="text-p">এর output:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>null</pre>
+</div>
+<p class="text-p">অর্থাৎ prototype chain নেই।</p>
+    </div>
+
+    <!-- 11.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.42</span> কেন <code>Object.create(null)</code> ব্যবহার করা হয়?</div>
+<p class="text-p">বিশেষ কিছু dictionary/map-like data structure-এ এটি useful হতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> dictionary = <span class="syn-fn">Object</span>.create(<span class="syn-bool">null</span>);
+
+dictionary.name = <span class="syn-str">&quot;Ripon&quot;</span>;
+dictionary.role = <span class="syn-str">&quot;Developer&quot;</span>;</pre>
+</div>
+<p class="text-p">এখানে inherited properties নেই।</p>
+<p class="text-p">তবে সাধারণ application data-এর জন্য সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.42 JavaScript</span><span>Run</span></div>
+  <pre>{}</pre>
+</div>
+<p class="text-p">ব্যবহার করাই সহজ।</p>
+    </div>
+
+    <!-- 11.43 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.43</span> Prototype বনাম Property</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name</pre>
+</div>
+<p class="text-p">হলো নিজের property।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.43 JavaScript</span><span>Run</span></div>
+  <pre>user.toString</pre>
+</div>
+<p class="text-p">prototype chain থেকে আসতে পারে।</p>
+<div class="section-subhead">Mental Model</div>
+<div class="ascii-tree-container">Own Properties
+┌─────────────────────┐
+│ name: &quot;Ripon&quot;       │
+└─────────────────────┘
+          ↓
+Prototype
+┌─────────────────────┐
+│ Object.prototype    │
+│ toString()          │
+│ hasOwnProperty()    │
+└─────────────────────┘
+          ↓
+        null</div>
+    </div>
+
+    <!-- 11.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.44</span> <code>Object.getOwnPropertyNames()</code></div>
+<p class="text-p">Object-এর নিজের property names দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+    age: <span class="syn-num">25</span>
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.getOwnPropertyNames(user));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>[&quot;name&quot;, &quot;age&quot;]</pre>
+</div>
+<p class="text-p">এটি prototype-এর properties দেখাবে না।</p>
+    </div>
+
+    <!-- 11.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.45</span> <code>Object.getOwnPropertyDescriptors()</code></div>
+<p class="text-p">আরও বিস্তারিত property information দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-fn">Object</span>.getOwnPropertyDescriptors(user)
+);</pre>
+</div>
+<p class="text-p">এতে property-এর:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>value
+writable
+enumerable
+configurable</pre>
+</div>
+<p class="text-p">ইত্যাদি information পাওয়া যায়।</p>
+    </div>
+
+    <!-- 11.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.46</span> Property Descriptor</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-fn">Object</span>.getOwnPropertyDescriptor(user, <span class="syn-str">&quot;name&quot;</span>)
+);</pre>
+</div>
+<p class="text-p">Conceptually output:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>{
+    value: &quot;Ripon&quot;,
+    writable: true,
+    enumerable: true,
+    configurable: true
+}</pre>
+</div>
+<div class="section-subhead">এগুলোর অর্থ</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Property</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>value</code></td><td>value কী</td></tr><tr><td><code>writable</code></td><td>value পরিবর্তন করা যাবে কিনা</td></tr><tr><td><code>enumerable</code></td><td>loop/Object.keys-এ দেখা যাবে কিনা</td></tr><tr><td><code>configurable</code></td><td>property delete/descriptor change করা যাবে কিনা</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 11.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.47</span> <code>Object.defineProperty()</code></div>
+<p class="text-p">Property-এর behavior control করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {};
+
+<span class="syn-fn">Object</span>.defineProperty(user, <span class="syn-str">&quot;name&quot;</span>, {
+    value: <span class="syn-str">&quot;Ripon&quot;</span>,
+    writable: <span class="syn-bool">false</span>
+});
+
+<span class="syn-fn">console</span>.log(user.name);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.47 JavaScript</span><span>Run</span></div>
+  <pre>user.name = <span class="syn-str">&quot;Rahim&quot;</span>;</pre>
+</div>
+<p class="text-p">করলেও সাধারণ strict-mode environment-এ error হতে পারে, আর non-strict mode-এ assignment silently fail করতে পারে।</p>
+    </div>
+
+    <!-- 11.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.48</span> Getter</div>
+<p class="text-p">Object property read করার সময় function চালানো যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    firstName: <span class="syn-str">&quot;Shariar&quot;</span>,
+    lastName: <span class="syn-str">&quot;Ripon&quot;</span>,
+
+    <span class="syn-kw">get</span> fullName() {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>.firstName + <span class="syn-str">&quot; &quot;</span> + <span class="syn-kw">this</span>.lastName;
+    }
+};
+
+<span class="syn-fn">console</span>.log(user.fullName);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Shariar Ripon</pre>
+</div>
+<p class="text-p">খেয়াল করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.48 JavaScript</span><span>Run</span></div>
+  <pre>user.fullName</pre>
+</div>
+<p class="text-p">লিখেছি।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.48 JavaScript</span><span>Run</span></div>
+  <pre>user.fullName()</pre>
+</div>
+<p class="text-p">লিখিনি।</p>
+<p class="text-p">কারণ এটি getter।</p>
+    </div>
+
+    <!-- 11.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.49</span> Setter</div>
+<p class="text-p">Property set করার সময় function চালানো যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+
+    <span class="syn-kw">set</span> username(value) {
+        <span class="syn-kw">this</span>.name = value;
+    }
+};
+
+user.username = <span class="syn-str">&quot;Rahim&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user.name);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Rahim</pre>
+</div>
+    </div>
+
+    <!-- 11.50 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.50</span> Getter + Setter Real-Life Example</div>
+<div class="code-box">
+  <div class="code-top"><span>11.50 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> account = {
+    _balance: <span class="syn-num">1000</span>,
+
+    <span class="syn-kw">get</span> balance() {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>._balance;
+    },
+
+    <span class="syn-kw">set</span> balance(amount) {
+        <span class="syn-kw">if</span> (amount &gt;= <span class="syn-num">0</span>) {
+            <span class="syn-kw">this</span>._balance = amount;
+        }
+    }
+};
+
+<span class="syn-fn">console</span>.log(account.balance);
+
+account.balance = <span class="syn-num">5000</span>;
+
+<span class="syn-fn">console</span>.log(account.balance);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>1000
+5000</pre>
+</div>
+<p class="text-p">এখানে setter-এর মাধ্যমে validation করা হয়েছে।</p>
+    </div>
+
+    <!-- 11.51 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.51</span> Prototype বনাম Class</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>Prototype</th><th>Class</th></tr></thead>
+    <tbody>
+      <tr><td>JavaScript-এর মূল object model</td><td>✅</td><td>Prototype-এর উপর syntax</td></tr><tr><td>Syntax</td><td>তুলনামূলক complex</td><td>সহজ</td></tr><tr><td>Inheritance</td><td><code>Object.create()</code> ইত্যাদি</td><td><code>extends</code></td></tr><tr><td>Constructor</td><td>Function</td><td><code>constructor()</code></td></tr><tr><td>Method</td><td><code>.prototype</code></td><td>class body</td></tr><tr><td>Beginner-friendly</td><td>কম</td><td>বেশি</td></tr><tr><td>Modern code</td><td>কম direct</td><td>বেশি ব্যবহৃত</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="memory-box">🔥 মনে রাখবে:</div>
+<div class="def-box">
+  <div class="def-text"><strong>JavaScript class হলো prototype-based inheritance-এর উপর তৈরি cleaner syntax।</strong></div>
+</div>
+    </div>
+
+    <!-- 11.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11.52</span> একটি Complete Example</div>
+<p class="text-p">এবার সব একসাথে দেখি।</p>
+<div class="code-box">
+  <div class="code-top"><span>11.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Person {
+    constructor(name) {
+        <span class="syn-kw">this</span>.name = name;
+    }
+
+    introduce() {
+        <span class="syn-fn">console</span>.log(&quot;My name is <span class="syn-str">&quot; + this.name);
+    }
+}
+
+class Student extends Person {
+    constructor(name, department, id) {
+        super(name);
+
+        this.department = department;
+        this.id = id;
+    }
+
+    study() {
+        console.log(
+            this.name +
+            &quot;</span> is studying <span class="syn-str">&quot; +
+            this.department
+        );
+    }
+}
+
+const student = new Student(
+    &quot;</span>Ripon<span class="syn-str">&quot;,
+    &quot;</span>CSE<span class="syn-str">&quot;,
+    &quot;</span><span class="syn-num">23105101019</span>&quot;
+);
+
+student.introduce();
+student.study();
+
+<span class="syn-fn">console</span>.log(student <span class="syn-kw">instanceof</span> Student);
+<span class="syn-fn">console</span>.log(student <span class="syn-kw">instanceof</span> Person);
+<span class="syn-fn">console</span>.log(student <span class="syn-kw">instanceof</span> <span class="syn-fn">Object</span>);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>My name is Ripon
+Ripon is studying CSE
+true
+true
+true</pre>
+</div>
+<div class="section-subhead">Prototype Chain</div>
+<div class="ascii-tree-container">student
+   ↓
+Student.prototype
+   ↓
+Person.prototype
+   ↓
+Object.prototype
+   ↓
+null</div>
+    </div>
+
+    <!-- 11.53 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.53</span> Real-Life Web Development Example</div>
+<p class="text-p">ধরো একটি university system-এ:</p>
+<div class="ascii-tree-container">Person
+ ├── Student
+ └── Teacher</div>
+<p class="text-p">তাহলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>11.53 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Person {
+    constructor(name) {
+        <span class="syn-kw">this</span>.name = name;
+    }
+
+    login() {
+        <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name + <span class="syn-str">&quot; logged in&quot;</span>);
+    }
+}
+
+<span class="syn-kw">class</span> Student <span class="syn-kw">extends</span> Person {
+    study() {
+        <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name + <span class="syn-str">&quot; is studying&quot;</span>);
+    }
+}
+
+<span class="syn-kw">class</span> Teacher <span class="syn-kw">extends</span> Person {
+    teach() {
+        <span class="syn-fn">console</span>.log(<span class="syn-kw">this</span>.name + <span class="syn-str">&quot; is teaching&quot;</span>);
+    }
+}
+
+<span class="syn-kw">const</span> student = <span class="syn-kw">new</span> Student(&quot;Ripon<span class="syn-str">&quot;);
+const teacher = new Teacher(&quot;</span>Rahman&quot;);
+
+student.login();
+student.study();
+
+teacher.login();
+teacher.teach();</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon logged in
+Ripon is studying
+Rahman logged in
+Rahman is teaching</pre>
+</div>
+<p class="text-p">এখানে common functionality:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>login()</pre>
+</div>
+<p class="text-p"><code>Person</code> থেকে এসেছে।</p>
+<p class="text-p">আর specific functionality:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>study()
+teach()</pre>
+</div>
+<p class="text-p">নিজ নিজ child class-এ আছে।</p>
+    </div>
+
+    <!-- 11.54 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">11.54</span> Prototype সম্পর্কে সবচেয়ে গুরুত্বপূর্ণ Concept</div>
+<p class="text-p">একবার এই diagram বুঝে ফেললে অনেক কিছু পরিষ্কার হয়ে যাবে:</p>
+<div class="ascii-tree-container">                Object
+                  │
+                  ▼
+          Object.prototype
+                  │
+                  ▼
+               Person
+                  │
+                  ▼
+         Person.prototype
+                  │
+                  ▼
+              Student
+                  │
+                  ▼
+        Student.prototype
+                  │
+                  ▼
+             student</div>
+<p class="text-p">আর actual instance lookup:</p>
+<div class="ascii-tree-container">student
+   ↓
+Student.prototype
+   ↓
+Person.prototype
+   ↓
+Object.prototype
+   ↓
+null</div>
+    </div>
+
+    <div class="part-banner">Part 05 — Must Know, Quick Cheat Sheet, Practice Lab &amp; Summary</div>
+
+    <!-- Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 Chapter 11 — Must Know</div>
+<p class="text-p">এই Chapter থেকে অবশ্যই জানতে হবে:</p>
+<div class="section-subhead">1. Prototype</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Object</span>.getPrototypeOf(obj);</pre>
+</div>
+<div class="section-subhead">2. Prototype Chain</div>
+<div class="ascii-tree-container">object
+ ↓
+prototype
+ ↓
+prototype
+ ↓
+null</div>
+<div class="section-subhead">3. Own vs Inherited Property</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>obj.hasOwnProperty(&quot;name&quot;);</pre>
+</div>
+<div class="section-subhead">4. <code>in</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-str">&quot;name&quot;</span> <span class="syn-kw">in</span> obj;</pre>
+</div>
+<div class="section-subhead">5. <code>Object.create()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> child = <span class="syn-fn">Object</span>.create(parent);</pre>
+</div>
+<div class="section-subhead">6. Constructor Function</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> Student(name) {
+    <span class="syn-kw">this</span>.name = name;
+}</pre>
+</div>
+<div class="section-subhead">7. <code>new</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> student = <span class="syn-kw">new</span> Student(&quot;Ripon&quot;);</pre>
+</div>
+<div class="section-subhead">8. Constructor Prototype</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>Student.prototype</pre>
+</div>
+<div class="section-subhead">9. Prototype Method</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>Student.prototype.study = <span class="syn-kw">function</span>() {};</pre>
+</div>
+<div class="section-subhead">10. <code>instanceof</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>student <span class="syn-kw">instanceof</span> Student;</pre>
+</div>
+<div class="section-subhead">11. Class</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Student {}</pre>
+</div>
+<div class="section-subhead">12. <code>extends</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Student <span class="syn-kw">extends</span> Person {}</pre>
+</div>
+<div class="section-subhead">13. <code>super</code></div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">super</span>(name);</pre>
+</div>
+<div class="section-subhead">14. Method Overriding</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>speak() {}</pre>
+</div>
+<p class="text-p">Child class একই method redefine করতে পারে।</p>
+    </div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-com">// Prototype দেখা</span>
+<span class="syn-fn">Object</span>.getPrototypeOf(obj);
+
+<span class="syn-com">// Prototype সেট করা</span>
+<span class="syn-fn">Object</span>.setPrototypeOf(obj, prototype);
+
+<span class="syn-com">// Prototype দিয়ে object তৈরি</span>
+<span class="syn-fn">Object</span>.create(prototype);
+
+<span class="syn-com">// Own property</span>
+obj.hasOwnProperty(&quot;name<span class="syn-str">&quot;);
+
+// Own + inherited property
+&quot;</span>name<span class="syn-str">&quot; in obj;
+
+// Constructor
+function Student(name) {
+    this.name = name;
+}
+
+// Constructor prototype
+Student.prototype;
+
+// Prototype method
+Student.prototype.study = function() {};
+
+// Create instance
+const s = new Student(&quot;</span>Ripon&quot;);
+
+<span class="syn-com">// Instance check</span>
+s <span class="syn-kw">instanceof</span> Student;
+
+<span class="syn-com">// Modern inheritance</span>
+<span class="syn-kw">class</span> Student <span class="syn-kw">extends</span> Person {}
+
+<span class="syn-com">// Parent constructor</span>
+<span class="syn-kw">super</span>(name);
+
+<span class="syn-com">// Parent method</span>
+<span class="syn-kw">super</span>.method();</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — Chapter 11</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">নিজে হাতে এগুলো solve করার চেষ্টা করো।</h4>
+
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 1</h4>
+<p class="text-p">একটি:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>Person</pre>
+</div>
+<p class="text-p">constructor তৈরি করো।</p>
+<p class="text-p">Properties:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>name
+age</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 2</h4>
+<p class="text-p"><code>Person.prototype</code>-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>introduce()</pre>
+</div>
+<p class="text-p">method তৈরি করো।</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>My name is Ripon</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 3</h4>
+<p class="text-p"><code>Student</code> নামে আরেকটি constructor তৈরি করো এবং <code>Person</code> থেকে inheritance করাও।</p>
+<p class="text-p">Student-এর property:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>department</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 4</h4>
+<p class="text-p">Check করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre>student <span class="syn-kw">instanceof</span> Student
+student <span class="syn-kw">instanceof</span> Person
+student <span class="syn-kw">instanceof</span> <span class="syn-fn">Object</span></pre>
+</div>
+<p class="text-p">তিনটির output কী হবে?</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 5</h4>
+<p class="text-p">এই code-এর prototype chain বের করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">class</span> Animal {}
+
+<span class="syn-kw">class</span> Dog <span class="syn-kw">extends</span> Animal {}
+
+<span class="syn-kw">const</span> dog = <span class="syn-kw">new</span> Dog();</pre>
+</div>
+<p class="text-p">Expected structure:</p>
+<div class="ascii-tree-container">dog
+ ↓
+?
+ ↓
+?
+ ↓
+?
+ ↓
+null</div>
+      </div>
+    </div>
+
+    <!-- Chapter 11 Final Summary -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 11 Final Summary — Object Prototype Model</div>
+<div class="memory-box">আজকের সবচেয়ে গুরুত্বপূর্ণ ধারণা হলো:</div>
+<div class="ascii-tree-container">JavaScript Object
+       ↓
+Prototype
+       ↓
+Prototype Chain
+       ↓
+Inheritance
+       ↓
+Constructor Function
+       ↓
+new
+       ↓
+Class
+       ↓
+extends
+       ↓
+super</div>
+<div class="memory-box">সবচেয়ে গুরুত্বপূর্ণ mental model:</div>
+<div class="ascii-tree-container">const student = new Student();</div>
+<p class="text-p">এরপর JavaScript কোনো method খুঁজলে roughly:</p>
+<div class="ascii-tree-container">student
+   ↓
+Student.prototype
+   ↓
+Parent.prototype
+   ↓
+Object.prototype
+   ↓
+null</div>
+<p class="text-p">এই <strong>Prototype Chain</strong>-টাই JavaScript-এর object system-এর মূল ভিত্তি। <code>class</code> ব্যবহার করলেও ভিতরের ধারণাটি prototype-based।</p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 🚀 Chapter 12 Preview — Advanced Collections</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        <strong>Chapter 12</strong>-এ এরপর আমরা <strong>Map, Set, WeakMap, WeakSet — JavaScript-এর Advanced Collections</strong> শিখতে পারি।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
