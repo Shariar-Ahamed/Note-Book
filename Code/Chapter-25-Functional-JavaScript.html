@@ -1,0 +1,1828 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 25 — Functional JavaScript | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 3px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 12px;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+
+    /* Opening Statement Card */
+    .opening-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f8fafc;
+      padding: 6px 12px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 5px;
+      margin-top: 8px;
+      margin-bottom: 6px;
+      border-left: 4px solid #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: var(--font-code);
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--blue-accent);
+      padding-left: 5px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+    .warn-box {
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #991b1b;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 3px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-box-error {
+      border: 1px solid #f87171 !important;
+    }
+    .code-box-correct {
+      border: 1px solid #4ade80 !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.32;
+      padding: 5px 8px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+    }
+    p code, li code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Invalid Token Wave Highlight */
+    .invalid-token {
+      text-decoration: underline wavy #ef4444 !important;
+      text-decoration-skip-ink: none !important;
+      color: #fca5a5 !important;
+      font-weight: 700 !important;
+      background: rgba(239, 68, 68, 0.25) !important;
+      padding: 0 3px !important;
+      border-radius: 3px !important;
+    }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams */
+    .ascii-tree-container {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.25;
+      padding: 6px 10px;
+      border-radius: 5px;
+      margin: 4px 0;
+      white-space: pre;
+      overflow-x: hidden !important;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 5px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 11px;
+        color: #0f172a !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-25-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .output-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 25: FUNCTIONAL JAVASCRIPT — PURE FUNCTIONS, IMMUTABILITY &amp; DATA PIPELINES</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">50 Modules + Practice Lab</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 19 — Functional Paradigm &amp; Patterns</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Pure Functions, Immutability &amp; HOFs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / Modern Functional JS</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🎯</span> Functional Programming (FP) — Functional JavaScript শেখার মূল উদ্দেশ্য
+      </div>
+      <p class="text-p">
+        JavaScript-এ <strong>Functional Programming</strong> অত্যন্ত গুরুত্বপূর্ণ—বিশেষ করে তুমি যখন <strong>React, Redux, Node.js এবং Modern Full-Stack</strong> ইকোসিস্টেমে কাজ করবে। এই চ্যাপ্টারে আমরা শুধুমাত্র <code>map()</code> বা <code>filter()</code> নয়, বরং Functional JavaScript-এর গভীরতম ভিত্তিগুলো—Pure Functions, Immutability, Composition, Currying এবং Declarative Data Pipelines—নিখুঁতভাবে শিখব।
+      </p>
+      <div class="def-box" style="margin: 3px 0; padding: 4px 8px;">
+        <div class="def-text">Core Formula: Input Data &nbsp;→&nbsp; Pure Function (No Side Effect) &nbsp;→&nbsp; New Immutable Output Data</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Functional Programming Fundamentals &amp; Pure Functions (25.1 – 25.9)</div>
+    <div class="study-card" id="sec-25-1">
+      <div class="card-title"><span class="badge-num">25.1</span> Functional Programming কী?</div>
+      <p class="text-p"><strong>Functional Programming (FP)</strong> হলো এমন একটি programming style যেখানে আমরা program-কে ছোট ছোট <strong>function</strong> দিয়ে তৈরি করি এবং function-কে data process করার প্রধান মাধ্যম হিসেবে ব্যবহার করি।</p>
+      <div class="section-subhead">🔹 সহজ ভাষায়</div>
+      <p class="text-p">ধরো একটি restaurant-এ: &gt; Raw ingredients → রান্নার function → Final food JavaScript-এ: &gt; Input data → Function → Output data</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> double(number) {
+  <span class="syn-kw">return</span> number * <span class="syn-num">2</span>;
+}
+
+<span class="syn-fn">console</span>.log(double(<span class="syn-num">5</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+5 → double() → 10</div>      <p class="text-p">অর্থাৎ function input নিয়ে output তৈরি করেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.2</span> Functional Programming-এর মূল বৈশিষ্ট্য</div>
+      <p class="text-p">Functional JavaScript-এর কয়েকটি গুরুত্বপূর্ণ principle: 1. <strong>Pure Functions</strong> 2. <strong>Immutability</strong> 3. <strong>First-Class Functions</strong> 4. <strong>Higher-Order Functions</strong> 5. <strong>Function Composition</strong> 6. <strong>Declarative Programming</strong> 7. <strong>Avoiding Side Effects</strong> 8. <strong>Data Transformation</strong> 9. <strong>Referential Transparency</strong> এগুলো একে একে বুঝি।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.3</span> Pure Function</div>
+      <p class="text-p">একটি function তখন <strong>Pure Function</strong>, যখন: 1. একই input দিলে সবসময় একই output দেয় 2. বাইরের কোনো data পরিবর্তন করে না</p>
+      <div class="section-subhead">🔹 Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>, <span class="syn-num">20</span>));
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>, <span class="syn-num">20</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>30
+30</pre>
+</div>      <p class="text-p">একই input:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10, 20</pre>
+</div>      <p class="text-p">দিলে সবসময়:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>30</pre>
+</div>      <p class="text-p">তাই এটি pure function।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.4</span> Impure Function</div>
+      <p class="text-p">যে function বাইরের state/data পরিবর্তন করে অথবা বাইরের changing value-এর ওপর নির্ভর করে তাকে সাধারণভাবে <strong>Impure Function</strong> বলা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> total = <span class="syn-num">0</span>;
+
+<span class="syn-kw">function</span> addToTotal(value) {
+  total += value;
+}
+
+addToTotal(<span class="syn-num">100</span>);
+
+<span class="syn-fn">console</span>.log(total);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>100</pre>
+</div>      <p class="text-p">Function-এর ভিতর থেকে বাইরের variable:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>total;</code></pre>
+</div>      <p class="text-p">পরিবর্তন হয়েছে। তাই এটি pure function নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.5</span> Pure vs Impure</div>
+      <div class="table-wrap"><table><thead><tr><th>Pure Function</th><th>Impure Function</th></tr></thead><tbody><tr><td>একই input → একই output</td><td>output/state পরিবর্তিত হতে পারে</td></tr><tr><td>বাইরের data পরিবর্তন করে না</td><td>বাইরের data পরিবর্তন করতে পারে</td></tr><tr><td>Predictable</td><td>Less predictable</td></tr><tr><td>Testing সহজ</td><td>Testing তুলনামূলক কঠিন</td></tr></tbody></table></div>
+      <div class="section-subhead">🔹 Pure</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> square(x) {
+  <span class="syn-kw">return</span> x * x;
+}</code></pre>
+</div>      <div class="section-subhead">🔹 Impure</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+<span class="syn-kw">function</span> increase() {
+  count++;
+}</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.6</span> Real-Life Example</div>
+      <p class="text-p">ধরো calculator:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Input: 10 + 20
+Output: 30</pre>
+</div>      <p class="text-p">Calculator-এর function:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>      <p class="text-p">এটি pure। কিন্তু যদি function:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-fn">console</span>.log(&quot;Calculating...&quot;);
+  <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>      <p class="text-p">তাহলে function একটি <strong>side effect</strong> করছে—console-এ কিছু লিখছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.7</span> Side Effect কী?</div>
+      <p class="text-p">Function-এর বাইরে কোনো observable পরিবর্তন হলে সেটি <strong>Side Effect</strong> হতে পারে। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log();</code></pre>
+</div><div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">document</span>.body.innerHTML = <span class="syn-str">&quot;Hello&quot;</span>;</code></pre>
+</div><div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>localStorage.setItem(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon&quot;);</code></pre>
+</div><div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>database.save(user);</code></pre>
+</div><div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>fetch(&quot;/api/users&quot;);</code></pre>
+</div>      <p class="text-p">এসব operation সাধারণত side effect তৈরি করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.8</span> Side Effect Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> users = [];
+
+<span class="syn-kw">function</span> addUser(user) {
+  users.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">push</span>(user);
+}</code></pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>users.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">push</span>(user);</code></pre>
+</div>      <p class="text-p">বাইরের <code>users</code> array পরিবর্তন করছে। এটি side effect।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.9</span> Pure Version</div>
+      <p class="text-p">আমরা নতুন array return করতে পারি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> users = [];
+
+<span class="syn-kw">function</span> addUser(users, user) {
+  <span class="syn-kw">return</span> [...users, user];
+}
+
+<span class="syn-kw">const</span> updatedUsers = addUser(users, <span class="syn-str">&quot;Ripon&quot;</span>);
+
+<span class="syn-fn">console</span>.log(users);
+<span class="syn-fn">console</span>.log(updatedUsers);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[]
+[&quot;Ripon&quot;]</pre>
+</div>      <p class="text-p">Original array পরিবর্তন হয়নি। এটাই Functional Programming-এর গুরুত্বপূর্ণ ধারণা।</p>
+    </div>
+    <div class="part-banner">Part 02 — Immutability, First-Class &amp; Higher-Order Functions (25.10 – 25.16)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.10</span> Immutability</div>
+      <p class="text-p"><strong>Immutability</strong> মানে হলো existing data সরাসরি পরিবর্তন না করা। ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  age: <span class="syn-num">23</span>,
+};</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>user.age = <span class="syn-num">24</span>;</code></pre>
+</div>      <p class="text-p">এখানে object-এর existing data পরিবর্তন হয়েছে। Functional style-এ আমরা নতুন object তৈরি করতে পারি।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  age: <span class="syn-num">23</span>,
+};
+
+<span class="syn-kw">const</span> updatedUser = {
+  ...user,
+  age: <span class="syn-num">24</span>,
+};
+
+<span class="syn-fn">console</span>.log(user);
+<span class="syn-fn">console</span>.log(updatedUser);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{ name: &quot;Ripon&quot;, age: 23 }
+
+{ name: &quot;Ripon&quot;, age: 24 }</pre>
+</div>      <p class="text-p">Original object unchanged।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.11</span> Array Immutability</div>
+      <p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];</code></pre>
+</div>      <p class="text-p">এভাবে করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">push</span>(<span class="syn-num">4</span>);</code></pre>
+</div>      <p class="text-p">original array পরিবর্তিত হচ্ছে। Functional style:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">const</span> newNumbers = [...numbers, <span class="syn-num">4</span>];
+
+<span class="syn-fn">console</span>.log(numbers);
+<span class="syn-fn">console</span>.log(newNumbers);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[1, 2, 3]
+
+[1, 2, 3, 4]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.12</span> First-Class Functions</div>
+      <p class="text-p">Chapter 6-এ আমরা এটি দেখেছিলাম। JavaScript-এ function হলো <strong>First-Class Citizen</strong>। অর্থাৎ function:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>variable-এ রাখা যায়</li>
+        <li>argument হিসেবে পাঠানো যায়</li>
+        <li>return করা যায়</li>
+        <li>object/property হিসেবে রাখা যায়</li>
+        <li>array-এর মধ্যে রাখা যায়</li>
+      </ul>
+      <div class="section-subhead">🔹 Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> greet() {
+  <span class="syn-fn">console</span>.log(&quot;Hello!&quot;);
+}
+
+<span class="syn-kw">const</span> myFunction = greet;
+
+myFunction();</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello!</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.13</span> Function as a Value</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> add = <span class="syn-kw">function</span> (a, b) {
+  <span class="syn-kw">return</span> a + b;
+};
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">5</span>, <span class="syn-num">10</span>));</code></pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>add;</code></pre>
+</div>      <p class="text-p">একটি variable এবং এর value একটি function।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.14</span> Function as Argument</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> process(number, operation) {
+  <span class="syn-kw">return</span> operation(number);
+}
+
+<span class="syn-kw">function</span> double(x) {
+  <span class="syn-kw">return</span> x * <span class="syn-num">2</span>;
+}
+
+<span class="syn-fn">console</span>.log(process(<span class="syn-num">5</span>, double));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+5
+↓
+process()
+↓
+double()
+↓
+10</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.15</span> Higher-Order Function</div>
+      <p class="text-p">যে function:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>অন্য function গ্রহণ করে</li>
+      </ul>
+      <p class="text-p">অথবা</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>অন্য function return করে</li>
+      </ul>
+      <p class="text-p">তাকে <strong>Higher-Order Function</strong> বলে।</p>
+      <div class="section-subhead">🔹 Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> calculate(a, b, operation) {
+  <span class="syn-kw">return</span> operation(a, b);
+}
+
+<span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-fn">console</span>.log(calculate(<span class="syn-num">10</span>, <span class="syn-num">20</span>, add));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>30</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>calculate();</code></pre>
+</div>      <p class="text-p">একটি Higher-Order Function।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.16</span> Built-in Higher-Order Functions</div>
+      <p class="text-p">JavaScript-এর অনেক array method Higher-Order Function। সবচেয়ে গুরুত্বপূর্ণ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>map()
+filter()
+reduce()
+forEach()
+find()
+some()
+every()
+sort()</pre>
+</div>      <p class="text-p">এখন এগুলো Functional Programming perspective থেকে দেখি।</p>
+    </div>
+    <div class="part-banner">Part 03 — Core Array Transformations: map, filter &amp; reduce (25.17 – 25.24)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.17</span> <code>map()</code></div>
+      <p class="text-p"><code>map()</code> প্রতিটি element-এর ওপর function চালিয়ে <strong>নতুন array</strong> তৈরি করে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>];
+
+<span class="syn-kw">const</span> doubled = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((number) =&gt; number * <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(doubled);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[2, 4, 6, 8]</pre>
+</div>      <p class="text-p">Original:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[1, 2, 3, 4]</pre>
+</div>      <p class="text-p">পরিবর্তিত হয়নি।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.18</span> Real-Life <code>map()</code></div>
+      <p class="text-p">ধরো student marks:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> marks = [<span class="syn-num">50</span>, <span class="syn-num">60</span>, <span class="syn-num">70</span>, <span class="syn-num">80</span>];
+
+<span class="syn-kw">const</span> increasedMarks = marks.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((mark) =&gt; mark + <span class="syn-num">5</span>);
+
+<span class="syn-fn">console</span>.log(increasedMarks);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[55, 65, 75, 85]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.19</span> <code>filter()</code></div>
+      <p class="text-p"><code>filter()</code> condition অনুযায়ী element নির্বাচন করে নতুন array দেয়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">15</span>, <span class="syn-num">20</span>, <span class="syn-num">25</span>, <span class="syn-num">30</span>];
+
+<span class="syn-kw">const</span> evenNumbers = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>((number) =&gt; number % <span class="syn-num">2</span> === <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(evenNumbers);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[10, 20, 30]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.20</span> Real-Life <code>filter()</code></div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> students = [
+  { name: <span class="syn-str">&quot;A&quot;</span>, marks: <span class="syn-num">85</span> },
+  { name: <span class="syn-str">&quot;B&quot;</span>, marks: <span class="syn-num">45</span> },
+  { name: <span class="syn-str">&quot;C&quot;</span>, marks: <span class="syn-num">75</span> },
+];
+
+<span class="syn-kw">const</span> passedStudents = students.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>((student) =&gt; student.marks &gt;= <span class="syn-num">50</span>);
+
+<span class="syn-fn">console</span>.log(passedStudents);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[
+    { name: &quot;A&quot;, marks: 85 },
+    { name: &quot;C&quot;, marks: 75 }
+]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.21</span> <code>reduce()</code></div>
+      <p class="text-p"><code>reduce()</code> multiple valuesকে একটি final value-তে পরিণত করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];
+
+<span class="syn-kw">const</span> total = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>((sum, number) =&gt; sum + number, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(total);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>100</pre>
+</div>      <p class="text-p">Mental model:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+0
+ ↓
+0 + 10 = 10
+ ↓
+10 + 20 = 30
+ ↓
+30 + 30 = 60
+ ↓
+60 + 40 = 100</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.22</span> <code>map()</code> + <code>filter()</code> + <code>reduce()</code></div>
+      <p class="text-p">Functional JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ patternগুলোর একটি।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> prices = [<span class="syn-num">100</span>, <span class="syn-num">200</span>, <span class="syn-num">300</span>, <span class="syn-num">400</span>];
+
+<span class="syn-kw">const</span> result = prices
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>((price) =&gt; price &gt;= <span class="syn-num">200</span>)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((price) =&gt; price * <span class="syn-num">0.9</span>)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>((total, price) =&gt; total + price, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(result);</code></pre>
+</div>      <div class="section-subhead">🔹 Step-by-step</div>
+      <p class="text-p">প্রথম:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[100, 200, 300, 400]</pre>
+</div>      <p class="text-p"><code>filter()</code>:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[200, 300, 400]</pre>
+</div>      <p class="text-p"><code>map()</code>:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[180, 270, 360]</pre>
+</div>      <p class="text-p"><code>reduce()</code>:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>810</pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>810</pre>
+</div>      <p class="text-p">এটি Functional Programming-এর খুব গুরুত্বপূর্ণ style।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.23</span> Declarative Programming</div>
+      <p class="text-p">Functional Programming সাধারণত <strong>Declarative</strong> style ব্যবহার করে।</p>
+      <div class="section-subhead">🔹 Imperative</div>
+      <p class="text-p">মানে কীভাবে কাজ করতে হবে সেটা বলে দেওয়া।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>];
+<span class="syn-kw">const</span> result = [];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; numbers.length; i++) {
+  result.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">push</span>(numbers[i] * <span class="syn-num">2</span>);
+}
+
+<span class="syn-fn">console</span>.log(result);</code></pre>
+</div>      <div class="section-subhead">🔹 Declarative</div>
+      <p class="text-p">কী result চাই সেটা প্রকাশ করা:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>];
+
+<span class="syn-kw">const</span> result = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((number) =&gt; number * <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(result);</code></pre>
+</div>      <p class="text-p">দুটোর output একই:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[2, 4, 6, 8]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.24</span> Imperative vs Declarative</div>
+      <div class="table-wrap"><table><thead><tr><th>Imperative</th><th>Declarative</th></tr></thead><tbody><tr><td>কীভাবে করতে হবে</td><td>কী চাই</td></tr><tr><td>বেশি control</td><td>বেশি abstraction</td></tr><tr><td>loops বেশি</td><td>methods বেশি</td></tr><tr><td>step-by-step</td><td>transformation-focused</td></tr></tbody></table></div>
+    </div>
+    <div class="part-banner">Part 04 — Advanced FP: Composition, Pipe, Currying &amp; Closures (25.25 – 25.35)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.25</span> Function Composition</div>
+      <p class="text-p">একাধিক ছোট function একসাথে ব্যবহার করে বড় কাজ তৈরি করাকে <strong>Function Composition</strong> বলা হয়। ধরো:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+Input
+ ↓
+double
+ ↓
+add10
+ ↓
+square
+ ↓
+Output</div>      <p class="text-p">Code:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> double = (x) =&gt; x * <span class="syn-num">2</span>;
+
+<span class="syn-kw">const</span> add10 = (x) =&gt; x + <span class="syn-num">10</span>;
+
+<span class="syn-kw">const</span> square = (x) =&gt; x * x;
+
+<span class="syn-kw">const</span> result = square(add10(double(<span class="syn-num">5</span>)));
+
+<span class="syn-fn">console</span>.log(result);</code></pre>
+</div>      <div class="section-subhead">🔹 Calculation</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>double(5)
+= 10
+
+add10(10)
+= 20
+
+square(20)
+= 400</pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>400</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.26</span> নিজের <code>compose()</code> Function</div>
+      <p class="text-p">আমরা composition-এর জন্য function তৈরি করতে পারি।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">compose</span> = (f, g) =&gt; (value) =&gt; f(g(value));
+
+<span class="syn-kw">const</span> double = (x) =&gt; x * <span class="syn-num">2</span>;
+<span class="syn-kw">const</span> add10 = (x) =&gt; x + <span class="syn-num">10</span>;
+
+<span class="syn-kw">const</span> process = <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">compose</span>(add10, double);
+
+<span class="syn-fn">console</span>.log(process(<span class="syn-num">5</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>20</pre>
+</div>      <p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+5
+↓
+double → 10
+↓
+add10 → 20</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.27</span> <code>pipe()</code></div>
+      <p class="text-p"><code>compose()</code> সাধারণত right-to-left কাজ করতে পারে। আর <code>pipe()</code> সাধারণত left-to-right।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">pipe</span> =
+  (...functions) =&gt;
+  (value) =&gt;
+    functions.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>((result, fn) =&gt; fn(result), value);</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> double = (x) =&gt; x * <span class="syn-num">2</span>;
+<span class="syn-kw">const</span> add10 = (x) =&gt; x + <span class="syn-num">10</span>;
+<span class="syn-kw">const</span> square = (x) =&gt; x * x;
+
+<span class="syn-kw">const</span> process = <span class="syn-fp" style="color: #38bdf8; font-weight: 600;">pipe</span>(double, add10, square);
+
+<span class="syn-fn">console</span>.log(process(<span class="syn-num">5</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>400</pre>
+</div>      <p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+5
+↓
+double → 10
+↓
+add10 → 20
+↓
+square → 400</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.28</span> Immutability with Objects</div>
+      <p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  skills: [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS&quot;],
+};</code></pre>
+</div>      <p class="text-p">আমরা সরাসরি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>user.skills.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">push</span>(&quot;JavaScript&quot;);</code></pre>
+</div>      <p class="text-p">না করে নতুন object তৈরি করতে পারি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> updatedUser = {
+  ...user,
+  skills: [...user.skills, <span class="syn-str">&quot;JavaScript&quot;</span>],
+};
+
+<span class="syn-fn">console</span>.log(updatedUser);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{
+    name: &quot;Ripon&quot;,
+    skills: [&quot;HTML&quot;, &quot;CSS&quot;, &quot;JavaScript&quot;]
+}</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.29</span> Updating Array Object</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> users = [
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;A&quot;</span>, active: <span class="syn-bool">true</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;B&quot;</span>, active: <span class="syn-bool">false</span> },
+];</code></pre>
+</div>      <p class="text-p">User 2-কে active করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> updatedUsers = users.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((user) =&gt;
+  user.id === <span class="syn-num">2</span> ? { ...user, active: <span class="syn-bool">true</span> } : user,
+);
+
+<span class="syn-fn">console</span>.log(updatedUsers);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[
+    { id: 1, name: &quot;A&quot;, active: true },
+    { id: 2, name: &quot;B&quot;, active: true }
+]</pre>
+</div>      <p class="text-p">এটি React-এ <strong>খুবই গুরুত্বপূর্ণ pattern</strong>।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.30</span> Why React Developers Need This</div>
+      <p class="text-p">React state সরাসরি mutate করা উচিত নয়। খারাপ pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>user.name = <span class="syn-str">&quot;New Name&quot;</span>;</code></pre>
+</div>      <p class="text-p">Better:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>setUser({
+  ...user,
+  name: <span class="syn-str">&quot;New Name&quot;</span>,
+});</code></pre>
+</div>      <p class="text-p">Array-এর ক্ষেত্রে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>setUsers(
+  users.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((user) =&gt; (user.id === <span class="syn-num">2</span> ? { ...user, active: <span class="syn-bool">true</span> } : user)),
+);</code></pre>
+</div>      <p class="text-p">এই কারণেই Functional JavaScript ভালোভাবে জানা React-এর জন্য খুব গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.31</span> Referential Transparency</div>
+      <p class="text-p">একটি expression যদি তার result দিয়ে safely replace করা যায় এবং program-এর behavior পরিবর্তন না হয়, তাকে <strong>Referential Transparency</strong> বলা হয়। ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>      <p class="text-p">তাহলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);</code></pre>
+</div>      <p class="text-p">সবসময়:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>30</pre>
+</div>      <p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> x = add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);</code></pre>
+</div>      <p class="text-p">কে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> x = <span class="syn-num">30</span>;</code></pre>
+</div>      <p class="text-p">দিয়ে replace করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.32</span> Currying</div>
+      <p class="text-p"><strong>Currying</strong> হলো একটি function-এর multiple arguments-কে একসাথে নেওয়ার পরিবর্তে একবারে একটি করে নেওয়া। Normal:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>, <span class="syn-num">20</span>));</code></pre>
+</div>      <p class="text-p">Curried:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a) {
+  <span class="syn-kw">return</span> <span class="syn-kw">function</span> (b) {
+    <span class="syn-kw">return</span> a + b;
+  };
+}
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>)(<span class="syn-num">20</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>30</pre>
+</div>      <p class="text-p">Arrow version:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> add = (a) =&gt; (b) =&gt; a + b;
+
+<span class="syn-fn">console</span>.log(add(<span class="syn-num">10</span>)(<span class="syn-num">20</span>));</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.33</span> Currying Real-Life Example</div>
+      <p class="text-p">ধরো tax calculation:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> addTax = (taxRate) =&gt; (price) =&gt; price + price * taxRate;
+
+<span class="syn-kw">const</span> addVAT = addTax(<span class="syn-num">0.15</span>);
+
+<span class="syn-fn">console</span>.log(addVAT(<span class="syn-num">1000</span>));
+<span class="syn-fn">console</span>.log(addVAT(<span class="syn-num">2000</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1150
+2300</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>addTax(<span class="syn-num">0.15</span>);</code></pre>
+</div>      <p class="text-p">একটি reusable function তৈরি করেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.34</span> Partial Application</div>
+      <p class="text-p">Currying-এর সঙ্গে সম্পর্কিত আরেকটি concept হলো <strong>Partial Application</strong>। ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> multiply(a, b, c) {
+  <span class="syn-kw">return</span> a * b * c;
+}</code></pre>
+</div>      <p class="text-p">আমরা কিছু argument আগে সেট করতে পারি।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> multiplyBy(a) {
+  <span class="syn-kw">return</span> (b, c) =&gt; a * b * c;
+}
+
+<span class="syn-kw">const</span> multiplyBy2 = multiplyBy(<span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(multiplyBy2(<span class="syn-num">3</span>, <span class="syn-num">4</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>24</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.35</span> Closure + Functional Programming</div>
+      <p class="text-p">Currying এবং functional programming-এ closure অনেক গুরুত্বপূর্ণ।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createMultiplier(multiplier) {
+  <span class="syn-kw">return</span> <span class="syn-kw">function</span> (number) {
+    <span class="syn-kw">return</span> number * multiplier;
+  };
+}
+
+<span class="syn-kw">const</span> double = createMultiplier(<span class="syn-num">2</span>);
+<span class="syn-kw">const</span> triple = createMultiplier(<span class="syn-num">3</span>);
+
+<span class="syn-fn">console</span>.log(double(<span class="syn-num">10</span>));
+<span class="syn-fn">console</span>.log(triple(<span class="syn-num">10</span>));</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>20
+30</pre>
+</div>      <p class="text-p">Inner function <code>multiplier</code> variable-টিকে মনে রাখছে। এটাই closure।</p>
+    </div>
+    <div class="part-banner">Part 05 — Mutation Prevention, Search Methods &amp; Real Pipelines (25.36 – 25.49)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.36</span> Avoiding Mutation</div>
+      <p class="text-p">Functional Programming-এর প্রধান শর্ত হলো বিদ্যমান ডেটা সরাসরি পরিবর্তন (mutate) না করা।</p>
+      <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">❌ ভুল পদ্ধতি: Mutation (Side Effect)</span><span>❌ Mutation / Impure</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">push</span>(<span class="syn-num">4</span>); <span class="syn-com">// ❌ Original array সরাসরি mutate হয়ে গেছে!</span></code></pre>
+</div>
+      <div class="warn-box">
+        <strong>সতর্কতা:</strong> <code>push()</code> মেথড মূল অ্যারে পরিবর্তন করে ফেলে, যার ফলে অ্যাপ্লিকেশনের স্টেট অপ্রত্যাশিতভাবে বদলে যেতে পারে।
+      </div>
+      <p class="text-p"><strong>সঠিক সমাধান (Immutable Style):</strong> Spread operator (<code>...</code>) ব্যবহার করে নতুন কপি তৈরি করুন।</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">✅ সঠিক পদ্ধতি: Immutability (Pure Pattern)</span><span>✅ Pure / Immutable</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+<span class="syn-kw">const</span> newNumbers = [...numbers, <span class="syn-num">4</span>]; <span class="syn-com">// ✅ মূল array অক্ষত রেখে নতুন array রিটার্ন</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.37</span> Sorting Without Mutation</div>
+      <p class="text-p">একটি বহুল পরিচিত ট্রিকি বিষয় হলো জাভাস্ক্রিপ্টের বিল্ট-ইন <code>sort()</code> মেথড মূল অ্যারে মিউটেট করে।</p>
+      <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">❌ Mutating Sort: মূল অ্যারে নষ্ট করে</span><span>❌ Mutation / Impure</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">3</span>, <span class="syn-num">1</span>, <span class="syn-num">2</span>];
+<span class="syn-kw">const</span> sorted = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">sort</span>(); <span class="syn-com">// ❌ মূল numbers অ্যারেও sort হয়ে যাবে!</span></code></pre>
+</div>
+      <p class="text-p"><strong>Functional সমাধান ১:</strong> স্প্রেড অপারেটর দিয়ে কপি বানিয়ে সর্ট করা:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">✅ Safe Pattern: [...numbers].sort()</span><span>✅ Pure / Immutable</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">3</span>, <span class="syn-num">1</span>, <span class="syn-num">2</span>];
+<span class="syn-kw">const</span> sorted = [...numbers].<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">sort</span>((a, b) =&gt; a - b); <span class="syn-com">// ✅ Spread কপি করে sort</span>
+<span class="syn-fn">console</span>.log(numbers); <span class="syn-com">// [3, 1, 2]</span>
+<span class="syn-fn">console</span>.log(sorted);  <span class="syn-com">// [1, 2, 3]</span></code></pre>
+</div>
+      <p class="text-p"><strong>Functional সমাধান ২ (ES2023+ Standard):</strong> আধুনিক <code>toSorted()</code> মেথড ব্যবহার করা:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">✅ Modern Pattern: toSorted()</span><span>✅ Pure / Immutable</span></div>
+  <pre><code><span class="syn-com">// Modern ES2023+ Native Immutable Method:</span>
+<span class="syn-kw">const</span> sortedNative = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">toSorted</span>((a, b) =&gt; a - b); <span class="syn-com">// ✅ মূল অ্যারে অক্ষত থাকে</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.38</span> <code>forEach()</code> vs <code>map()</code></div>
+      <div class="section-subhead">🔹 <code>forEach()</code></div>
+      <p class="text-p">সাধারণত side effect করার জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">forEach</span>((number) =&gt; {
+  <span class="syn-fn">console</span>.log(number);
+});</code></pre>
+</div>      <div class="section-subhead">🔹 <code>map()</code></div>
+      <p class="text-p">নতুন transformed array তৈরি করার জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> doubled = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((number) =&gt; number * <span class="syn-num">2</span>);</code></pre>
+</div>      <div class="section-subhead">🔹 মনে রাখবে</div>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+forEach → কাজ করো
+map → নতুন data তৈরি করো</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.39</span> <code>find()</code></div>
+      <p class="text-p">প্রথম matching element return করে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> users = [
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;A&quot;</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;B&quot;</span> },
+];
+
+<span class="syn-kw">const</span> user = users.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">find</span>((user) =&gt; user.id === <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(user);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{ id: 2, name: &quot;B&quot; }</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.40</span> <code>some()</code></div>
+      <p class="text-p">কমপক্ষে একটি element condition satisfy করলে <code>true</code>।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> marks = [<span class="syn-num">40</span>, <span class="syn-num">55</span>, <span class="syn-num">70</span>];
+
+<span class="syn-kw">const</span> hasPassed = marks.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">some</span>((mark) =&gt; mark &gt;= <span class="syn-num">50</span>);
+
+<span class="syn-fn">console</span>.log(hasPassed);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>true</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.41</span> <code>every()</code></div>
+      <p class="text-p">সব element condition satisfy করলে <code>true</code>।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> marks = [<span class="syn-num">60</span>, <span class="syn-num">70</span>, <span class="syn-num">80</span>];
+
+<span class="syn-kw">const</span> allPassed = marks.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">every</span>((mark) =&gt; mark &gt;= <span class="syn-num">50</span>);
+
+<span class="syn-fn">console</span>.log(allPassed);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>true</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.42</span> <code>flatMap()</code></div>
+      <p class="text-p"><code>map()</code> করার পরে nested array flatten করার জন্য ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> students = [
+  {
+    name: <span class="syn-str">&quot;A&quot;</span>,
+    skills: [&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;],
+  },
+  {
+    name: &quot;</span>B<span class="syn-str">&quot;,
+    skills: [&quot;</span>JS<span class="syn-str">&quot;, &quot;</span>React&quot;],
+  },
+];
+
+<span class="syn-kw">const</span> skills = students.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">flatMap</span>((student) =&gt; student.skills);
+
+<span class="syn-fn">console</span>.log(skills);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[&quot;HTML&quot;, &quot;CSS&quot;, &quot;JS&quot;, &quot;React&quot;]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.43</span> Functional Data Pipeline</div>
+      <p class="text-p">এখন একটি realistic example দেখি। ধরো e-commerce products:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> products = [
+  { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">80000</span>, stock: <span class="syn-num">5</span> },
+  { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span>, stock: <span class="syn-num">20</span> },
+  { name: <span class="syn-str">&quot;Keyboard&quot;</span>, price: <span class="syn-num">3000</span>, stock: <span class="syn-num">0</span> },
+  { name: <span class="syn-str">&quot;Monitor&quot;</span>, price: <span class="syn-num">25000</span>, stock: <span class="syn-num">8</span> },
+];</code></pre>
+</div>      <p class="text-p">আমরা available এবং 5000-এর বেশি price-এর product চাই।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> result = products
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>((product) =&gt; product.stock &gt; <span class="syn-num">0</span>)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>((product) =&gt; product.price &gt; <span class="syn-num">5000</span>)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((product) =&gt; ({
+    ...product,
+    price: product.price * <span class="syn-num">0.9</span>,
+  }));
+
+<span class="syn-fn">console</span>.log(result);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[
+    { name: &quot;Laptop&quot;, price: 72000, stock: 5 },
+    { name: &quot;Monitor&quot;, price: 22500, stock: 8 }
+]</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+products
+   ↓
+filter stock
+   ↓
+filter price
+   ↓
+map discount
+   ↓
+result</div>      <p class="text-p">এটাকে <strong>Data Transformation Pipeline</strong> হিসেবে ভাবতে পারো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.44</span> Functional Programming + API</div>
+      <p class="text-p">Backend/API থেকে data আসলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> users = [
+  { name: <span class="syn-str">&quot;A&quot;</span>, active: <span class="syn-bool">true</span> },
+  { name: <span class="syn-str">&quot;B&quot;</span>, active: <span class="syn-bool">false</span> },
+  { name: <span class="syn-str">&quot;C&quot;</span>, active: <span class="syn-bool">true</span> },
+];</code></pre>
+</div>      <p class="text-p">শুধু active users-এর names:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> activeNames = users
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>((user) =&gt; user.active)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((user) =&gt; user.name);
+
+<span class="syn-fn">console</span>.log(activeNames);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[&quot;A&quot;, &quot;C&quot;]</pre>
+</div>      <p class="text-p">এটি React/Node project-এ প্রতিদিনের মতো ব্যবহার হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.45</span> Functional Programming-এর সুবিধা</div>
+      <div class="section-subhead">🔹 1. Code predictable</div>
+      <p class="text-p">Pure function-এর behavior সহজে বোঝা যায়।</p>
+      <div class="section-subhead">🔹 2. Testing সহজ</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code>add(<span class="syn-num">10</span>, <span class="syn-num">20</span>);</code></pre>
+</div>      <p class="text-p">এর expected result:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>30</pre>
+</div>      <p class="text-p">সহজে test করা যায়।</p>
+      <div class="section-subhead">🔹 3. Reusable</div>
+      <p class="text-p">ছোট ছোট function বারবার ব্যবহার করা যায়।</p>
+      <div class="section-subhead">🔹 4. Maintainable</div>
+      <p class="text-p">বড় code ছোট function-এ ভাগ করা যায়।</p>
+      <div class="section-subhead">🔹 5. Debugging সহজ</div>
+      <p class="text-p">Pipeline-এর প্রতিটি step আলাদা করে পরীক্ষা করা যায়।</p>
+      <div class="section-subhead">🔹 6. React-এর জন্য গুরুত্বপূর্ণ</div>
+      <p class="text-p">State transformation-এ immutable patterns খুব গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.46</span> Functional Programming-এর অসুবিধা</div>
+      <p class="text-p">সবসময় functional style ব্যবহার করাই সঠিক নয়। কিছু ক্ষেত্রে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>বেশি function তৈরি হতে পারে</li>
+        <li>অতিরিক্ত abstraction code কঠিন করতে পারে</li>
+        <li>নতুনদের কাছে chaining confusing হতে পারে</li>
+        <li>performance-sensitive জায়গায় unnecessary transformation হতে পারে</li>
+      </ul>
+      <p class="text-p">তাই লক্ষ্য হবে: &gt; <strong>Functional style যেখানে code পরিষ্কার ও predictable হয়, সেখানে ব্যবহার করা।</strong></p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.47</span> Real Project Example — Student Result</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> students = [
+  { name: <span class="syn-str">&quot;Rahim&quot;</span>, marks: <span class="syn-num">80</span> },
+  { name: <span class="syn-str">&quot;Karim&quot;</span>, marks: <span class="syn-num">45</span> },
+  { name: <span class="syn-str">&quot;Nadia&quot;</span>, marks: <span class="syn-num">90</span> },
+  { name: <span class="syn-str">&quot;Sadia&quot;</span>, marks: <span class="syn-num">35</span> },
+];</code></pre>
+</div>      <p class="text-p">Passed students:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> passedStudents = students
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>((student) =&gt; student.marks &gt;= <span class="syn-num">40</span>)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((student) =&gt; ({
+    ...student,
+    status: <span class="syn-str">&quot;Passed&quot;</span>,
+  }));
+
+<span class="syn-fn">console</span>.log(passedStudents);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[
+    { name: &quot;Rahim&quot;, marks: 80, status: &quot;Passed&quot; },
+    { name: &quot;Karim&quot;, marks: 45, status: &quot;Passed&quot; },
+    { name: &quot;Nadia&quot;, marks: 90, status: &quot;Passed&quot; }
+]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.48</span> Result Calculation with <code>reduce()</code></div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> students = [
+  { name: <span class="syn-str">&quot;Rahim&quot;</span>, marks: <span class="syn-num">80</span> },
+  { name: <span class="syn-str">&quot;Karim&quot;</span>, marks: <span class="syn-num">45</span> },
+  { name: <span class="syn-str">&quot;Nadia&quot;</span>, marks: <span class="syn-num">90</span> },
+];
+
+<span class="syn-kw">const</span> totalMarks = students.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>(
+  (total, student) =&gt; total + student.marks,
+  <span class="syn-num">0</span>,
+);
+
+<span class="syn-kw">const</span> average = totalMarks / students.length;
+
+<span class="syn-fn">console</span>.log(&quot;Total:&quot;, totalMarks);
+<span class="syn-fn">console</span>.log(&quot;Average:&quot;, average);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Total: 215
+Average: 71.66666666666667</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.49</span> Functional Programming Mental Model</div>
+      <p class="text-p">এই flow-টা মনে রাখো:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+DATA
+ ↓
+filter()
+ ↓
+map()
+ ↓
+reduce()
+ ↓
+RESULT</div>      <p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript FP</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> result = products
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>((product) =&gt; product.stock &gt; <span class="syn-num">0</span>)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>((product) =&gt; product.price)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>((total, price) =&gt; total + price, <span class="syn-num">0</span>);</code></pre>
+</div>      <p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional Architecture</div>
+Products
+   ↓
+Available products
+   ↓
+Only prices
+   ↓
+Total price</div>    </div>
+    <div class="part-banner">Part 06 — FP Mastery: Must Know, Quick Cheat Sheet, Practice Lab &amp; Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.50</span> 🔥 Must Know</div>
+      <p class="text-p">Chapter 25 থেকে অবশ্যই জানতে হবে:</p>
+      <div class="section-subhead">🔹 Basic</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Functional Programming</li>
+        <li>Pure Function</li>
+        <li>Impure Function</li>
+        <li>Side Effect</li>
+        <li>Immutability</li>
+        <li>First-Class Function</li>
+        <li>Higher-Order Function</li>
+        <li>Declarative Programming</li>
+      </ul>
+      <div class="section-subhead">🔹 Array Functional Methods</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li><code>map()</code></li>
+        <li><code>filter()</code></li>
+        <li><code>reduce()</code></li>
+        <li><code>find()</code></li>
+        <li><code>some()</code></li>
+        <li><code>every()</code></li>
+        <li><code>flatMap()</code></li>
+      </ul>
+      <div class="section-subhead">🔹 Advanced</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Function Composition</li>
+        <li><code>pipe()</code></li>
+        <li>Currying</li>
+        <li>Partial Application</li>
+        <li>Closure + Functional Programming</li>
+        <li>Referential Transparency</li>
+        <li>Immutable object update</li>
+        <li>Immutable array update</li>
+        <li>Data transformation pipeline</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.Quick</span> 🧠 Quick Cheat Sheet — Functional JavaScript Reference</div>
+      <p class="text-p">Functional JavaScript এবং ডেটা রূপান্তরের দ্রুত রেফারেন্সের জন্য সম্পূর্ণ সিনট্যাক্স টেবিল:</p>
+      <div class="table-wrap"><table><thead><tr><th>Concept</th><th>Meaning</th></tr></thead><tbody><tr><td>Pure Function</td><td>Same input → same output</td></tr><tr><td>Impure Function</td><td>External state/side effect থাকতে পারে</td></tr><tr><td>Side Effect</td><td>Function-এর বাইরে observable change</td></tr><tr><td>Immutability</td><td>Existing data সরাসরি পরিবর্তন না করা</td></tr><tr><td>First-Class Function</td><td>Function-কে value হিসেবে ব্যবহার করা</td></tr><tr><td>Higher-Order Function</td><td>Function নেয়/return করে</td></tr><tr><td><code>map()</code></td><td>Data transform</td></tr><tr><td><code>filter()</code></td><td>Data select</td></tr><tr><td><code>reduce()</code></td><td>Multiple values → one value</td></tr><tr><td><code>find()</code></td><td>First matching item</td></tr><tr><td><code>some()</code></td><td>অন্তত একটি match</td></tr><tr><td><code>every()</code></td><td>সব match</td></tr><tr><td>Composition</td><td>Multiple functions combine</td></tr><tr><td>Currying</td><td>Arguments একবারে একটি করে নেওয়া</td></tr><tr><td>Declarative</td><td>কী চাই সেটা বলা</td></tr></tbody></table></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.Lab</span> 📝 Hands-On Practice Lab — 5 Real-World Functional Challenges</div>
+      <p class="text-p">Functional Programming-এর কনসেপ্টগুলোকে আত্মস্থ করার জন্য নিচে বাস্তবভিত্তিক ৫টি চ্যালেঞ্জের সম্পূর্ণ প্রোডাকশন সলিউশন দেওয়া হলো:</p>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 1: Double with map() — Immutable Numeric Transformation</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> <code>numbers = [2, 4, 6, 8]</code> অ্যারে থেকে <code>map()</code> ব্যবহার করে প্রতিটি সংখ্যাকে দ্বিগুণ করে <code>[4, 8, 12, 16]</code> নতুন অ্যারে তৈরি করুন।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 1 Model Solution</span><span>✅ Pure / Immutable</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">2</span>, <span class="syn-num">4</span>, <span class="syn-num">6</span>, <span class="syn-num">8</span>];
+
+<span class="syn-com">// Pure transformation using map()</span>
+<span class="syn-kw">const</span> doubled = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>(num =&gt; num * <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Original:&quot;, numbers);
+<span class="syn-fn">console</span>.log(&quot;Doubled:&quot;, doubled);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Original: [2, 4, 6, 8]
+Doubled: [4, 8, 12, 16]</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 2: Filter Condition — Selecting Elements >= 20</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> <code>numbers = [10, 15, 20, 25, 30, 35]</code> থেকে <code>filter()</code> ব্যবহার করে শুধুমাত্র ২০ বা তার বেশি সংখ্যাগুলো ফিল্টার করে বের করুন।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 2 Model Solution</span><span>✅ Pure / Immutable</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">15</span>, <span class="syn-num">20</span>, <span class="syn-num">25</span>, <span class="syn-num">30</span>, <span class="syn-num">35</span>];
+
+<span class="syn-com">// Declarative filtering with pure predicate</span>
+<span class="syn-kw">const</span> filtered = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>(num =&gt; num &gt;= <span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Result:&quot;, filtered);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Result: [20, 25, 30, 35]</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 3: Reduce Accumulation — Calculating Array Total</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> <code>numbers = [10, 20, 30, 40]</code> থেকে <code>reduce()</code> ব্যবহার করে মোট যোগফল <code>100</code> বের করুন।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 3 Model Solution</span><span>✅ Pure / Immutable</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];
+
+<span class="syn-com">// Sum accumulation with initial value 0</span>
+<span class="syn-kw">const</span> total = numbers.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>((accumulator, current) =&gt; accumulator + current, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Total Sum:&quot;, total);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Total Sum: 100</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 4: Passed Students Filter — Object Array Query</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> শিক্ষার্থীদের তালিকা থেকে <code>filter()</code> ব্যবহার করে শুধুমাত্র পাস করা শিক্ষার্থীদের (<code>marks >= 40</code>) আলাদা করুন।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 4 Model Solution</span><span>✅ Pure / Immutable</span></div>
+  <pre><code><span class="syn-kw">const</span> students = [
+  { name: <span class="syn-str">&quot;A&quot;</span>, marks: <span class="syn-num">80</span> },
+  { name: <span class="syn-str">&quot;B&quot;</span>, marks: <span class="syn-num">35</span> },
+  { name: <span class="syn-str">&quot;C&quot;</span>, marks: <span class="syn-num">70</span> },
+  { name: <span class="syn-str">&quot;D&quot;</span>, marks: <span class="syn-num">45</span> },
+];
+
+<span class="syn-kw">const</span> passedStudents = students.<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>(student =&gt; student.marks &gt;= <span class="syn-num">40</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Passed Students:&quot;, passedStudents);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Passed Students: [
+  { name: &#x27;A&#x27;, marks: 80 },
+  { name: &#x27;C&#x27;, marks: 70 },
+  { name: &#x27;D&#x27;, marks: 45 }
+]</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">Practice 5: Functional Pipeline — filter() + map() + reduce() Chain</div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> পণ্য তালিকা থেকে: ১. স্টকে থাকা পণ্য নির্বাচন করুন (<code>stock > 0</code>), ২. তাদের মূল্য বের করুন, এবং ৩. মোট স্টক পণ্যের মূল্য বের করতে মেথড চেইনিং পাইপলাইন তৈরি করুন।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 5 Model Solution</span><span>✅ Pure / Immutable</span></div>
+  <pre><code><span class="syn-kw">const</span> products = [
+  { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">80000</span>, stock: <span class="syn-num">5</span> },
+  { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span>, stock: <span class="syn-num">0</span> },
+  { name: <span class="syn-str">&quot;Monitor&quot;</span>, price: <span class="syn-num">20000</span>, stock: <span class="syn-num">3</span> },
+];
+
+<span class="syn-com">// Clean functional data pipeline</span>
+<span class="syn-kw">const</span> totalInStockPrice = products
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">filter</span>(item =&gt; item.stock &gt; <span class="syn-num">0</span>)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">map</span>(item =&gt; item.price * item.stock)
+  .<span class="syn-fp" style="color: #38bdf8; font-weight: 600;">reduce</span>((sum, currentVal) =&gt; sum + currentVal, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Total In-Stock Value: ৳&quot;, totalInStockPrice);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Total In-Stock Value: ৳ 460000</pre>
+</div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25.Map</span> 🎯 Final Mental Map &amp; Functional Ecosystem</div>
+      <p class="text-p">JavaScript Functional Programming-এর সামগ্রিক আর্কিটেকচার এবং মেথড প্রবাহের চূড়ান্ত চিত্র:</p>
+      <div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Functional JavaScript Master Architecture Tree</div>
+Functional JavaScript
+                        │
+        ┌───────────────┼────────────────┐
+        ↓               ↓                ↓
+     Pure           Immutable       First-Class
+    Functions          Data           Functions
+        │               │                │
+        ↓               ↓                ↓
+   Predictable      No Mutation    Function as Value
+        │               │                │
+        └───────────────┼────────────────┘
+                        ↓
+                Higher-Order Functions
+                        │
+            ┌───────────┼───────────┐
+            ↓           ↓           ↓
+          map()      filter()    reduce()
+            │           │           │
+            └───────────┼───────────┘
+                        ↓
+                Data Transformation
+                        │
+                        ↓
+                Function Composition
+                        │
+             ┌──────────┴──────────┐
+             ↓                     ↓
+          compose()              pipe()
+             │                     │
+             └──────────┬──────────┘
+                        ↓
+                  Advanced FP
+                        │
+             ┌──────────┼──────────┐
+             ↓          ↓          ↓
+          Currying   Closures   Partial
+                                 Application</div>
+      
+      <div class="section-subhead">⭐ এক নজরে Chapter 25 এর সারসংক্ষেপ</div>
+      <div class="def-box" style="margin-top: 6px;">
+        <div class="def-text">Key Takeaway: Functional JavaScript হলো ডেটাকে ছোট, রিইউজেবল ও প্রেডিক্টেবল ফাংশনের পাইপলাইনে রূপান্তর করার শিল্প—যেখানে Pure Functions, Immutability এবং map/filter/reduce-এর মতো হায়ার-অর্ডার ফাংশনগুলো কোডকে বাগ-মুক্ত, টেস্টেবল এবং সহজে মেইনটেনেবল করে তোলে।</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
