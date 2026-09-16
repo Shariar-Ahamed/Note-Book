@@ -172,3 +172,21 @@ Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" 
    ```powershell
    Remove-Item -Path "e:\Git All Repo\Note-Book\temp\*.png" -Force
    ```
+
+---
+
+## 🎨 ৯. থিম প্রিসেট ও কালার আর্কিটেকচার (Theme Presets)
+
+বই এবং স্টাডি নোটের জন্য দুটি অনুমোদিত কালার প্যালেট রয়েছে:
+
+1. **স্ট্যান্ডার্ড পেপার / লাইট থিম (Default Master Book Theme):**
+   - **Background:** `#f8fafc` (Clean Light Slate)
+   - **Card Background:** `#ffffff` (Pure White)
+   - **Main Text:** `#0f172a` / `#334155` (Dark Slate Text, প্রিন্ট এবং পড়ার জন্য সর্বোত্তম)
+   - **Code Blocks:** `#090d13` (Dark Terminal Accent)
+
+2. **ডার্ক ডেভেলপার / সাইবার এডিশন থিম (Dark Developer Preset):**
+   - ডার্ক এডিশন বই, স্ক্রিন রিডিং, অথবা ড্যাশবোর্ডের জন্য সংরক্ষিত সম্পূর্ণ কালার প্যালেট, CSS ভেরিয়েবল এবং টোকেন তালিকা সংরক্ষিত রয়েছে:
+   - **রেফারেন্স ফাইল:** [`.AGENT/dark_developer_theme.md`](file:///c:/Users/User/Desktop/Note-Book/.AGENT/dark_developer_theme.md)
+   - **কী-কালার:** Body (`#0a0d14`), Cards (`#111722`), Border (`#1f293d`), Text (`#e2e8f0`), Accents (`#38bdf8`, `#c084fc`, `#34d399`, `#f43f5e`)
+
