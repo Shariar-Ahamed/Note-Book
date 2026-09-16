@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 01: JavaScript Fundamentals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-dark: #0b2545;
+      --navy-mid: #134074;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-subtle: #f0f9ff;
+      --teal-accent: #0d9488;
+      --green-accent: #059669;
+      --green-light: #ecfdf5;
+      --amber-accent: #d97706;
+      --amber-light: #fefce8;
+      --amber-border: #fef08a;
+      --red-accent: #dc2626;
+      --red-light: #fef2f2;
+      --purple-accent: #7c3aed;
+      --purple-light: #f5f3ff;
+      --text-dark: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #475569;
+      --card-bg: #ffffff;
+      --page-bg: #f1f5f9;
+      --border-card: #e2e8f0;
+      --code-bg: #0f172a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-body);
+      font-size: 11.5px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .action-bar .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 11.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    }
+
+    .doc-page {
+      max-width: 820px;
+      margin: 16px auto;
+      background: var(--card-bg);
+      padding: 24px 28px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-card);
+    }
+
+    .master-banner {
+      background: linear-gradient(135deg, #0b2545 0%, #0d3b66 55%, #0284c7 100%);
+      border-radius: 6px;
+      padding: 14px 20px;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .banner-top { display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
+    .banner-icon {
+      width: 24px; height: 24px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #38bdf8;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11.5px; font-weight: 800;
+    }
+    .banner-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px; font-weight: 800;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .banner-sub { font-size: 11px; color: #93c5fd; margin-bottom: 10px; margin-left: 34px; }
+    .meta-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 8px;
+    }
+    .meta-item .meta-label {
+      font-size: 9px; color: #7dd3fc; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 1px;
+    }
+    .meta-item .meta-val { font-size: 11px; color: #ffffff; font-weight: 600; }
+
+    .part-banner {
+      background: var(--blue-light);
+      border-left: 4px solid var(--blue-accent);
+      color: #0369a1;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+      margin: 12px 0 6px 0; display: flex; align-items: center; gap: 6px;
+    }
+
+    .study-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 5px;
+      padding: 9px 13px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.015);
+    }
+    .card-title {
+      font-size: 12.5px; font-weight: 700; color: var(--text-dark);
+      display: flex; align-items: center; gap: 7px; margin-bottom: 6px;
+    }
+    .badge-num {
+      background: var(--blue-accent); color: white;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 3px;
+      letter-spacing: 0.5px; display: inline-block;
+    }
+
+    .tag-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      margin: 6px 0 3px 0; display: block;
+    }
+    .tag-label.cyan { color: #0284c7; }
+    .tag-label.green { color: #059669; }
+    .tag-label.amber { color: #d97706; }
+    .tag-label.purple { color: #6366f1; }
+    .tag-label.red { color: #dc2626; }
+
+    p.text-p { margin-bottom: 4px; font-size: 11.5px; }
+    ul.clean-list { margin-left: 16px; margin-bottom: 6px; }
+    ul.clean-list li { margin-bottom: 3px; font-size: 11.5px; }
+
+    .def-box {
+      border-radius: 4px; padding: 6px 10px; margin: 4px 0 6px 0; font-size: 11px; line-height: 1.45;
+    }
+    .def-box.english { background: var(--blue-subtle); border-left: 3px solid var(--blue-accent); color: #0c4a6e; }
+    .def-box.bangla { background: #faf5ff; border-left: 3px solid #9333ea; color: #581c87; }
+
+    .memory-box {
+      background: var(--amber-light); border: 1px solid var(--amber-border); border-left: 4px solid #eab308;
+      padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #713f12; margin: 6px 0 5px 0;
+    }
+    .warn-box {
+      background: var(--red-light); border: 1px solid #fecaca; border-left: 4px solid var(--red-accent);
+      padding: 6px 10px; border-radius: 4px; font-size: 11px; color: #7f1d1d; margin: 6px 0 5px 0;
+    }
+
+    .table-wrap { margin: 6px 0 8px 0; border: 1px solid var(--border-card); border-radius: 4px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: left; }
+    thead th { background: #f8fafc; color: var(--text-dark); font-weight: 700; padding: 5px 8px; border-bottom: 1px solid var(--border-card); }
+    tbody tr { border-bottom: 1px solid var(--border-card); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:nth-child(even) { background: #fbfcfe; }
+    tbody td { padding: 4px 8px; color: var(--text-body); }
+
+    .code-box {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 4px; margin: 5px 0 6px 0; overflow: hidden;
+    }
+    .code-top {
+      background: #1e293b; color: #94a3b8; font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 9px; font-weight: 600; padding: 2px 8px; display: flex; justify-content: space-between;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    pre {
+      margin: 0; padding: 6px 10px; font-family: 'Fira Code', monospace; font-size: 10.5px; line-height: 1.45;
+      color: #e2e8f0; overflow-x: auto;
+    }
+    code { font-family: 'Fira Code', monospace; background: #f1f5f9; color: #0369a1; padding: 1px 4px; border-radius: 3px; font-size: 10.5px; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+
+    .output-box {
+      background: #f8fafc; border: 1px dashed #cbd5e1; border-left: 3px solid #64748b;
+      border-radius: 3px; padding: 5px 8px; font-family: 'Fira Code', monospace; font-size: 10.5px;
+      color: #334155; margin: 4px 0 6px 0;
+    }
+
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 5px; padding: 10px 12px;
+      color: #38bdf8; font-family: 'Courier New', Consolas, monospace !important; font-size: 10.5px;
+      line-height: 1.35; white-space: pre !important; overflow-x: auto; margin: 6px 0;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body { background: white; font-size: 11px; }
+      .action-bar { display: none !important; }
+      .doc-page { max-width: 100% !important; margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important; }
+      .study-card { page-break-inside: avoid !important; break-inside: avoid !important; border: 1px solid #cbd5e1; }
+      .part-banner { page-break-after: avoid; break-after: avoid; }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box { page-break-inside: avoid; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 01: JAVASCRIPT FUNDAMENTALS — JAVASCRIPT-এর ভিত্তি</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">41 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 01 — Fundamentals (1/3)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">V8 Engine, Syntax &amp; Variables</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc;">
+      <h2 style="font-size: 14px; color: var(--navy-mid); margin-bottom: 6px;">JavaScript Fundamentals — JavaScript-এর ভিত্তি</h2>
+      <p class="text-p">এই Chapter-এ আমরা JavaScript-এর একদম foundation তৈরি করব। পরের chapter-গুলো বুঝতে এই অংশগুলো গভীরভাবে ও নিখুঁতভাবে বোঝা খুব important।</p>
+    </div>
+
+    <!-- PART 01 -->
+    <div class="part-banner">Part 01 — Overview, Architecture &amp; Origins (1 – 6)</div>
+
+    <!-- 1 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">1</span> What is JavaScript?</div>
+      <div class="def-box english">
+        <strong>English Definition:</strong> JavaScript is a high-level, interpreted/programming language mainly used to make web pages interactive and dynamic.
+      </div>
+      <div class="def-box bangla">
+        <strong>বাংলা ব্যাখ্যা:</strong> সহজ ভাষায়, JavaScript হলো এমন একটি programming language যার মাধ্যমে আমরা একটি website-কে শুধু static না রেখে interactive এবং dynamic করতে পারি।
+      </div>
+      <p class="text-p">• HTML দিয়ে আমরা webpage-এর <strong>structure</strong> তৈরি করি।<br>
+      • CSS দিয়ে webpage-এর <strong>design/style</strong> করি।<br>
+      • আর JavaScript দিয়ে webpage-এর <strong>behavior/functionality</strong> তৈরি করি।</p>
+      
+      <span class="tag-label cyan">🏠 Real-Life Example</span>
+      <p class="text-p">ধরো তুমি একটা house বানাচ্ছো:</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Technology</th><th>কাজ</th><th>Real-life analogy</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>HTML</td><td>Structure</td><td>বাড়ির কাঠামো</td></tr>
+            <tr><td>CSS</td><td>Design</td><td>রং, furniture, decoration</td></tr>
+            <tr><td>JavaScript</td><td>Behavior</td><td>দরজা খোলা, light on/off</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-p">যেমন একটি button: <code>&lt;button&gt;Click Me&lt;/button&gt;</code> (HTML শুধু button তৈরি করবে, CSS সুন্দর করবে, কিন্তু click করলে কিছু ঘটাতে JavaScript ব্যবহার করা হয়):</p>
+      <div class="code-box">
+        <div class="code-top"><span>HTML + JavaScript</span><span>Inline Event</span></div>
+        <pre>&lt;button onclick="alert('Hello!')"&gt;Click Me&lt;/button&gt;</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Hello! (Alert Dialog)</div>
+    </div>
+
+    <!-- 2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">2</span> Why Do We Need JavaScript?</div>
+      <p class="text-p">একটি webpage JavaScript ছাড়াও তৈরি করা যায়। কিন্তু JavaScript ছাড়া interactive functionality তৈরি করা অসম্ভব হয়ে যায়।</p>
+      <span class="tag-label cyan">JavaScript দিয়ে আমরা করতে পারি:</span>
+      <ul class="clean-list">
+        <li>Button click handling &amp; User interactions</li>
+        <li>Form validation (Email, password check)</li>
+        <li>Dropdown menu, Modal popups &amp; Image slider</li>
+        <li>Calculator, To-do application &amp; Dynamic lists</li>
+        <li>Dark / Light mode toggle</li>
+        <li>API থেকে data নেওয়া (Fetch / Async)</li>
+        <li>Search functionality &amp; Real-time updates</li>
+        <li>Authentication-related frontend logic &amp; Browser storage</li>
+      </ul>
+      <div class="code-box">
+        <div class="code-top"><span>HTML + JavaScript</span><span>DOM Manipulation</span></div>
+        <pre>&lt;button onclick="changeText()"&gt;Click Me&lt;/button&gt;
+&lt;p id="message"&gt;Hello&lt;/p&gt;
+
+&lt;script&gt;
+function changeText() {
+    document.getElementById("message").textContent = "Welcome!";
+}
+&lt;/script&gt;</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">প্রথমে: Hello<br>Button click করার পর: Welcome!</div>
+    </div>
+
+    <!-- 3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">3</span> JavaScript vs Java</div>
+      <p class="text-p">এটা beginner-দের একটা common confusion: <strong>JavaScript এবং Java একই language নয়।</strong> নাম কাছাকাছি হলেও দুটো সম্পূর্ণ আলাদা programming language।</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>JavaScript</th><th>Java</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Mainly web development-এ ব্যবহৃত</td><td>General-purpose/backend/enterprise ইত্যাদিতে ব্যবহৃত</td></tr>
+            <tr><td>Browser-এ directly run করতে পারে</td><td>সাধারণত JVM-এর মাধ্যমে চলে</td></tr>
+            <tr><td>Dynamic language</td><td>Statically typed language</td></tr>
+            <tr><td><code>.js</code> file</td><td><code>.java</code> source file</td></tr>
+            <tr><td>Frontend + Backend (Node.js)</td><td>Backend + Enterprise + Android history ইত্যাদি</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <span class="tag-label purple">Syntax তুলনামূলক উদাহরণ:</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript vs Java</span><span>Comparison</span></div>
+        <pre><span class="syn-com">// JavaScript:</span>
+<span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;
+console.log(name);
+
+<span class="syn-com">// Java:</span>
+String name = <span class="syn-str">"Ripon"</span>;
+System.out.println(name);</pre>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4</span> JavaScript-এর ইতিহাস</div>
+      <p class="text-p">JavaScript-এর শুরু হয় <strong>1995 সালে</strong> Netscape-এর web browser environment-এ। প্রথমদিকে এর নাম ছিল <strong>Mocha</strong>, পরে <strong>LiveScript</strong>, এবং শেষ পর্যন্ত <strong>JavaScript</strong> নামটি জনপ্রিয় হয়।</p>
+      <p class="text-p">JavaScript-এর creator হিসেবে <strong>Brendan Eich</strong>-কে উল্লেখ করা হয়। তিনি Netscape-এ মাত্র ১০ দিনে JavaScript-এর প্রথম version তৈরি করেন।</p>
+      <span class="tag-label cyan">Timeline — সহজভাবে</span>
+      <div class="ascii-tree-container">1995
+ ↓
+JavaScript introduced (Brendan Eich at Netscape)
+ ↓
+Browser scripting becomes popular
+ ↓
+ECMAScript standardization (ECMA-262)
+ ↓
+ES5 (2009 - Modern baseline)
+ ↓
+ES6 / ES2015 (Major transformation)
+ ↓
+Modern JavaScript (Yearly releases: ES2016 - Present)</div>
+    </div>
+
+    <!-- 5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5</span> What is ECMAScript?</div>
+      <div class="def-box english">
+        <strong>English:</strong> ECMAScript is the standardized specification that defines how JavaScript should work.
+      </div>
+      <div class="def-box bangla">
+        <strong>বাংলা:</strong> ECMAScript হলো JavaScript-এর standard/specification।
+      </div>
+      <div class="memory-box">
+        <strong>সহজে মনে রাখো:</strong> JavaScript হলো language implementation, আর ECMAScript হলো তার standard/specification blueprint।
+      </div>
+      <p class="text-p">ECMAScript specification-এর সংস্করণ ক্রম: <code>ES1 → ES2 → ES3 → ES5 → ES6 (ES2015) → ES2016 → ... → Modern ECMAScript</code></p>
+    </div>
+
+    <!-- 6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6</span> What is ES6?</div>
+      <p class="text-p"><strong>ES6</strong> হলো JavaScript-এর একটি অত্যন্ত গুরুত্বপূর্ণ version, যেটার official নাম <strong>ECMAScript 2015 (ES2015)</strong>। এটি JavaScript-কে একটি আধুনিক ও অত্যন্ত শক্তিশালী ভাষায় রূপান্তর করে।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript (ES6)</span><span>Modern Syntax</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;
+<span class="syn-kw">const</span> age = <span class="syn-num">22</span>;
+
+<span class="syn-kw">const</span> greet = () =&gt; {
+    console.log(<span class="syn-str">"Hello"</span>);
+};</pre>
+      </div>
+      <span class="tag-label green">ES6-এ আসা প্রধান ফিচারসমূহ:</span>
+      <p class="text-p"><code>let</code>, <code>const</code>, Arrow Functions, Classes, Template Literals, Destructuring, Spread Operator, Rest Parameters, Promises, Modules এবং আরও অনেক আধুনিক সিনট্যাক্স। তাই modern JavaScript শেখার ক্ষেত্রে <strong>ES6+ খুব গুরুত্বপূর্ণ</strong>।</p>
+    </div>
+
+    <!-- PART 02 -->
+    <div class="part-banner">Part 02 — V8 Engine, Runtimes &amp; Execution Model (7 – 11)</div>
+
+    <!-- 7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7</span> How JavaScript Works?</div>
+      <p class="text-p">যখন তুমি লিখো <code>console.log("Hello");</code>, Browser সরাসরি এই text execute করে না। Browser-এর ভিতরে একটি <strong>JavaScript Engine</strong> থাকে যা কোড প্রসেস করে।</p>
+      <span class="tag-label cyan">Simplified Process Flow</span>
+      <div class="ascii-tree-container">JavaScript Code
+      ↓
+JavaScript Engine
+      ↓
+Parsing / Compilation (AST &amp; JIT Bytecode)
+      ↓
+Execution
+      ↓
+Output</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Engine Execution</span></div>
+        <pre><span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+<span class="syn-kw">let</span> y = <span class="syn-num">20</span>;
+
+console.log(x + y);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">30</div>
+    </div>
+
+    <!-- 8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8</span> What is a JavaScript Engine?</div>
+      <div class="def-box english">
+        <strong>English:</strong> A JavaScript engine is a program that parses, compiles/interprets, and executes JavaScript code.
+      </div>
+      <div class="def-box bangla">
+        <strong>বাংলা:</strong> JavaScript Engine হলো এমন একটি software component যা JavaScript code-কে process এবং execute করে।
+      </div>
+      <span class="tag-label purple">Popular JavaScript Engines</span>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Engine</th><th>Used by</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>V8</strong></td><td>Google Chrome, Chromium, Node.js, Deno</td></tr>
+            <tr><td><strong>SpiderMonkey</strong></td><td>Mozilla Firefox</td></tr>
+            <tr><td><strong>JavaScriptCore (Nitro)</strong></td><td>Apple Safari, Bun</td></tr>
+            <tr><td><strong>Chakra</strong></td><td>Older Microsoft Edge / IE</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="memory-box">
+        <strong>⭐ Important:</strong> Google Chrome এবং Node.js দুটোই Google-এর অত্যন্ত দ্রুতগতির <strong>V8 Engine</strong> ব্যবহার করে।
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9</span> JavaScript কোথায় Run করতে পারে?</div>
+      <p class="text-p">JavaScript শুধু browser-এ চলে—এটা এখন আর পুরোপুরি correct নয়। JavaScript বিভিন্ন environment-এ চলতে পারে:</p>
+      <ul class="clean-list">
+        <li><strong>1. Browser:</strong> Chrome, Firefox, Edge, Safari ইত্যাদি।</li>
+        <li><strong>2. Server:</strong> <strong>Node.js</strong> ব্যবহার করে JavaScript দিয়ে সম্পূর্ণ server-side ও backend অ্যাপ্লিকেশন তৈরি করা যায়।</li>
+        <li><strong>3. অন্যান্য Runtime:</strong> Deno, Bun ইত্যাদি আধুনিক হাই-পারফরম্যান্স রানটাইম।</li>
+      </ul>
+      <div class="ascii-tree-container">JavaScript
+   │
+   ├── Browser (DOM, Window, UI)
+   │
+   ├── Node.js (Server, File System, OS API)
+   │
+   ├── Deno (Secure Runtime)
+   │
+   └── Bun (High-speed Native Runtime)</div>
+    </div>
+
+    <!-- 10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10</span> JavaScript in Browser</div>
+      <p class="text-p">Browser-এ JavaScript চালানোর সবচেয়ে simple example:</p>
+      <div class="code-box">
+        <div class="code-top"><span>HTML Document</span><span>index.html</span></div>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;JavaScript&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello JavaScript&lt;/h1&gt;
+    &lt;script&gt;
+        console.log("Hello JavaScript!");
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Webpage-এ: Hello JavaScript<br>Developer Console-এ: Hello JavaScript!</div>
+    </div>
+
+    <!-- 11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11</span> How to Open Browser Console?</div>
+      <p class="text-p">Chrome / Edge ব্রাউজারে কনসোল খোলার উপায়:</p>
+      <div class="ascii-tree-container">Right Click → Inspect → Console tab
+অথবা কীবোর্ড শর্টকাট: F12 (Windows) / Ctrl + Shift + I</div>
+      <p class="text-p">কনসোলে সরাসরি টাইপ করতে পারো:</p>
+      <div class="code-box">
+        <div class="code-top"><span>DevTools Console</span><span>REPL</span></div>
+        <pre>console.log("Hello World");</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Hello World</div>
+    </div>
+
+    <!-- PART 03 -->
+    <div class="part-banner">Part 03 — HTML Integration, Loading &amp; Syntax Rules (12 – 22)</div>
+
+    <!-- 12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12</span> Three Ways to Add JavaScript to HTML</div>
+      <p class="text-p">HTML-এর সাথে JavaScript যুক্ত করার ৩টি উপায় রয়েছে: <strong>1. Inline</strong>, <strong>2. Internal</strong>, এবং <strong>3. External</strong>।</p>
+      <span class="tag-label cyan">12.1 Inline JavaScript</span>
+      <div class="code-box">
+        <div class="code-top"><span>HTML</span><span>Inline JS</span></div>
+        <pre>&lt;button onclick="alert('Hello')"&gt;Click Me&lt;/button&gt;</pre>
+      </div>
+      <div class="warn-box">
+        <strong>❌ Problem:</strong> বড় প্রজেক্টে Inline JavaScript maintain করা খুব কঠিন। তাই professional কোডে এটি পরিহার করা হয়।
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13</span> Internal JavaScript</div>
+      <p class="text-p">HTML ফাইলের ভেতরে <code>&lt;script&gt;</code> ট্যাগের মধ্যে কোড লেখা:</p>
+      <div class="code-box">
+        <div class="code-top"><span>HTML</span><span>Internal Script</span></div>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+    &lt;h1&gt;My Website&lt;/h1&gt;
+    &lt;script&gt;
+        console.log("Hello JavaScript");
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+    </div>
+
+    <!-- 14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14</span> External JavaScript</div>
+      <p class="text-p">Professional development-এ এটিই সবচেয়ে আদর্শ ও বহুল ব্যবহৃত পদ্ধতি। কোড আলাদা <code>.js</code> ফাইলে রাখা হয়।</p>
+      <div class="code-box">
+        <div class="code-top"><span>index.html</span><span>External Link</span></div>
+        <pre>&lt;script src="script.js"&gt;&lt;/script&gt;</pre>
+      </div>
+      <div class="code-box">
+        <div class="code-top"><span>script.js</span><span>Source File</span></div>
+        <pre>console.log("Hello from JavaScript!");</pre>
+      </div>
+      <div class="memory-box">
+        <strong>কেন External JavaScript ভালো?</strong><br>
+        • কোড সাজানো ও organized থাকে • সহজে maintain করা যায় • বারবার reuse করা যায় • HTML ক্লিন থাকে • বড় প্রজেক্ট সহজে পরিচালনা করা যায়।
+      </div>
+    </div>
+
+    <!-- 15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15</span> The `&lt;script&gt;` Tag</div>
+      <p class="text-p">HTML-এ জাভাস্ক্রিপ্ট লোড করার জন্য <code>&lt;script&gt;</code> ট্যাগ ব্যবহার করা হয়। External ফাইলের জন্য <code>src</code> attribute ব্যবহৃত হয়:</p>
+      <div class="code-box">
+        <div class="code-top"><span>HTML Element</span><span>Syntax</span></div>
+        <pre>&lt;script src="script.js"&gt;&lt;/script&gt;</pre>
+      </div>
+      <p class="text-p">এখানে <code>script</code> হলো HTML element/tag, আর <code>src</code> হলো attribute।</p>
+    </div>
+
+    <!-- 16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16</span> `defer` Attribute</div>
+      <p class="text-p">External script লোডের ক্ষেত্রে <code>defer</code> অত্যন্ত গুরুত্বপূর্ণ:</p>
+      <div class="code-box">
+        <div class="code-top"><span>HTML</span><span>Defer Attribute</span></div>
+        <pre>&lt;script src="script.js" defer&gt;&lt;/script&gt;</pre>
+      </div>
+      <div class="def-box english">
+        <strong>`defer` কী করে?</strong> Browser ব্যাকগ্রাউন্ডে HTML পার্স করার সাথে সাথে স্ক্রিপ্ট ডাউনলোড করে, কিন্তু কোড এক্সিকিউশন শুরু করে কেবল সম্পূর্ণ HTML পার্সিং সমাপ্ত হওয়ার পর।
+      </div>
+      <div class="ascii-tree-container">HTML parsing + JS downloading (Parallel)
+      ↓
+HTML parsing complete
+      ↓
+JS execution</div>
+    </div>
+
+    <!-- 17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17</span> `async` Attribute</div>
+      <p class="text-p">আরেকটি অ্যাট্রিবিউট হলো <code>async</code>:</p>
+      <div class="code-box">
+        <div class="code-top"><span>HTML</span><span>Async Attribute</span></div>
+        <pre>&lt;script src="script.js" async&gt;&lt;/script&gt;</pre>
+      </div>
+      <div class="ascii-tree-container">defer:
+Download ──────────┐
+HTML parsing ──────┼──→ HTML complete → JS execute
+
+async:
+HTML parsing ───────────────→ (Parsing paused when ready)
+       ↓
+JS download → JS execute immediately</div>
+    </div>
+
+    <!-- 18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18</span> JavaScript Comments</div>
+      <p class="text-p">Comment হলো এমন লেখা যা ইঞ্জিন এক্সিকিউট করে না, ডেভেলপারদের বোঝার সুবিধার্থে ব্যবহার করা হয়।</p>
+      <span class="tag-label cyan">Single-line &amp; Multi-line Comments</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Comments</span></div>
+        <pre><span class="syn-com">// This is a single-line comment</span>
+console.log(<span class="syn-str">"Hello"</span>);
+
+<span class="syn-com">/*
+    This is a
+    multi-line comment
+*/</span>
+console.log(<span class="syn-str">"Hello"</span>);
+
+<span class="syn-com">// Real-life example: Store user's name</span>
+<span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Hello<br>Hello</div>
+    </div>
+
+    <!-- 19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19</span> JavaScript Statements</div>
+      <div class="def-box english">
+        <strong>English:</strong> A statement is an instruction that tells JavaScript to perform an action.
+      </div>
+      <div class="def-box bangla">
+        <strong>বাংলা:</strong> Statement হলো JavaScript-কে দেওয়া একটি সুনির্দিষ্ট instruction বা আদেশ।
+      </div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Multiple Statements</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;
+<span class="syn-kw">let</span> age = <span class="syn-num">22</span>;
+
+console.log(name);
+console.log(age);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Ripon<br>22</div>
+    </div>
+
+    <!-- 20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20</span> Semicolon `;`</div>
+      <p class="text-p">JavaScript স্টেটমেন্টের শেষে সেমিকোলন ব্যবহার করা যায়। JavaScript-এ <strong>Automatic Semicolon Insertion (ASI)</strong> মেকানিজম থাকায় এটি অনেক ক্ষেত্রে optional হলেও প্রফেশনাল স্ট্যান্ডার্ড বজায় রাখতে সেমিকোলন ব্যবহার সুপারিশ করা হয়।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Consistent Style</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">22</span>;
+console.log(age);</pre>
+      </div>
+    </div>
+
+    <!-- 21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21</span> Expressions</div>
+      <div class="def-box english">
+        <strong>Expression:</strong> An expression is code that produces a value.
+      </div>
+      <p class="text-p">যে কোনো কোড যা হিসাব শেষে একটি মান তৈরি করে তাই Expression।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Expressions</span></div>
+        <pre><span class="syn-num">10</span> + <span class="syn-num">20</span>   <span class="syn-com">// produces 30</span>
+<span class="syn-num">5</span> * <span class="syn-num">10</span>    <span class="syn-com">// produces 50</span>
+
+<span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+x + <span class="syn-num">5</span>     <span class="syn-com">// produces 15 (Expression)</span></pre>
+      </div>
+    </div>
+
+    <!-- 22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22</span> Statement vs Expression</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Expression</th><th>Statement</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>যেটি একটি নির্দিষ্ট value তৈরি করে</td><td>যেটি জাভাস্ক্রিপ্টকে কোনো কাজ করার instruction দেয়</td></tr>
+            <tr><td>যেমন: <code>10 + 20</code> (মান: ৩০)</td><td>যেমন: <code>let result = 10 + 20;</code> (পুরো লাইনটি স্টেটমেন্ট)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PART 04 -->
+    <div class="part-banner">Part 04 — Console, Variables &amp; Memory Semantics (23 – 35)</div>
+
+    <!-- 23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23</span> `console.log()`</div>
+      <p class="text-p">জাভাস্ক্রিপ্ট শেখা ও ডিবাগিংয়ের প্রধান হাতিয়ার হলো <code>console.log()</code>। এটি কনসোলে মান প্রিন্ট করে দেখায়:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Console Output</span></div>
+        <pre>console.log(<span class="syn-num">10</span>);
+console.log(<span class="syn-str">"JavaScript"</span>);
+console.log(<span class="syn-bool">true</span>);
+
+<span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;
+<span class="syn-kw">let</span> age = <span class="syn-num">22</span>;
+console.log(name, age); <span class="syn-com">// একাধিক মান কমা দিয়ে</span></pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">10<br>JavaScript<br>true<br>Ripon 22</div>
+    </div>
+
+    <!-- 24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">24</span> Variables</div>
+      <div class="def-box english">
+        <strong>English:</strong> A variable is a named container/reference used to store or hold a value.
+      </div>
+      <div class="def-box bangla">
+        <strong>বাংলা:</strong> Variable হলো এমন একটি নাম/identifier যার মাধ্যমে আমরা কোনো value ধরে রাখতে বা reference করতে পারি।
+      </div>
+      <span class="tag-label cyan">Real-life Example</span>
+      <p class="text-p">একটি লেবেলযুক্ত বাক্সের মতো: বক্সের লেবেল <code>name</code>, আর ভেতরে রাখা মান <code>"Ripon"</code>।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Variable Declaration</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>; <span class="syn-com">// name → variable, "Ripon" → value</span></pre>
+      </div>
+    </div>
+
+    <!-- 25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25</span> Creating a Variable</div>
+      <p class="text-p">জাভাস্ক্রিপ্টে ভেরিয়েবল ডিক্লেয়ারের ৩টি কিওয়ার্ড:</p>
+      <p class="text-p"><code>var</code> (পুরাতন), <code>let</code> (আধুনিক পরিবর্তনশীল), <code>const</code> (আধুনিক অপরিবর্তনশীল)।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Declaration</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;
+console.log(name);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Ripon</div>
+    </div>
+
+    <!-- 26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26</span> `let`</div>
+      <p class="text-p"><code>let</code> ব্যবহার করে এমন variable তৈরি করা যায় যার value পরে পরিবর্তন বা reassign করা সম্ভব:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Reassignment with let</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">22</span>;
+console.log(age);
+
+age = <span class="syn-num">23</span>; <span class="syn-com">// মান পরিবর্তন</span>
+console.log(age);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">22<br>23</div>
+      <div class="ascii-tree-container">age (22) ──(Reassigned)──→ age (23)</div>
+    </div>
+
+    <!-- 27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27</span> `const`</div>
+      <p class="text-p"><code>const</code> ব্যবহার করে এমন binding তৈরি করা হয় যার মান পরবর্তীতে reassign করা যায় না:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Constant</span></div>
+        <pre><span class="syn-kw">const</span> country = <span class="syn-str">"Bangladesh"</span>;
+console.log(country);
+
+<span class="syn-com">// country = "India"; // TypeError: Assignment to constant variable!</span></pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Bangladesh</div>
+    </div>
+
+    <!-- 28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28</span> `var`</div>
+      <p class="text-p"><code>var</code> হলো জাভাস্ক্রিপ্টের পুরোনো ভেরিয়েবল ডিক্লারেশন কিওয়ার্ড। Modern কোডে এর ব্যবহার অনুৎসাহিত করা হয় কারণ এর ফাংশন স্কোপ এবং হোইস্টিং অনিচ্ছাকৃত বাগ তৈরি করতে পারে:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Legacy var</span></div>
+        <pre><span class="syn-kw">var</span> name = <span class="syn-str">"Ripon"</span>;
+console.log(name);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Ripon</div>
+    </div>
+
+    <!-- 29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29</span> `let` vs `const` vs `var`</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Feature</th><th><code>var</code></th><th><code>let</code></th><th><code>const</code></th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Modern code-এ ব্যবহার</td><td>কম ব্যবহৃত (Legacy)</td><td>বেশি ব্যবহৃত</td><td>সবচেয়ে বেশি ব্যবহৃত</td></tr>
+            <tr><td>Reassign করা যায়?</td><td>✅ হ্যাঁ</td><td>✅ হ্যাঁ</td><td>❌ না</td></tr>
+            <tr><td>Block scoped?</td><td>❌ না (Function scoped)</td><td>✅ হ্যাঁ</td><td>✅ হ্যাঁ</td></tr>
+            <tr><td>Redeclare একই স্কোপে?</td><td>✅ সম্ভব</td><td>❌ এরর দেয়</td><td>❌ এরর দেয়</td></tr>
+            <tr><td>Hoisting Behavior</td><td>Undefined ইনিশিয়ালাইজড</td><td>TDZ (Temporal Dead Zone)</td><td>TDZ</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="memory-box">
+        <strong>⭐ Beginner Golden Rule:</strong> সর্বদা <code>const</code> দিয়ে শুরু করবে। যদি পরবর্তীতে মান reassign করার প্রয়োজন পড়ে, তখন <code>let</code> ব্যবহার করবে।
+      </div>
+    </div>
+
+    <!-- 30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30</span> Variable Naming Rules</div>
+      <p class="text-p">ভেরিয়েবল নামকরণের কঠোর নিয়মাবলী:</p>
+      <span class="tag-label green">Valid Identifiers:</span>
+      <p class="text-p"><code>let name;</code>, <code>let userName;</code>, <code>let user_name;</code>, <code>let age2;</code>, <code>let $price;</code>, <code>let _value;</code></p>
+      <span class="tag-label red">Invalid Identifiers:</span>
+      <p class="text-p"><code>let 2age;</code> (সংখ্যা দিয়ে শুরু করা নিষিদ্ধ!)<br>
+      <code>let user-name;</code> (হাইফেন বিয়োগ চিহ্ন হিসেবে গণ্য হয়, চলকে ব্যবহার নিষিদ্ধ!)</p>
+    </div>
+
+    <!-- 31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31</span> JavaScript Case Sensitive</div>
+      <p class="text-p">JavaScript সম্পূর্ণ <strong>case-sensitive</strong>। অর্থাৎ ছোট হাতের ও বড় হাতের অক্ষরের চলক সম্পূর্ণ আলাদা সত্ত্বা:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Case Sensitivity</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;
+
+console.log(name);  <span class="syn-com">// Ripon</span>
+<span class="syn-com">// console.log(Name); // ReferenceError: Name is not defined</span></pre>
+      </div>
+      <div class="memory-box">
+        <strong>মনে রাখবে:</strong> <code>name ≠ Name ≠ NAME</code> (প্রতিটি আলাদা identifier)।
+      </div>
+    </div>
+
+    <!-- 32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32</span> Naming Convention</div>
+      <p class="text-p">JavaScript ইকোসিস্টেমে সর্বদা <strong>camelCase</strong> কনভেনশন অনুসরণ করা হয়:</p>
+      <span class="tag-label green">Good (camelCase):</span>
+      <p class="text-p"><code>firstName</code>, <code>lastName</code>, <code>userAge</code>, <code>totalPrice</code>, <code>isLoggedIn</code></p>
+      <span class="tag-label amber">Avoid:</span>
+      <p class="text-p"><code>firstname</code> (পড়তে কষ্ট), <code>FirstName</code> (ক্লাসের জন্য সংরক্ষিত), <code>first_name</code> (পাইথনে ব্যবহৃত হয়, JS-এ পরিহার্য)।</p>
+    </div>
+
+    <!-- 33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33</span> Multiple Variables</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Multiple Declarations</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;
+<span class="syn-kw">let</span> age = <span class="syn-num">22</span>;
+<span class="syn-kw">let</span> country = <span class="syn-str">"Bangladesh"</span>;
+
+console.log(name);
+console.log(age);
+console.log(country);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Ripon<br>22<br>Bangladesh</div>
+    </div>
+
+    <!-- 34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34</span> Variable Reassignment</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Reassignment Flow</span></div>
+        <pre><span class="syn-kw">let</span> score = <span class="syn-num">50</span>;
+score = <span class="syn-num">80</span>; <span class="syn-com">// Updated</span>
+console.log(score);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">80</div>
+    </div>
+
+    <!-- 35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35</span> Constant Value</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Constant Pi</span></div>
+        <pre><span class="syn-kw">const</span> pi = <span class="syn-num">3.14159</span>;
+console.log(pi);
+
+<span class="syn-com">// pi = 4; // TypeError: Assignment to constant variable!</span></pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">3.14159</div>
+    </div>
+
+    <!-- PART 05 -->
+    <div class="part-banner">Part 05 — Types, typeof &amp; Practical Demonstrations (36 – 41)</div>
+
+    <!-- 36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36</span> Primitive Data Types — Introduction</div>
+      <p class="text-p">জাভাস্ক্রিপ্টে মূলত ৭টি প্রিমিটিভ টাইপ ও ১টি নন-প্রিমিটিভ (Object) টাইপ রয়েছে:</p>
+      <div class="ascii-tree-container">Primitive Data Types:
+String, Number, BigInt, Boolean, Undefined, Null, Symbol
+
+Non-Primitive Category:
+Object (Array, Function, Object)</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Basic Type Declarations</span></div>
+        <pre><span class="syn-kw">let</span> name = <span class="syn-str">"Ripon"</span>;       <span class="syn-com">// String</span>
+<span class="syn-kw">let</span> age = <span class="syn-num">22</span>;             <span class="syn-com">// Number</span>
+<span class="syn-kw">let</span> isStudent = <span class="syn-bool">true</span>;     <span class="syn-com">// Boolean</span>
+<span class="syn-kw">let</span> result;               <span class="syn-com">// Undefined</span>
+<span class="syn-kw">let</span> data = <span class="syn-kw">null</span>;          <span class="syn-com">// Null</span></pre>
+      </div>
+    </div>
+
+    <!-- 37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37</span> `typeof`</div>
+      <p class="text-p">কোনো value কোন type-এর তা রানটাইমে জানার জন্য <code>typeof</code> অপারেটর ব্যবহার করা হয়:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Checking Types</span></div>
+        <pre>console.log(<span class="syn-kw">typeof</span> <span class="syn-str">"Hello"</span>); <span class="syn-com">// string</span>
+console.log(<span class="syn-kw">typeof</span> <span class="syn-num">100</span>);     <span class="syn-com">// number</span>
+console.log(<span class="syn-kw">typeof</span> <span class="syn-bool">true</span>);    <span class="syn-com">// boolean</span></pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">string<br>number<br>boolean</div>
+    </div>
+
+    <!-- 38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38</span> Complete `typeof` Example</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Typeof Suite</span></div>
+        <pre>console.log(<span class="syn-kw">typeof</span> <span class="syn-str">"Ripon"</span>);     <span class="syn-com">// string</span>
+console.log(<span class="syn-kw">typeof</span> <span class="syn-num">22</span>);            <span class="syn-com">// number</span>
+console.log(<span class="syn-kw">typeof</span> <span class="syn-bool">true</span>);          <span class="syn-com">// boolean</span>
+console.log(<span class="syn-kw">typeof</span> undefined);     <span class="syn-com">// undefined</span>
+console.log(<span class="syn-kw">typeof</span> <span class="syn-num">123n</span>);          <span class="syn-com">// bigint</span>
+console.log(<span class="syn-kw">typeof</span> <span class="syn-kw">null</span>);          <span class="syn-com">// object (Historical Quirk!)</span></pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">string<br>number<br>boolean<br>undefined<br>bigint<br>object</div>
+      <div class="warn-box">
+        <strong>Historical Bug:</strong> <code>typeof null === "object"</code> জাভাস্ক্রিপ্টের প্রথম সংস্করণের একটি পরিচিত ঐতিহাসিক বাগ যা ব্যাকওয়ার্ড কম্প্যাটিবিলিটির জন্য অপরিবর্তিত রাখা হয়েছে।
+      </div>
+    </div>
+
+    <!-- 39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39</span> Basic JavaScript Example</div>
+      <p class="text-p">এখন আমরা কয়েকটা কনসেপ্ট একসাথে যুক্ত করে একটি বাস্তব উদাহরণ তৈরি করি:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Combined Logic</span></div>
+        <pre><span class="syn-kw">const</span> name = <span class="syn-str">"Shariar"</span>;
+<span class="syn-kw">let</span> age = <span class="syn-num">22</span>;
+<span class="syn-kw">const</span> country = <span class="syn-str">"Bangladesh"</span>;
+
+console.log(<span class="syn-str">"Name:"</span>, name);
+console.log(<span class="syn-str">"Age:"</span>, age);
+console.log(<span class="syn-str">"Country:"</span>, country);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Name: Shariar<br>Age: 22<br>Country: Bangladesh</div>
+    </div>
+
+    <!-- 40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">40</span> Mini Real-Life Example — Student Information</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Student Profile</span></div>
+        <pre><span class="syn-kw">const</span> studentName = <span class="syn-str">"Shariar Ahamed Ripon"</span>;
+<span class="syn-kw">const</span> studentId = <span class="syn-str">"231-15-010"</span>;
+<span class="syn-kw">let</span> semester = <span class="syn-num">8</span>;
+<span class="syn-kw">const</span> department = <span class="syn-str">"CSE"</span>;
+
+console.log(<span class="syn-str">"Student Name:"</span>, studentName);
+console.log(<span class="syn-str">"Student ID:"</span>, studentId);
+console.log(<span class="syn-str">"Semester:"</span>, semester);
+console.log(<span class="syn-str">"Department:"</span>, department);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Student Name: Shariar Ahamed Ripon<br>Student ID: 231-15-010<br>Semester: 8<br>Department: CSE</div>
+      <div class="memory-box">
+        <strong>প্রোগ্রামিংয়ের মূল দর্শন:</strong> Data → Store in Variables → Process Logic → Output to User.
+      </div>
+    </div>
+
+    <!-- 41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">41</span> JavaScript-এর Basic Mental Model</div>
+      <span class="tag-label cyan">Execution Mental Model</span>
+      <div class="ascii-tree-container">          JavaScript
+               │
+               ↓
+        Write Code (.js)
+               │
+               ↓
+        JavaScript Engine (V8)
+               │
+               ↓
+        Process / Execute (JIT / Call Stack)
+               │
+               ↓
+            Result</div>
+      <span class="tag-label purple">Web Architecture Trinity</span>
+      <div class="ascii-tree-container">HTML (Structure) + CSS (Design) + JavaScript (Behavior &amp; Logic)
+                          ↓
+                   Web Application</div>
+    </div>
+
+    <!-- QUICK REVISION -->
+    <div class="study-card" style="border-left: 4px solid var(--amber-accent); background: #fffbeb;">
+      <h3 style="font-size: 13.5px; color: #92400e; margin-bottom: 8px;">🧠 Chapter 1 — Quick Revision</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Topic</th><th>মূল কথা</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>JavaScript</td><td>Webpage-কে dynamic ও interactive করতে ব্যবহৃত language</td></tr>
+            <tr><td>ECMAScript</td><td>JavaScript-এর standardized specification</td></tr>
+            <tr><td>ES6</td><td>ECMAScript 2015; modern JS-এর গুরুত্বপূর্ণ milestone</td></tr>
+            <tr><td>JavaScript Engine</td><td>JavaScript code execute করে</td></tr>
+            <tr><td>V8</td><td>Chrome ও Node.js-এর JavaScript engine</td></tr>
+            <tr><td>Browser</td><td>JavaScript run করার একটি ক্লায়েন্ট environment</td></tr>
+            <tr><td>Node.js</td><td>Browser-এর বাইরে JavaScript runtime</td></tr>
+            <tr><td><code>&lt;script&gt;</code></td><td>HTML-এর সাথে JS যুক্ত করার element</td></tr>
+            <tr><td><code>defer</code></td><td>HTML parsing শেষের পর script execute করতে সাহায্য করে</td></tr>
+            <tr><td>Comment</td><td>Code explanation-এর জন্য (ইঞ্জিন এড়িয়ে চলে)</td></tr>
+            <tr><td>Statement</td><td>JavaScript-এর instruction</td></tr>
+            <tr><td>Expression</td><td>Value produce করে</td></tr>
+            <tr><td>Variable</td><td>Value/reference রাখার জন্য named binding</td></tr>
+            <tr><td><code>let</code></td><td>Reassign করা যায়</td></tr>
+            <tr><td><code>const</code></td><td>Reassign করা যায় না</td></tr>
+            <tr><td><code>var</code></td><td>পুরোনো variable declaration mechanism</td></tr>
+            <tr><td><code>typeof</code></td><td>Value-এর type জানতে সাহায্য করে</td></tr>
+            <tr><td>Case Sensitive</td><td><code>name</code> এবং <code>Name</code> আলাদা চলক</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PRACTICE QUESTIONS -->
+    <div class="study-card">
+      <h3 style="font-size: 13.5px; color: var(--navy-mid); margin-bottom: 8px;">📝 Chapter 1 Practice Exercises</h3>
+
+      <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8fafc; border-left: 3px solid #0284c7; border-radius: 4px;">
+        <strong>Practice 1 — Personal Info:</strong>
+        <p class="text-p">তোমার Name, Age, University, Department এবং Country চলকে সংরক্ষণ করে <code>console.log()</code> দিয়ে প্রিন্ট করো।</p>
+      </div>
+
+      <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8fafc; border-left: 3px solid #0284c7; border-radius: 4px;">
+        <strong>Practice 2 — Type Detection:</strong>
+        <p class="text-p">নিচের ভ্যালুগুলোর টাইপ <code>typeof</code> দিয়ে বের করো:</p>
+        <div class="code-box"><pre>"Hello"
+100
+true
+undefined
+null
+123n</pre></div>
+      </div>
+
+      <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8fafc; border-left: 3px solid #0284c7; border-radius: 4px;">
+        <strong>Practice 3 — Reassignment:</strong>
+        <p class="text-p">একটি <code>let</code> ভ্যারিয়েবল <code>score = 50</code> তৈরি করো, তারপর সেটাকে <code>80</code>-তে পরিবর্তন করে কনসোলে প্রিন্ট করো।</p>
+      </div>
+
+      <div style="margin-bottom: 8px; padding: 8px 12px; background: #f8fafc; border-left: 3px solid #0284c7; border-radius: 4px;">
+        <strong>Practice 4 — Constant Test:</strong>
+        <p class="text-p">একটি <code>const</code> variable তৈরি করে পরে পরিবর্তন করার চেষ্টা করো এবং browser console-এ কী error আসে তা পর্যবেক্ষণ করো।</p>
+      </div>
+
+      <div style="margin-bottom: 6px; padding: 8px 12px; background: #f8fafc; border-left: 3px solid #0284c7; border-radius: 4px;">
+        <strong>Practice 5 — Mini Project (Student Information System):</strong>
+        <p class="text-p">একটি পূর্ণাঙ্গ ছাত্র বিবরণী তৈরি করো: Name, ID, Department, Semester, CGPA, University। সব ডেটা ভ্যারিয়েবলে রেখে কনসোলে ফরম্যাটেড আকারে প্রিন্ট করো।</p>
+      </div>
+    </div>
+
+    <!-- TAKEAWAY -->
+    <div class="study-card" style="background: #f0fdf4; border-left: 4px solid var(--green-accent);">
+      <h3 style="font-size: 13px; color: #166534; margin-bottom: 6px;">⭐ Chapter 1-এর সবচেয়ে গুরুত্বপূর্ণ takeaway</h3>
+      <p class="text-p">এই ফ্লো-টি মাথায় গভীরভাবে গেঁথে নাও:</p>
+      <div class="ascii-tree-container" style="background: #14532d; color: #86efac;">JavaScript → Variables → Data → Expressions → Statements → JavaScript Engine (V8) → Execution → Output</div>
+      <p class="text-p" style="margin-top: 6px; font-weight: 600; color: #166534;">
+        Chapter 2-এ আমরা JavaScript-এর Variables, Data Types &amp; Type System আরও গভীরভাবে ধরব — String, Number, Boolean, Undefined, Null, BigInt, Symbol, Object, typeof, primitive vs non-primitive, memory/reference ধারণা, এবং type conversion/coercion ধাপে ধাপে code + output সহ।
+      </p>
+    </div>
+
+  </div>
+
+</body>
+</html>

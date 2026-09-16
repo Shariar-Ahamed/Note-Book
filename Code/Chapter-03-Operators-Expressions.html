@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 03: Operators &amp; Expressions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-dark: #0b2545;
+      --navy-mid: #134074;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-subtle: #f0f9ff;
+      --teal-accent: #0d9488;
+      --green-accent: #059669;
+      --green-light: #ecfdf5;
+      --amber-accent: #d97706;
+      --amber-light: #fefce8;
+      --amber-border: #fef08a;
+      --red-accent: #dc2626;
+      --red-light: #fef2f2;
+      --purple-accent: #7c3aed;
+      --purple-light: #f5f3ff;
+      --text-dark: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #475569;
+      --card-bg: #ffffff;
+      --page-bg: #f1f5f9;
+      --border-card: #e2e8f0;
+      --code-bg: #0f172a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-body);
+      font-size: 12px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .action-bar .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    }
+
+    .doc-page {
+      max-width: 820px;
+      margin: 20px auto;
+      background: var(--card-bg);
+      padding: 32px 36px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-card);
+    }
+
+    .master-banner {
+      background: linear-gradient(135deg, #0b2545 0%, #0d3b66 55%, #0284c7 100%);
+      border-radius: 8px;
+      padding: 24px 28px;
+      color: white;
+      margin-bottom: 14px;
+    }
+    .banner-top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .banner-icon {
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #38bdf8;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800;
+    }
+    .banner-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px; font-weight: 800;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .banner-sub { font-size: 12px; color: #93c5fd; margin-bottom: 18px; margin-left: 40px; }
+    .meta-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 12px; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 14px;
+    }
+    .meta-item .meta-label {
+      font-size: 10px; color: #7dd3fc; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 2px;
+    }
+    .meta-item .meta-val { font-size: 11.5px; color: #ffffff; font-weight: 600; }
+
+    .part-banner {
+      background: var(--blue-light);
+      border-left: 4px solid var(--blue-accent);
+      color: #0369a1;
+      padding: 7px 14px;
+      border-radius: 4px;
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      font-size: 12px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;
+      margin: 22px 0 12px 0; display: flex; align-items: center; gap: 6px;
+    }
+
+        .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    .study-card, .practice-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 13px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.015);
+    }
+    .card-title {
+      font-size: 13px; font-weight: 700; color: var(--text-dark);
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .badge-num {
+      background: var(--blue-accent); color: white;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px;
+      letter-spacing: 0.5px; display: inline-block;
+    }
+
+    .tag-label {
+      font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      margin: 8px 0 4px 0; display: block;
+    }
+    .tag-label.cyan { color: #0284c7; }
+    .tag-label.green { color: #059669; }
+    .tag-label.amber { color: #d97706; }
+    .tag-label.purple { color: #6366f1; }
+    .tag-label.red { color: #dc2626; }
+
+    p.text-p { margin-bottom: 6px; font-size: 12px; color: var(--text-body); }
+    ul.clean-list { margin-left: 18px; margin-bottom: 8px; }
+    ul.clean-list li { margin-bottom: 4px; font-size: 12px; }
+
+    .def-box {
+      border-radius: 4px; padding: 8px 12px; margin: 6px 0 8px 0; font-size: 11.5px; line-height: 1.5;
+    }
+    .def-box.english { background: var(--blue-subtle); border-left: 3px solid var(--blue-accent); color: #0c4a6e; }
+    .def-box.bangla { background: #faf5ff; border-left: 3px solid #9333ea; color: #581c87; }
+
+    .memory-box {
+      background: var(--amber-light); border: 1px solid var(--amber-border); border-left: 4px solid #eab308;
+      padding: 8px 12px; border-radius: 4px; font-size: 11.5px; color: #713f12; margin: 8px 0 6px 0;
+    }
+    .warn-box {
+      background: var(--red-light); border: 1px solid #fecaca; border-left: 4px solid var(--red-accent);
+      padding: 8px 12px; border-radius: 4px; font-size: 11.5px; color: #7f1d1d; margin: 8px 0 6px 0;
+    }
+
+    .table-wrap { margin: 8px 0 10px 0; border: 1px solid var(--border-card); border-radius: 5px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 11.5px; text-align: left; }
+    thead th { background: #f8fafc; color: var(--text-dark); font-weight: 700; padding: 7px 10px; border-bottom: 1px solid var(--border-card); }
+    tbody tr { border-bottom: 1px solid var(--border-card); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:nth-child(even) { background: #fbfcfe; }
+    tbody td { padding: 6px 10px; color: var(--text-body); }
+
+    .code-box {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 5px; margin: 6px 0 8px 0; overflow: hidden;
+    }
+    .code-top {
+      background: #1e293b; color: #94a3b8; font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 9.5px; font-weight: 600; padding: 3px 10px; display: flex; justify-content: space-between;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    pre {
+      margin: 0; padding: 8px 12px; font-family: 'Fira Code', monospace; font-size: 11px; line-height: 1.5;
+      color: #e2e8f0; overflow-x: auto;
+    }
+    code { font-family: 'Fira Code', monospace; background: #f1f5f9; color: #0369a1; padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+    pre code { background: transparent; color: inherit; padding: 0; }
+
+    .output-box {
+      background: #f8fafc; border: 1px dashed #cbd5e1; border-left: 3px solid #64748b;
+      border-radius: 4px; padding: 6px 10px; font-family: 'Fira Code', monospace; font-size: 11px;
+      color: #334155; margin: 4px 0 8px 0;
+    }
+
+    .ascii-tree-container {
+      background: #0f172a; border: 1px solid #1e293b; border-radius: 6px; padding: 12px 14px;
+      color: #38bdf8; font-family: 'Courier New', Consolas, monospace !important; font-size: 11px;
+      line-height: 1.4; white-space: pre !important; overflow-x: auto; margin: 8px 0;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+          .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+    </style>
+</head>
+<body>
+
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 03: OPERATORS &amp; EXPRESSIONS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">89 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 01 — Fundamentals (3/3)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Arithmetic, Logic &amp; Precedence</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc;">
+      <h2 style="font-size: 14px; color: var(--navy-mid); margin-bottom: 6px;">Operators, Expressions এবং JavaScript-এ Data নিয়ে কাজ করা</h2>
+      <p class="text-p">Chapter 2-এ আমরা Data Types নিয়ে বিস্তারিত জেনেছি। কিন্তু শুধু data জমা রাখলে program চলে না। Program চলার জন্য data নিয়ে হিসাব করতে হয়, তুলনা করতে হয় এবং সিদ্ধান্ত নিতে হয়। এই সব কাজের জন্য প্রয়োজন <strong>Operators এবং Expressions</strong>।</p>
+    </div>
+    
+
+    <div class="part-banner">Part 01 — Operators, Operands &amp; Expressions (1 – 4)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">1</span> What is an Operator?</div>
+<div class="def-box english"><strong>English:</strong> An <strong>operator</strong> is a symbol or keyword that tells JavaScript to perform an operation.</div>
+<div class="def-box bangla"><strong>বাংলা:</strong> Operator হলো এমন একটি symbol বা keyword যা JavaScript-কে কোনো নির্দিষ্ট operation করতে বলে।</div>
+<p class="text-p">Example:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>10 + 5</pre></div>
+<p class="text-p">এখানে:</p>
+<div class="output-box">10 → Operand
++  → Operator
+5  → Operand</div>
+<p class="text-p">Result:</p>
+<div class="output-box">15</div>
+<span class="tag-label cyan">সহজভাবে</span>
+<div class="ascii-tree-container">Operand + Operator + Operand
+   10        +         5
+              ↓
+             15</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">2</span> What is an Operand?</div>
+<p class="text-p">Operator যে value-এর উপর কাজ করে, তাকে <strong>operand</strong> বলে।</p>
+<p class="text-p">Example:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>20 - 8</pre></div>
+<p class="text-p">এখানে:</p>
+<div class="output-box">20 → Operand
+-  → Operator
+8  → Operand</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>x * 10</pre></div>
+<p class="text-p">এখানে:</p>
+<div class="output-box">x  → Operand
+*  → Operator
+10 → Operand</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">3</span> What is an Expression?</div>
+<div class="def-box english"><strong>English:</strong> An <strong>expression</strong> is a piece of code that produces a value.</div>
+<div class="def-box bangla"><strong>বাংলা:</strong> Expression হলো এমন code যা একটি value produce করে।</div>
+<p class="text-p">Example:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>10 + 20</pre></div>
+<p class="text-p">Result:</p>
+<div class="output-box">30</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>age &gt;= 18</pre></div>
+<p class="text-p">Result হতে পারে:</p>
+<div class="output-box">true</div>
+<span class="tag-label cyan">আরও Example</span>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>5 * 10</pre></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>&quot;Hello&quot; + &quot; World&quot;</pre></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>20 &gt; 10</pre></div>
+<p class="text-p">সবগুলো expression।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4</span> Types of Operators</div>
+<p class="text-p">JavaScript-এ অনেক ধরনের operator রয়েছে।</p>
+<p class="text-p">আমরা এই chapter-এ শিখব:</p>
+<p class="text-p">1. Arithmetic Operators</p>
+<p class="text-p">2. Assignment Operators</p>
+<p class="text-p">3. Comparison Operators</p>
+<p class="text-p">4. Equality Operators</p>
+<p class="text-p">5. Logical Operators</p>
+<p class="text-p">6. Unary Operators</p>
+<p class="text-p">7. Increment/Decrement</p>
+<p class="text-p">8. Ternary Operator</p>
+<p class="text-p">9. Nullish Coalescing Operator</p>
+<p class="text-p">10. Optional Chaining</p>
+<p class="text-p">11. Bitwise Operators</p>
+<p class="text-p">12. <code>typeof</code></p>
+<p class="text-p">13. <code>in</code></p>
+<p class="text-p">14. <code>instanceof</code></p>
+<p class="text-p">15. Operator Precedence</p>
+    </div>
+
+
+    <div class="part-banner">Part 02 — Arithmetic Operators &amp; Modulus (5 – 15)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5</span> Arithmetic Operators</div>
+<p class="text-p">Arithmetic operators mathematical calculation করার জন্য ব্যবহার হয়।</p>
+<p class="text-p">প্রধান arithmetic operators:</p>
+<div class="output-box">+    Addition
+-    Subtraction
+*    Multiplication
+/    Division
+%    Modulus
+**   Exponentiation</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">6</span> Addition <code>+</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const a = 10;
+const b = 20;
+
+console.log(a + b);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">30</div>
+<span class="tag-label cyan">Real-life Example</span>
+<p class="text-p">ধরো:</p>
+<div class="output-box">Product = ৳500
+Delivery = ৳100</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const productPrice = 500;
+const deliveryCharge = 100;
+
+const total = productPrice + deliveryCharge;
+
+console.log(total);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">600</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">7</span> String Concatenation with <code>+</code></div>
+<p class="text-p"><code>+</code> শুধু number যোগ করে না। String combine-ও করতে পারে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const firstName = &quot;Shariar&quot;;
+const lastName = &quot;Ripon&quot;;
+
+console.log(firstName + &quot; &quot; + lastName);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Shariar Ripon</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">8</span> Subtraction <code>-</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const a = 50;
+const b = 20;
+
+console.log(a - b);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">30</div>
+<span class="tag-label cyan">Real-life</span>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const balance = 1000;
+const expense = 250;
+
+const remaining = balance - expense;
+
+console.log(remaining);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">750</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">9</span> Multiplication <code>*</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const price = 500;
+const quantity = 3;
+
+console.log(price * quantity);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">1500</div>
+<span class="tag-label cyan">Real-life</span>
+<p class="text-p">একটি product-এর price ৳500 এবং quantity 3 হলে total:</p>
+<div class="output-box">500 × 3 = 1500</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">10</span> Division <code>/</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const totalMarks = 400;
+const subjects = 4;
+
+console.log(totalMarks / subjects);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">100</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">11</span> Modulus <code>%</code></div>
+<p class="text-p">এটা খুব important।</p>
+<p class="text-p"><code>%</code> remainder বা ভাগশেষ বের করে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 % 3);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">1</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">10 ÷ 3
+
+3 × 3 = 9
+
+10 - 9 = 1</div>
+<p class="text-p">তাই:</p>
+<div class="output-box">10 % 3 = 1</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12</span> Modulus-এর Real-Life Use</div>
+<p class="text-p">একটি number even না odd সেটা বের করতে <code>%</code> ব্যবহার করা যায়।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const number = 10;
+
+console.log(number % 2);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">0</div>
+<p class="text-p">কারণ 10 সম্পূর্ণভাবে 2 দিয়ে divisible।</p>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const number = 7;
+
+console.log(number % 2);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">1</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13</span> Even / Odd Concept</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const number = 15;
+
+if (number % 2 === 0) {
+    console.log(&quot;Even&quot;);
+} else {
+    console.log(&quot;Odd&quot;);
+}</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Odd</div>
+<p class="text-p">এখানে আমরা ব্যবহার করেছি:</p>
+<ul class="clean-list"><li><code>%</code></li><li><code>===</code></li><li><code>if</code></li><li><code>else</code></li></ul>
+<p class="text-p"><code>if/else</code> আমরা পরের chapter-এ বিস্তারিত শিখব।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">14</span> Exponentiation <code>**</code></div>
+<p class="text-p">Power বা exponent বের করার জন্য:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(2 ** 3);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">8</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">2 × 2 × 2 = 8</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 ** 2);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">25</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">15</span> Arithmetic Operators Summary</div>
+<div class="table-wrap"><table><thead><tr><th>Operator</th><th>কাজ</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td><code>+</code></td><td>Addition</td><td><code>10 + 5</code></td><td><code>15</code></td></tr><tr><td><code>-</code></td><td>Subtraction</td><td><code>10 - 5</code></td><td><code>5</code></td></tr><tr><td><code>*</code></td><td>Multiplication</td><td><code>10 * 5</code></td><td><code>50</code></td></tr><tr><td><code>/</code></td><td>Division</td><td><code>10 / 5</code></td><td><code>2</code></td></tr><tr><td><code>%</code></td><td>Remainder</td><td><code>10 % 3</code></td><td><code>1</code></td></tr><tr><td><code>**</code></td><td>Power</td><td><code>2 ** 3</code></td><td><code>8</code></td></tr></tbody></table></div>
+    </div>
+
+
+    <div class="part-banner">Part 03 — Assignment &amp; Compound Assignment (16 – 24)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">16</span> Assignment Operator <code>=</code></div>
+<p class="text-p"><code>=</code> হলো assignment operator।</p>
+<p class="text-p">এটি comparison করে না।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let age = 22;</pre></div>
+<p class="text-p">এর অর্থ:</p>
+<div class="memory-box"><code>age</code> variable-এর মধ্যে <code>22</code> value assign করো।</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">17</span> Reassignment</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let score = 50;
+
+score = 80;
+
+console.log(score);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">80</div>
+<p class="text-p">প্রথমে:</p>
+<div class="output-box">score → 50</div>
+<p class="text-p">পরে:</p>
+<div class="output-box">score → 80</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">18</span> Compound Assignment Operators</div>
+<p class="text-p">JavaScript-এ shortcut assignment operator আছে।</p>
+<div class="output-box">+=
+-=
+*=
+/=
+%=
+**=</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">19</span> <code>+=</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let score = 50;
+
+score += 10;
+
+console.log(score);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">60</div>
+<p class="text-p">এটা essentially:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>score = score + 10;</pre></div>
+<p class="text-p">এর shortcut।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">20</span> <code>-=</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let balance = 1000;
+
+balance -= 250;
+
+console.log(balance);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">750</div>
+<p class="text-p">Equivalent:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>balance = balance - 250;</pre></div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">21</span> <code>*=</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let price = 100;
+
+price *= 5;
+
+console.log(price);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">500</div>
+<p class="text-p">Equivalent:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>price = price * 5;</pre></div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">22</span> <code>/=</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let amount = 1000;
+
+amount /= 4;
+
+console.log(amount);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">250</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23</span> <code>%=</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let number = 17;
+
+number %= 5;
+
+console.log(number);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">2</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">17 % 5 = 2</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">24</span> <code>**=</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let number = 2;
+
+number **= 3;
+
+console.log(number);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">8</div>
+<p class="text-p">Equivalent:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>number = number ** 3;</pre></div>
+    </div>
+
+
+    <div class="part-banner">Part 04 — Comparison &amp; Equality Operators (25 – 35)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">25</span> Comparison Operators</div>
+<p class="text-p">Comparison operator দুইটি value compare করে এবং সাধারণত Boolean result দেয়:</p>
+<div class="output-box">true
+false</div>
+<p class="text-p">প্রধান operators:</p>
+<div class="output-box">&gt;
+&lt;
+&gt;=
+&lt;=
+==
+===
+!=
+!==</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">26</span> Greater Than <code>&gt;</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 &gt; 5);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">কারণ 10 বড় 5 থেকে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27</span> Less Than <code>&lt;</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 &lt; 10);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28</span> Greater Than or Equal <code>&gt;=</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 &gt;= 10);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">কারণ 10, 10-এর সমান।</p>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(15 &gt;= 10);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29</span> Less Than or Equal <code>&lt;=</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 &lt;= 10);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30</span> Loose Equality <code>==</code></div>
+<p class="text-p"><code>==</code> value compare করার সময় type coercion করতে পারে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 == &quot;5&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">কারণ JavaScript এখানে type conversion করে comparison করতে পারে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31</span> Strict Equality <code>===</code></div>
+<p class="text-p"><code>===</code> value এবং type—দুটোই compare করে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 === &quot;5&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">5   → number
+&quot;5&quot; → string</div>
+<p class="text-p">Value দেখতে একই হলেও type আলাদা।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32</span> <code>==</code> vs <code>===</code></div>
+<p class="text-p">এটা খুব ভালোভাবে মনে রাখবে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 == &quot;10&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 === &quot;10&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<span class="tag-label amber">Beginner/Modern JS Rule ⭐</span>
+<p class="text-p">সাধারণত comparison করার সময়:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>===</pre></div>
+<p class="text-p">এবং:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>!==</pre></div>
+<p class="text-p">ব্যবহার করা বেশি predictable।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33</span> Loose Inequality <code>!=</code></div>
+<p class="text-p"><code>!=</code> value equal নয় কিনা check করে এবং type coercion করতে পারে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 != &quot;5&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<p class="text-p">কারণ loose comparison অনুযায়ী তারা equal।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34</span> Strict Inequality <code>!==</code></div>
+<p class="text-p"><code>!==</code> value অথবা type—যেকোনো একটি আলাদা হলে <code>true</code> দেয়।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 !== &quot;5&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">কারণ type আলাদা।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35</span> Comparison Summary</div>
+<div class="table-wrap"><table><thead><tr><th>Operator</th><th>Meaning</th></tr></thead><tbody><tr><td><code>&gt;</code></td><td>Greater than</td></tr><tr><td><code>&lt;</code></td><td>Less than</td></tr><tr><td><code>&gt;=</code></td><td>Greater than or equal</td></tr><tr><td><code>&lt;=</code></td><td>Less than or equal</td></tr><tr><td><code>==</code></td><td>Loose equality</td></tr><tr><td><code>===</code></td><td>Strict equality</td></tr><tr><td><code>!=</code></td><td>Loose inequality</td></tr><tr><td><code>!==</code></td><td>Strict inequality</td></tr></tbody></table></div>
+    </div>
+
+
+    <div class="part-banner">Part 05 — Logical &amp; Short-Circuit Operators (36 – 54)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36</span> Logical Operators</div>
+<p class="text-p">Logical operators একাধিক condition/value নিয়ে কাজ করতে পারে।</p>
+<p class="text-p">প্রধান তিনটি:</p>
+<div class="output-box">&amp;&amp;   AND
+||   OR
+!    NOT</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37</span> AND <code>&amp;&amp;</code></div>
+<p class="text-p"><code>&amp;&amp;</code> তখন <code>true</code> হয় যখন <strong>দুই পাশের condition-ই truthy/true</strong> হয়।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(true &amp;&amp; true);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(true &amp;&amp; false);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<span class="tag-label purple">Truth Table</span>
+<div class="table-wrap"><table><thead><tr><th>A</th><th>B</th><th>`A &amp;&amp; B`</th></tr></thead><tbody><tr><td>true</td><td>true</td><td>true</td></tr><tr><td>true</td><td>false</td><td>false</td></tr><tr><td>false</td><td>true</td><td>false</td></tr><tr><td>false</td><td>false</td><td>false</td></tr></tbody></table></div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38</span> Real-Life AND Example</div>
+<p class="text-p">ধরো কোনো website-এ checkout করার জন্য:</p>
+<div class="output-box">User logged in
+AND
+Cart is not empty</div>
+<p class="text-p">দুটোই true হতে হবে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const isLoggedIn = true;
+const hasItems = true;
+
+console.log(isLoggedIn &amp;&amp; hasItems);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39</span> OR <code>||</code></div>
+<p class="text-p"><code>||</code>-এর ক্ষেত্রে অন্তত একটি operand truthy হলে result truthy হতে পারে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(true || false);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<span class="tag-label purple">Truth Table</span>
+<div class="table-wrap"><table><thead><tr><th>A</th><th>B</th><th>`A</th><th></th><th>B`</th></tr></thead><tbody><tr><td>true</td><td>true</td><td>true</td></tr><tr><td>true</td><td>false</td><td>true</td></tr><tr><td>false</td><td>true</td><td>true</td></tr><tr><td>false</td><td>false</td><td>false</td></tr></tbody></table></div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">40</span> Real-Life OR Example</div>
+<p class="text-p">ধরো login করা যাবে:</p>
+<div class="output-box">Google account
+OR
+Email/password</div>
+<p class="text-p">যেকোনো একটি থাকলেই চলবে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const hasGoogleLogin = false;
+const hasEmailLogin = true;
+
+console.log(hasGoogleLogin || hasEmailLogin);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">41</span> NOT <code>!</code></div>
+<p class="text-p"><code>!</code> Boolean value উল্টে দেয়।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(!true);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(!false);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">42</span> Real-Life NOT Example</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const isLoggedIn = false;
+
+console.log(!isLoggedIn);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">isLoggedIn = false
+!false = true</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">43</span> Double NOT <code>!!</code></div>
+<p class="text-p"><code>!!</code> কোনো value-কে Boolean-এ convert করার একটি common technique।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(!!&quot;Hello&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(!!0);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<p class="text-p">কারণ প্রথম <code>!</code> এবং দ্বিতীয় <code>!</code> মিলিয়ে Boolean conversion-এর মতো behavior দেয়।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">44</span> Logical Operators শুধু Boolean Return করে?</div>
+<p class="text-p">এখানে JavaScript-এর একটি <strong>খুব important</strong> behavior আছে।</p>
+<p class="text-p"><code>&amp;&amp;</code> এবং <code>||</code> সবসময় <code>true</code> বা <code>false</code> return করে না।</p>
+<p class="text-p">তারা operand-এর actual value return করতে পারে।</p>
+<p class="text-p">Example:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(&quot;Hello&quot; &amp;&amp; &quot;World&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">World</div>
+<p class="text-p">কারণ <code>&quot;Hello&quot;</code> truthy, তাই <code>&amp;&amp;</code> পরের operand evaluate করে এবং <code>&quot;World&quot;</code> return করে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">45</span> <code>&amp;&amp;</code> Short-Circuit</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(false &amp;&amp; &quot;Hello&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<p class="text-p">কারণ প্রথম value-ই falsy।</p>
+<p class="text-p">JavaScript দ্বিতীয় operand-এর দিকে যেতে হয় না।</p>
+<p class="text-p">এটাকে বলে:</p>
+<div class="memory-box"><strong>Short-circuit evaluation</strong></div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">46</span> <code>||</code> Short-Circuit</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(&quot;Hello&quot; || &quot;World&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Hello</div>
+<p class="text-p">কারণ <code>&quot;Hello&quot;</code> truthy।</p>
+<p class="text-p">JavaScript প্রথম truthy value পেয়ে থেমে গেছে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">47</span> Practical Default Value Pattern</div>
+<p class="text-p">পুরোনো/common pattern:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const username = userInput || &quot;Guest&quot;;
+
+console.log(username);</pre></div>
+<p class="text-p">যদি <code>userInput</code> falsy হয়, <code>&quot;Guest&quot;</code> ব্যবহার হবে।</p>
+<p class="text-p">তবে মনে রাখবে—<code>||</code> সব falsy value-কে fallback হিসেবে treat করে।</p>
+<p class="text-p">এজন্য modern JavaScript-এ অনেক ক্ষেত্রে <code>??</code> বেশি precise।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">48</span> Nullish Coalescing <code>??</code></div>
+<p class="text-p"><code>??</code> হলো modern JavaScript-এর খুব useful operator।</p>
+<p class="text-p">এটি fallback দেয় যখন left side:</p>
+<div class="output-box">null</div>
+<p class="text-p">অথবা:</p>
+<div class="output-box">undefined</div>
+<p class="text-p">হয়।</p>
+<p class="text-p">Example:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const username = null;
+
+console.log(username ?? &quot;Guest&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Guest</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">49</span> <code>??</code> vs <code>||</code></div>
+<p class="text-p">এটা খুব important।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(0 || 100);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">100</div>
+<p class="text-p">কারণ <code>0</code> falsy।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(0 ?? 100);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">0</div>
+<p class="text-p">কারণ <code>0</code> null বা undefined নয়।</p>
+<span class="tag-label cyan">তাই:</span>
+<div class="output-box">|| → সব falsy value-এর ক্ষেত্রে fallback হতে পারে
+
+?? → শুধু null বা undefined-এর ক্ষেত্রে fallback</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">50</span> Practical Example of <code>??</code></div>
+<p class="text-p">ধরো user&#x27;s age <code>0</code> valid value হতে পারে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const age = 0;
+
+console.log(age ?? 18);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">0</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(age || 18);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">18</div>
+<p class="text-p">তাই context অনুযায়ী operator নির্বাচন করতে হবে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">51</span> Optional Chaining <code>?.</code></div>
+<p class="text-p">ধরো একটি nested object:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {
+    profile: {
+        name: &quot;Ripon&quot;
+    }
+};</pre></div>
+<p class="text-p">তুমি লিখতে পারো:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(user.profile.name);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Ripon</div>
+<p class="text-p">কিন্তু যদি <code>profile</code> না থাকে?</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {};
+
+console.log(user.profile.name);</pre></div>
+<p class="text-p">এতে error হবে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">52</span> Optional Chaining দিয়ে</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {};
+
+console.log(user.profile?.name);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">undefined</div>
+<p class="text-p"><code>?.</code> বলে:</p>
+<div class="memory-box">যদি এই property/object null বা undefined হয়, তাহলে error না দিয়ে undefined return করো।</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">53</span> Optional Chaining Example</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {
+    profile: {
+        address: {
+            city: &quot;Dhaka&quot;
+        }
+    }
+};
+
+console.log(user.profile?.address?.city);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Dhaka</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {};
+
+console.log(user.profile?.address?.city);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">undefined</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">54</span> Optional Chaining with Functions</div>
+<p class="text-p"><code>?.()</code> দিয়ে optional function call করা যায়।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {
+    greet() {
+        console.log(&quot;Hello!&quot;);
+    }
+};
+
+user.greet?.();</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Hello!</div>
+<p class="text-p">যদি function না থাকে:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {};
+
+user.greet?.();</pre></div>
+<p class="text-p">তাহলে error না দিয়ে call skip করতে পারে।</p>
+    </div>
+
+
+    <div class="part-banner">Part 06 — Unary, Increment, Ternary &amp; Bitwise (55 – 75)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">55</span> Increment Operator <code>++</code></div>
+<p class="text-p">Variable-এর value 1 বাড়াতে:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let count = 5;
+
+count++;
+
+console.log(count);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">6</div>
+<p class="text-p">Equivalent:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>count = count + 1;</pre></div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">56</span> Decrement Operator <code>--</code></div>
+<p class="text-p">Value 1 কমাতে:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let count = 5;
+
+count--;
+
+console.log(count);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">4</div>
+<p class="text-p">Equivalent:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>count = count - 1;</pre></div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">57</span> Prefix vs Postfix</div>
+<p class="text-p">এটা একটু tricky।</p>
+<span class="tag-label cyan">Postfix</span>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let x = 5;
+
+console.log(x++);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">5</div>
+<p class="text-p">কিন্তু পরে:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(x);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">6</div>
+<span class="tag-label cyan">Prefix</span>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let x = 5;
+
+console.log(++x);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">6</div>
+<span class="tag-label cyan">Difference</span>
+<div class="output-box">x++ → আগে old value use, পরে increment
+
+++x → আগে increment, পরে new value use</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">58</span> Prefix/ Postfix Example</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let a = 10;
+
+let b = a++;
+
+console.log(a);
+console.log(b);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">11
+10</div>
+<p class="text-p">কারণ <code>a++</code> প্রথমে <code>10</code> return করেছে, তারপর <code>a</code> হয়েছে <code>11</code>।</p>
+<p class="text-p">এখন:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>let a = 10;
+
+let b = ++a;
+
+console.log(a);
+console.log(b);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">11
+11</div>
+<p class="text-p">কারণ <code>++a</code> আগে increment করেছে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">59</span> Unary Operators</div>
+<p class="text-p">যে operator একটি operand-এর উপর কাজ করে তাকে unary operator বলা হয়।</p>
+<p class="text-p">Examples:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>typeof value</pre></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>!value</pre></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>++value</pre></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>--value</pre></div>
+<p class="text-p">এখানে এক operand নিয়ে operation হচ্ছে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">60</span> Unary Plus <code>+</code></div>
+<p class="text-p">String number-কে number-এ convert করার জন্য unary <code>+</code> ব্যবহার করা যায়।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const value = &quot;100&quot;;
+
+console.log(+value);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">100</div>
+<p class="text-p">Type:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(typeof +value);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">number</div>
+<p class="text-p">তবে beginner হিসেবে explicit:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>Number(value)</pre></div>
+<p class="text-p">অনেক সময় বেশি readable।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">61</span> Unary Minus <code>-</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const value = &quot;10&quot;;
+
+console.log(-value);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">-10</div>
+<p class="text-p">এখানে string <code>&quot;10&quot;</code> numeric conversion-এর মধ্য দিয়ে গেছে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">62</span> Ternary Operator <code>? :</code></div>
+<p class="text-p">Ternary operator হলো ছোট <code>if/else</code> condition লেখার concise way।</p>
+<p class="text-p">Syntax:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>condition ? valueIfTrue : valueIfFalse</pre></div>
+<p class="text-p">Example:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const age = 20;
+
+const result = age &gt;= 18 ? &quot;Adult&quot; : &quot;Minor&quot;;
+
+console.log(result);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Adult</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">63</span> Ternary Operator Breakdown</div>
+<p class="text-p">এই code:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const result = age &gt;= 18 ? &quot;Adult&quot; : &quot;Minor&quot;;</pre></div>
+<p class="text-p">মানে:</p>
+<div class="ascii-tree-container">যদি age &gt;= 18
+      ↓
+    Adult
+নাহলে
+      ↓
+    Minor</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">64</span> Real-Life Ternary Example</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const isLoggedIn = true;
+
+const message = isLoggedIn
+    ? &quot;Welcome back!&quot;
+    : &quot;Please login&quot;;
+
+console.log(message);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Welcome back!</div>
+<span class="tag-label cyan">কখন ব্যবহার করবে?</span>
+<p class="text-p">Simple condition-এর জন্য।</p>
+<p class="text-p">খুব complex condition হলে normal <code>if/else</code> বেশি readable।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">65</span> Bitwise Operators</div>
+<p class="text-p">এগুলো comparatively advanced।</p>
+<p class="text-p">Bitwise operators number-এর binary representation-এর bit নিয়ে কাজ করে।</p>
+<p class="text-p">প্রধান operators:</p>
+<div class="output-box">&amp;
+|
+^
+~
+&lt;&lt;
+&gt;&gt;
+&gt;&gt;&gt;</div>
+<p class="text-p">এগুলো web development-এর daily beginner work-এ খুব বেশি লাগে না, কিন্তু JavaScript language-এর অংশ হিসেবে জানা উচিত।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">66</span> Bitwise AND <code>&amp;</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 &amp; 3);</pre></div>
+<p class="text-p">Binary:</p>
+<div class="output-box">5 → 101
+3 → 011</div>
+<p class="text-p">AND:</p>
+<div class="output-box">101
+011
+---
+001</div>
+<p class="text-p"><code>001</code> = <code>1</code></p>
+<p class="text-p">Output:</p>
+<div class="output-box">1</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">67</span> Bitwise OR <code>|</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 | 3);</pre></div>
+<p class="text-p">Binary:</p>
+<div class="output-box">101
+011
+---
+111</div>
+<p class="text-p"><code>111</code> = <code>7</code></p>
+<p class="text-p">Output:</p>
+<div class="output-box">7</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">68</span> Bitwise XOR <code>^</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 ^ 3);</pre></div>
+<p class="text-p">Binary:</p>
+<div class="output-box">101
+011
+---
+110</div>
+<p class="text-p"><code>110</code> = <code>6</code></p>
+<p class="text-p">Output:</p>
+<div class="output-box">6</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">69</span> Bitwise NOT <code>~</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(~5);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">-6</div>
+<p class="text-p">এটা two&#x27;s complement representation-এর কারণে হয়।</p>
+<p class="text-p">Bitwise concepts low-level programming, flags, certain algorithms ইত্যাদিতে useful হতে পারে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">70</span> Left Shift <code>&lt;&lt;</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(5 &lt;&lt; 1);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">10</div>
+<p class="text-p">Binary:</p>
+<div class="output-box">5 = 101
+
+101 &lt;&lt; 1
+= 1010
+= 10</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">71</span> Right Shift <code>&gt;&gt;</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 &gt;&gt; 1);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">5</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">72</span> Zero-fill Right Shift <code>&gt;&gt;&gt;</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 &gt;&gt;&gt; 1);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">5</div>
+<p class="text-p"><code>&gt;&gt;</code> এবং <code>&gt;&gt;&gt;</code> negative number-এর ক্ষেত্রে গুরুত্বপূর্ণভাবে আলাদা behave করতে পারে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">73</span> <code>typeof</code> Operator</div>
+<p class="text-p">Chapter 2-এ আমরা এটা দেখেছি।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const name = &quot;Ripon&quot;;
+
+console.log(typeof name);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">string</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(typeof 100);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">number</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">74</span> <code>in</code> Operator</div>
+<p class="text-p"><code>in</code> দিয়ে object-এর মধ্যে কোনো property আছে কিনা check করা যায়।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {
+    name: &quot;Ripon&quot;,
+    age: 22
+};
+
+console.log(&quot;name&quot; in user);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(&quot;email&quot; in user);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">75</span> <code>instanceof</code></div>
+<p class="text-p"><code>instanceof</code> দিয়ে কোনো object কোনো constructor/class-এর instance কিনা check করা যায়।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const fruits = [];
+
+console.log(fruits instanceof Array);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">আর:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const date = new Date();
+
+console.log(date instanceof Date);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">OOP এবং prototypes শেখার সময় <code>instanceof</code> আরও পরিষ্কার হবে।</p>
+    </div>
+
+
+    <div class="part-banner">Part 07 — Operator Precedence &amp; Complex Expressions (76 – 83)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">76</span> Operator Precedence</div>
+<p class="text-p">একটি expression-এ একাধিক operator থাকলে কোনটা আগে execute হবে?</p>
+<p class="text-p">এটা নির্ধারণ করে <strong>operator precedence</strong>।</p>
+<p class="text-p">Example:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(10 + 5 * 2);</pre></div>
+<p class="text-p">অনেকে ভাবতে পারে:</p>
+<div class="output-box">10 + 5 = 15
+15 × 2 = 30</div>
+<p class="text-p">কিন্তু output:</p>
+<div class="output-box">20</div>
+<p class="text-p">কারণ multiplication আগে:</p>
+<div class="output-box">5 × 2 = 10
+
+10 + 10 = 20</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">77</span> Parentheses <code>()</code> দিয়ে Priority Control</div>
+<p class="text-p">যদি তুমি addition আগে করতে চাও:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log((10 + 5) * 2);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">30</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">10 + 5 = 15
+15 × 2 = 30</div>
+<span class="tag-label amber">Golden Rule ⭐</span>
+<p class="text-p">যদি precedence নিয়ে confusion হয়, parentheses ব্যবহার করো।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">78</span> Common Precedence Idea</div>
+<p class="text-p">সাধারণভাবে:</p>
+<div class="ascii-tree-container">()
+↓
+**
+↓
+*, /, %
+↓
++, -
+↓
+&gt;, &lt;, &gt;=, &lt;=
+↓
+==, ===, !=, !==
+↓
+&amp;&amp;
+↓
+||
+↓
+??
+↓
+? :
+↓
+assignment</div>
+<p class="text-p">এটা পুরো specification-এর সম্পূর্ণ table নয়; বরং practical mental model।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">79</span> A Big Example</div>
+<p class="text-p">এখন অনেক operator একসাথে:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const price = 500;
+const quantity = 3;
+const discount = 100;
+
+const total = price * quantity - discount;
+
+console.log(total);</pre></div>
+<p class="text-p">Calculation:</p>
+<div class="output-box">500 × 3 = 1500
+1500 - 100 = 1400</div>
+<p class="text-p">Output:</p>
+<div class="output-box">1400</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">80</span> Real-World Shopping Example</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const productPrice = 1200;
+const quantity = 2;
+const discount = 300;
+const deliveryCharge = 100;
+
+const subtotal = productPrice * quantity;
+const total = subtotal - discount + deliveryCharge;
+
+console.log(&quot;Subtotal:&quot;, subtotal);
+console.log(&quot;Total:&quot;, total);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Subtotal: 2400
+Total: 2200</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">81</span> Logical + Comparison Example</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const age = 22;
+const hasId = true;
+
+const canEnter = age &gt;= 18 &amp;&amp; hasId;
+
+console.log(canEnter);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">age &gt;= 18
+    ↓
+  true
+
+hasId
+  ↓
+ true
+
+true &amp;&amp; true
+    ↓
+  true</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">82</span> <code>||</code> + <code>??</code> Example</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const username = &quot;&quot;;
+
+console.log(username || &quot;Guest&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Guest</div>
+<p class="text-p">কারণ empty string falsy।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const username = &quot;&quot;;
+
+console.log(username ?? &quot;Guest&quot;);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box"></div>
+<p class="text-p">এখানে empty string <code>null</code> বা <code>undefined</code> নয়, তাই fallback হয়নি।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">83</span> Optional Chaining + Nullish Coalescing</div>
+<p class="text-p">এই combination real-world frontend development-এ অনেক useful।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>const user = {};
+
+const city = user.profile?.address?.city ?? &quot;Unknown&quot;;
+
+console.log(city);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Unknown</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">user.profile
+      ↓
+undefined
+      ↓
+?. prevents error
+      ↓
+undefined
+      ↓
+?? &quot;Unknown&quot;
+      ↓
+&quot;Unknown&quot;</div>
+    </div>
+
+
+    <div class="part-banner">Part 08 — Common Pitfalls &amp; Financial Precision (84 – 88)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">84</span> Common Mistake — <code>=</code> vs <code>===</code></div>
+<p class="text-p">❌ ভুল ধারণা:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>if (age = 18)</pre></div>
+<p class="text-p">এখানে <code>=</code> assignment operator।</p>
+<p class="text-p">Comparison করতে সাধারণত:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>if (age === 18)</pre></div>
+<p class="text-p">ব্যবহার করবে।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">85</span> Common Mistake — <code>==</code> vs <code>===</code></div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(0 == false);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">true</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(0 === false);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">false</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">0     → number
+false → boolean</div>
+<p class="text-p">Modern JS-এ strict equality সাধারণত safer/predictable choice।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">86</span> Common Mistake — String + Number</div>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(&quot;Price: &quot; + 100 + 50);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Price: 10050</div>
+<p class="text-p">কারণ প্রথম <code>+</code>-এর পর String concatenation শুরু হয়েছে।</p>
+<p class="text-p">যদি 100 + 50 করতে চাও:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(&quot;Price: &quot; + (100 + 50));</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">Price: 150</div>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">87</span> Common Mistake — Floating Point</div>
+<p class="text-p">JavaScript-এর floating-point arithmetic-এ কিছু surprising result হতে পারে।</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(0.1 + 0.2);</pre></div>
+<p class="text-p">Output:</p>
+<div class="output-box">0.30000000000000004</div>
+<p class="text-p">কেন?</p>
+<p class="text-p">কারণ computer সাধারণত decimal fraction-কে binary floating-point representation-এ store করে, এবং কিছু decimal value exactভাবে represent করা যায় না।</p>
+<p class="text-p">এটা JavaScript-এর একার সমস্যা নয়; IEEE 754 floating-point systems-এর সাধারণ limitation।</p>
+    </div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">88</span> Financial Calculation-এর ক্ষেত্রে সতর্কতা</div>
+<p class="text-p">যেমন:</p>
+<div class="code-box"><div class="code-top"><span>JavaScript</span><span>Example</span></div><pre>console.log(0.1 + 0.2);</pre></div>
+<p class="text-p">Expected:</p>
+<div class="output-box">0.3</div>
+<p class="text-p">কিন্তু actual:</p>
+<div class="output-box">0.30000000000000004</div>
+<p class="text-p">Real-world financial systems-এ floating-point-এর বদলে integer smallest unit (যেমন cents/paisa) বা appropriate decimal/money handling ব্যবহার করা হয়।</p>
+<p class="text-p">এটা advanced application development-এ খুব important।</p>
+    </div>
+
+
+    <div class="part-banner">Part 09 — Operator Cheat Sheet, Practice &amp; Project (89 + Practice)</div>
+
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">89</span> Chapter 3 — Operator Cheat Sheet</div>
+<span class="tag-label cyan">Arithmetic</span>
+<div class="output-box">+    -    *    /    %    **</div>
+<span class="tag-label cyan">Assignment</span>
+<div class="output-box">=    +=    -=    *=    /=    %=    **=</div>
+<span class="tag-label cyan">Comparison</span>
+<div class="output-box">&gt;    &lt;    &gt;=    &lt;=</div>
+<span class="tag-label cyan">Equality</span>
+<div class="output-box">==   ===   !=   !==</div>
+<span class="tag-label cyan">Logical</span>
+<div class="output-box">&amp;&amp;   ||   !</div>
+<span class="tag-label cyan">Increment/Decrement</span>
+<div class="output-box">++   --</div>
+<span class="tag-label cyan">Conditional</span>
+<div class="output-box">? :</div>
+<span class="tag-label cyan">Modern Operators</span>
+<div class="output-box">??
+?.</div>
+<span class="tag-label cyan">Other</span>
+<div class="output-box">typeof
+in
+instanceof</div>
+<span class="tag-label cyan">Bitwise</span>
+<div class="output-box">&amp;
+|
+^
+~
+&lt;&lt;
+&gt;&gt;
+&gt;&gt;&gt;</div>
+    </div>
+
+        <!-- QUICK REVISION -->
+    <div class="study-card" style="border-left: 4px solid var(--amber-accent); background: #fffbeb;">
+      <h3 style="font-size: 13.5px; margin-bottom: 8px; color: #92400e;">🧠 Chapter 3 — Quick Revision</h3>
+      <p class="text-p"><strong>এক লাইনে মনে রাখো:</strong></p>
+      <div class="memory-box">
+        <strong>মৌলিক সারমর্ম:</strong> Operator data-এর উপর operation করে, আর expression সেই operation-এর মাধ্যমে একটি value produce করতে পারে।
+      </div>
+      <div class="code-box">
+        <div class="code-top"><span>Expression Structure</span><span>10 + 20</span></div>
+        <pre>10 + 20</pre>
+      </div>
+      <div class="ascii-tree-container">এখানে:
+10  → Operand
++   → Operator
+20  → Operand
+30  → Result</div>
+      <p class="text-p" style="font-weight: 700; margin-top: 8px;">Operators-এর বড় পিকচার (Mental Architecture):</p>
+      <div class="ascii-tree-container">                    Operators
+                        │
+       ┌────────────────┼────────────────┐
+       │                │                │
+   Arithmetic       Comparison       Logical
+       │                │                │
+   + - * / % **     &gt; &lt; === !==     &amp;&amp; || !
+       │                │                │
+       └────────────────┼────────────────┘
+                        │
+                Assignment
+                        │
+              = += -= *= /= %=
+                        │
+                  Modern JS
+                        │
+                ??   ?.   ?:</div>
+    </div>
+
+    <!-- PRACTICE SET -->
+    <div class="study-card">
+      <h3 style="font-size: 13.5px; color: var(--navy-mid); margin-bottom: 8px;">🧪 Chapter 3 — Practice Set</h3>
+      <p class="text-p" style="margin-bottom: 10px;">এগুলো আগে <strong>নিজে output predict করবে</strong>, তারপর browser console-এ run করবে:</p>
+
+      <div class="practice-item">
+        <strong>Practice 1 (Basic Arithmetic &amp; Modulus):</strong>
+        <div class="code-box"><pre>console.log(20 + 10);
+console.log(20 - 10);
+console.log(20 * 10);
+console.log(20 / 10);
+console.log(20 % 3);
+console.log(2 ** 5);</pre></div>
+      </div>
+
+      <div class="practice-item">
+        <strong>Practice 2 (Compound Assignment Flow):</strong>
+        <div class="code-box"><pre>let score = 100;
+
+score += 20;
+score -= 10;
+score *= 2;
+score /= 2;
+
+console.log(score);</pre></div>
+        <p class="text-p">Final output কী হবে?</p>
+      </div>
+
+      <div class="practice-item">
+        <strong>Practice 3 (Comparison &amp; Equality Contrast):</strong>
+        <div class="code-box"><pre>console.log(10 &gt; 5);
+console.log(10 &lt; 5);
+console.log(10 &gt;= 10);
+console.log(10 &lt;= 9);
+console.log(10 == "10");
+console.log(10 === "10");</pre></div>
+        <p class="text-p">প্রতিটির output explain করো।</p>
+      </div>
+
+      <div class="practice-item">
+        <strong>Practice 4 (Logical Truth Tables):</strong>
+        <div class="code-box"><pre>console.log(true &amp;&amp; false);
+console.log(true || false);
+console.log(!true);
+console.log(!false);</pre></div>
+      </div>
+
+      <div class="practice-item">
+        <strong>Practice 5 (String vs Number Arithmetic Coercion):</strong>
+        <div class="code-box"><pre>console.log("5" + 2);
+console.log("5" - 2);
+console.log("5" * 2);
+console.log("5" / 2);</pre></div>
+        <p class="text-p"><strong>কেন প্রথমটার behavior অন্যগুলোর থেকে আলাদা—নিজে explain করার চেষ্টা করো।</strong></p>
+      </div>
+
+      <div class="practice-item">
+        <strong>Practice 6 (Ternary Operator):</strong>
+        <div class="code-box"><pre>const age = 17;
+const result = age &gt;= 18 ? "Adult" : "Minor";
+console.log(result);</pre></div>
+      </div>
+
+      <div class="practice-item">
+        <strong>Practice 7 (Optional Chaining `?.`):</strong>
+        <div class="code-box"><pre>const user = {
+  profile: {
+    name: "Ripon"
+  }
+};
+
+console.log(user.profile?.name);
+console.log(user.address?.city);</pre></div>
+      </div>
+
+      <div class="practice-item">
+        <strong>Practice 8 — Real Project Logic:</strong>
+        <div class="ascii-tree-container">ধরো:
+Product Price = 1500
+Quantity = 3
+Discount = 500
+Delivery = 100</div>
+        <p class="text-p">JavaScript দিয়ে <strong>Subtotal</strong> ও <strong>Final Total</strong> বের করো।</p>
+      </div>
+    </div>
+
+    <!-- MINI PROJECT -->
+    <div class="study-card" style="background: #f0fdf4; border-left: 4px solid var(--green-accent);">
+      <h3 style="font-size: 13.5px; color: #166534; margin-bottom: 8px;">🎯 Chapter 3 Mini Project — Shopping Cart Calculator</h3>
+      <p class="text-p">নিজে এই logic তৈরি করার চেষ্টা করো:</p>
+      <div class="ascii-tree-container">Cart Calculation Structure:
+Product Price
+Quantity
+Discount
+Delivery Charge
+----------------
+Subtotal   = (Price * Quantity)
+Final Total = Subtotal - Discount + Delivery Charge</div>
+
+      <div class="memory-box" style="margin: 8px 0;">
+        <strong>Example Data:</strong><br>
+        Product Price: <code>800</code> | Quantity: <code>2</code> | Discount: <code>100</code> | Delivery: <code>60</code><br>
+        <strong>Expected:</strong> Subtotal: <code>1600</code> | Final Total: <code>1560</code>
+      </div>
+
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Shopping Cart Calculator Implementation</span></div>
+        <pre><span class="syn-kw">const</span> productPrice = <span class="syn-num">800</span>;
+<span class="syn-kw">const</span> quantity = <span class="syn-num">2</span>;
+<span class="syn-kw">const</span> discount = <span class="syn-num">100</span>;
+<span class="syn-kw">const</span> deliveryCharge = <span class="syn-num">60</span>;
+
+<span class="syn-com">// 1. Subtotal calculation</span>
+<span class="syn-kw">const</span> subtotal = productPrice * quantity;
+
+<span class="syn-com">// 2. Final Total calculation</span>
+<span class="syn-kw">const</span> finalTotal = subtotal - discount + deliveryCharge;
+
+console.log(<span class="syn-str">"Subtotal:"</span>, subtotal);       <span class="syn-com">// 1600</span>
+console.log(<span class="syn-str">"Final Total:"</span>, finalTotal);   <span class="syn-com">// 1560</span></pre>
+      </div>
+      <p class="text-p" style="color: #166534; font-size: 11px;">এখানে ব্যবহৃত হয়েছে: Variables, Arithmetic operators, Assignment এবং <code>console.log()</code></p>
+    </div>
+
+    <!-- MUST KNOW CONCEPTS -->
+    <div class="study-card">
+      <h3 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 6px;">⭐ Chapter 3-এর Must-Know Concepts</h3>
+      <div class="ascii-tree-container">+  -  *  /  %  **
+=  += -= *= /=
+&gt;  &lt;  &gt;= &lt;=
+== === != !==
+&amp;&amp; || !
+++ --
+? :
+??
+?.
+typeof</div>
+      <p class="text-p" style="margin-top: 6px; font-weight: 600; color: #0369a1;">
+        এর মধ্যে <code>===</code>, <code>&amp;&amp;</code>, <code>||</code>, <code>??</code>, <code>?.</code>, <code>%</code>, <code>++/--</code>, ternary এবং <strong>operator precedence</strong> বিশেষভাবে ভালোভাবে practice করবে।
+      </p>
+    </div>
+
+    <!-- NEXT CHAPTER PREVIEW -->
+    <div class="study-card" style="background: #eff6ff; border-left: 4px solid #0284c7;">
+      <h3 style="font-size: 13px; color: #0369a1; margin-bottom: 6px;">📌 পরবর্তী অধ্যায় — Chapter 4 Preview</h3>
+      <h4 style="font-size: 12px; color: var(--navy-mid); margin-bottom: 4px;">Chapter 4 — Control Flow &amp; Decision Making</h4>
+      <p class="text-p">এখানে JavaScript কীভাবে <strong>decision নেয়</strong> সেটা শুরু হবে:</p>
+      <div class="ascii-tree-container">if, else, else if, nested if
+switch, case, default, break, fall-through
+truthy, falsy, logical conditions, ternary</div>
+      <p class="text-p" style="font-size: 11.5px; color: #334155; margin-top: 6px;">
+        এরপর আমরা ধাপে ধাপে <strong>Loops → Functions → Strings → Arrays → Objects → Scope → DOM → Events → Async JavaScript → APIs → OOP → Advanced JavaScript → JavaScript Internals</strong>-এর দিকে এগিয়ে যাব।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 04: Control Flow & Decision Making</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy-dark: #0b2545;
+      --navy-mid: #134074;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-subtle: #f0f9ff;
+      --teal-accent: #0d9488;
+      --green-accent: #059669;
+      --green-light: #ecfdf5;
+      --amber-accent: #d97706;
+      --amber-light: #fefce8;
+      --amber-border: #fef08a;
+      --red-accent: #dc2626;
+      --red-light: #fef2f2;
+      --purple-accent: #7c3aed;
+      --purple-light: #f5f3ff;
+      --text-dark: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #475569;
+      --text-sub: #64748b;
+      --card-bg: #ffffff;
+      --page-bg: #f1f5f9;
+      --border-card: #e2e8f0;
+      --border-subtle: #cbd5e1;
+      --code-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-body);
+      font-size: 12px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .action-bar .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    }
+    .print-btn:hover {
+      background: #0284c7;
+    }
+
+    /* Document Sheet */
+    .doc-page {
+      max-width: 820px;
+      margin: 20px auto;
+      background: var(--card-bg);
+      padding: 32px 36px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-card);
+    }
+
+    /* Header Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #0b2545 0%, #0d3b66 55%, #0284c7 100%);
+      border-radius: 8px;
+      padding: 24px 28px;
+      color: white;
+      margin-bottom: 14px;
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .banner-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #38bdf8;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .banner-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 12px;
+      color: #93c5fd;
+      margin-bottom: 18px;
+      margin-left: 40px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 14px;
+    }
+    .meta-item .meta-label {
+      font-size: 10px;
+      color: #7dd3fc;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .meta-item .meta-val {
+      font-size: 11.5px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .doc-statement {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      padding: 6px 8px;
+      line-height: 1.6;
+      background: #f8fafc;
+      border-left: 3px solid var(--navy-mid);
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Part Bars */
+    .part-banner {
+      background: var(--blue-light);
+      border-left: 4px solid var(--blue-accent);
+      color: #0369a1;
+      padding: 7px 14px;
+      border-radius: 4px;
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 22px 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 13px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.015);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* Section Sub-labels */
+    .tag-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 8px 0 4px 0;
+      display: block;
+    }
+    .tag-label.cyan { color: #0284c7; }
+    .tag-label.green { color: #059669; }
+    .tag-label.amber { color: #d97706; }
+    .tag-label.purple { color: #6366f1; }
+    .tag-label.red { color: #dc2626; }
+
+    p.text-p {
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--text-body);
+    }
+
+    ul.clean-list {
+      margin-left: 18px;
+      margin-bottom: 8px;
+    }
+    ul.clean-list li {
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    /* Definition Alert inside card */
+    .def-box {
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin: 6px 0 8px 0;
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+    .def-box.english {
+      background: var(--blue-subtle);
+      border-left: 3px solid var(--blue-accent);
+      color: #0c4a6e;
+    }
+    .def-box.bangla {
+      background: #faf5ff;
+      border-left: 3px solid #9333ea;
+      color: #581c87;
+    }
+
+    /* Memory / Rule box (Yellow highlight) */
+    .memory-box {
+      background: var(--amber-light);
+      border: 1px solid var(--amber-border);
+      border-left: 4px solid #eab308;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      color: #713f12;
+      margin: 8px 0 6px 0;
+    }
+
+    /* Error / Warning box */
+    .warn-box {
+      background: var(--red-light);
+      border: 1px solid #fecaca;
+      border-left: 4px solid var(--red-accent);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      color: #7f1d1d;
+      margin: 8px 0 6px 0;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 8px 0 10px 0;
+      border: 1px solid var(--border-card);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      text-align: left;
+    }
+    thead th {
+      background: #f8fafc;
+      color: var(--text-dark);
+      font-weight: 700;
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+    tbody tr:nth-child(even) {
+      background: #fbfcfe;
+    }
+    tbody td {
+      padding: 6px 10px;
+      color: var(--text-body);
+    }
+
+    /* Compact Code & Terminal */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      margin: 6px 0 8px 0;
+      overflow: hidden;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 3px 10px;
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    pre {
+      margin: 0;
+      padding: 8px 12px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .output-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-left: 3px solid #64748b;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: #334155;
+      margin: 4px 0 8px 0;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 12px 14px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 11px;
+      line-height: 1.4;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 8px 0;
+    }
+
+    /* Print Setup */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 04: CONTROL FLOW &amp; DECISION MAKING</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">45 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 02 — Control Flow</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Branching, Truthy &amp; Short-Circuit</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc;">
+      <h2 style="font-size: 14px; color: var(--navy-mid); margin-bottom: 6px;">Control Flow &amp; Decision Making — Program কোন পথে চলবে তা নিয়ন্ত্রণ করা</h2>
+      <p class="text-p">JavaScript-এর code সাধারণত <strong>উপরে থেকে নিচে, একটার পর একটা</strong> execute হয়। কিন্তু বাস্তব program-এ সবসময় এমন হয় না। যেমন:</p>
+      <ul class="clean-list">
+        <li>বয়স 18 বা তার বেশি হলে → Account তৈরি করবে</li>
+        <li>Password ভুল হলে → Error দেখাবে</li>
+        <li>User logged in হলে → Dashboard দেখাবে</li>
+        <li>Product stock-এ থাকলে → Buy button দেখাবে</li>
+        <li>শুক্রবার হলে → বিশেষ message দেখাবে</li>
+      </ul>
+      <p class="text-p" style="margin-top: 6px; font-weight: 600; color: #0369a1;">এই ধরনের condition অনুযায়ী program-এর execution path পরিবর্তন করাকে বলা হয় Control Flow।</p>
+    </div>
+
+    <!-- PART 01 -->
+    <div class="part-banner">Part 01 — Core Branching &amp; Conditionals (4.1 – 4.10)</div>
+
+    <!-- 4.1 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.1</span> What is Control Flow?</div>
+      <div class="def-box english">
+        <strong>Definition:</strong> Control Flow = Program-এর code কোন order-এ এবং কোন condition-এর ভিত্তিতে execute হবে।
+      </div>
+      <span class="tag-label cyan">Real-Life Example</span>
+      <p class="text-p">ধরো তুমি একটা shopping website-এ login করছো। সেখানে সিদ্ধান্ত গ্রহণ পদ্ধতি:</p>
+      <div class="ascii-tree-container">Email + Password
+       ↓
+     সঠিক?
+ ┌─────┴─────┐
+Yes          No
+ ↓            ↓
+Dashboard   Error</div>
+      <p class="text-p" style="margin-top: 6px;">JavaScript-এ এই decision নেওয়ার জন্য সবচেয়ে বেশি ব্যবহার হয়:</p>
+      <p class="text-p"><code>if</code>, <code>else</code>, <code>else if</code>, <code>Nested if</code>, <code>switch</code>, <code>case</code>, <code>default</code>, <code>break</code>, <code>continue</code>, <code>Ternary operator</code>, <code>Truthy / Falsy</code>, <code>Logical conditions</code></p>
+    </div>
+
+    <!-- 4.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.2</span> `if` Statement</div>
+      <span class="tag-label cyan">`if` কী?</span>
+      <p class="text-p"><code>if</code> ব্যবহার করে আমরা কোনো condition <strong>true হলে</strong> নির্দিষ্ট code execute করতে পারি।</p>
+      <span class="tag-label purple">Syntax</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript Syntax</span><span>Syntax</span></div>
+        <pre><span class="syn-kw">if</span> (condition) {
+    <span class="syn-com">// code</span>
+}</pre>
+      </div>
+      <span class="tag-label green">Example</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">20</span>;
+
+<span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span>) {
+    console.log(<span class="syn-str">"You are an adult."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">You are an adult.</div>
+      <span class="tag-label cyan">কীভাবে কাজ করছে?</span>
+      <p class="text-p">এখানে <code>age &gt;= 18</code> অর্থাৎ <code>20 &gt;= 18</code> এর ফলাফল <code>true</code>। তাই <code>{ }</code> এর ভিতরের code execute হয়েছে।</p>
+    </div>
+
+    <!-- 4.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.3</span> `if` Condition False হলে</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>False Condition</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">15</span>;
+
+<span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span>) {
+    console.log(<span class="syn-str">"You are an adult."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">কিছুই দেখাবে না</div>
+      <div class="memory-box">
+        <strong>কারণ:</strong> <code>15 &gt;= 18</code> এর ফলাফল <code>false</code>। তাই <code>if</code> block execute হয়নি।
+      </div>
+    </div>
+
+    <!-- 4.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.4</span> `if...else`</div>
+      <p class="text-p">যখন condition <strong>true হলে এক কাজ</strong>, আর <strong>false হলে অন্য কাজ</strong> করতে হবে, তখন <code>if...else</code> ব্যবহার করি।</p>
+      <span class="tag-label purple">Syntax</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript Syntax</span><span>Syntax</span></div>
+        <pre><span class="syn-kw">if</span> (condition) {
+    <span class="syn-com">// true হলে</span>
+} <span class="syn-kw">else</span> {
+    <span class="syn-com">// false হলে</span>
+}</pre>
+      </div>
+      <span class="tag-label green">Example</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Voting Check</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">16</span>;
+
+<span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span>) {
+    console.log(<span class="syn-str">"You can vote."</span>);
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"You cannot vote yet."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">You cannot vote yet.</div>
+
+      <span class="tag-label cyan">Real-Life Example — ATM-এ</span>
+      <div class="ascii-tree-container">Balance >= Withdraw Amount?
+        ↓
+      Yes → টাকা দাও
+      No  → Insufficient Balance</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>ATM Flow</span></div>
+        <pre><span class="syn-kw">let</span> balance = <span class="syn-num">5000</span>;
+<span class="syn-kw">let</span> withdraw = <span class="syn-num">7000</span>;
+
+<span class="syn-kw">if</span> (balance &gt;= withdraw) {
+    console.log(<span class="syn-str">"Please collect your money."</span>);
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"Insufficient balance."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Insufficient balance.</div>
+    </div>
+
+    <!-- 4.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.5</span> `if...else if...else`</div>
+      <p class="text-p">যখন একাধিক condition check করতে হবে তখন <code>else if</code> ব্যবহার করি।</p>
+      <span class="tag-label purple">Syntax</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript Syntax</span><span>Syntax</span></div>
+        <pre><span class="syn-kw">if</span> (condition1) {
+    <span class="syn-com">// code</span>
+} <span class="syn-kw">else if</span> (condition2) {
+    <span class="syn-com">// code</span>
+} <span class="syn-kw">else if</span> (condition3) {
+    <span class="syn-com">// code</span>
+} <span class="syn-kw">else</span> {
+    <span class="syn-com">// code</span>
+}</pre>
+      </div>
+      <span class="tag-label green">Example — Marks</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Grade Calculation</span></div>
+        <pre><span class="syn-kw">let</span> marks = <span class="syn-num">85</span>;
+
+<span class="syn-kw">if</span> (marks &gt;= <span class="syn-num">80</span>) {
+    console.log(<span class="syn-str">"Grade A+"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">70</span>) {
+    console.log(<span class="syn-str">"Grade A"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">60</span>) {
+    console.log(<span class="syn-str">"Grade A-"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">50</span>) {
+    console.log(<span class="syn-str">"Grade B"</span>);
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"Fail"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Grade A+</div>
+      <div class="memory-box">
+        <strong>Important:</strong> JavaScript উপরের condition থেকে check করে। একটা matching condition পাওয়ার পর নিচেরগুলো আর check করে না।
+      </div>
+    </div>
+
+    <!-- 4.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.6</span> Multiple Conditions (`&&` — AND)</div>
+      <p class="text-p">একটা <code>if</code>-এর মধ্যে একাধিক condition দেওয়া যায়। এখানে আমরা Chapter 3-এর logical operators ব্যবহার করব।</p>
+      <div class="def-box english">
+        <strong>`&&` — AND:</strong> দুটো condition-ই true হতে হবে।
+      </div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Logical AND</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">25</span>;
+<span class="syn-kw">let</span> hasNID = <span class="syn-bool">true</span>;
+
+<span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span> &amp;&amp; hasNID) {
+    console.log(<span class="syn-str">"You can open the account."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">You can open the account.</div>
+      <p class="text-p"><strong>কারণ:</strong> <code>age &gt;= 18 → true</code> এবং <code>hasNID → true</code>; সুতরাং <code>true &amp;&amp; true → true</code>।</p>
+    </div>
+
+    <!-- 4.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.7</span> `||` — OR</div>
+      <div class="def-box english">
+        <strong>`||` — OR:</strong> যেকোনো একটি condition true হলেই হবে।
+      </div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Logical OR</span></div>
+        <pre><span class="syn-kw">let</span> hasEmail = <span class="syn-bool">true</span>;
+<span class="syn-kw">let</span> hasPhone = <span class="syn-bool">false</span>;
+
+<span class="syn-kw">if</span> (hasEmail || hasPhone) {
+    console.log(<span class="syn-str">"You can create an account."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">You can create an account.</div>
+      <p class="text-p"><strong>কারণ:</strong> <code>true || false → true</code>।</p>
+    </div>
+
+    <!-- 4.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.8</span> `!` — NOT</div>
+      <p class="text-p"><code>!</code> condition-এর result উল্টে দেয়।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Logical NOT</span></div>
+        <pre><span class="syn-kw">let</span> isLoggedIn = <span class="syn-bool">false</span>;
+
+<span class="syn-kw">if</span> (!isLoggedIn) {
+    console.log(<span class="syn-str">"Please login first."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Please login first.</div>
+      <p class="text-p"><strong>কারণ:</strong> <code>isLoggedIn = false</code>, তাই <code>!false</code> হয়ে যায় <code>true</code>।</p>
+    </div>
+
+    <!-- 4.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.9</span> Nested `if`</div>
+      <p class="text-p">একটি <code>if</code>-এর ভিতরে আরেকটি <code>if</code> থাকলে তাকে <strong>Nested if</strong> বলে।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Nested IF</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">22</span>;
+<span class="syn-kw">let</span> hasNID = <span class="syn-bool">true</span>;
+
+<span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span>) {
+    <span class="syn-kw">if</span> (hasNID) {
+        console.log(<span class="syn-str">"Account can be created."</span>);
+    }
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Account can be created.</div>
+
+      <span class="tag-label cyan">Real-Life Example — Bank account খুলতে</span>
+      <div class="ascii-tree-container">Age >= 18?
+   ↓ Yes
+NID আছে?
+   ↓ Yes
+Account Create</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Bank Account Logic</span></div>
+        <pre><span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span>) {
+    <span class="syn-kw">if</span> (hasNID) {
+        console.log(<span class="syn-str">"Account created."</span>);
+    }
+}</pre>
+      </div>
+    </div>
+
+    <!-- 4.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.10</span> Nested `if...else`</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Nested if...else</span></div>
+        <pre><span class="syn-kw">let</span> isLoggedIn = <span class="syn-bool">true</span>;
+<span class="syn-kw">let</span> isAdmin = <span class="syn-bool">false</span>;
+
+<span class="syn-kw">if</span> (isLoggedIn) {
+    <span class="syn-kw">if</span> (isAdmin) {
+        console.log(<span class="syn-str">"Welcome Admin."</span>);
+    } <span class="syn-kw">else</span> {
+        console.log(<span class="syn-str">"Welcome User."</span>);
+    }
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"Please login."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Welcome User.</div>
+    </div>
+
+    <!-- PART 02 -->
+    <div class="part-banner">Part 02 — Multi-Way Branching &amp; Switch Statement (4.11 – 4.17)</div>
+
+    <!-- 4.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.11</span> `switch` Statement</div>
+      <p class="text-p">যখন একটি variable-এর <strong>একাধিক নির্দিষ্ট value</strong> check করতে হয়, তখন <code>switch</code> অনেক useful।</p>
+      <span class="tag-label purple">Syntax</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript Syntax</span><span>Syntax</span></div>
+        <pre><span class="syn-kw">switch</span> (value) {
+    <span class="syn-kw">case</span> value1:
+        <span class="syn-com">// code</span>
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> value2:
+        <span class="syn-com">// code</span>
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">default</span>:
+        <span class="syn-com">// code</span>
+}</pre>
+      </div>
+      <span class="tag-label green">Example</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Day of Week</span></div>
+        <pre><span class="syn-kw">let</span> day = <span class="syn-num">3</span>;
+
+<span class="syn-kw">switch</span> (day) {
+    <span class="syn-kw">case</span> <span class="syn-num">1</span>:
+        console.log(<span class="syn-str">"Saturday"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-num">2</span>:
+        console.log(<span class="syn-str">"Sunday"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-num">3</span>:
+        console.log(<span class="syn-str">"Monday"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-num">4</span>:
+        console.log(<span class="syn-str">"Tuesday"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">default</span>:
+        console.log(<span class="syn-str">"Invalid day"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Monday</div>
+      <p class="text-p"><strong>কারণ:</strong> <code>day = 3</code> তাই <code>case 3</code> match করেছে।</p>
+    </div>
+
+    <!-- 4.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.12</span> `case`</div>
+      <p class="text-p"><code>switch</code>-এর মধ্যে প্রতিটি possible value-কে <code>case</code> বলা হয়।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Case Structure</span></div>
+        <pre><span class="syn-kw">switch</span> (day) {
+    <span class="syn-kw">case</span> <span class="syn-num">1</span>:
+        console.log(<span class="syn-str">"Saturday"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-num">2</span>:
+        console.log(<span class="syn-str">"Sunday"</span>);
+        <span class="syn-kw">break</span>;
+}</pre>
+      </div>
+      <p class="text-p">এখানে <code>case 1</code> এবং <code>case 2</code> দুটি possible case।</p>
+    </div>
+
+    <!-- 4.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.13</span> `break`</div>
+      <p class="text-p"><code>break</code> ব্যবহার করে <code>switch</code> execution বন্ধ করা হয়।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Break in Action</span></div>
+        <pre><span class="syn-kw">let</span> number = <span class="syn-num">2</span>;
+
+<span class="syn-kw">switch</span> (number) {
+    <span class="syn-kw">case</span> <span class="syn-num">1</span>:
+        console.log(<span class="syn-str">"One"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-num">2</span>:
+        console.log(<span class="syn-str">"Two"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-num">3</span>:
+        console.log(<span class="syn-str">"Three"</span>);
+        <span class="syn-kw">break</span>;
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Two</div>
+      <p class="text-p"><code>case 2</code> match করার পর <code>break;</code> এর কারণে switch শেষ হয়ে যায়।</p>
+    </div>
+
+    <!-- 4.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.14</span> `break` না দিলে কী হয়? (Fall-through)</div>
+      <div class="warn-box">
+        <strong>খুব গুরুত্বপূর্ণ:</strong> <code>break</code> না দিলে নিচের সব case execute হয়ে যায়, একে <strong>Fall-through</strong> বলে!
+      </div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Fall-through Bug</span></div>
+        <pre><span class="syn-kw">let</span> number = <span class="syn-num">2</span>;
+
+<span class="syn-kw">switch</span> (number) {
+    <span class="syn-kw">case</span> <span class="syn-num">1</span>:
+        console.log(<span class="syn-str">"One"</span>);
+    <span class="syn-kw">case</span> <span class="syn-num">2</span>:
+        console.log(<span class="syn-str">"Two"</span>);
+    <span class="syn-kw">case</span> <span class="syn-num">3</span>:
+        console.log(<span class="syn-str">"Three"</span>);
+    <span class="syn-kw">default</span>:
+        console.log(<span class="syn-str">"Other"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Two<br>Three<br>Other</div>
+      <p class="text-p"><strong>ব্যাখ্যা:</strong> অর্থাৎ <code>case 2</code> match করার পর <code>break</code> না থাকায় পরের case-গুলোর code-ও execute করেছে।</p>
+    </div>
+
+    <!-- 4.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.15</span> Intentional Fall-through</div>
+      <p class="text-p">কখনো কখনো আমরা ইচ্ছা করেই একাধিক case একই code-এর জন্য ব্যবহার করি।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Grouped Cases</span></div>
+        <pre><span class="syn-kw">let</span> day = <span class="syn-str">"Saturday"</span>;
+
+<span class="syn-kw">switch</span> (day) {
+    <span class="syn-kw">case</span> <span class="syn-str">"Saturday"</span>:
+    <span class="syn-kw">case</span> <span class="syn-str">"Sunday"</span>:
+        console.log(<span class="syn-str">"Weekend"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">default</span>:
+        console.log(<span class="syn-str">"Working day"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Weekend</div>
+      <p class="text-p">এখানে Saturday এবং Sunday দুটোতেই একই output প্রদর্শন করছে।</p>
+    </div>
+
+    <!-- 4.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.16</span> `default`</div>
+      <p class="text-p">কোনো <code>case</code> match না করলে <code>default</code> execute হয়।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Default Case</span></div>
+        <pre><span class="syn-kw">let</span> day = <span class="syn-num">10</span>;
+
+<span class="syn-kw">switch</span> (day) {
+    <span class="syn-kw">case</span> <span class="syn-num">1</span>:
+        console.log(<span class="syn-str">"Saturday"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-num">2</span>:
+        console.log(<span class="syn-str">"Sunday"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">default</span>:
+        console.log(<span class="syn-str">"Invalid day"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Invalid day</div>
+
+      <span class="tag-label cyan">Real-Life Example — Payment Method</span>
+      <div class="ascii-tree-container">Payment Method:
+1 → bKash
+2 → Nagad
+3 → Card
+অন্য কিছু → Invalid Payment Method</div>
+    </div>
+
+    <!-- 4.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.17</span> `switch` বনাম `if...else`</div>
+      <p class="text-p">দুটো দিয়েই decision নেওয়া যায়। কিন্তু ব্যবহারের ক্ষেত্র ভিন্ন:</p>
+      <p class="text-p"><strong>`if...else`:</strong> Range বা complex condition-এর জন্য ভালো:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Range Check</span></div>
+        <pre><span class="syn-kw">let</span> marks = <span class="syn-num">75</span>;
+<span class="syn-kw">if</span> (marks &gt;= <span class="syn-num">80</span>) {
+    console.log(<span class="syn-str">"A+"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">70</span>) {
+    console.log(<span class="syn-str">"A"</span>);
+}</pre>
+      </div>
+
+      <p class="text-p"><strong>`switch`:</strong> Specific value-এর জন্য convenient:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Exact Match</span></div>
+        <pre><span class="syn-kw">let</span> role = <span class="syn-str">"admin"</span>;
+<span class="syn-kw">switch</span> (role) {
+    <span class="syn-kw">case</span> <span class="syn-str">"admin"</span>:
+        console.log(<span class="syn-str">"Admin Panel"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-str">"user"</span>:
+        console.log(<span class="syn-str">"User Dashboard"</span>);
+        <span class="syn-kw">break</span>;
+}</pre>
+      </div>
+
+      <span class="tag-label amber">তুলনামূলক চার্ট</span>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Situation</th><th>সাধারণত ব্যবহার্য</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Range check</td><td><code>if...else</code></td></tr>
+            <tr><td>Complex condition</td><td><code>if...else</code></td></tr>
+            <tr><td>Exact value match</td><td><code>switch</code></td></tr>
+            <tr><td>অনেকগুলো নির্দিষ্ট option</td><td><code>switch</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PART 03 -->
+    <div class="part-banner">Part 03 — Truthy, Falsy &amp; Modern Short-Circuiting (4.18 – 4.31)</div>
+
+    <!-- 4.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.18</span> Truthy &amp; Falsy</div>
+      <p class="text-p">JavaScript-এর অন্যতম গুরুত্বপূর্ণ concept। <code>if</code> condition-এর মধ্যে JavaScript কোনো value-কে automatically <strong>true বা false হিসেবে evaluate</strong> করে।</p>
+      <div class="ascii-tree-container">Value in Condition
+       ↓
+ ┌─────┴─────┐
+Truthy     Falsy
+(True মত)  (False মত)</div>
+    </div>
+
+    <!-- 4.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.19</span> Falsy Values</div>
+      <p class="text-p">JavaScript-এ প্রধান ৮টি falsy values:</p>
+      <div class="memory-box">
+        <code>false</code>, <code>0</code>, <code>-0</code>, <code>0n</code>, <code>""</code> (empty string), <code>null</code>, <code>undefined</code>, <code>NaN</code>
+      </div>
+      <p class="text-p">এগুলো condition-এর মধ্যে false হিসেবে behave করে।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Falsy Evaluation</span></div>
+        <pre><span class="syn-kw">let</span> username = <span class="syn-str">""</span>;
+
+<span class="syn-kw">if</span> (username) {
+    console.log(<span class="syn-str">"Username exists."</span>);
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"Username is empty."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Username is empty.</div>
+      <p class="text-p"><strong>কারণ:</strong> <code>""</code> একটি falsy value।</p>
+    </div>
+
+    <!-- 4.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.20</span> Truthy Values</div>
+      <p class="text-p">Falsy ছাড়া প্রায় সব value truthy। উদাহরণ: <code>"hello"</code>, <code>42</code>, <code>-10</code>, <code>[]</code>, <code>{}</code>, <code>true</code>।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Truthy Evaluation</span></div>
+        <pre><span class="syn-kw">let</span> username = <span class="syn-str">"Shariar"</span>;
+
+<span class="syn-kw">if</span> (username) {
+    console.log(<span class="syn-str">"Username exists."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Username exists.</div>
+    </div>
+
+    <!-- 4.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.21</span> Empty Array `[]` কি falsy?</div>
+      <div class="memory-box">
+        <strong>উত্তর:</strong> না। এটি <strong>truthy</strong>!
+      </div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Empty Array</span></div>
+        <pre><span class="syn-kw">if</span> ([]) {
+    console.log(<span class="syn-str">"Array is truthy"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Array is truthy</div>
+    </div>
+
+    <!-- 4.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.22</span> Empty Object `{}` কি falsy?</div>
+      <div class="memory-box">
+        <strong>উত্তর:</strong> না। Empty Object-ও <strong>truthy</strong>! এটা beginnerদের জন্য খুব important।
+      </div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Empty Object</span></div>
+        <pre><span class="syn-kw">if</span> ({}) {
+    console.log(<span class="syn-str">"Object is truthy"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Object is truthy</div>
+    </div>
+
+    <!-- 4.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.23</span> Conditional Operator / Ternary Operator</div>
+      <p class="text-p">আগের Chapter-এ আমরা Ternary দেখেছি। এটা <code>if...else</code>-এর ছোট version।</p>
+      <span class="tag-label purple">Syntax</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript Syntax</span><span>Syntax</span></div>
+        <pre>condition ? valueIfTrue : valueIfFalse;</pre>
+      </div>
+      <span class="tag-label green">Example</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Ternary</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">20</span>;
+<span class="syn-kw">let</span> result = age &gt;= <span class="syn-num">18</span> ? <span class="syn-str">"Adult"</span> : <span class="syn-str">"Minor"</span>;
+console.log(result);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Adult</div>
+      <p class="text-p"><strong>Equivalent `if...else`:</strong></p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Equivalent Code</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-num">20</span>;
+<span class="syn-kw">let</span> result;
+<span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span>) {
+    result = <span class="syn-str">"Adult"</span>;
+} <span class="syn-kw">else</span> {
+    result = <span class="syn-str">"Minor"</span>;
+}
+console.log(result);</pre>
+      </div>
+      <p class="text-p">দুটোর output হুবহু একই।</p>
+    </div>
+
+    <!-- 4.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.24</span> Real-Life Ternary Example</div>
+      <p class="text-p">ধরো website-এ login status দেখাতে হবে:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Login Status</span></div>
+        <pre><span class="syn-kw">let</span> isLoggedIn = <span class="syn-bool">true</span>;
+
+<span class="syn-kw">let</span> message = isLoggedIn
+    ? <span class="syn-str">"Welcome back!"</span>
+    : <span class="syn-str">"Please login."</span>;
+
+console.log(message);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Welcome back!</div>
+    </div>
+
+    <!-- 4.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.25</span> Nested Ternary</div>
+      <p class="text-p">Ternary-এর ভিতরে Ternary দেওয়া যায়।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Nested Ternary</span></div>
+        <pre><span class="syn-kw">let</span> marks = <span class="syn-num">85</span>;
+
+<span class="syn-kw">let</span> grade =
+    marks &gt;= <span class="syn-num">80</span> ? <span class="syn-str">"A+"</span>
+    : marks &gt;= <span class="syn-num">70</span> ? <span class="syn-str">"A"</span>
+    : marks &gt;= <span class="syn-num">60</span> ? <span class="syn-str">"A-"</span>
+    : <span class="syn-str">"Fail"</span>;
+
+console.log(grade);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">A+</div>
+      <div class="warn-box">
+        <strong>কিন্তু সাবধান ⚠️:</strong> অনেক বেশি nested ternary code difficult to read করতে পারে। তাই complex logic হলে <code>if...else</code> ব্যবহার করা বেশি readable।
+      </div>
+    </div>
+
+    <!-- 4.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.26</span> Short-Circuit Decision Making</div>
+      <p class="text-p">Chapter 3-এ আমরা short-circuit দেখেছি। এখন control flow-এর সঙ্গে এটি ব্যবহার করি।</p>
+      <span class="tag-label purple">`&&` শর্ট-সার্কিট গার্ড প্যাটার্ন</span>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Short-Circuit Guard</span></div>
+        <pre><span class="syn-kw">let</span> isLoggedIn = <span class="syn-bool">true</span>;
+
+isLoggedIn &amp;&amp; console.log(<span class="syn-str">"Show Dashboard"</span>);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Show Dashboard</div>
+      <p class="text-p">যদি <code>isLoggedIn = false;</code> হতো, তবে কিছু execute হতো না। কারণ <code>false &amp;&amp; anything → false</code>।</p>
+    </div>
+
+    <!-- 4.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.27</span> `||` দিয়ে Default Value</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Default Fallback</span></div>
+        <pre><span class="syn-kw">let</span> username = <span class="syn-str">""</span>;
+
+<span class="syn-kw">let</span> displayName = username || <span class="syn-str">"Guest"</span>;
+
+console.log(displayName);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Guest</div>
+      <p class="text-p"><strong>কারণ:</strong> <code>"" || "Guest"</code> → <code>"Guest"</code>। Website-এ username না থাকলে Guest দেখাবে।</p>
+    </div>
+
+    <!-- 4.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.28</span> `??` Nullish Coalescing</div>
+      <p class="text-p"><code>||</code> এবং <code>??</code> এক জিনিস না। <code>??</code> শুধুমাত্র <code>null</code> অথবা <code>undefined</code> হলে right side value নেয়।</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Nullish Fallback</span></div>
+        <pre><span class="syn-kw">let</span> username = <span class="syn-kw">null</span>;
+<span class="syn-kw">let</span> name = username ?? <span class="syn-str">"Guest"</span>;
+console.log(name); <span class="syn-com">// Guest</span>
+
+<span class="syn-kw">let</span> username2 = <span class="syn-str">""</span>;
+<span class="syn-kw">let</span> name2 = username2 ?? <span class="syn-str">"Guest"</span>;
+console.log(name2); <span class="syn-com">// "" (Empty string সংরক্ষিত থাকবে কারণ এটি null বা undefined নয়)</span></pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Guest<br>"" (খালি স্ট্রিং)</div>
+    </div>
+
+    <!-- 4.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.29</span> `||` বনাম `??`</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Comparison</span></div>
+        <pre><span class="syn-kw">let</span> value = <span class="syn-num">0</span>;
+
+console.log(value || <span class="syn-num">100</span>);
+console.log(value ?? <span class="syn-num">100</span>);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">100<br>0</div>
+      <div class="memory-box">
+        <strong>সহজে মনে রাখবে:</strong><br>
+        • <code>||</code> → falsy (যেমন: 0, "") হলেই fallback ভ্যালু নেয়।<br>
+        • <code>??</code> → শুধুমাত্র null / undefined হলেই fallback ভ্যালু নেয় (0 বা "" বহাল রাখে)।
+      </div>
+    </div>
+
+    <!-- 4.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.30</span> Optional Chaining `?.` দিয়ে Safe Decision</div>
+      <p class="text-p">ধরো <code>let user = {};</code>। এখন <code>console.log(user.profile.name);</code> দিলে TypeError দিয়ে crash করতে পারে কারণ <code>profile</code> নেই।</p>
+      <p class="text-p">Optional chaining দিলে crash না করে <code>undefined</code> রিটার্ন করে:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Optional Chaining</span></div>
+        <pre><span class="syn-kw">let</span> user = {};
+console.log(user.profile?.name);</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">undefined</div>
+      <p class="text-p">এতে program crash না করে নিরাপদে <code>undefined</code> পাওয়া যায়।</p>
+    </div>
+
+    <!-- 4.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.31</span> `if` + Optional Chaining</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Safe Condition</span></div>
+        <pre><span class="syn-kw">let</span> user = {
+    profile: {
+        name: <span class="syn-str">"Shariar"</span>
+    }
+};
+
+<span class="syn-kw">if</span> (user.profile?.name) {
+    console.log(<span class="syn-str">"Name:"</span>, user.profile.name);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Name: Shariar</div>
+    </div>
+
+    <!-- PART 04 -->
+    <div class="part-banner">Part 04 — Real-World Business Logic &amp; Systems (4.32 – 4.37)</div>
+
+    <!-- 4.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.32</span> Multiple Conditions Example — Login System</div>
+      <p class="text-p">এবার একটা real-world login system দেখি:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Auth Verification</span></div>
+        <pre><span class="syn-kw">let</span> email = <span class="syn-str">"user@gmail.com"</span>;
+<span class="syn-kw">let</span> password = <span class="syn-str">"123456"</span>;
+<span class="syn-kw">let</span> isVerified = <span class="syn-bool">true</span>;
+
+<span class="syn-kw">if</span> (
+    email === <span class="syn-str">"user@gmail.com"</span> &amp;&amp;
+    password === <span class="syn-str">"123456"</span> &amp;&amp;
+    isVerified
+) {
+    console.log(<span class="syn-str">"Login successful."</span>);
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"Invalid login information."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Login successful.</div>
+      <p class="text-p"><strong>এখানে ৩টি condition:</strong> <code>email === "user@gmail.com"</code>, <code>password === "123456"</code>, এবং <code>isVerified</code>। সবকটি true হওয়ায় <code>true &amp;&amp; true &amp;&amp; true → true</code>।</p>
+    </div>
+
+    <!-- 4.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.33</span> E-commerce Example</div>
+      <p class="text-p">ধরো একটি পণ্য ক্রয়ের লজিক:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Purchase Decision</span></div>
+        <pre><span class="syn-kw">let</span> price = <span class="syn-num">1500</span>;
+<span class="syn-kw">let</span> stock = <span class="syn-num">5</span>;
+<span class="syn-kw">let</span> isLoggedIn = <span class="syn-bool">true</span>;
+
+<span class="syn-kw">if</span> (isLoggedIn &amp;&amp; stock &gt; <span class="syn-num">0</span>) {
+    console.log(<span class="syn-str">"You can buy this product."</span>);
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"You cannot buy this product."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">You can buy this product.</div>
+    </div>
+
+    <!-- 4.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.34</span> Discount System</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Tiered Discount</span></div>
+        <pre><span class="syn-kw">let</span> totalAmount = <span class="syn-num">6000</span>;
+
+<span class="syn-kw">if</span> (totalAmount &gt;= <span class="syn-num">10000</span>) {
+    console.log(<span class="syn-str">"20% discount"</span>);
+} <span class="syn-kw">else if</span> (totalAmount &gt;= <span class="syn-num">5000</span>) {
+    console.log(<span class="syn-str">"10% discount"</span>);
+} <span class="syn-kw">else if</span> (totalAmount &gt;= <span class="syn-num">2000</span>) {
+    console.log(<span class="syn-str">"5% discount"</span>);
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"No discount"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">10% discount</div>
+      <span class="tag-label cyan">Real-Life Flow</span>
+      <div class="ascii-tree-container">৳10,000+ → 20%
+৳5,000+  → 10%
+৳2,000+  → 5%
+এর কম     → No discount</div>
+    </div>
+
+    <!-- 4.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.35</span> Grading System</div>
+      <p class="text-p">এটা নিজে খুব ভালোভাবে practice করবে। পুরো গ্রেডিং ল্যাডার:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Grade Ladder</span></div>
+        <pre><span class="syn-kw">let</span> marks = <span class="syn-num">76</span>;
+
+<span class="syn-kw">if</span> (marks &gt;= <span class="syn-num">80</span>) {
+    console.log(<span class="syn-str">"A+"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">70</span>) {
+    console.log(<span class="syn-str">"A"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">60</span>) {
+    console.log(<span class="syn-str">"A-"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">50</span>) {
+    console.log(<span class="syn-str">"B"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">40</span>) {
+    console.log(<span class="syn-str">"C"</span>);
+} <span class="syn-kw">else if</span> (marks &gt;= <span class="syn-num">33</span>) {
+    console.log(<span class="syn-str">"D"</span>);
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"F"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">A</div>
+    </div>
+
+    <!-- 4.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.36</span> Login + Role Based Access (RBAC)</div>
+      <p class="text-p">এটা real-world web development-এ খুব common:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>RBAC Logic</span></div>
+        <pre><span class="syn-kw">let</span> isLoggedIn = <span class="syn-bool">true</span>;
+<span class="syn-kw">let</span> role = <span class="syn-str">"admin"</span>;
+
+<span class="syn-kw">if</span> (isLoggedIn) {
+    <span class="syn-kw">if</span> (role === <span class="syn-str">"admin"</span>) {
+        console.log(<span class="syn-str">"Welcome to Admin Dashboard."</span>);
+    } <span class="syn-kw">else if</span> (role === <span class="syn-str">"teacher"</span>) {
+        console.log(<span class="syn-str">"Welcome to Teacher Dashboard."</span>);
+    } <span class="syn-kw">else</span> {
+        console.log(<span class="syn-str">"Welcome to User Dashboard."</span>);
+    }
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"Please login first."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Welcome to Admin Dashboard.</div>
+      <p class="text-p" style="color: #64748b;">এই ধরনের logic পরে React, Node.js, Express, authentication system ইত্যাদিতে অনেক কাজে লাগবে।</p>
+    </div>
+
+    <!-- 4.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.37</span> `switch` দিয়ে Role System</div>
+      <p class="text-p">একই কাজ <code>switch</code> দিয়েও পরিষ্কারভাবে করা যায়:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Switch RBAC</span></div>
+        <pre><span class="syn-kw">let</span> role = <span class="syn-str">"teacher"</span>;
+
+<span class="syn-kw">switch</span> (role) {
+    <span class="syn-kw">case</span> <span class="syn-str">"admin"</span>:
+        console.log(<span class="syn-str">"Admin Dashboard"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-str">"teacher"</span>:
+        console.log(<span class="syn-str">"Teacher Dashboard"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">case</span> <span class="syn-str">"student"</span>:
+        console.log(<span class="syn-str">"Student Dashboard"</span>);
+        <span class="syn-kw">break</span>;
+    <span class="syn-kw">default</span>:
+        console.log(<span class="syn-str">"Unknown Role"</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Teacher Dashboard</div>
+    </div>
+
+    <!-- PART 05 -->
+    <div class="part-banner">Part 05 — Common Traps, Syntax Gotchas &amp; Best Practices (4.38 – 4.42)</div>
+
+    <!-- 4.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.38</span> Important Difference: `==` vs `===`</div>
+      <p class="text-p">Control flow-এ এটি অনেক important:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Loose Equality Trap</span></div>
+        <pre><span class="syn-kw">let</span> age = <span class="syn-str">"18"</span>;
+
+<span class="syn-kw">if</span> (age == <span class="syn-num">18</span>) {
+    console.log(<span class="syn-str">"Matched"</span>); <span class="syn-com">// Type coercion হয়, তাই execute করে</span>
+}
+
+<span class="syn-kw">if</span> (age === <span class="syn-num">18</span>) {
+    console.log(<span class="syn-str">"Matched"</span>); <span class="syn-com">// Type ভিন্ন ("18" string vs 18 number), তাই কিছুই দেখাবে না</span>
+}</pre>
+      </div>
+      <div class="memory-box">
+        <strong>Best Practice:</strong> সাধারণত condition-এ সবসময় strict equality <code>===</code> ব্যবহার করা উচিত।
+      </div>
+    </div>
+
+    <!-- 4.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.39</span> Common Mistake: `=` এবং `===`</div>
+      <div class="warn-box">
+        <strong>ভুল (Assignment Bug):</strong><br>
+        <code>if (age = 18) { console.log("Adult"); }</code><br>
+        এখানে <code>=</code> হলো assignment operator। এটি variable-এ 18 assign করে দেয় এবং 18 truthy হওয়ায় সর্বদা true হয়ে যায়!
+      </div>
+      <div class="memory-box">
+        <strong>সঠিক (Comparison):</strong><br>
+        <code>if (age === 18) { console.log("Adult"); }</code>
+      </div>
+    </div>
+
+    <!-- 4.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.40</span> Common Mistake: Semicolon নিয়ে সমস্যা</div>
+      <div class="warn-box">
+        <strong>ভুল Logic:</strong><br>
+        <code>if (age &gt;= 18); { console.log("Adult"); }</code><br>
+        এখানে <code>;</code> এর কারণে <code>if</code>-এর স্টেটমেন্ট সেখানেই শেষ হয়ে যায় এবং <code>{ }</code> ব্লকটি সাধারণ ব্লক হিসেবে সবসময় রান হয়!
+      </div>
+      <div class="memory-box">
+        <strong>সঠিক:</strong> <code>if (age &gt;= 18) { console.log("Adult"); }</code> (if ব্র্যাকেটের শেষে সেমিকোলন দেওয়া যাবে না)।
+      </div>
+    </div>
+
+    <!-- 4.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.41</span> Curly Braces ব্যবহার করা</div>
+      <p class="text-p">Technically single statement হলে braces ছাড়া লেখা যায়:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Single Statement</span></div>
+        <pre><span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span>)
+    console.log(<span class="syn-str">"Adult"</span>);</pre>
+      </div>
+      <p class="text-p">কিন্তু professional code-এ সবসময় কার্লি ব্রেসেস <code>{ }</code> ব্যবহার করা হয়:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Best Practice</span></div>
+        <pre><span class="syn-kw">if</span> (age &gt;= <span class="syn-num">18</span>) {
+    console.log(<span class="syn-str">"Adult"</span>);
+}</pre>
+      </div>
+      <p class="text-p">এতে code readable এবং maintainable হয়।</p>
+    </div>
+
+    <!-- 4.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.42</span> Control Flow-এর Complete Picture</div>
+      <p class="text-p">এখন পুরো Chapter-এর concept একসাথে:</p>
+      <span class="tag-label cyan">IF - ELSE IF - ELSE FLOW</span>
+      <div class="ascii-tree-container">                  Program
+                     ↓
+                 Condition?
+                /          \
+             true          false
+              ↓              ↓
+            if            else
+              ↓
+       Another condition?
+          /          \
+       true          false
+        ↓              ↓
+    else if          else</div>
+
+      <span class="tag-label purple">SWITCH - CASE FLOW</span>
+      <div class="ascii-tree-container">             switch
+                ↓
+       ┌────────┼────────┐
+     case 1   case 2   case 3
+       ↓        ↓        ↓
+      break    break    break
+                ↓
+             default</div>
+    </div>
+
+    <!-- PART 06 -->
+    <div class="part-banner">Part 06 — Mini-Projects, Cheat Sheet &amp; Practice (4.43 – 4.45 + Q&amp;A)</div>
+
+    <!-- 4.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.43</span> Real-World Mini Project — ATM Decision System</div>
+      <p class="text-p">এবার সব concept ব্যবহার করে একটি বাস্তবমুখী ATM প্রজেক্টের লজিক:</p>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>ATM Engine</span></div>
+        <pre><span class="syn-kw">let</span> balance = <span class="syn-num">10000</span>;
+<span class="syn-kw">let</span> withdrawAmount = <span class="syn-num">3000</span>;
+<span class="syn-kw">let</span> pinCorrect = <span class="syn-bool">true</span>;
+
+<span class="syn-kw">if</span> (pinCorrect) {
+    <span class="syn-kw">if</span> (withdrawAmount &lt;= balance) {
+        balance -= withdrawAmount;
+        console.log(<span class="syn-str">"Withdrawal successful."</span>);
+        console.log(<span class="syn-str">"Withdrawn:"</span>, withdrawAmount);
+        console.log(<span class="syn-str">"Remaining balance:"</span>, balance);
+    } <span class="syn-kw">else</span> {
+        console.log(<span class="syn-str">"Insufficient balance."</span>);
+    }
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"Incorrect PIN."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Withdrawal successful.<br>Withdrawn: 3000<br>Remaining balance: 7000</div>
+      <p class="text-p"><strong>কী হচ্ছে?</strong> প্রথমে <code>pinCorrect</code> চেক করছে → সঠিক হলে <code>withdrawAmount &lt;= balance</code> চেক করছে → টাকা কেটে নিয়ে অবশিষ্ট ব্যালেন্স <code>10000 - 3000 = 7000</code> আপডেট করছে।</p>
+    </div>
+
+    <!-- 4.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.44</span> Mini Project — Online Shopping Checkout</div>
+      <div class="code-box">
+        <div class="code-top"><span>JavaScript</span><span>Checkout Flow</span></div>
+        <pre><span class="syn-kw">let</span> isLoggedIn = <span class="syn-bool">true</span>;
+<span class="syn-kw">let</span> productInStock = <span class="syn-bool">true</span>;
+<span class="syn-kw">let</span> price = <span class="syn-num">2500</span>;
+<span class="syn-kw">let</span> balance = <span class="syn-num">3000</span>;
+
+<span class="syn-kw">if</span> (isLoggedIn) {
+    <span class="syn-kw">if</span> (productInStock) {
+        <span class="syn-kw">if</span> (balance &gt;= price) {
+            balance -= price;
+            console.log(<span class="syn-str">"Order placed successfully."</span>);
+            console.log(<span class="syn-str">"Remaining balance:"</span>, balance);
+        } <span class="syn-kw">else</span> {
+            console.log(<span class="syn-str">"Insufficient balance."</span>);
+        }
+    } <span class="syn-kw">else</span> {
+        console.log(<span class="syn-str">"Product is out of stock."</span>);
+    }
+} <span class="syn-kw">else</span> {
+    console.log(<span class="syn-str">"Please login first."</span>);
+}</pre>
+      </div>
+      <span class="tag-label amber">Output</span>
+      <div class="output-box">Order placed successfully.<br>Remaining balance: 500</div>
+    </div>
+
+    <!-- 4.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">4.45</span> Chapter 4 — Quick Cheat Sheet</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Concept</th><th>কাজ</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>if</code></td><td>Condition true হলে code চালায়</td></tr>
+            <tr><td><code>else</code></td><td>Condition false হলে code চালায়</td></tr>
+            <tr><td><code>else if</code></td><td>Multiple condition check করে</td></tr>
+            <tr><td><code>Nested if</code></td><td><code>if</code>-এর ভিতরে <code>if</code></td></tr>
+            <tr><td><code>switch</code></td><td>Specific value match করে</td></tr>
+            <tr><td><code>case</code></td><td><code>switch</code>-এর possible value</td></tr>
+            <tr><td><code>break</code></td><td><code>switch</code>/loop থেকে বের হয়</td></tr>
+            <tr><td><code>default</code></td><td>কোনো case match না করলে চলে</td></tr>
+            <tr><td><code>&amp;&amp;</code></td><td>সব condition true হতে হবে</td></tr>
+            <tr><td><code>||</code></td><td>যেকোনো একটি true হলেই হবে</td></tr>
+            <tr><td><code>!</code></td><td>Boolean result উল্টায়</td></tr>
+            <tr><td><code>?:</code></td><td>Short <code>if...else</code> (Ternary)</td></tr>
+            <tr><td><code>??</code></td><td><code>null</code>/<code>undefined</code> হলে fallback</td></tr>
+            <tr><td><code>?.</code></td><td>Safe property access (Optional Chaining)</td></tr>
+            <tr><td><code>Truthy</code></td><td><code>if</code>-এ true হিসেবে behave করে</td></tr>
+            <tr><td><code>Falsy</code></td><td><code>if</code>-এ false হিসেবে behave করে</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MUST REMEMBER -->
+    <div class="study-card" style="border-left: 4px solid var(--amber-accent); background: #fffbeb;">
+      <h3 style="font-size: 13.5px; color: #92400e; margin-bottom: 8px;">🧠 Chapter 4 — Must Remember</h3>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+        <div style="background: white; padding: 6px 10px; border-radius: 4px; border: 1px solid #fde68a;">
+          <strong>1️⃣ `if`:</strong>
+          <pre style="padding: 2px 0; color: #0f172a; font-size: 10px;">if (condition) {
+    // code
+}</pre>
+        </div>
+        <div style="background: white; padding: 6px 10px; border-radius: 4px; border: 1px solid #fde68a;">
+          <strong>2️⃣ `if...else`:</strong>
+          <pre style="padding: 2px 0; color: #0f172a; font-size: 10px;">if (condition) {
+    // true
+} else {
+    // false
+}</pre>
+        </div>
+        <div style="background: white; padding: 6px 10px; border-radius: 4px; border: 1px solid #fde68a;">
+          <strong>3️⃣ `else if`:</strong>
+          <pre style="padding: 2px 0; color: #0f172a; font-size: 10px;">if (c1) { }
+else if (c2) { }
+else { }</pre>
+        </div>
+        <div style="background: white; padding: 6px 10px; border-radius: 4px; border: 1px solid #fde68a;">
+          <strong>4️⃣ `switch`:</strong>
+          <pre style="padding: 2px 0; color: #0f172a; font-size: 10px;">switch (val) {
+  case 1: break;
+  default:
+}</pre>
+        </div>
+        <div style="background: white; padding: 6px 10px; border-radius: 4px; border: 1px solid #fde68a;">
+          <strong>5️⃣ Ternary:</strong>
+          <pre style="padding: 2px 0; color: #0f172a; font-size: 10px;">condition ? trueVal : falseVal;</pre>
+        </div>
+        <div style="background: white; padding: 6px 10px; border-radius: 4px; border: 1px solid #fde68a;">
+          <strong>6️⃣ Truthy/Falsy:</strong>
+          <pre style="padding: 2px 0; color: #0f172a; font-size: 10px;">if (value) { // truthy }</pre>
+        </div>
+        <div style="background: white; padding: 6px 10px; border-radius: 4px; border: 1px solid #fde68a; grid-column: span 2;">
+          <strong>7️⃣ Default value (`??`):</strong>
+          <pre style="padding: 2px 0; color: #0f172a; font-size: 10px;">let name = username ?? "Guest";</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRACTICE QUESTIONS -->
+    <div class="study-card">
+      <h3 style="font-size: 13.5px; color: var(--navy-mid); margin-bottom: 8px;">📝 Chapter 4 — Practice Questions</h3>
+
+      <span class="tag-label cyan">Basic Conceptual Questions</span>
+      <ol style="margin-left: 20px; margin-bottom: 12px; font-size: 12px; line-height: 1.6;">
+        <li><code>if</code> statement কী?</li>
+        <li><code>if</code> এবং <code>else</code>-এর মধ্যে পার্থক্য কী?</li>
+        <li><code>else if</code> কখন ব্যবহার করা হয়?</li>
+        <li><code>switch</code> কী?</li>
+        <li><code>break</code> কেন ব্যবহার করা হয়?</li>
+        <li><code>default</code> কী?</li>
+        <li>Truthy এবং Falsy কী?</li>
+        <li>JavaScript-এর প্রধান falsy values কী কী?</li>
+        <li><code>&amp;&amp;</code> এবং <code>||</code>-এর মধ্যে পার্থক্য কী?</li>
+        <li>Ternary operator কী?</li>
+      </ol>
+
+      <span class="tag-label green">Coding Practice Problems</span>
+
+      <div class="practice-item">
+        <strong>Problem 1 — Even/Odd:</strong>
+        <div class="code-box"><pre>let number = 25;</pre></div>
+        <p class="text-p">Check করো number even নাকি odd।<br><strong>Expected:</strong> <code>Odd</code></p>
+      </div>
+
+      <div class="practice-item">
+        <strong>Problem 2 — Age Checker:</strong>
+        <div class="code-box"><pre>let age = 17;</pre></div>
+        <p class="text-p">Output দেখাও: <code>Adult</code> অথবা <code>Minor</code>।</p>
+      </div>
+
+      <div class="practice-item">
+        <strong>Problem 3 — Grade System:</strong>
+        <div class="code-box"><pre>let marks = 92;</pre></div>
+        <p class="text-p">গ্রেডিং স্কেল অনুযায়ী Grade বের করো।</p>
+      </div>
+
+      <div class="practice-item">
+        <strong>Problem 4 — Login System:</strong>
+        <div class="code-box"><pre>let email = "admin@gmail.com";
+let password = "1234";
+let isVerified = true;</pre></div>
+        <p class="text-p">সব ঠিক থাকলে: <code>Login Successful</code>, না হলে: <code>Login Failed</code>।</p>
+      </div>
+
+      <div class="practice-item">
+        <strong>Problem 5 — Shopping:</strong>
+        <div class="code-box"><pre>let price = 5000;
+let balance = 6000;
+let inStock = true;</pre></div>
+        <p class="text-p">Check করো product কেনা যাবে কি না।</p>
+      </div>
+    </div>
+
+    <!-- WHAT YOU WILL UNDERSTAND -->
+    <div class="study-card" style="background: #f0fdf4; border-left: 4px solid var(--green-accent);">
+      <h3 style="font-size: 13px; color: #166534; margin-bottom: 6px;">🚀 Chapter 4 শেষ করার পর তুমি যা বুঝবে</h3>
+      <p class="text-p">এই Chapter শেষ করলে তুমি JavaScript-এ:</p>
+      <div class="ascii-tree-container" style="background: #14532d; color: #86efac;">Condition
+   ↓
+Decision
+   ↓
+Different Code Path</div>
+      <p class="text-p" style="margin-top: 6px;">এই পুরো concept বুঝে যাবে। এগুলোই পরে বাস্তব application-এর:</p>
+      <ul class="clean-list" style="color: #166534;">
+        <li>Login system</li>
+        <li>Signup validation</li>
+        <li>Admin/User role</li>
+        <li>Shopping cart</li>
+        <li>Payment checking</li>
+        <li>Attendance system</li>
+        <li>Dashboard access</li>
+        <li>Form validation</li>
+        <li>API response handling</li>
+      </ul>
+      <p class="text-p">ইত্যাদির basic decision-making logic তৈরি করবে।</p>
+    </div>
+
+    <!-- NEXT CHAPTER PREVIEW -->
+    <div class="study-card" style="background: #eff6ff; border: 1px solid #bfdbfe;">
+      <h3 style="font-size: 13px; color: #1e40af; margin-bottom: 6px;">📚 Next Chapter: Chapter 5 — Loops &amp; Iteration</h3>
+      <p class="text-p">পরবর্তী অধ্যায়ে আমরা একদম বিস্তারিতভাবে শিখব:</p>
+      <p class="text-p"><code>for</code> loop, <code>while</code> loop, <code>do...while</code>, <code>for...of</code>, <code>for...in</code>, Nested loops, <code>break</code>, <code>continue</code>, Infinite loop, Loop control, Arrays-এর সঙ্গে loop, Objects-এর সঙ্গে loop, Real-life examples, Pattern printing, Practical mini projects।</p>
+      <p class="text-p" style="margin-top: 6px; font-weight: 600; color: #1d4ed8;">এবং প্রতিটি topic হবে Concept → Code → Output → সহজ Bangla explanation → Real-life example এই একই format-এ।</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

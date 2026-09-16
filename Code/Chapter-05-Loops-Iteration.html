@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 05: Loops &amp; Iteration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-dark: #0b2545;
+      --navy-mid: #134074;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-subtle: #f0f9ff;
+      --teal-accent: #0d9488;
+      --green-accent: #059669;
+      --green-light: #ecfdf5;
+      --amber-accent: #d97706;
+      --amber-light: #fefce8;
+      --amber-border: #fef08a;
+      --red-accent: #dc2626;
+      --red-light: #fef2f2;
+      --purple-accent: #7c3aed;
+      --purple-light: #f5f3ff;
+      --text-dark: #0f172a;
+      --text-body: #1e293b;
+      --text-muted: #475569;
+      --text-sub: #64748b;
+      --card-bg: #ffffff;
+      --page-bg: #f1f5f9;
+      --border-card: #e2e8f0;
+      --border-subtle: #cbd5e1;
+      --code-bg: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--page-bg);
+      color: var(--text-body);
+      font-size: 12px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .action-bar .brand-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+    }
+    .print-btn:hover {
+      background: #0284c7;
+    }
+
+    /* Document Sheet */
+    .doc-page {
+      max-width: 820px;
+      margin: 20px auto;
+      background: var(--card-bg);
+      padding: 32px 36px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-card);
+    }
+
+    /* Header Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #0b2545 0%, #0d3b66 55%, #0284c7 100%);
+      border-radius: 8px;
+      padding: 22px 26px;
+      color: white;
+      margin-bottom: 12px;
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 5px;
+    }
+    .banner-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid #38bdf8;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .banner-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 12px;
+      color: #93c5fd;
+      margin-bottom: 16px;
+      margin-left: 40px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 12px;
+    }
+    .meta-item .meta-label {
+      font-size: 10px;
+      color: #7dd3fc;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .meta-item .meta-val {
+      font-size: 11.5px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: var(--blue-light);
+      border-left: 4px solid var(--blue-accent);
+      color: #0369a1;
+      padding: 7px 14px;
+      border-radius: 4px;
+      font-family: 'Plus Jakarta Sans', 'Hind Siliguri', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin: 20px 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.015);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    /* Section Sub-labels */
+    .tag-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 8px 0 4px 0;
+      display: block;
+    }
+    .tag-label.cyan { color: #0284c7; }
+    .tag-label.green { color: #059669; }
+    .tag-label.amber { color: #d97706; }
+    .tag-label.purple { color: #6366f1; }
+    .tag-label.red { color: #dc2626; }
+
+    p.text-p {
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--text-body);
+    }
+
+    ul.clean-list {
+      margin-left: 18px;
+      margin-bottom: 8px;
+    }
+    ul.clean-list li {
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    /* Definition Alert inside card */
+    .def-box {
+      border-radius: 4px;
+      padding: 8px 12px;
+      margin: 6px 0 8px 0;
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+    .def-box.english {
+      background: var(--blue-subtle);
+      border-left: 3px solid var(--blue-accent);
+      color: #0c4a6e;
+    }
+    .def-box.bangla {
+      background: #faf5ff;
+      border-left: 3px solid #9333ea;
+      color: #581c87;
+    }
+
+    /* Memory / Rule box */
+    .memory-box {
+      background: var(--amber-light);
+      border: 1px solid var(--amber-border);
+      border-left: 4px solid #eab308;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      color: #713f12;
+      margin: 8px 0 6px 0;
+    }
+
+    /* Error / Warning box */
+    .warn-box {
+      background: var(--red-light);
+      border: 1px solid #fecaca;
+      border-left: 4px solid var(--red-accent);
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      color: #7f1d1d;
+      margin: 8px 0 6px 0;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 8px 0 10px 0;
+      border: 1px solid var(--border-card);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      text-align: left;
+    }
+    thead th {
+      background: #f8fafc;
+      color: var(--text-dark);
+      font-weight: 700;
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border-card);
+    }
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+    tbody tr:nth-child(even) {
+      background: #fbfcfe;
+    }
+    tbody td {
+      padding: 6px 10px;
+      color: var(--text-body);
+    }
+
+    /* Code & Terminal */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      margin: 6px 0 8px 0;
+      overflow: hidden;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: 'Plus Jakarta Sans', monospace;
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 3px 10px;
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    pre {
+      margin: 0;
+      padding: 8px 12px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #e2e8f0;
+      overflow-x: auto;
+    }
+    code {
+      font-family: 'Fira Code', monospace;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .output-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-left: 3px solid #64748b;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-family: 'Fira Code', monospace;
+      font-size: 11px;
+      color: #334155;
+      margin: 4px 0 8px 0;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 11px;
+      line-height: 1.4;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 6px 0 8px 0;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+
+    /* Page 1 Compact Rules */
+    .master-banner {
+      padding: 14px 20px !important;
+      margin-bottom: 8px !important;
+    }
+    .banner-sub {
+      margin-bottom: 10px !important;
+    }
+    .meta-grid {
+      padding-top: 8px !important;
+      gap: 8px !important;
+    }
+    .meta-item .meta-val {
+      font-size: 11px !important;
+    }
+    .part-banner {
+      margin: 12px 0 8px 0 !important;
+      padding: 5px 10px !important;
+    }
+    .study-card {
+      padding: 9px 13px !important;
+      margin-bottom: 8px !important;
+    }
+    .code-box {
+      margin: 4px 0 !important;
+    }
+    pre {
+      padding: 6px 10px !important;
+      font-size: 10.5px !important;
+      line-height: 1.4 !important;
+    }
+    .ascii-tree-container {
+      padding: 6px 10px !important;
+      margin: 4px 0 !important;
+      font-size: 10.5px !important;
+      line-height: 1.3 !important;
+    }
+    .def-box {
+      padding: 5px 9px !important;
+      margin: 4px 0 !important;
+      font-size: 11px !important;
+    }
+    p.text-p {
+      margin-bottom: 3px !important;
+    }
+    .tag-label {
+      margin: 5px 0 2px 0 !important;
+    }
+    ul.clean-list {
+      margin-bottom: 4px !important;
+    }
+    ul.clean-list li {
+      margin-bottom: 2px !important;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 05: LOOPS &amp; ITERATION</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">52 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 02 — Core Mechanics (1/3)</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Iteration, Iterables &amp; Scope</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 12px 16px; margin-bottom: 12px;">
+      <h2 style="font-size: 13.5px; color: var(--navy-mid); margin-bottom: 6px;">Loops &amp; Iteration — একই কাজ বারবার করার Smart উপায়</h2>
+      <p class="text-p">JavaScript-এ অনেক সময় আমাদের একই কাজ <strong>বারবার</strong> করতে হয়। যেমন:</p>
+      <ul class="clean-list">
+        <li>1 থেকে 100 পর্যন্ত number print করা</li>
+        <li>100 জন student-এর নাম দেখানো</li>
+        <li>একটি shopping cart-এর সব product বের করা</li>
+        <li>database/API থেকে পাওয়া সব data process করা</li>
+        <li>1, 2, 3, 4... এভাবে counting করা</li>
+        <li>কোনো condition পূরণ না হওয়া পর্যন্ত কাজ চালানো</li>
+      </ul>
+      <p class="text-p" style="margin-top: 4px;">প্রতিবার আলাদা করে code লিখলে:</p>
+      <div class="code-box" style="margin: 4px 0 6px 0;">
+        <div class="code-top"><span>JavaScript</span><span>Without Loop (Inefficient)</span></div>
+        <pre><span class="syn-fn">console</span>.log(<span class="syn-num">1</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-num">2</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-num">3</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-num">4</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-num">5</span>);</pre>
+      </div>
+      <p class="text-p" style="margin-top: 4px; font-weight: 600; color: #0369a1;">এভাবে 100 বার লিখতে হবে। 😵 তার পরিবর্তে <strong>Loop</strong> ব্যবহার করি।</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Core 'for' Loop & Numeric Iteration (5.1 – 5.12)</div>
+
+    <!-- 5.1 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.1</span> What is a Loop?</div>
+<div class="def-box bangla"><strong>Loop</strong> হলো এমন একটি programming structure, যার মাধ্যমে কোনো code নির্দিষ্ট condition অনুযায়ী <strong>বারবার execute</strong> করা যায়।</div>
+<span class="tag-label cyan">সহজভাবে</span>
+<div class="ascii-tree-container">একবার code লিখবে
+      ↓
+বারবার execute হবে
+      ↓
+Condition false হলে থামবে</div>
+<span class="tag-label cyan">Real-Life Example</span>
+<p class="text-p">ধরো teacher বললেন:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Teacher:</strong> &quot;Class-এর 50 জন student-এর নাম একে একে বলো।&quot;</div>
+<p class="text-p">তুমি যদি প্রতিটি student-এর জন্য আলাদা instruction দাও, অনেক সময় লাগবে।</p>
+<p class="text-p">Programming-এ:</p>
+<div class="ascii-tree-container">Student 1
+Student 2
+Student 3
+...
+Student 50</div>
+<p class="text-p">এটা loop দিয়ে করা যায়।</p>
+    </div>
+
+    <!-- 5.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.2</span> JavaScript-এর প্রধান Loop</div>
+<p class="text-p">JavaScript-এ গুরুত্বপূর্ণ loopগুলো হলো:</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Loop</th><th>ব্যবহার</th></tr></thead>
+    <tbody>
+      <tr><td><code>for</code></td><td>নির্দিষ্ট সংখ্যক বার কাজ</td></tr><tr><td><code>while</code></td><td>condition true থাকা পর্যন্ত</td></tr><tr><td><code>do...while</code></td><td>অন্তত একবার execute করে</td></tr><tr><td><code>for...of</code></td><td>iterable-এর values নিয়ে কাজ</td></tr><tr><td><code>for...in</code></td><td>object-এর keys/properties নিয়ে কাজ</td></tr><tr><td>Nested loop</td><td>loop-এর ভিতরে loop</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">এছাড়া:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">break</span>
+<span class="syn-kw">continue</span></pre>
+</div>
+<p class="text-p">দিয়ে loop-এর flow control করা যায়।</p>
+    </div>
+
+    <!-- 5.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.3</span> <code>for</code> Loop</div>
+<p class="text-p">সবচেয়ে common loop হলো <code>for</code> loop।</p>
+<span class="tag-label purple">Syntax</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Syntax</span></div>
+  <pre><span class="syn-kw">for</span> (initialization; condition; update) {
+    <span class="syn-com">// code</span>
+}</pre>
+</div>
+<p class="text-p">এখানে তিনটি গুরুত্বপূর্ণ অংশ:</p>
+<div class="ascii-tree-container">initialization
+      ↓
+condition
+      ↓
+code
+      ↓
+update
+      ↓
+condition
+      ↓
+...</div>
+    </div>
+
+    <!-- 5.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.4</span> Basic <code>for</code> Loop</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">5</span>; i++) {
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1
+2
+3
+4
+5</div>
+<p class="text-p">এখন একদম step-by-step দেখি।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Step 1</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Step 1</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">1</span>;</pre>
+</div>
+<p class="text-p"><code>i</code> এর value = <code>1</code></p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Step 2</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Step 2</span></div>
+  <pre>i &lt;= <span class="syn-num">5</span></pre>
+</div>
+<div class="ascii-tree-container">1 &lt;= 5 → true</div>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Step 2</span></div>
+  <pre><span class="syn-fn">console</span>.log(i);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">1</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Step 3</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Step 3</span></div>
+  <pre>i++</pre>
+</div>
+<p class="text-p">তাই:</p>
+<div class="ascii-tree-container">i = 2</div>
+<p class="text-p">আবার condition check।</p>
+<div class="ascii-tree-container">2 &lt;= 5 → true</div>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">2</div>
+<p class="text-p">এভাবে চলতে থাকে।</p>
+<p class="text-p">শেষে:</p>
+<div class="ascii-tree-container">6 &lt;= 5 → false</div>
+<p class="text-p">তখন loop বন্ধ হয়ে যায়।</p>
+    </div>
+
+    <!-- 5.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.5</span> <code>for</code> Loop-এর তিনটি অংশ</div>
+<p class="text-p">এই code:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">5</span>; i++) {
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">1. Initialization</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>1. Initialization</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">1</span></pre>
+</div>
+<p class="text-p">Loop শুরু হওয়ার আগে একবার execute হয়।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">2. Condition</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>2. Condition</span></div>
+  <pre>i &lt;= <span class="syn-num">5</span></pre>
+</div>
+<p class="text-p">প্রতিবার check হয়।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">3. Update</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>3. Update</span></div>
+  <pre>i++</pre>
+</div>
+<p class="text-p">প্রতিবার loop body শেষ হওয়ার পর execute হয়।</p>
+    </div>
+
+    <!-- 5.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.6</span> Reverse Loop</div>
+<p class="text-p">শুধু সামনে নয়, পিছন দিকেও loop চালানো যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">5</span>; i &gt;= <span class="syn-num">1</span>; i--) {
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">5
+4
+3
+2
+1</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>i--</pre>
+</div>
+<p class="text-p">প্রতিবার value 1 করে কমাচ্ছে।</p>
+    </div>
+
+    <!-- 5.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.7</span> Even Numbers</div>
+<p class="text-p">1 থেকে 10 পর্যন্ত even number বের করি।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">10</span>; i++) {
+    <span class="syn-kw">if</span> (i % <span class="syn-num">2</span> === <span class="syn-num">0</span>) {
+        <span class="syn-fn">console</span>.log(i);
+    }
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">2
+4
+6
+8
+10</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>i % <span class="syn-num">2</span> === <span class="syn-num">0</span></pre>
+</div>
+<p class="text-p">মানে number 2 দিয়ে ভাগ করলে remainder <code>0</code>।</p>
+    </div>
+
+    <!-- 5.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.8</span> Odd Numbers</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">10</span>; i++) {
+    <span class="syn-kw">if</span> (i % <span class="syn-num">2</span> !== <span class="syn-num">0</span>) {
+        <span class="syn-fn">console</span>.log(i);
+    }
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1
+3
+5
+7
+9</div>
+    </div>
+
+    <!-- 5.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.9</span> Sum of Numbers</div>
+<p class="text-p">1 থেকে 5 পর্যন্ত সব number-এর যোগফল বের করি।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> sum = <span class="syn-num">0</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">5</span>; i++) {
+    sum = sum + i;
+}
+
+<span class="syn-fn">console</span>.log(sum);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">15</div>
+<p class="text-p">কারণ:</p>
+<div class="output-box">0 + 1 = 1
+1 + 2 = 3
+3 + 3 = 6
+6 + 4 = 10
+10 + 5 = 15</div>
+    </div>
+
+    <!-- 5.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.10</span> <code>sum += i</code></div>
+<p class="text-p">উপরের code আরও short করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> sum = <span class="syn-num">0</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">5</span>; i++) {
+    sum += i;
+}
+
+<span class="syn-fn">console</span>.log(sum);</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="output-box">15</div>
+<p class="text-p">কারণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>sum += i;</pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>sum = sum + i;</pre>
+</div>
+    </div>
+
+    <!-- 5.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.11</span> Multiplication Table</div>
+<p class="text-p">ধরো 5-এর নামতা।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> number = <span class="syn-num">5</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">10</span>; i++) {
+    <span class="syn-fn">console</span>.log(number + <span class="syn-str">&quot; x &quot;</span> + i + <span class="syn-str">&quot; = &quot;</span> + number * i);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">5 x 1 = 5
+5 x 2 = 10
+5 x 3 = 15
+5 x 4 = 20
+5 x 5 = 25
+5 x 6 = 30
+5 x 7 = 35
+5 x 8 = 40
+5 x 9 = 45
+5 x 10 = 50</div>
+    </div>
+
+    <!-- 5.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.12</span> Template Literal দিয়ে আরও সুন্দরভাবে</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> number = <span class="syn-num">5</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">10</span>; i++) {
+    <span class="syn-fn">console</span>.log(`${number} x ${i} = ${number * i}`);
+}</pre>
+</div>
+<p class="text-p">Output একই:</p>
+<div class="ascii-tree-container">5 x 1 = 5
+5 x 2 = 10
+...
+5 x 10 = 50</div>
+<p class="text-p">এটা real-world JavaScript-এ অনেক বেশি readable।</p>
+    </div>
+
+    <div class="part-banner">Part 02 — 'while', 'do...while' & Infinite Loop Traps (5.13 – 5.20)</div>
+
+    <!-- 5.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.13</span> <code>while</code> Loop</div>
+<p class="text-p"><code>while</code> loop ব্যবহার করা হয় যখন:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Teacher:</strong> &quot;Condition true থাকা পর্যন্ত কাজ চালাও।&quot;</div>
+<span class="tag-label purple">Syntax</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Syntax</span></div>
+  <pre><span class="syn-kw">while</span> (condition) {
+    <span class="syn-com">// code</span>
+}</pre>
+</div>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">1</span>;
+
+<span class="syn-kw">while</span> (i &lt;= <span class="syn-num">5</span>) {
+    <span class="syn-fn">console</span>.log(i);
+    i++;
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1
+2
+3
+4
+5</div>
+    </div>
+
+    <!-- 5.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.14</span> <code>while</code> Loop কীভাবে কাজ করে?</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">1</span>;</pre>
+</div>
+<p class="text-p">তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">while</span> (i &lt;= <span class="syn-num">5</span>)</pre>
+</div>
+<p class="text-p">condition check করে।</p>
+<div class="ascii-tree-container">1 &lt;= 5 → true</div>
+<p class="text-p">তারপর <code>1</code> print হয়।</p>
+<p class="text-p">এরপর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>i++;</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="ascii-tree-container">i = 2</div>
+<p class="text-p">আবার condition।</p>
+<p class="text-p">এভাবে:</p>
+<div class="ascii-tree-container">1 → 2 → 3 → 4 → 5</div>
+<p class="text-p">শেষে:</p>
+<div class="ascii-tree-container">6 &lt;= 5 → false</div>
+<p class="text-p">Loop বন্ধ।</p>
+    </div>
+
+    <!-- 5.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.15</span> <code>for</code> বনাম <code>while</code></div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>for</code></h4>
+<p class="text-p">যখন কতবার loop চলবে সেটা মোটামুটি জানা থাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>for</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">10</span>; i++) {
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>while</code></h4>
+<p class="text-p">যখন condition-based repetition বেশি natural:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>while</span></div>
+  <pre><span class="syn-kw">while</span> (userHasNotFinished) {
+    <span class="syn-com">// কাজ</span>
+}</pre>
+</div>
+<p class="text-p">সহজভাবে:</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Situation</th><th>Loop</th></tr></thead>
+    <tbody>
+      <tr><td>নির্দিষ্ট counting</td><td><code>for</code></td></tr><tr><td>Known number of iterations</td><td><code>for</code></td></tr><tr><td>Condition-based</td><td><code>while</code></td></tr><tr><td>Unknown number of iterations</td><td><code>while</code></td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 5.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.16</span> <code>do...while</code> Loop</div>
+<p class="text-p"><code>do...while</code> একটু আলাদা।</p>
+<p class="text-p">এখানে <strong>প্রথমে code execute হবে</strong>, তারপর condition check হবে।</p>
+<span class="tag-label purple">Syntax</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Syntax</span></div>
+  <pre><span class="syn-kw">do</span> {
+    <span class="syn-com">// code</span>
+} <span class="syn-kw">while</span> (condition);</pre>
+</div>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">1</span>;
+
+<span class="syn-kw">do</span> {
+    <span class="syn-fn">console</span>.log(i);
+    i++;
+} <span class="syn-kw">while</span> (i &lt;= <span class="syn-num">5</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1
+2
+3
+4
+5</div>
+    </div>
+
+    <!-- 5.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.17</span> <code>while</code> বনাম <code>do...while</code></div>
+<p class="text-p">এটা খুব important।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>while</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>while</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">10</span>;
+
+<span class="syn-kw">while</span> (i &lt;= <span class="syn-num">5</span>) {
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">কিছুই output হবে না</div>
+<p class="text-p">কারণ প্রথমেই:</p>
+<div class="ascii-tree-container">10 &lt;= 5 → false</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>do...while</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>do...while</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">10</span>;
+
+<span class="syn-kw">do</span> {
+    <span class="syn-fn">console</span>.log(i);
+} <span class="syn-kw">while</span> (i &lt;= <span class="syn-num">5</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">10</div>
+<p class="text-p">কারণ <code>do</code> block প্রথমে একবার execute হয়েছে।</p>
+<span class="tag-label amber">🧠 মনে রাখার নিয়ম</span>
+<div class="ascii-tree-container">while
+→ আগে condition
+→ তারপর code
+
+do...while
+→ আগে code
+→ তারপর condition</div>
+    </div>
+
+    <!-- 5.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.18</span> Real-Life Example — Login Attempt</div>
+<p class="text-p">ধরো user-কে অন্তত একবার login attempt করতে হবে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> attempt = <span class="syn-num">1</span>;
+
+<span class="syn-kw">do</span> {
+    <span class="syn-fn">console</span>.log(`Login attempt: ${attempt}`);
+    attempt++;
+} <span class="syn-kw">while</span> (attempt &lt;= <span class="syn-num">3</span>);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Login attempt: 1
+Login attempt: 2
+Login attempt: 3</div>
+    </div>
+
+    <!-- 5.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.19</span> Infinite Loop</div>
+<p class="text-p">যে loop কখনো শেষ হয় না তাকে <strong>Infinite Loop</strong> বলে।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">1</span>;
+
+<span class="syn-kw">while</span> (i &lt;= <span class="syn-num">5</span>) {
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<p class="text-p">⚠️ এখানে problem হলো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>i++</pre>
+</div>
+<p class="text-p">দেওয়া হয়নি।</p>
+<p class="text-p">তাই <code>i</code> সবসময় <code>1</code> থাকবে।</p>
+<p class="text-p">Condition:</p>
+<div class="ascii-tree-container">1 &lt;= 5</div>
+<p class="text-p">সবসময় true।</p>
+<p class="text-p">ফলে loop চলতেই থাকবে।</p>
+    </div>
+
+    <!-- 5.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.20</span> Infinite <code>for</code> Loop</div>
+<p class="text-p">এটাও সম্ভব:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (;;) {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}</pre>
+</div>
+<p class="text-p">এটি infinite loop।</p>
+<p class="text-p">⚠️ Browser/Node.js-এ এমন code accidentalভাবে চালালে সমস্যা হতে পারে।</p>
+    </div>
+
+    <div class="part-banner">Part 03 — Loop Flow Control: 'break' & 'continue' (5.21 – 5.24)</div>
+
+    <!-- 5.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.21</span> <code>break</code></div>
+<p class="text-p"><code>break</code> ব্যবহার করে loop <strong>সম্পূর্ণভাবে বন্ধ</strong> করা যায়।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">10</span>; i++) {
+
+    <span class="syn-kw">if</span> (i === <span class="syn-num">5</span>) {
+        <span class="syn-kw">break</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1
+2
+3
+4</div>
+<p class="text-p">যখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>i === <span class="syn-num">5</span></pre>
+</div>
+<p class="text-p">তখন:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">break</span>;</pre>
+</div>
+<p class="text-p">loop সম্পূর্ণ stop করে দেয়।</p>
+    </div>
+
+    <!-- 5.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.22</span> Real-Life Example of <code>break</code></div>
+<p class="text-p">ধরো 100 জন student-এর মধ্যে তুমি <code>&quot;Rahim&quot;</code>-কে খুঁজছো।</p>
+<p class="text-p">Rahim পাওয়া গেলে আর search করার দরকার নেই।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> students = [&quot;Karim<span class="syn-str">&quot;, &quot;</span>Sakib<span class="syn-str">&quot;, &quot;</span>Rahim<span class="syn-str">&quot;, &quot;</span>Hasan<span class="syn-str">&quot;, &quot;</span>Nabil<span class="syn-str">&quot;];
+
+for (let i = 0; i &lt; students.length; i++) {
+
+    if (students[i] === &quot;</span>Rahim<span class="syn-str">&quot;) {
+        console.log(&quot;</span>Rahim found!&quot;);
+        <span class="syn-kw">break</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(&quot;Checking:&quot;, students[i]);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Checking: Karim
+Checking: Sakib
+Rahim found!</div>
+<p class="text-p">Rahim পাওয়ার পর loop stop হয়েছে।</p>
+    </div>
+
+    <!-- 5.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.23</span> <code>continue</code></div>
+<p class="text-p"><code>continue</code> loop বন্ধ করে না।</p>
+<p class="text-p">বরং <strong>বর্তমান iteration skip করে next iteration-এ চলে যায়</strong>।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">5</span>; i++) {
+
+    <span class="syn-kw">if</span> (i === <span class="syn-num">3</span>) {
+        <span class="syn-kw">continue</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1
+2
+4
+5</div>
+<p class="text-p"><code>3</code> skip হয়েছে।</p>
+    </div>
+
+    <!-- 5.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.24</span> <code>break</code> বনাম <code>continue</code></div>
+<p class="text-p">এটা অবশ্যই মনে রাখবে।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>break</code></h4>
+<div class="ascii-tree-container">Loop সম্পূর্ণ বন্ধ</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>continue</code></h4>
+<div class="ascii-tree-container">Current iteration skip
+Loop চলতে থাকে</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Keyword</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>break</code></td><td>পুরো loop stop</td></tr><tr><td><code>continue</code></td><td>current iteration skip</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Modern Iterators: 'for...of' & 'for...in' (5.25 – 5.32)</div>
+
+    <!-- 5.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.25</span> <code>for...of</code></div>
+<p class="text-p">এটি modern JavaScript-এর খুব important loop।</p>
+<p class="text-p">এটি iterable-এর <strong>values</strong> নিয়ে কাজ করে।</p>
+<p class="text-p">Array-এর ক্ষেত্রে খুব useful।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> fruit <span class="syn-kw">of</span> fruits) {
+    <span class="syn-fn">console</span>.log(fruit);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Apple
+Banana
+Mango</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>fruit</pre>
+</div>
+<p class="text-p">প্রতিবার একটি value পাচ্ছে।</p>
+<div class="ascii-tree-container">Apple
+↓
+Banana
+↓
+Mango</div>
+    </div>
+
+    <!-- 5.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.26</span> <code>for...of</code> কেন useful?</div>
+<p class="text-p">Traditional <code>for</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; fruits.length; i++) {
+    <span class="syn-fn">console</span>.log(fruits[i]);
+}</pre>
+</div>
+<p class="text-p"><code>for...of</code>:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> fruit <span class="syn-kw">of</span> fruits) {
+    <span class="syn-fn">console</span>.log(fruit);
+}</pre>
+</div>
+<p class="text-p">দ্বিতীয়টা অনেক cleaner।</p>
+    </div>
+
+    <!-- 5.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.27</span> <code>for...of</code> with String</div>
+<p class="text-p">String-ও iterable।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> name = <span class="syn-str">&quot;Shariar&quot;</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> character <span class="syn-kw">of</span> name) {
+    <span class="syn-fn">console</span>.log(character);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">S
+h
+a
+r
+i
+a
+r</div>
+    </div>
+
+    <!-- 5.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.28</span> <code>for...of</code> with Array</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> number <span class="syn-kw">of</span> numbers) {
+    <span class="syn-fn">console</span>.log(number);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">10
+20
+30
+40</div>
+    </div>
+
+    <!-- 5.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.29</span> <code>for...in</code></div>
+<p class="text-p"><code>for...in</code> সাধারণত Object-এর <strong>keys/properties</strong> iterate করতে ব্যবহার করা হয়।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    country: <span class="syn-str">&quot;Bangladesh&quot;</span>
+};
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> key <span class="syn-kw">in</span> user) {
+    <span class="syn-fn">console</span>.log(key);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">name
+age
+country</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>key</pre>
+</div>
+<p class="text-p">হচ্ছে:</p>
+<div class="output-box">name
+age
+country</div>
+    </div>
+
+    <!-- 5.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.30</span> <code>for...in</code> দিয়ে Value পাওয়া</div>
+<p class="text-p">Object-এর value পেতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    country: <span class="syn-str">&quot;Bangladesh&quot;</span>
+};
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> key <span class="syn-kw">in</span> user) {
+    <span class="syn-fn">console</span>.log(key, user[key]);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">name Shariar
+age 23
+country Bangladesh</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>user[key]</pre>
+</div>
+<p class="text-p">খুব important।</p>
+<p class="text-p">যদি:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>key = <span class="syn-str">&quot;name&quot;</span></pre>
+</div>
+<p class="text-p">তাহলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>user[&quot;name&quot;]</pre>
+</div>
+<p class="text-p">→ <code>&quot;Shariar&quot;</code></p>
+    </div>
+
+    <!-- 5.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.31</span> <code>for...in</code> বনাম <code>for...of</code></div>
+<p class="text-p">এটা beginnerদের সবচেয়ে common confusion-এর একটি।</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>for...in</code></h4>
+<p class="text-p">→ <strong>keys</strong></p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>for...in</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> key <span class="syn-kw">in</span> user) {
+    <span class="syn-fn">console</span>.log(key);
+}</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">name
+age</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>for...of</code></h4>
+<p class="text-p">→ <strong>values</strong></p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>for...of</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> fruit <span class="syn-kw">of</span> fruits) {
+    <span class="syn-fn">console</span>.log(fruit);
+}</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">Apple
+Mango</div>
+<span class="tag-label amber">🧠 মনে রাখার নিয়ম</span>
+<div class="ascii-tree-container">IN  → index/key-এর মধ্যে
+OF  → value-এর মধ্যে</div>
+    </div>
+
+    <!-- 5.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.32</span> Array-তে <code>for...in</code> ব্যবহার করা উচিত?</div>
+<p class="text-p">Technically করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Banana<span class="syn-str">&quot;, &quot;</span>Mango&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> index <span class="syn-kw">in</span> fruits) {
+    <span class="syn-fn">console</span>.log(index);
+}</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">0
+1
+2</div>
+<p class="text-p">কিন্তু Array-এর values iterate করার জন্য সাধারণত:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span>...<span class="syn-kw">of</span></pre>
+</div>
+<p class="text-p">বা array methods বেশি appropriate।</p>
+<p class="text-p">এটা পরে <strong>Arrays chapter</strong>-এ বিস্তারিত দেখব।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Nested Loops, Patterns & Real Data Processing (5.33 – 5.43)</div>
+
+    <!-- 5.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.33</span> Nested Loop</div>
+<p class="text-p">একটি loop-এর ভিতরে আরেকটি loop থাকলে তাকে <strong>Nested Loop</strong> বলে।</p>
+<span class="tag-label green">Example</span>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">3</span>; i++) {
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> j = <span class="syn-num">1</span>; j &lt;= <span class="syn-num">3</span>; j++) {
+        <span class="syn-fn">console</span>.log(i, j);
+    }
+
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1 1
+1 2
+1 3
+2 1
+2 2
+2 3
+3 1
+3 2
+3 3</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">কীভাবে কাজ করছে?</h4>
+<p class="text-p">প্রথম outer loop:</p>
+<div class="ascii-tree-container">i = 1</div>
+<p class="text-p">তখন inner loop পুরোটা চলে:</p>
+<div class="ascii-tree-container">j = 1
+j = 2
+j = 3</div>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">i = 2</div>
+<p class="text-p">আবার inner loop পুরোটা চলে।</p>
+    </div>
+
+    <!-- 5.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.34</span> Nested Loop — Real-Life Example</div>
+<p class="text-p">ধরো একটি university-তে:</p>
+<div class="ascii-tree-container">3 Departments
+প্রতিটি Department-এ 3 Students</div>
+<p class="text-p">তাহলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> department = <span class="syn-num">1</span>; department &lt;= <span class="syn-num">3</span>; department++) {
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> student = <span class="syn-num">1</span>; student &lt;= <span class="syn-num">3</span>; student++) {
+        <span class="syn-fn">console</span>.log(
+            <span class="syn-str">`Department ${department}, Student ${student}`</span>
+        );
+    }
+
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Department 1, Student 1
+Department 1, Student 2
+Department 1, Student 3
+Department 2, Student 1
+Department 2, Student 2
+Department 2, Student 3
+Department 3, Student 1
+Department 3, Student 2
+Department 3, Student 3</div>
+    </div>
+
+    <!-- 5.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.35</span> Pattern Printing</div>
+<p class="text-p">Nested loop বুঝতে pattern printing খুব useful।</p>
+<span class="tag-label green">Example</span>
+<div class="ascii-tree-container">*
+**
+***
+****
+*****</div>
+<p class="text-p">Code:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">5</span>; i++) {
+
+    <span class="syn-kw">let</span> pattern = <span class="syn-str">&quot;&quot;</span>;
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> j = <span class="syn-num">1</span>; j &lt;= i; j++) {
+        pattern += <span class="syn-str">&quot;*&quot;</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(pattern);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="ascii-tree-container">*
+**
+***
+****
+*****</div>
+    </div>
+
+    <!-- 5.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.36</span> Reverse Pattern</div>
+<div class="ascii-tree-container">*****
+****
+***
+**
+*</div>
+<p class="text-p">Code:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">5</span>; i &gt;= <span class="syn-num">1</span>; i--) {
+
+    <span class="syn-kw">let</span> pattern = <span class="syn-str">&quot;&quot;</span>;
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> j = <span class="syn-num">1</span>; j &lt;= i; j++) {
+        pattern += <span class="syn-str">&quot;*&quot;</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(pattern);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="ascii-tree-container">*****
+****
+***
+**
+*</div>
+    </div>
+
+    <!-- 5.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.37</span> Loop Through Array</div>
+<p class="text-p">এটা web development-এর জন্য অত্যন্ত important।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> students = [
+    <span class="syn-str">&quot;Shariar&quot;</span>,
+    <span class="syn-str">&quot;Rahim&quot;</span>,
+    <span class="syn-str">&quot;Karim&quot;</span>,
+    <span class="syn-str">&quot;Hasan&quot;</span>
+];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> student <span class="syn-kw">of</span> students) {
+    <span class="syn-fn">console</span>.log(student);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar
+Rahim
+Karim
+Hasan</div>
+<p class="text-p">Real-world application:</p>
+<div class="ascii-tree-container">API
+ ↓
+Students Array
+ ↓
+Loop
+ ↓
+UI-তে Student Cards</div>
+<p class="text-p">React-এ পরে তুমি প্রায় একই ধরনের concept ব্যবহার করবে।</p>
+    </div>
+
+    <!-- 5.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.38</span> Array of Objects</div>
+<p class="text-p">বাস্তব application-এ data সাধারণত এমন হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> students = [
+    {
+        name: <span class="syn-str">&quot;Shariar&quot;</span>,
+        age: <span class="syn-num">23</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Rahim&quot;</span>,
+        age: <span class="syn-num">22</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Karim&quot;</span>,
+        age: <span class="syn-num">24</span>
+    }
+];</pre>
+</div>
+<p class="text-p">Loop:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> student <span class="syn-kw">of</span> students) {
+    <span class="syn-fn">console</span>.log(student.name);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar
+Rahim
+Karim</div>
+<p class="text-p">আর:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> student <span class="syn-kw">of</span> students) {
+    <span class="syn-fn">console</span>.log(
+        <span class="syn-str">`${student.name} is ${student.age} years old.`</span>
+    );
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Shariar is 23 years old.
+Rahim is 22 years old.
+Karim is 24 years old.</div>
+<p class="text-p">এটাই পরে API data render করার basic idea।</p>
+    </div>
+
+    <!-- 5.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.39</span> Loop দিয়ে Search</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> products = [
+    <span class="syn-str">&quot;Laptop&quot;</span>,
+    <span class="syn-str">&quot;Mouse&quot;</span>,
+    <span class="syn-str">&quot;Keyboard&quot;</span>,
+    <span class="syn-str">&quot;Monitor&quot;</span>
+];
+
+<span class="syn-kw">let</span> search = <span class="syn-str">&quot;Keyboard&quot;</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> product <span class="syn-kw">of</span> products) {
+
+    <span class="syn-kw">if</span> (product === search) {
+        <span class="syn-fn">console</span>.log(&quot;Product found!&quot;);
+        <span class="syn-kw">break</span>;
+    }
+
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Product found!</div>
+    </div>
+
+    <!-- 5.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.40</span> Loop দিয়ে Maximum Number</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">45</span>, <span class="syn-num">23</span>, <span class="syn-num">78</span>, <span class="syn-num">12</span>];
+
+<span class="syn-kw">let</span> max = numbers[<span class="syn-num">0</span>];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> number <span class="syn-kw">of</span> numbers) {
+
+    <span class="syn-kw">if</span> (number &gt; max) {
+        max = number;
+    }
+
+}
+
+<span class="syn-fn">console</span>.log(max);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">78</div>
+<span class="tag-label purple">Logic Trace</span>
+<div class="ascii-tree-container">max = 10
+
+45 &gt; 10 → max = 45
+23 &gt; 45 → No
+78 &gt; 45 → max = 78
+12 &gt; 78 → No</div>
+<p class="text-p">শেষে:</p>
+<div class="output-box">78</div>
+    </div>
+
+    <!-- 5.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.41</span> Loop দিয়ে Minimum Number</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">45</span>, <span class="syn-num">23</span>, <span class="syn-num">78</span>, <span class="syn-num">12</span>];
+
+<span class="syn-kw">let</span> min = numbers[<span class="syn-num">0</span>];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> number <span class="syn-kw">of</span> numbers) {
+
+    <span class="syn-kw">if</span> (number &lt; min) {
+        min = number;
+    }
+
+}
+
+<span class="syn-fn">console</span>.log(min);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">10</div>
+    </div>
+
+    <!-- 5.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.42</span> Loop দিয়ে Count</div>
+<p class="text-p">ধরো array-তে কয়টি even number আছে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">4</span>, <span class="syn-num">7</span>, <span class="syn-num">8</span>, <span class="syn-num">10</span>, <span class="syn-num">13</span>];
+
+<span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> number <span class="syn-kw">of</span> numbers) {
+
+    <span class="syn-kw">if</span> (number % <span class="syn-num">2</span> === <span class="syn-num">0</span>) {
+        count++;
+    }
+
+}
+
+<span class="syn-fn">console</span>.log(count);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">4</div>
+<p class="text-p">কারণ even numbers:</p>
+<div class="output-box">2, 4, 8, 10</div>
+<p class="text-p">মোট:</p>
+<div class="output-box">4</div>
+    </div>
+
+    <!-- 5.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.43</span> <code>break</code> + <code>continue</code> একসাথে</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">10</span>; i++) {
+
+    <span class="syn-kw">if</span> (i === <span class="syn-num">3</span>) {
+        <span class="syn-kw">continue</span>;
+    }
+
+    <span class="syn-kw">if</span> (i === <span class="syn-num">8</span>) {
+        <span class="syn-kw">break</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1
+2
+4
+5
+6
+7</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">কী হয়েছে?</h4>
+<div class="ascii-tree-container">3 → continue → skip
+8 → break → stop</div>
+    </div>
+
+    <div class="part-banner">Part 06 — Scope, Advanced Mechanics & Practical Mini-Projects (5.44 – 5.52)</div>
+
+    <!-- 5.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.44</span> Loop-এর Scope</div>
+<p class="text-p"><code>let</code> দিয়ে loop variable তৈরি করলে সেটি সাধারণত loop block-এর মধ্যে সীমাবদ্ধ থাকে।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">3</span>; i++) {
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<p class="text-p">এর পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-fn">console</span>.log(i);</pre>
+</div>
+<p class="text-p">করলে error হবে:</p>
+<div class="output-box">ReferenceError</div>
+<p class="text-p">কারণ <code>i</code> loop-এর বাইরে accessible নয়।</p>
+    </div>
+
+    <!-- 5.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.45</span> <code>var</code> এবং Loop</div>
+<p class="text-p">পুরনো JavaScript-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">var</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">3</span>; i++) {
+    <span class="syn-fn">console</span>.log(i);
+}
+
+<span class="syn-fn">console</span>.log(i);</pre>
+</div>
+<p class="text-p">এখানে output:</p>
+<div class="ascii-tree-container">1
+2
+3
+4</div>
+<p class="text-p">কারণ <code>var</code> function-scoped।</p>
+<p class="text-p">এই কারণে modern JavaScript-এ সাধারণত loop variable-এর জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+    </div>
+
+    <!-- 5.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.46</span> Loop-এর <code>const</code></div>
+<p class="text-p"><code>for...of</code>-এ <code>const</code> খুব common:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Mango<span class="syn-str">&quot;, &quot;</span>Banana&quot;];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> fruit <span class="syn-kw">of</span> fruits) {
+    <span class="syn-fn">console</span>.log(fruit);
+}</pre>
+</div>
+<p class="text-p">এখানে প্রতিটি iteration-এ নতুন <code>fruit</code> binding পাওয়া যায়।</p>
+    </div>
+
+    <!-- 5.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.47</span> Labelled Statement — Advanced Concept</div>
+<p class="text-p">JavaScript-এ loop-কে label দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>outerLoop:
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">3</span>; i++) {
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> j = <span class="syn-num">1</span>; j &lt;= <span class="syn-num">3</span>; j++) {
+
+        <span class="syn-kw">if</span> (i === <span class="syn-num">2</span> &amp;&amp; j === <span class="syn-num">2</span>) {
+            <span class="syn-kw">break</span> outerLoop;
+        }
+
+        <span class="syn-fn">console</span>.log(i, j);
+    }
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">1 1
+1 2
+1 3
+2 1</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">break</span> outerLoop;</pre>
+</div>
+<p class="text-p">শুধু inner loop নয়, পুরো outer loop-ও stop করেছে।</p>
+<p class="text-p">⚠️ এটি valid JavaScript, তবে normal code-এ খুব কম ব্যবহার করা হয়।</p>
+    </div>
+
+    <!-- 5.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.48</span> Which Loop Should You Use?</div>
+<p class="text-p">একটা practical guide:</p>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">নির্দিষ্ট সংখ্যক iteration:</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>নির্দিষ্ট সংখ্যক iteration:</span></div>
+  <pre><span class="syn-kw">for</span></pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>নির্দিষ্ট সংখ্যক iteration:</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">10</span>; i++) {}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Condition-based:</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Condition-based:</span></div>
+  <pre><span class="syn-kw">while</span></pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Condition-based:</span></div>
+  <pre><span class="syn-kw">while</span> (balance &gt; <span class="syn-num">0</span>) {}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">অন্তত একবার execute করতে হবে:</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>অন্তত একবার execute করতে হবে:</span></div>
+  <pre><span class="syn-kw">do</span>...<span class="syn-kw">while</span></pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Array-এর values:</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Array-এর values:</span></div>
+  <pre><span class="syn-kw">for</span>...<span class="syn-kw">of</span></pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;">Object-এর keys:</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Object-এর keys:</span></div>
+  <pre><span class="syn-kw">for</span>...<span class="syn-kw">in</span></pre>
+</div>
+    </div>
+
+    <!-- 5.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">5.49</span> Loop vs Array Methods</div>
+<p class="text-p">Modern JavaScript-এ শুধু loop নয়, array methods-ও খুব গুরুত্বপূর্ণ।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre>map()
+filter()
+reduce()
+find()
+some()
+every()
+forEach()</pre>
+</div>
+<p class="text-p">এগুলো আমরা <strong>Arrays Chapter</strong>-এ বিস্তারিতভাবে শিখব।</p>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+numbers.forEach(<span class="syn-kw">function</span>(number) {
+    <span class="syn-fn">console</span>.log(number);
+});</pre>
+</div>
+<p class="text-p">Output:</p>
+<div class="ascii-tree-container">1
+2
+3</div>
+<p class="text-p">এখন শুধু জানবে:</p>
+<div class="def-box english" style="margin: 6px 0;"><strong>Teacher:</strong> <code>forEach()</code> একটি array method, traditional loop statement নয়।</div>
+    </div>
+
+    <!-- 5.50 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">5.50</span> Mini Project — Student Result System</div>
+<p class="text-p">এবার Chapter 4 + Chapter 5-এর concept একসাথে ব্যবহার করি।</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> students = [
+    {
+        name: <span class="syn-str">&quot;Shariar&quot;</span>,
+        marks: <span class="syn-num">85</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Rahim&quot;</span>,
+        marks: <span class="syn-num">72</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Karim&quot;</span>,
+        marks: <span class="syn-num">58</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Hasan&quot;</span>,
+        marks: <span class="syn-num">31</span>
+    }
+];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> student <span class="syn-kw">of</span> students) {
+
+    <span class="syn-kw">let</span> grade;
+
+    <span class="syn-kw">if</span> (student.marks &gt;= <span class="syn-num">80</span>) {
+        grade = <span class="syn-str">&quot;A+&quot;</span>;
+    } <span class="syn-kw">else</span> <span class="syn-kw">if</span> (student.marks &gt;= <span class="syn-num">70</span>) {
+        grade = <span class="syn-str">&quot;A&quot;</span>;
+    } <span class="syn-kw">else</span> <span class="syn-kw">if</span> (student.marks &gt;= <span class="syn-num">60</span>) {
+        grade = <span class="syn-str">&quot;A-&quot;</span>;
+    } <span class="syn-kw">else</span> <span class="syn-kw">if</span> (student.marks &gt;= <span class="syn-num">50</span>) {
+        grade = <span class="syn-str">&quot;B&quot;</span>;
+    } <span class="syn-kw">else</span> <span class="syn-kw">if</span> (student.marks &gt;= <span class="syn-num">40</span>) {
+        grade = <span class="syn-str">&quot;C&quot;</span>;
+    } <span class="syn-kw">else</span> {
+        grade = <span class="syn-str">&quot;F&quot;</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(
+        <span class="syn-str">`${student.name} → ${student.marks} → ${grade}`</span>
+    );
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="ascii-tree-container">Shariar → 85 → A+
+Rahim → 72 → A
+Karim → 58 → B
+Hasan → 31 → F</div>
+<p class="text-p">🔥 এখানে তুমি একসাথে ব্যবহার করেছো:</p>
+<div class="output-box">Array
+Object
+for...of
+if
+else if
+else
+Template Literal</div>
+<p class="text-p">পরবর্তী chapter-গুলোতে এগুলো আরও powerful হবে।</p>
+    </div>
+
+    <!-- 5.51 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">5.51</span> Mini Project — Shopping Cart Total</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> cart = [
+    {
+        name: <span class="syn-str">&quot;Keyboard&quot;</span>,
+        price: <span class="syn-num">1500</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Mouse&quot;</span>,
+        price: <span class="syn-num">800</span>
+    },
+    {
+        name: <span class="syn-str">&quot;Headphone&quot;</span>,
+        price: <span class="syn-num">2000</span>
+    }
+];
+
+<span class="syn-kw">let</span> total = <span class="syn-num">0</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> product <span class="syn-kw">of</span> cart) {
+    total += product.price;
+}
+
+<span class="syn-fn">console</span>.log(&quot;Total:&quot;, total);</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Total: 4300</div>
+<span class="tag-label purple">Logic Trace</span>
+<div class="ascii-tree-container">1500
++ 800
++ 2000
+------
+4300</div>
+<p class="text-p">এটাই basic shopping cart-এর একটা core logic।</p>
+    </div>
+
+    <!-- 5.52 -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">5.52</span> Mini Project — Find Product</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> products = [
+    <span class="syn-str">&quot;Laptop&quot;</span>,
+    <span class="syn-str">&quot;Keyboard&quot;</span>,
+    <span class="syn-str">&quot;Mouse&quot;</span>,
+    <span class="syn-str">&quot;Monitor&quot;</span>,
+    <span class="syn-str">&quot;Headphone&quot;</span>
+];
+
+<span class="syn-kw">let</span> search = <span class="syn-str">&quot;Monitor&quot;</span>;
+<span class="syn-kw">let</span> found = <span class="syn-bool">false</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> product <span class="syn-kw">of</span> products) {
+
+    <span class="syn-kw">if</span> (product === search) {
+        found = <span class="syn-bool">true</span>;
+        <span class="syn-kw">break</span>;
+    }
+}
+
+<span class="syn-kw">if</span> (found) {
+    <span class="syn-fn">console</span>.log(&quot;Product found.&quot;);
+} <span class="syn-kw">else</span> {
+    <span class="syn-fn">console</span>.log(&quot;Product not found.&quot;);
+}</pre>
+</div>
+<span class="tag-label amber">Output</span>
+<div class="output-box">Product found.</div>
+    </div>
+
+    <div class="part-banner">Part 07 — Comprehensive Cheat Sheet, Comparisons &amp; Practice Set</div>
+
+    <!-- Chapter 5 Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">CHEAT SHEET</span> 🧠 Chapter 5 Cheat Sheet</div>
+<div class="ascii-tree-container">FOR
+→ নির্দিষ্টভাবে loop চালাতে
+
+WHILE
+→ condition true থাকা পর্যন্ত
+
+DO...WHILE
+→ অন্তত একবার চালাতে
+
+FOR...OF
+→ values পেতে
+
+FOR...IN
+→ keys পেতে
+
+BREAK
+→ পুরো loop stop
+
+CONTINUE
+→ current iteration skip
+
+NESTED LOOP
+→ loop-এর ভিতরে loop</div>
+    </div>
+
+    <!-- Key Differences -->
+    <div class="study-card" style="border-left: 4px solid #ef4444;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">COMPARISON</span> 🔥 সবচেয়ে গুরুত্বপূর্ণ পার্থক্য (Key Loop Differences)</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>for</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>for</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">5</span>; i++) {
+    <span class="syn-fn">console</span>.log(i);
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>while</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>while</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">0</span>;
+
+<span class="syn-kw">while</span> (i &lt; <span class="syn-num">5</span>) {
+    <span class="syn-fn">console</span>.log(i);
+    i++;
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>do...while</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>do...while</span></div>
+  <pre><span class="syn-kw">let</span> i = <span class="syn-num">0</span>;
+
+<span class="syn-kw">do</span> {
+    <span class="syn-fn">console</span>.log(i);
+    i++;
+} <span class="syn-kw">while</span> (i &lt; <span class="syn-num">5</span>);</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>for...of</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>for...of</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> value <span class="syn-kw">of</span> array) {
+    <span class="syn-fn">console</span>.log(value);
+}</pre>
+</div>
+<h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin: 8px 0 4px 0;"><code>for...in</code></h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>for...in</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">let</span> key <span class="syn-kw">in</span> object) {
+    <span class="syn-fn">console</span>.log(key);
+}</pre>
+</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Chapter 5 — Practice Set</div>
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy-mid); margin: 10px 0 6px 0;">Basic Questions</h3>
+
+      <div class="practice-item">
+        <strong>1.</strong> Loop কী?
+      </div>
+      <div class="practice-item">
+        <strong>2.</strong> <code>for</code> loop-এর তিনটি অংশ কী?
+      </div>
+      <div class="practice-item">
+        <strong>3.</strong> <code>while</code> এবং <code>do...while</code>-এর পার্থক্য কী?
+      </div>
+      <div class="practice-item">
+        <strong>4.</strong> <code>break</code> কী করে?
+      </div>
+      <div class="practice-item">
+        <strong>5.</strong> <code>continue</code> কী করে?
+      </div>
+      <div class="practice-item">
+        <strong>6.</strong> <code>for...of</code> কী return করে?
+      </div>
+      <div class="practice-item">
+        <strong>7.</strong> <code>for...in</code> কী return করে?
+      </div>
+      <div class="practice-item">
+        <strong>8.</strong> Infinite loop কী?
+      </div>
+      <div class="practice-item">
+        <strong>9.</strong> Nested loop কী?
+      </div>
+      <div class="practice-item">
+        <strong>10.</strong> <code>for...of</code> এবং <code>for...in</code>-এর পার্থক্য কী?
+      </div>
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy-mid); margin: 16px 0 8px 0;">💻 Coding Practice</h3>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">## 💻 Coding Practice</h4>
+
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 1 — 1 to 100</h4>
+<p class="text-p">1 থেকে 100 পর্যন্ত print করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 2 — Even Numbers</h4>
+<p class="text-p">1 থেকে 50 পর্যন্ত সব even number print করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 3 — Odd Numbers</h4>
+<p class="text-p">1 থেকে 50 পর্যন্ত সব odd number print করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 4 — Sum</h4>
+<p class="text-p">1 থেকে 100 পর্যন্ত সব number-এর sum বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="output-box">5050</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 5 — Multiplication Table</h4>
+<p class="text-p">যেকোনো একটি number-এর 1 থেকে 10 পর্যন্ত multiplication table তৈরি করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 6 — Maximum</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">55</span>, <span class="syn-num">23</span>, <span class="syn-num">89</span>, <span class="syn-num">12</span>, <span class="syn-num">67</span>];</pre>
+</div>
+<p class="text-p">সবচেয়ে বড় number বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="output-box">89</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 7 — Minimum</h4>
+<p class="text-p">একই array থেকে সবচেয়ে ছোট number বের করো।</p>
+<p class="text-p">Expected:</p>
+<div class="output-box">10</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 8 — Search</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> students = [
+    <span class="syn-str">&quot;Shariar&quot;</span>,
+    <span class="syn-str">&quot;Rahim&quot;</span>,
+    <span class="syn-str">&quot;Karim&quot;</span>,
+    <span class="syn-str">&quot;Hasan&quot;</span>,
+    <span class="syn-str">&quot;Nabil&quot;</span>
+];</pre>
+</div>
+<p class="text-p"><code>Karim</code> আছে কিনা check করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 9 — Count Even</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Example</span></div>
+  <pre><span class="syn-kw">let</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">4</span>, <span class="syn-num">7</span>, <span class="syn-num">8</span>, <span class="syn-num">11</span>, <span class="syn-num">14</span>, <span class="syn-num">20</span>];</pre>
+</div>
+<p class="text-p">কয়টি even number আছে সেটা বের করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 10px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Problem 10 — Pattern</h4>
+<p class="text-p">এই pattern তৈরি করো:</p>
+<div class="ascii-tree-container">*
+**
+***
+****
+*****</div>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">*****
+****
+***
+**
+*</div>
+<p class="text-p">দুটোই নিজে code করার চেষ্টা করো।</p>
+      </div>
+    </div>
+
+    <!-- Chapter 5 Core Learnings -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 5-এর মূল শিক্ষা</div>
+<p class="text-p">এখন তোমার মাথায় এই flow-টা clear থাকা উচিত:</p>
+<div class="ascii-tree-container">Need to repeat something?
+          ↓
+      Choose Loop
+          ↓
+ ┌────────┼──────────┐
+ ↓        ↓          ↓
+for     while    do...while
+          ↓
+     Data collection?
+          ↓
+   ┌──────┴──────┐
+   ↓             ↓
+for...of      for...in
+   ↓             ↓
+ values         keys</div>
+<p class="text-p">আর সবচেয়ে important:</p>
+<div class="ascii-tree-container">break
+→ Loop শেষ
+
+continue
+→ এই iteration বাদ
+
+Nested Loop
+→ Loop-এর ভিতরে Loop</div>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 🚀 Chapter 6 Preview — Functions</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরের chapter-এ আমরা যাব <strong>Chapter 6 — Functions</strong>-এ। সেখানে JavaScript-এর সবচেয়ে গুরুত্বপূর্ণ building blocks-এর একটি নিয়ে বিস্তারিত করব: <strong>Function কী, parameter, argument, return, function declaration/expression, arrow function, default parameter, rest parameter, callback function, higher-order function, scope, এবং practical functions</strong>।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
