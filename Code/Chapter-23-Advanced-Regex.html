@@ -1,0 +1,2718 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 23: Advanced Regular Expressions (RegExp)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .banner-sub {
+      font-size: 10px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f8fafc;
+      padding: 7px 12px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 5px;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      border-left: 4px solid #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-family: var(--font-code);
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--blue-accent);
+      padding-left: 5px;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-family: var(--font-heading);
+      font-size: 9.5px;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      margin-bottom: 3px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+    .memory-box {
+      background: #eff6ff;
+      border-left: 3px solid #3b82f6;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #1e40af;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #991b1b;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Lists */
+    .bullet-list {
+      margin: 3px 0 5px 14px;
+      font-size: 10.5px;
+      color: #334155;
+      line-height: 1.4;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 3px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.32;
+      padding: 5px 8px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #38bdf8; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+    .syn-regex { color: #facc15; }
+
+    /* ASCII Diagrams */
+    .ascii-tree-container {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.22;
+      padding: 5px 8px;
+      border-radius: 5px;
+      margin: 3px 0;
+      white-space: pre;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      border: 1px solid #1e293b;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 4px;
+      padding: 5px 8px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 23: ADVANCED REGULAR EXPRESSIONS (REGEXP) — PATTERNS, LOOKAROUNDS, GROUPS &amp; VALIDATION</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">81 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 17 — Advanced Text Processing &amp; RegExp</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Patterns, Lookarounds, Groups &amp; Security</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / RegExp v-flag Standard</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 8px 12px; margin-bottom: 6px;">
+      <h2 style="font-size: 12px; color: var(--navy-mid); margin-bottom: 3px;">Regular Expression — Pattern দিয়ে Text খোঁজা, যাচাই, Extract ও Replace করা</h2>
+      <p class="text-p" style="font-size: 10px; margin-bottom: 3px;">Chapter 13-এ আমরা RegExp-এর প্রাথমিক ধারণা দেখেছি। প্রফেশনাল সফটওয়্যার ইঞ্জিনিয়ারিংয়ে ব্যবহারকারীর ইনপুট ভ্যালিডেশন, টেক্সট ক্লিনিং, ইউজারনেম/ইমেইল/পাসওয়ার্ড ভেরিফিকেশন এবং সিকিউর স্যানিটাইজেশনের জন্য <strong>Advanced Regular Expressions</strong> একটি অত্যন্ত শক্তিশালী টুল।</p>
+      <div class="def-box" style="margin: 2px 0; padding: 4px 6px;">
+        <div class="def-text" style="font-size: 9px;">Text String &nbsp;→&nbsp; RegExp Engine (/pattern/flags) &nbsp;→&nbsp; Token Matching / Capturing Groups &nbsp;→&nbsp; Extraction / Validation / Replacement</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 2px; font-size: 9.5px;">সরাসরি Form Validation, API Data Cleaning এবং Text Analytics-এর শতভাগ নিখুঁত সমাধান তৈরি করে এই রেজেক্স আর্কিটেকচার। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — RegExp Core Mechanics, Engine Construction &amp; Flags (23.1 – 23.8)</div>
+
+    <!-- 23.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">23.1</span> Regular Expression কী?</div>
+<p class="text-p"><strong>Regular Expression বা Regex</strong> হলো একটি pattern language।</p>
+<p class="text-p">সহজভাবে:</p>
+<div class="def-box">
+  <div class="def-text">কোনো text-এর মধ্যে নির্দিষ্ট ধরনের pattern খোঁজা বা যাচাই করার নিয়ম হলো Regular Expression।</div>
+</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Hello Shariar
+Hello Rahim
+Hello Karim</pre>
+</div>
+<p class="text-p">তুমি যদি এমন text খুঁজতে চাও যেটা:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Hello + একটি নাম</pre>
+</div>
+<p class="text-p">তাহলে Regex pattern ব্যবহার করতে পারো।</p>
+    </div>
+
+    <!-- 23.2 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.2</span> Real-Life Example</div>
+<p class="text-p">ধরো একটি registration form:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Email: __________
+Phone: __________
+Password: _______</pre>
+</div>
+<p class="text-p">User লিখল:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>abc@xyz.com</pre>
+</div>
+<p class="text-p">তুমি check করতে চাও:</p>
+<div class="def-box">
+  <div class="def-text">এটা email-এর মতো দেখতে কি না?</div>
+</div>
+<p class="text-p">Regex দিয়ে pattern check করা যায়।</p>
+    </div>
+
+    <!-- 23.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.3</span> Regex তৈরি করার দুইটি উপায়</div>
+<div class="section-subhead">1. Regex Literal</div>
+<div class="code-box">
+  <div class="code-top"><span>23.3 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex" style="color:#facc15; font-weight:600;">/hello/</span>;</pre>
+</div>
+<div class="section-subhead">2. RegExp Constructor</div>
+<div class="code-box">
+  <div class="code-top"><span>23.3 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-kw">new</span> <span class="syn-fn">RegExp</span>(&quot;hello&quot;);</pre>
+</div>
+<p class="text-p">সাধারণ static pattern-এর জন্য literal বেশি convenient।</p>
+    </div>
+
+    <!-- 23.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.4</span> test()</div>
+<p class="text-p">Pattern match করছে কি না দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.4 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex" style="color:#facc15; font-weight:600;">/hello/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(pattern.<span class="syn-op">test</span>(&quot;hello world&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead">আরেকটি:</div>
+<div class="code-box">
+  <div class="code-top"><span>23.4 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex" style="color:#facc15; font-weight:600;">/hello/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(pattern.<span class="syn-op">test</span>(&quot;Hi world&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 23.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.5</span> Case Sensitivity</div>
+<div class="code-box">
+  <div class="code-top"><span>23.5 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex" style="color:#facc15; font-weight:600;">/hello/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(pattern.<span class="syn-op">test</span>(&quot;Hello&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>false</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>hello</pre>
+</div>
+<p class="text-p">এবং:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Hello</pre>
+</div>
+<p class="text-p">এক নয়।</p>
+    </div>
+
+    <!-- 23.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.6</span> i` Flag</div>
+<p class="text-p">Case-insensitive করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.6 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex" style="color:#facc15; font-weight:600;">/hello/i</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(pattern.<span class="syn-op">test</span>(&quot;Hello&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">এখন:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>hello
+HELLO
+Hello
+hElLo</pre>
+</div>
+<p class="text-p">সব match করবে।</p>
+    </div>
+
+    <!-- 23.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.7</span> গুরুত্বপূর্ণ Regex Flags</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Flag</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>i</code></td><td>Case-insensitive</td></tr><tr><td><code>g</code></td><td>Global search</td></tr><tr><td><code>m</code></td><td>Multiline</td></tr><tr><td><code>s</code></td><td>Dot যেন newline-ও match করতে পারে</td></tr><tr><td><code>u</code></td><td>Unicode-aware matching</td></tr><tr><td><code>y</code></td><td>Sticky matching</td></tr><tr><td><code>d</code></td><td>Match indices তৈরি করতে সাহায্য করে</td></tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.7 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/hello/gi</span></pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="ascii-tree-container">g → সব match
+i → case-insensitive</div>
+    </div>
+
+    <!-- 23.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.8</span> g` Flag</div>
+<div class="code-box">
+  <div class="code-top"><span>23.8 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;cat cat cat&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    text.<span class="syn-op">match</span>(/cat/g)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.8 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[&quot;cat<span class="syn-str">&quot;, &quot;</span>cat<span class="syn-str">&quot;, &quot;</span>cat&quot;]</pre>
+</div>
+<p class="text-p"><code>g</code> না দিলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.8 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    text.<span class="syn-op">match</span>(/cat/)
+);</pre>
+</div>
+<p class="text-p">শুধু প্রথম match-এর information পাওয়া যায়।</p>
+    </div>
+
+    <div class="part-banner">Part 02 — Character Classes, Negation, Shorthands &amp; Metacharacters (23.9 – 23.16)</div>
+
+    <!-- 23.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.9</span> Character Classes</div>
+<div class="memory-box">Regex-এর সবচেয়ে গুরুত্বপূর্ণ অংশগুলোর একটি।</div>
+<div class="section-subhead"><code>[abc]</code></div>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text"><code>a</code>, <code>b</code> অথবা <code>c</code>—যেকোনো একটি character।</div>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.9 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/[abc]/.<span class="syn-op">test</span>(&quot;apple&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কারণ <code>apple</code>-এ <code>a</code> আছে।</p>
+    </div>
+
+    <!-- 23.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.10</span> [a-z]</div>
+<div class="code-box">
+  <div class="code-top"><span>23.10 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/[a-z]/</span></pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>a থেকে z</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.10 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/[a-z]/.<span class="syn-op">test</span>(&quot;hello&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.11</span> [A-Z]</div>
+<div class="code-box">
+  <div class="code-top"><span>23.11 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/[A-Z]/.<span class="syn-op">test</span>(&quot;Hello&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.12</span> [0-9]</div>
+<p class="text-p">Number character:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.12 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/[<span class="syn-num">0</span>-<span class="syn-num">9</span>]/.<span class="syn-op">test</span>(&quot;abc5&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.13</span> Negated Character Class</div>
+<p class="text-p"><code>[^...]</code></p>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">এই characters-এর কোনোটি নয়।</div>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.13 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/[^0-9]/</span></pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">digit নয় এমন character।</div>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.13 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/[^<span class="syn-num">0</span>-<span class="syn-num">9</span>]/.<span class="syn-op">test</span>(&quot;<span class="syn-num">123</span>&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>false</pre>
+</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.13 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/[^<span class="syn-num">0</span>-<span class="syn-num">9</span>]/.<span class="syn-op">test</span>(&quot;123a&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কারণ <code>a</code> digit নয়।</p>
+    </div>
+
+    <!-- 23.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.14</span> Shorthand Character Classes</div>
+<p class="text-p">Regex-এ কিছু shortcut আছে।</p>
+<div class="section-subhead"><code>\d</code></div>
+<p class="text-p">Digit:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>0-9</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.14 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/\d/.<span class="syn-op">test</span>(&quot;abc5&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>\D</code></div>
+<p class="text-p">Non-digit:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.14 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/\D/.<span class="syn-op">test</span>(&quot;<span class="syn-num">123</span>&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>false</pre>
+</div>
+<div class="section-subhead"><code>\w</code></div>
+<p class="text-p">Word character:</p>
+<p class="text-p">সাধারণত:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>A-Z
+a-z
+0-9
+_</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.14 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/\w/.<span class="syn-op">test</span>(&quot;hello&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>\W</code></div>
+<p class="text-p">Non-word character।</p>
+<div class="section-subhead"><code>\s</code></div>
+<p class="text-p">Whitespace:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>space
+tab
+newline</pre>
+</div>
+<div class="section-subhead"><code>\S</code></div>
+<p class="text-p">Non-whitespace।</p>
+    </div>
+
+    <!-- 23.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.15</span> Dot `.</div>
+<p class="text-p">Regex-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.15 RegExp Pattern</span><span>Pattern</span></div>
+  <pre>.</pre>
+</div>
+<p class="text-p">সাধারণত newline ছাড়া যেকোনো একটি character match করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.15 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/c.t/.<span class="syn-op">test</span>(&quot;cat&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">এগুলোও match করতে পারে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>cat
+cot
+cut
+c9t</pre>
+</div>
+    </div>
+
+    <!-- 23.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.16</span> Dot + <code>s</code> Flag</div>
+<p class="text-p"><code> s</code> flag ব্যবহার করলে dot newline-ও match করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.16 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;Hello\nWorld&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(/Hello.World/s.<span class="syn-op">test</span>(text));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Quantifiers, Boundary Anchors &amp; Alternation Patterns (23.17 – 23.28)</div>
+
+    <!-- 23.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.17</span> Quantifiers</div>
+<p class="text-p">Quantifier বলে:</p>
+<div class="def-box">
+  <div class="def-text">কোনো pattern কতবার থাকতে পারবে।</div>
+</div>
+<div class="memory-box">সবচেয়ে গুরুত্বপূর্ণ:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>+
+*
+?
+{n}
+{n,m}
+{n,}</pre>
+</div>
+    </div>
+
+    <!-- 23.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.18</span> +</div>
+<p class="text-p"><code>+</code> মানে:</p>
+<div class="def-box">
+  <div class="def-text">এক বা তার বেশি।</div>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.18 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/\d+/.<span class="syn-op">test</span>(&quot;<span class="syn-num">12345</span>&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p"><code>+</code> ছাড়া:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.18 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/\d/</span></pre>
+</div>
+<p class="text-p">শুধু একটি digit match করার concept।</p>
+    </div>
+
+    <!-- 23.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.19</span> </div>
+<p class="text-p"><code>*</code> মানে:</p>
+<div class="def-box">
+  <div class="def-text">zero বা তার বেশি।</div>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.19 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/go*/.<span class="syn-op">test</span>(&quot;g&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কারণ <code>o</code> zero times-ও থাকতে পারে।</p>
+<p class="text-p">এগুলো match করতে পারে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>g
+go
+goo
+gooo</pre>
+</div>
+    </div>
+
+    <!-- 23.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.20</span> ?</div>
+<p class="text-p"><code>?</code> মানে:</p>
+<div class="def-box">
+  <div class="def-text">zero অথবা one time।</div>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.20 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/go?/</span>.<span class="syn-op">test</span>(&quot;go&quot;);</pre>
+</div>
+<p class="text-p">true।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.20 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/go?/</span>.<span class="syn-op">test</span>(&quot;g&quot;);</pre>
+</div>
+<p class="text-p">এটিও true।</p>
+    </div>
+
+    <!-- 23.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.21</span> {n}</div>
+<p class="text-p">ঠিক <code>n</code> বার।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.21 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/\d{4}/</span></pre>
+</div>
+<p class="text-p">মানে 4টি digit।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.21 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/\d{<span class="syn-num">4</span>}/.<span class="syn-op">test</span>(&quot;<span class="syn-num">2026</span>&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.22</span> {n,m}</div>
+<p class="text-p">Minimum <code>n</code>, maximum <code>m</code>।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.22 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/\d{2,4}/</span></pre>
+</div>
+<p class="text-p">মানে 2 থেকে 4 digit।</p>
+<p class="text-p">Match করতে পারে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>12
+123
+1234</pre>
+</div>
+    </div>
+
+    <!-- 23.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.23</span> {n,}</div>
+<p class="text-p">Minimum <code>n</code>।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.23 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/\d{3,}/</span></pre>
+</div>
+<p class="text-p">মানে অন্তত 3 digit।</p>
+    </div>
+
+    <!-- 23.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.24</span> Anchors</div>
+<p class="text-p">Pattern-এর position নির্দিষ্ট করতে anchors ব্যবহার করা হয়।</p>
+<div class="section-subhead"><code>^</code></div>
+<p class="text-p">String/line-এর শুরু।</p>
+<div class="section-subhead"><code>$</code></div>
+<p class="text-p">String/line-এর শেষ।</p>
+    </div>
+
+    <!-- 23.25 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.25</span> ^` Example</div>
+<div class="code-box">
+  <div class="code-top"><span>23.25 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/^Hello/.<span class="syn-op">test</span>(&quot;Hello World&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.25 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/^Hello/.<span class="syn-op">test</span>(&quot;Hi Hello&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>false</pre>
+</div>
+<p class="text-p">কারণ <code>Hello</code> শুরুতে নেই।</p>
+    </div>
+
+    <!-- 23.26 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.26</span> $` Example</div>
+<div class="code-box">
+  <div class="code-top"><span>23.26 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/World$/.<span class="syn-op">test</span>(&quot;Hello World&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.27</span> ^<code> + </code>$</div>
+<p class="text-p">দুটো একসাথে দিলে পুরো string match করার ধারণা পাওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.27 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/^\d+$/.<span class="syn-op">test</span>(&quot;<span class="syn-num">12345</span>&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.27 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/^\d+$/.<span class="syn-op">test</span>(&quot;123a&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>false</pre>
+</div>
+<p class="text-p">কারণ পুরো string-এ শুধু digit নেই।</p>
+    </div>
+
+    <!-- 23.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.28</span> Alternation `|</div>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">OR</div>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.28 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/cat|dog/</span></pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>cat অথবা dog</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.28 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/cat|dog/.<span class="syn-op">test</span>(&quot;I have a dog&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Groups, Lookaround Assertions &amp; Quantifier Greediness (23.29 – 23.39)</div>
+
+    <!-- 23.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.29</span> Grouping `()</div>
+<p class="text-p">Group তৈরি করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.29 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#a78bfa; font-weight:700;">(</span>...<span style="color:#a78bfa; font-weight:700;">)</span></pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.29 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/(cat|dog)/</span></pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>cat
+অথবা
+dog</pre>
+</div>
+    </div>
+
+    <!-- 23.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.30</span> Capturing Groups</div>
+<p class="text-p">Regex-এর একটি অংশ আলাদা করে capture করতে পারো।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.30 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/(\d{4})-(\d{2})-(\d{2})/</span>;
+
+<span class="syn-kw">const</span> result = <span class="syn-str">&quot;2026-09-16&quot;</span>.<span class="syn-op">match</span>(regex);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);</pre>
+</div>
+<p class="text-p">Conceptual output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>[
+    &quot;2026-09-16&quot;,
+    &quot;2026&quot;,
+    &quot;09&quot;,
+    &quot;16&quot;
+]</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">Group 1 → 2026
+Group 2 → 09
+Group 3 → 16</div>
+    </div>
+
+    <!-- 23.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.31</span> Non-Capturing Group</div>
+<p class="text-p">যদি grouping দরকার কিন্তু capture দরকার না হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.31 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#94a3b8; font-weight:600;">(?:...)</span></pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.31 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/(?:cat|dog)/</span>;</pre>
+</div>
+<p class="text-p">এটি group করবে, কিন্তু capturing group তৈরি করবে না।</p>
+    </div>
+
+    <!-- 23.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.32</span> Named Capturing Groups</div>
+<p class="text-p">আরও readable করার জন্য group-এর নাম দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.32 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/(?&lt;year&gt;\d{4})-(?&lt;month&gt;\d{2})-(?&lt;day&gt;\d{2})/</span>;
+
+<span class="syn-kw">const</span> result =
+    <span class="syn-str">&quot;2026-09-16&quot;</span>.<span class="syn-op">match</span>(regex);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(result.groups);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.32 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>{
+    year: <span class="syn-str">&quot;2026&quot;</span>,
+    month: <span class="syn-str">&quot;09&quot;</span>,
+    day: <span class="syn-str">&quot;16&quot;</span>
+}</pre>
+</div>
+<p class="text-p">এটা advanced কিন্তু real-world parsing-এ useful।</p>
+    </div>
+
+    <!-- 23.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.33</span> Backreference</div>
+<p class="text-p">Captured group পরে আবার একই text match করতে ব্যবহার করা যায়।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.33 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\b(\w+)\s+\1\b/i</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    regex.<span class="syn-op">test</span>(&quot;hello hello&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>(\w+)</pre>
+</div>
+<p class="text-p">প্রথম word capture করেছে।</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>\1</pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">Group 1-এ যে text ছিল, সেটিই আবার আসতে হবে।</div>
+</div>
+    </div>
+
+    <!-- 23.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.34</span> Lookahead</div>
+<p class="text-p">Lookahead pattern-এর পরের অংশ check করে কিন্তু consume করে না।</p>
+<div class="section-subhead">Positive Lookahead</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.34 RegExp Pattern</span><span>Pattern</span></div>
+  <pre>X<span style="color:#c084fc; font-weight:600;">(?=Y)</span></pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">X-এর পরে Y থাকতে হবে।</div>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.34 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\d+(?= USD)/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    <span class="syn-str">&quot;100 USD&quot;</span>.<span class="syn-op">match</span>(regex)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>[&quot;100&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 23.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.35</span> Negative Lookahead</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.35 RegExp Pattern</span><span>Pattern</span></div>
+  <pre>X<span style="color:#c084fc; font-weight:600;">(?!Y)</span></pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">X-এর পরে Y থাকা যাবে না।</div>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.35 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/foo(?!bar)/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(regex.<span class="syn-op">test</span>(&quot;foobar&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>false</pre>
+</div>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.35 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(regex.<span class="syn-op">test</span>(&quot;foobaz&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.36</span> Lookbehind</div>
+<p class="text-p">Lookbehind সামনে নয়, আগের অংশ check করে।</p>
+<div class="section-subhead">Positive Lookbehind</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.36 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?&lt;=X)</span>Y</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.36 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/(?&lt;=\$)\d+/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    <span class="syn-str">&quot;$100&quot;</span>.<span class="syn-op">match</span>(regex)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>[&quot;100&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 23.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.37</span> Negative Lookbehind</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.37 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?&lt;!X)</span>Y</pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">Y-এর আগে X থাকা যাবে না।</div>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.37 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/(?&lt;!\$)\d+/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    <span class="syn-str">&quot;USD 100&quot;</span>.<span class="syn-op">match</span>(regex)
+);</pre>
+</div>
+<p class="text-p">এখানে <code>100</code> match হতে পারে কারণ এর আগে <code>$</code> নেই।</p>
+    </div>
+
+    <!-- 23.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.38</span> Greedy Matching</div>
+<p class="text-p">Regex quantifier সাধারণত greedy।</p>
+<p class="text-p">মানে:</p>
+<div class="def-box">
+  <div class="def-text">যত বেশি সম্ভব text match করতে চেষ্টা করে।</div>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.38 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;&lt;b&gt;Hello&lt;/b&gt;&lt;b&gt;World&lt;/b&gt;&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    text.<span class="syn-op">match</span>(/&lt;b&gt;.*&lt;\/b&gt;/)
+);</pre>
+</div>
+<p class="text-p">এখানে <code>.*</code> অনেক বেশি text consume করতে পারে।</p>
+    </div>
+
+    <!-- 23.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.39</span> Lazy Matching</div>
+<p class="text-p">Lazy করতে <code>?</code> ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.39 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;&lt;b&gt;Hello&lt;/b&gt;&lt;b&gt;World&lt;/b&gt;&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    text.<span class="syn-op">match</span>(/&lt;b&gt;.*?&lt;\/b&gt;/g)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.39 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[
+    <span class="syn-str">&quot;&lt;b&gt;Hello&lt;/b&gt;&quot;</span>,
+    <span class="syn-str">&quot;&lt;b&gt;World&lt;/b&gt;&quot;</span>
+]</pre>
+</div>
+<div class="section-subhead">Difference:</div>
+<div class="ascii-tree-container">.*   → Greedy
+.*?  → Lazy</div>
+    </div>
+
+    <div class="part-banner">Part 05 — String Methods, Data Validation &amp; Practical Extraction (23.40 – 23.59)</div>
+
+    <!-- 23.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.40</span> match()</div>
+<p class="text-p">Text-এর মধ্যে match বের করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.40 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;I have 10 apples and 20 oranges.&quot;</span>;
+
+<span class="syn-kw">const</span> numbers = text.<span class="syn-op">match</span>(/\d+/g);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.40 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[&quot;<span class="syn-num">10</span><span class="syn-str">&quot;, &quot;</span><span class="syn-num">20</span>&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 23.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.41</span> matchAll()</div>
+<p class="text-p">Multiple matches এবং capturing groups-এর information নিয়ে কাজ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.41 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;ID: 101, ID: 202&quot;</span>;
+
+<span class="syn-kw">const</span> matches =
+    [...text.<span class="syn-op">matchAll</span>(/ID: (\d+)/g)];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> <span class="syn-op">match</span> <span class="syn-kw">of</span> matches) {
+    <span class="syn-fn">console</span>.<span class="syn-op">log</span>(<span class="syn-op">match</span>[<span class="syn-num">1</span>]);
+}</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>101
+202</pre>
+</div>
+<p class="text-p"><code>matchAll()</code> iterator return করে।</p>
+    </div>
+
+    <!-- 23.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.42</span> search()</div>
+<p class="text-p">প্রথম match-এর index বের করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.42 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;Hello JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    text.<span class="syn-op">search</span>(/JavaScript/)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>6</pre>
+</div>
+<p class="text-p">কারণ <code>JavaScript</code> index <code>6</code> থেকে শুরু।</p>
+    </div>
+
+    <!-- 23.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.43</span> replace()</div>
+<p class="text-p">Regex দিয়ে text replace:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.43 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;I like cats.&quot;</span>;
+
+<span class="syn-kw">const</span> result =
+    text.<span class="syn-op">replace</span>(/cats/, <span class="syn-str">&quot;dogs&quot;</span>);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>I like dogs.</pre>
+</div>
+    </div>
+
+    <!-- 23.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.44</span> replace()<code> + </code>g</div>
+<div class="code-box">
+  <div class="code-top"><span>23.44 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;cat cat cat&quot;</span>;
+
+<span class="syn-kw">const</span> result =
+    text.<span class="syn-op">replace</span>(/cat/g, <span class="syn-str">&quot;dog&quot;</span>);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>dog dog dog</pre>
+</div>
+    </div>
+
+    <!-- 23.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.45</span> replaceAll()</div>
+<div class="code-box">
+  <div class="code-top"><span>23.45 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;cat cat cat&quot;</span>;
+
+<span class="syn-kw">const</span> result =
+    text.<span class="syn-op">replaceAll</span>(&quot;cat<span class="syn-str">&quot;, &quot;</span>dog&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>dog dog dog</pre>
+</div>
+    </div>
+
+    <!-- 23.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.46</span> Replace Callback</div>
+<p class="text-p">Replacement হিসেবে function দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.46 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;10 20 30&quot;</span>;
+
+<span class="syn-kw">const</span> result =
+    text.<span class="syn-op">replace</span>(/\d+/g, (number) =&gt; {
+
+        <span class="syn-kw">return</span> <span class="syn-fn">Number</span>(number) * <span class="syn-num">2</span>;
+
+    });
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>20 40 60</pre>
+</div>
+    </div>
+
+    <!-- 23.47 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.47</span> Email Validation</div>
+<p class="text-p">একটি basic email pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.47 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> emailRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;</pre>
+</div>
+<p class="text-p">Test:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.47 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    emailRegex.<span class="syn-op">test</span>(&quot;shariar@example.com&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<div class="sub-badge" style="background:#fee2e2; color:#991b1b;">Invalid:</div>
+<div class="code-box">
+  <div class="code-top"><span>23.47 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    emailRegex.<span class="syn-op">test</span>(&quot;hello&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>false</pre>
+</div>
+<div class="def-box">
+  <div class="def-text">এটি email-এর basic format check; complete RFC-level email validation নয়।</div>
+</div>
+    </div>
+
+    <!-- 23.48 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.48</span> Phone Number Validation</div>
+<p class="text-p">বাংলাদেশের 11-digit mobile format-এর একটি basic example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.48 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> phoneRegex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/^01[3-9]\d{8}$/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    phoneRegex.<span class="syn-op">test</span>(&quot;<span class="syn-num">01712345678</span>&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">এটি format validation-এর example; actual business rules অনুযায়ী validation পরিবর্তন হতে পারে।</p>
+    </div>
+
+    <!-- 23.49 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.49</span> Password Validation</div>
+<p class="text-p">ধরো password-এ থাকতে হবে:</p>
+<ul class="bullet-list"><li>কমপক্ষে 8 characters</li><li>একটি uppercase</li><li>একটি lowercase</li><li>একটি digit</li></ul>
+<div class="code-box">
+  <div class="code-top"><span>23.49 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> passwordRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/</span>;</pre>
+</div>
+<p class="text-p">Test:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.49 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    passwordRegex.<span class="syn-op">test</span>(&quot;Hello123&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.50 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.50</span> Password Regex Breakdown</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.50 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#34d399; font-weight:700;">^</span></pre>
+</div>
+<p class="text-p">→ শুরু</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.50 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?=.*[A-Z])</span></pre>
+</div>
+<p class="text-p">→ অন্তত একটি uppercase</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.50 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?=.*[a-z])</span></pre>
+</div>
+<p class="text-p">→ অন্তত একটি lowercase</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.50 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?=.*\d)</span></pre>
+</div>
+<p class="text-p">→ অন্তত একটি digit</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.50 RegExp Pattern</span><span>Pattern</span></div>
+  <pre>.<span style="color:#f43f5e; font-weight:700;">{8,}</span></pre>
+</div>
+<p class="text-p">→ অন্তত 8 characters</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.50 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#34d399; font-weight:700;">$</span></pre>
+</div>
+<p class="text-p">→ শেষ</p>
+    </div>
+
+    <!-- 23.51 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.51</span> Stronger Password Example</div>
+<p class="text-p">ধরো:</p>
+<ul class="bullet-list"><li>8+ characters</li><li>uppercase</li><li>lowercase</li><li>number</li><li>special character</li></ul>
+<div class="code-box">
+  <div class="code-top"><span>23.51 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> strongPassword =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    strongPassword.<span class="syn-op">test</span>(&quot;Hello@<span class="syn-num">123</span>&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.52 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.52</span> Username Validation</div>
+<p class="text-p">ধরো:</p>
+<ul class="bullet-list"><li>letters</li><li>numbers</li><li>underscore</li><li>3–16 characters</li></ul>
+<div class="code-box">
+  <div class="code-top"><span>23.52 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> usernameRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/^[A-Za-z0-9_]{3,16}$/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    usernameRegex.<span class="syn-op">test</span>(&quot;Shariar_01&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.53</span> Extract Numbers</div>
+<div class="code-box">
+  <div class="code-top"><span>23.53 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text =
+    <span class="syn-str">&quot;I bought 2 laptops and 3 phones.&quot;</span>;
+
+<span class="syn-kw">const</span> numbers =
+    text.<span class="syn-op">match</span>(/\d+/g);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(numbers);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.53 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[&quot;<span class="syn-num">2</span><span class="syn-str">&quot;, &quot;</span><span class="syn-num">3</span>&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 23.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.54</span> Extract Hashtags</div>
+<div class="code-box">
+  <div class="code-top"><span>23.54 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text =
+    <span class="syn-str">&quot;Learning #JavaScript and #React today.&quot;</span>;
+
+<span class="syn-kw">const</span> hashtags =
+    text.<span class="syn-op">match</span>(/#[A-Za-z0-9_]+/g);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(hashtags);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.54 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[
+    <span class="syn-str">&quot;#JavaScript&quot;</span>,
+    <span class="syn-str">&quot;#React&quot;</span>
+]</pre>
+</div>
+    </div>
+
+    <!-- 23.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.55</span> Remove Extra Spaces</div>
+<div class="code-box">
+  <div class="code-top"><span>23.55 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text =
+    <span class="syn-str">&quot;Hello     JavaScript    World&quot;</span>;
+
+<span class="syn-kw">const</span> cleaned =
+    text.<span class="syn-op">replace</span>(/\s+/g, <span class="syn-str">&quot; &quot;</span>);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(cleaned);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Hello JavaScript World</pre>
+</div>
+    </div>
+
+    <!-- 23.56 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.56</span> Remove Special Characters</div>
+<div class="code-box">
+  <div class="code-top"><span>23.56 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text =
+    <span class="syn-str">&quot;Hello! @Shariar #Developer&quot;</span>;
+
+<span class="syn-kw">const</span> cleaned =
+    text.<span class="syn-op">replace</span>(/[^\w\s]/g, <span class="syn-str">&quot;&quot;</span>);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(cleaned);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Hello Shariar Developer</pre>
+</div>
+    </div>
+
+    <!-- 23.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.57</span> Extract URLs</div>
+<p class="text-p">একটি basic URL pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.57 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> urlRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/https?:\/\/[^\s]+/g</span>;
+
+<span class="syn-kw">const</span> text =
+    <span class="syn-str">&quot;Visit https://example.com for more info.&quot;</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    text.<span class="syn-op">match</span>(urlRegex)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.57 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[
+    <span class="syn-str">&quot;https://example.com&quot;</span>
+]</pre>
+</div>
+<p class="text-p">বাস্তব URL parsing-এর জন্য <code>URL</code> object অনেক ক্ষেত্রে Regex-এর চেয়ে ভালো।</p>
+    </div>
+
+    <!-- 23.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.58</span> Regex দিয়ে Date Extract</div>
+<div class="code-box">
+  <div class="code-top"><span>23.58 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text =
+    <span class="syn-str">&quot;Exam date: 2026-09-20&quot;</span>;
+
+<span class="syn-kw">const</span> dateRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/\d{4}-\d{2}-\d{2}/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    text.<span class="syn-op">match</span>(dateRegex)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.58 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[&quot;<span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">20</span>&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 23.59 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">23.59</span> Date Validation-এর সীমাবদ্ধতা</div>
+<p class="text-p">এই Regex:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.59 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#fb923c; font-weight:600;">\d</span><span style="color:#f43f5e; font-weight:700;">{4}</span>-<span style="color:#fb923c; font-weight:600;">\d</span><span style="color:#f43f5e; font-weight:700;">{2}</span>-<span style="color:#fb923c; font-weight:600;">\d</span><span style="color:#f43f5e; font-weight:700;">{2}</span></pre>
+</div>
+<p class="text-p">এটি:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>2026-99-99</pre>
+</div>
+<p class="text-p">এর মতো format-ও match করতে পারে।</p>
+<p class="text-p">অর্থাৎ:</p>
+<div class="def-box">
+  <div class="def-text">Regex format check করতে পারে, কিন্তু সবসময় date-এর বাস্তব validity নিশ্চিত করে না।</div>
+</div>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.59 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Date</span></pre>
+</div>
+<p class="text-p">দিয়ে additional validation লাগতে পারে।</p>
+    </div>
+
+    <div class="part-banner">Part 06 — Advanced Unicode, Sticky Matching, Security (ReDoS) &amp; Enterprise Sanitization (23.60 – 23.80)</div>
+
+    <!-- 23.60 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.60</span> Regex Escape Characters</div>
+<p class="text-p">Regex-এ কিছু character-এর special meaning আছে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>. * + ? ^ $ { } [ ] ( ) | \</pre>
+</div>
+<p class="text-p">Literal হিসেবে ব্যবহার করতে escape করতে হয়।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.60 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\./</span>;</pre>
+</div>
+<p class="text-p">এখানে <code>.</code>-কে literal dot হিসেবে match করা হচ্ছে।</p>
+    </div>
+
+    <!-- 23.61 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.61</span> Literal Dot</div>
+<div class="code-box">
+  <div class="code-top"><span>23.61 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/\./.<span class="syn-op">test</span>(&quot;example.com&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.62 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.62</span> Literal `$</div>
+<p class="text-p">Dollar sign match করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.62 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/\$/</span></pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.62 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(/\$<span class="syn-num">100</span>/.<span class="syn-op">test</span>(&quot;$<span class="syn-num">100</span>&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.63 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.63</span> Word Boundary `\b</div>
+<p class="text-p"><code>\b</code> word boundary নির্দেশ করে।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.63 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\bcat\b/</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(regex.<span class="syn-op">test</span>(&quot;cat&quot;));</pre>
+</div>
+<p class="text-p">true।</p>
+<p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.63 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">console</span>.<span class="syn-op">log</span>(regex.<span class="syn-op">test</span>(&quot;category&quot;));</pre>
+</div>
+<p class="text-p">false হতে পারে, কারণ <code>cat</code> এখানে পুরো word নয়।</p>
+    </div>
+
+    <!-- 23.64 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.64</span> \B</div>
+<p class="text-p">Non-word-boundary।</p>
+<p class="text-p">এটি তুলনামূলকভাবে advanced এবং কম ব্যবহৃত।</p>
+    </div>
+
+    <!-- 23.65 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.65</span> Multiline `m</div>
+<p class="text-p"><code>m</code> flag ব্যবহার করলে <code>^</code> এবং <code>$</code> প্রতিটি line-এর beginning/end-এর সাথে কাজ করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.65 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">`Hello
+World`</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    text.<span class="syn-op">match</span>(/^World$/m)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.65 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[&quot;World&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 23.66 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.66</span> Unicode `u</div>
+<p class="text-p">Unicode-aware matching-এর জন্য <code>u</code> flag ব্যবহার করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.66 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\u{1F600}/u</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    regex.<span class="syn-op">test</span>(&quot;😀&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">Unicode নিয়ে কাজ করার সময় <code>u</code> এবং Unicode property escapes useful।</p>
+    </div>
+
+    <!-- 23.67 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.67</span> Unicode Property Escapes</div>
+<p class="text-p">Modern JavaScript-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.67 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#fb923c; font-weight:600;">\p{...}</span></pre>
+</div>
+<p class="text-p">ব্যবহার করা যায় <code>u</code> flag-এর সাথে।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.67 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\p{L}+/gu</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    <span class="syn-str">&quot;Hello বাংলা&quot;</span>.<span class="syn-op">match</span>(regex)
+);</pre>
+</div>
+<p class="text-p">Output conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.67 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[
+    <span class="syn-str">&quot;Hello&quot;</span>,
+    <span class="syn-str">&quot;বাংলা&quot;</span>
+]</pre>
+</div>
+<p class="text-p">এখানে <code>\p{L}</code> letter-এর Unicode property বোঝায়।</p>
+    </div>
+
+    <!-- 23.68 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.68</span> Emoji Matching</div>
+<p class="text-p">Unicode property দিয়ে emoji detect করা সম্ভব:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.68 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> emojiRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/\p{Emoji}/u</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    emojiRegex.<span class="syn-op">test</span>(&quot;😀&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 23.69 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.69</span> Sticky <code>y</code> Flag</div>
+<p class="text-p"><code>y</code> flag match-কে <code>lastIndex</code> position-এ stick করে।</p>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.69 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\d/y</span>;
+
+regex.lastIndex = <span class="syn-num">0</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(
+    regex.<span class="syn-op">test</span>(&quot;<span class="syn-num">123</span>&quot;)
+);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p"><code>y</code> advanced parsing scenarios-এ বেশি useful।</p>
+    </div>
+
+    <!-- 23.70 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.70</span> lastIndex</div>
+<div class="memory-box"><code>g</code> এবং <code>y</code> flag-এর সাথে <code>lastIndex</code> গুরুত্বপূর্ণ হতে পারে।</div>
+<div class="code-box">
+  <div class="code-top"><span>23.70 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\d/g</span>;
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(regex.<span class="syn-op">exec</span>(&quot;<span class="syn-num">123</span><span class="syn-str">&quot;));
+console.log(regex.exec(&quot;</span><span class="syn-num">123</span>&quot;));</pre>
+</div>
+<p class="text-p">Result sequentially match করতে পারে।</p>
+<p class="text-p">Conceptually:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>1
+2</pre>
+</div>
+<p class="text-p">এখানে regex-এর internal position পরিবর্তিত হয়।</p>
+    </div>
+
+    <!-- 23.71 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.71</span> exec()</div>
+<div class="code-box">
+  <div class="code-top"><span>23.71 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> regex = <span class="syn-regex" style="color:#facc15; font-weight:600;">/\d+/</span>;
+
+<span class="syn-kw">const</span> result =
+    regex.<span class="syn-op">exec</span>(&quot;Age: <span class="syn-num">24</span>&quot;);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(result);</pre>
+</div>
+<p class="text-p">Output conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.71 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>[
+    <span class="syn-str">&quot;24&quot;</span>,
+    index: <span class="syn-num">5</span>,
+    input: <span class="syn-str">&quot;Age: 24&quot;</span>
+]</pre>
+</div>
+<p class="text-p"><code>exec()</code> match-এর detailed result দেয়।</p>
+    </div>
+
+    <!-- 23.72 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.72</span> test()<code> বনাম </code>match()</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>test()</code></td><td>match আছে কি না</td></tr><tr><td><code>match()</code></td><td>matched text বের করা</td></tr><tr><td><code>matchAll()</code></td><td>সব match + groups</td></tr><tr><td><code>search()</code></td><td>প্রথম match-এর index</td></tr><tr><td><code>replace()</code></td><td>text replace</td></tr><tr><td><code>exec()</code></td><td>detailed match result</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 23.73 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.73</span> Regex + Form Validation</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#f472b6;">23.73 HTML</span><span>Markup</span></div>
+  <pre><span class="syn-fn">&lt;input</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;email&quot;</span> <span class="syn-kw">type</span><span class="syn-op">=</span><span class="syn-str">&quot;text&quot;</span><span class="syn-fn">&gt;</span>
+<span class="syn-fn">&lt;button</span> <span class="syn-kw">id</span><span class="syn-op">=</span><span class="syn-str">&quot;submit&quot;</span><span class="syn-fn">&gt;</span>Submit<span class="syn-fn">&lt;/button</span><span class="syn-fn">&gt;</span></pre>
+</div>
+<p class="text-p">JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.73 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> emailInput =
+    <span class="syn-fn">document</span>.querySelector(&quot;#email<span class="syn-str">&quot;);
+
+const emailRegex =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+document
+    .querySelector(&quot;</span>#submit<span class="syn-str">&quot;)
+    .addEventListener(&quot;</span>click<span class="syn-str">&quot;, () =&gt; {
+
+        if (emailRegex.test(emailInput.value)) {
+
+            console.log(&quot;</span>Valid email<span class="syn-str">&quot;);
+
+        } else {
+
+            console.log(&quot;</span>Invalid email&quot;);
+
+        }
+
+    });</pre>
+</div>
+    </div>
+
+    <!-- 23.74 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.74</span> Regex + Input Sanitization</div>
+<p class="text-p">Regex দিয়ে unwanted characters remove করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>23.74 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> username = <span class="syn-str">&quot;Shariar@123!&quot;</span>;
+
+<span class="syn-kw">const</span> cleaned =
+    username.<span class="syn-op">replace</span>(/[^A-Za-z0-9_]/g, <span class="syn-str">&quot;&quot;</span>);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(cleaned);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>Shariar123</pre>
+</div>
+<div class="memory-box">কিন্তু মনে রাখবে:</div>
+<div class="def-box">
+  <div class="def-text">Sanitization এবং validation একই জিনিস নয়।</div>
+</div>
+    </div>
+
+    <!-- 23.75 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.75</span> Validation vs Sanitization</div>
+<div class="section-subhead">Validation</div>
+<p class="text-p">Check করে:</p>
+<div class="def-box">
+  <div class="def-text">Data valid কি না?</div>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>23.75 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-regex" style="color:#facc15; font-weight:600;">/^[A-Za-z]+$/</span></pre>
+</div>
+<div class="section-subhead">Sanitization</div>
+<p class="text-p">Data clean/transform করে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.75 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre>text.<span class="syn-op">replace</span>(...)</pre>
+</div>
+    </div>
+
+    <!-- 23.76 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">23.76</span> Regex Security</div>
+<p class="text-p">Regex-এর ক্ষেত্রে একটি advanced security issue আছে:</p>
+<div class="warn-box"># ⚠️ ReDoS</div>
+<p class="text-p"><strong>Regular Expression Denial of Service</strong></p>
+<p class="text-p">কিছু poorly designed regex খুব complex input-এর ক্ষেত্রে অত্যন্ত slow হয়ে যেতে পারে।</p>
+<p class="text-p">বিশেষ করে nested quantifier-এর মতো dangerous pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.76 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#a78bfa; font-weight:700;">(</span>a<span style="color:#f43f5e; font-weight:700;">+</span><span style="color:#a78bfa; font-weight:700;">)</span><span style="color:#f43f5e; font-weight:700;">+</span></pre>
+</div>
+<p class="text-p">এর মতো pattern carefully ব্যবহার করতে হয়।</p>
+<div class="section-subhead">Best Practice</div>
+<ul class="bullet-list"><li>Unnecessary complex regex avoid করো</li><li>User-controlled huge input limit করো</li><li>Nested quantifier সাবধানে ব্যবহার করো</li><li>Performance-sensitive regex test করো</li></ul>
+    </div>
+
+    <!-- 23.77 -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">23.77</span> Regex সব সমস্যার সমাধান নয়</div>
+<p class="text-p">Regex দিয়ে:</p>
+<div class="ascii-tree-container">Email format
+Phone format
+Username
+Password rules
+Text extraction
+Search
+Replace</div>
+<p class="text-p">খুব ভালোভাবে করা যায়।</p>
+<p class="text-p">কিন্তু complex structured data-এর জন্য অন্য tools ভালো হতে পারে।</p>
+<p class="text-p">উদাহরণ:</p>
+<div class="section-subhead">URL</div>
+<p class="text-p">Regex-এর বদলে:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.77 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">new</span> URL(url)</pre>
+</div>
+<div class="section-subhead">Date</div>
+<p class="text-p">Regex +:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.77 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-fn">Date</span></pre>
+</div>
+<div class="section-subhead">HTML parsing</div>
+<p class="text-p">Regex দিয়ে HTML parser replace করা উচিত নয়।</p>
+    </div>
+
+    <!-- 23.78 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.78</span> Real-Life Project — Registration Validator</div>
+<div class="code-box">
+  <div class="code-top"><span>23.78 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> usernameRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/^[A-Za-z0-9_]{3,16}$/</span>;
+
+<span class="syn-kw">const</span> emailRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+
+<span class="syn-kw">const</span> phoneRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/^01[3-9]\d{8}$/</span>;
+
+<span class="syn-kw">const</span> passwordRegex =
+    <span class="syn-regex" style="color:#facc15; font-weight:600;">/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/</span>;
+
+<span class="syn-kw">function</span> validateUser(user) {
+
+    <span class="syn-kw">if</span> (!usernameRegex.<span class="syn-op">test</span>(user.username)) {
+        <span class="syn-kw">return</span> <span class="syn-str">&quot;Invalid username&quot;</span>;
+    }
+
+    <span class="syn-kw">if</span> (!emailRegex.<span class="syn-op">test</span>(user.email)) {
+        <span class="syn-kw">return</span> <span class="syn-str">&quot;Invalid email&quot;</span>;
+    }
+
+    <span class="syn-kw">if</span> (!phoneRegex.<span class="syn-op">test</span>(user.phone)) {
+        <span class="syn-kw">return</span> <span class="syn-str">&quot;Invalid phone&quot;</span>;
+    }
+
+    <span class="syn-kw">if</span> (!passwordRegex.<span class="syn-op">test</span>(user.password)) {
+        <span class="syn-kw">return</span> <span class="syn-str">&quot;Weak password&quot;</span>;
+    }
+
+    <span class="syn-kw">return</span> <span class="syn-str">&quot;Registration data is valid&quot;</span>;
+}
+
+<span class="syn-kw">const</span> user = {
+
+    username: <span class="syn-str">&quot;Shariar_01&quot;</span>,
+
+    email: <span class="syn-str">&quot;shariar@example.com&quot;</span>,
+
+    phone: <span class="syn-str">&quot;01712345678&quot;</span>,
+
+    password: <span class="syn-str">&quot;Hello@123&quot;</span>
+
+};
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(validateUser(user));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Registration data is valid</pre>
+</div>
+    </div>
+
+    <!-- 23.79 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">23.79</span> Regex-এর একটি Practical Text Processing Example</div>
+<p class="text-p">ধরো server থেকে পেলাম:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.79 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">`
+Name: Shariar
+Age: 24
+Email: shariar@example.com
+Phone: 01712345678
+`</span>;</pre>
+</div>
+<p class="text-p">Email বের করি:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.79 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> email =
+    text.<span class="syn-op">match</span>(
+        <span class="syn-regex" style="color:#facc15; font-weight:600;">/[^\s@]+@[^\s@]+\.[^\s@]+/</span>
+    );
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(email[<span class="syn-num">0</span>]);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>shariar@example.com</pre>
+</div>
+<p class="text-p">Phone:</p>
+<div class="code-box">
+  <div class="code-top"><span>23.79 JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> phone =
+    text.<span class="syn-op">match</span>(/<span class="syn-num">01</span>[<span class="syn-num">3</span>-<span class="syn-num">9</span>]\d{<span class="syn-num">8</span>}/);
+
+<span class="syn-fn">console</span>.<span class="syn-op">log</span>(phone[<span class="syn-num">0</span>]);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>01712345678</pre>
+</div>
+    </div>
+
+    <!-- 23.80 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">23.80</span> Regex Pattern পড়ার কৌশল</div>
+<p class="text-p">যখন একটি বড় Regex দেখবে, পুরোটা একসাথে বোঝার চেষ্টা করবে না।</p>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">23.80 RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#34d399; font-weight:700;">^</span><span style="color:#c084fc; font-weight:600;">(?=.*[A-Z])</span><span style="color:#c084fc; font-weight:600;">(?=.*[a-z])</span><span style="color:#c084fc; font-weight:600;">(?=.*\d)</span><span style="color:#c084fc; font-weight:600;">(?=.*[^A-Za-z0-9])</span>.<span style="color:#f43f5e; font-weight:700;">{8,}</span><span style="color:#34d399; font-weight:700;">$</span></pre>
+</div>
+<p class="text-p">এটাকে ভাঙো:</p>
+<div class="ascii-tree-container">^
+↓
+start
+
+(?=.*[A-Z])
+↓
+uppercase আছে?
+
+(?=.*[a-z])
+↓
+lowercase আছে?
+
+(?=.*\d)
+↓
+digit আছে?
+
+(?=.*[^A-Za-z0-9])
+↓
+special character আছে?
+
+.{8,}
+↓
+minimum 8 characters
+
+$
+↓
+end</div>
+<p class="text-p">এভাবেই Regex পড়তে হয়।</p>
+    </div>
+
+    <div class="part-banner">Part 07 — RegExp Mastery: Must Know, Cheat Sheet, Practice Lab &amp; Mental Map</div>
+
+    <!-- 23.81 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 23.81 Must Know — Advanced Regular Expressions Pillars</div>
+<div class="section-subhead">Basic</div>
+<ul class="bullet-list"><li>Regular Expression</li><li>Regex literal</li><li><code>RegExp</code></li><li><code>test()</code></li><li>Regex flags</li></ul>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Character Classes</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>[abc]
+[a-z]
+[A-Z]
+[0-9]
+[^abc]
+\d
+\D
+\w
+\W
+\s
+\S
+.</pre>
+</div>
+<div class="section-subhead">Quantifiers</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>+
+*
+?
+{n}
+{n,m}
+{n,}</pre>
+</div>
+<div class="section-subhead">Anchors</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>^
+$
+\b
+\B</pre>
+</div>
+<div class="section-subhead">Groups</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>(...)
+(?:...)
+(?&lt;name&gt;...)</pre>
+</div>
+<div class="section-subhead">Advanced</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>\1
+(?=...)
+(?!...)
+(?&lt;=...)
+(?&lt;!...)</pre>
+</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Methods</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-op">test</span>()
+<span class="syn-op">exec</span>()
+<span class="syn-op">match</span>()
+<span class="syn-op">matchAll</span>()
+<span class="syn-op">search</span>()
+<span class="syn-op">replace</span>()
+<span class="syn-op">replaceAll</span>()</pre>
+</div>
+<div class="section-subhead">Practical</div>
+<ul class="bullet-list"><li>Email validation</li><li>Phone validation</li><li>Password validation</li><li>Username validation</li><li>Number extraction</li><li>Hashtag extraction</li><li>URL extraction</li><li>Text cleaning</li></ul>
+<div class="section-subhead">Advanced Topics</div>
+<ul class="bullet-list"><li>Greedy vs lazy</li><li>Unicode</li><li>Unicode property escapes</li><li><code>g</code>, <code>m</code>, <code>s</code>, <code>u</code>, <code>y</code></li><li><code>lastIndex</code></li><li>ReDoS</li><li>Regex limitations</li></ul>
+    </div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet — RegExp Syntax, Quantifiers &amp; Lookarounds</div>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre>/abc/</pre>
+</div>
+<p class="text-p">→ <code>abc</code></p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre>/abc/i</pre>
+</div>
+<p class="text-p">→ case-insensitive</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre>/abc/g</pre>
+</div>
+<p class="text-p">→ global</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#fb923c; font-weight:600;">\d</span></pre>
+</div>
+<p class="text-p">→ digit</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#fb923c; font-weight:600;">\w</span></pre>
+</div>
+<p class="text-p">→ word character</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#fb923c; font-weight:600;">\s</span></pre>
+</div>
+<p class="text-p">→ whitespace</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre>.</pre>
+</div>
+<p class="text-p">→ any character except newline by default</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#f43f5e; font-weight:700;">+</span></pre>
+</div>
+<p class="text-p">→ 1 or more</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#f43f5e; font-weight:700;">*</span></pre>
+</div>
+<p class="text-p">→ 0 or more</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#f43f5e; font-weight:700;">?</span></pre>
+</div>
+<p class="text-p">→ 0 or 1</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#f43f5e; font-weight:700;">{3}</span></pre>
+</div>
+<p class="text-p">→ exactly 3</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#f43f5e; font-weight:700;">{2,5}</span></pre>
+</div>
+<p class="text-p">→ 2–5</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#34d399; font-weight:700;">^</span></pre>
+</div>
+<p class="text-p">→ start</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#34d399; font-weight:700;">$</span></pre>
+</div>
+<p class="text-p">→ end</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#38bdf8; font-weight:700;">|</span></pre>
+</div>
+<p class="text-p">→ OR</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#a78bfa; font-weight:700;">(</span>...<span style="color:#a78bfa; font-weight:700;">)</span></pre>
+</div>
+<p class="text-p">→ capturing group</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#94a3b8; font-weight:600;">(?:...)</span></pre>
+</div>
+<p class="text-p">→ non-capturing group</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?=...)</span></pre>
+</div>
+<p class="text-p">→ positive lookahead</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?!...)</span></pre>
+</div>
+<p class="text-p">→ negative lookahead</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?&lt;=...)</span></pre>
+</div>
+<p class="text-p">→ positive lookbehind</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#c084fc; font-weight:600;">(?&lt;!...)</span></pre>
+</div>
+<p class="text-p">→ negative lookbehind</p>
+<div class="code-box">
+  <div class="code-top"><span style="color:#facc15;">RegExp Pattern</span><span>Pattern</span></div>
+  <pre><span style="color:#fb923c; font-weight:600;">\1</span></pre>
+</div>
+<p class="text-p">→ first captured group-এর backreference</p>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — 7 Practical Regex Challenges</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 1</h4>
+<p class="text-p">এমন Regex বানাও যেটা শুধু digit accept করবে:</p>
+<div class="ascii-tree-container">12345 → true
+123a5 → false</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 2</h4>
+<p class="text-p">এমন Regex বানাও যেটা username:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>3–15 characters
+letters
+numbers
+underscore</pre>
+</div>
+<p class="text-p">accept করবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 3</h4>
+<p class="text-p">এই text থেকে সব number বের করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text =
+    <span class="syn-str">&quot;I have 10 books, 20 pens and 5 laptops.&quot;</span>;</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>[&quot;10&quot;, &quot;20&quot;, &quot;5&quot;]</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 4</h4>
+<p class="text-p">এই text থেকে সব hashtag বের করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript RegExp</span><span>ES2026</span></div>
+  <pre><span class="syn-kw">const</span> text =
+    <span class="syn-str">&quot;I love #JavaScript #React #NodeJS&quot;</span>;</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>#JavaScript
+#React
+#NodeJS</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 5</h4>
+<p class="text-p">Extra spaces remove করো:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>&quot;Hello     World    JavaScript&quot;</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>&quot;Hello World JavaScript&quot;</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 6</h4>
+<p class="text-p">একটি password validator বানাও যেখানে:</p>
+<ul class="bullet-list"><li>minimum 8 characters</li><li>uppercase</li><li>lowercase</li><li>number</li><li>special character</li></ul>
+<p class="text-p">থাকবে।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 4px;">Practice 7 — Advanced</h4>
+<p class="text-p">এই string:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>&quot;ID: 101, ID: 202, ID: 303&quot;</pre>
+</div>
+<p class="text-p">থেকে <code>matchAll()</code> ব্যবহার করে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">OUTPUT / TEXT</span></div>
+  <pre>101
+202
+303</pre>
+</div>
+<p class="text-p">বের করো।</p>
+      </div>
+    </div>
+
+    <!-- Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🎯 Chapter 23 Final Mental Map — RegExp Architecture &amp; Use Cases</div>
+<div class="ascii-tree-container">                 REGULAR EXPRESSION
+                        │
+        ┌───────────────┼────────────────┐
+        │               │                │
+   Characters       Quantifiers       Anchors
+        │               │                │
+ [a-z] [0-9]        + * ? {n}          ^ $
+ \d \w \s           {n,m}              \b
+        │
+        └───────────────┐
+                        ↓
+                     Groups
+                        │
+             ┌──────────┼──────────┐
+             │          │          │
+            (...)     (?:...)    Named
+             │
+             ↓
+          Lookaround
+        ┌────┴─────────────┐
+        ↓                  ↓
+   Lookahead          Lookbehind
+        │                  │
+        └────────┬─────────┘
+                 ↓
+              Methods
+                 │
+     ┌───────────┼────────────┐
+     ↓           ↓            ↓
+   test()      match()      replace()
+     │           │            │
+     └───────────┼────────────┘
+                 ↓
+        Real-world validation
+                 │
+       ┌─────────┼──────────┐
+       ↓         ↓          ↓
+     Email     Phone      Password</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 ⭐ সবচেয়ে গুরুত্বপূর্ণ কথা</div>
+<p class="text-p">Regex-কে শুধু <strong>validation tool</strong> হিসেবে দেখবে না।</p>
+<p class="text-p">একজন Full Stack Developer হিসেবে Regex ব্যবহার করতে পারবে:</p>
+<div class="ascii-tree-container">User Input
+    ↓
+Validation
+    ↓
+Text Search
+    ↓
+Data Extraction
+    ↓
+Text Replacement
+    ↓
+Data Cleaning
+    ↓
+Parsing</div>
+<p class="text-p">আর <strong>Chapter 13-এর basic RegExp + Chapter 23-এর Advanced RegExp</strong> মিলিয়ে এখন JavaScript-এর Regular Expression অংশটি অনেক বেশি complete হলো।</p>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 24 Preview — Object-Oriented JavaScript &amp; Classes</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        পরবর্তী অধ্যায়ে আমরা জাভাস্ক্রিপ্টের অন্যতম কোর পিলার <strong>Object-Oriented Programming (OOP) &amp; ES6 Classes</strong> নিয়ে বিস্তারিত শিখব—Constructor, Prototypal Inheritance, <code>extends</code> &amp; <code>super</code>, Private Fields (<code>#</code>), Static Methods এবং বাস্তব সফটওয়্যার আর্কিটেকচার ডিজাইন প্যাটার্ন।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

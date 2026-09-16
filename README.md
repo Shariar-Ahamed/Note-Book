@@ -30,6 +30,8 @@ Comprehensive, production-grade JavaScript study notes, interactive HTML documen
 | **20** | ES Modules (ESM) | [HTML](Code/Chapter-20-ES-Modules.html) | [PDF](PDF/Chapter-20-ES-Modules.pdf) | ✅ Complete |
 | **21** | Asynchronous JavaScript (Event Loop, Promises & async/await) | [HTML](Code/Chapter-21-Asynchronous-JavaScript.html) | [PDF](PDF/Chapter-21-Asynchronous-JavaScript.pdf) | ✅ Complete |
 | **22** | HTTP, REST API & Fetch API | [HTML](Code/Chapter-22-HTTP-API-Fetch.html) | [PDF](PDF/Chapter-22-HTTP-API-Fetch.pdf) | ✅ Complete |
+| **23** | Advanced Regular Expressions | [HTML](Code/Chapter-23-Advanced-Regex.html) | [PDF](PDF/Chapter-23-Advanced-Regex.pdf) | ✅ Complete |
+| **24** | OOP & JavaScript Classes | [HTML](Code/Chapter-24-OOP-Classes.html) | [PDF](PDF/Chapter-24-OOP-Classes.pdf) | ✅ Complete |
 
 ---
 
