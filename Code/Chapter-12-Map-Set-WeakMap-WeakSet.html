@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 12: Map, Set, WeakMap &amp; WeakSet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10.5px;
+      line-height: 1.4;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 12: MAP, SET, WEAKMAP &amp; WEAKSET</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">60 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 06 — Advanced Collections &amp; Memory Architecture</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Map, Set, WeakMap, WeakSet &amp; Memory Models</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Advanced Collections: Map, Set, WeakMap &amp; WeakSet</h2>
+      <p class="text-p">Chapter 11-এ আমরা <strong>Prototype, Prototype Chain, Constructor, Class ও Inheritance</strong> শিখেছি। এবার JavaScript-এর এমন কিছু data structure শিখব যেগুলো real-life application-এ অনেক কাজে লাগে:</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">Map &nbsp;→&nbsp; Set &nbsp;→&nbsp; WeakMap &nbsp;→&nbsp; WeakSet</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">বিশেষ করে <strong>Map</strong> এবং <strong>Set</strong> খুব ভালোভাবে শেখা জরুরি। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Map: Deep Dive &amp; Practical Applications (12.1 – 12.26)</div>
+
+    <!-- 12.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">12.1</span> Collection কী?</div>
+<p class="text-p">Collection মানে হলো:</p>
+<div class="def-box">
+  <div class="def-text">একসাথে অনেকগুলো data সুন্দরভাবে সংরক্ষণ করার structure।</div>
+</div>
+<p class="text-p">আমরা আগে Array এবং Object শিখেছি।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.1 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> students = [&quot;Ripon<span class="syn-str">&quot;, &quot;</span>Rahim<span class="syn-str">&quot;, &quot;</span>Karim&quot;];</pre>
+</div>
+<p class="text-p">এখানে Array ব্যবহার করেছি।</p>
+<p class="text-p">আবার:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.1 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> student = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+    department: <span class="syn-str">&quot;CSE&quot;</span>
+};</pre>
+</div>
+<p class="text-p">এখানে Object ব্যবহার করেছি।</p>
+<p class="text-p">কিন্তু কিছু ক্ষেত্রে Object/Array-এর চেয়ে <code>Map</code> বা <code>Set</code> বেশি সুবিধাজনক।</p>
+    </div>
+
+    <!-- 12.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.2</span> Map কী?</div>
+<p class="text-p"><code>Map</code> হলো এমন একটি collection যেখানে:</p>
+<div class="ascii-tree-container">key → value</div>
+<p class="text-p">pair হিসেবে data রাখা হয়।</p>
+<div class="section-subhead">সহজভাবে:</div>
+<div class="ascii-tree-container">Map
+
+key         value
+---------------------
+name   →    Ripon
+age    →    25
+dept   →    CSE</div>
+<p class="text-p">Object-এর মতো মনে হচ্ছে, কিন্তু Map অনেক বেশি flexible।</p>
+    </div>
+
+    <!-- 12.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.3</span> Map তৈরি করা</div>
+<div class="code-box">
+  <div class="code-top"><span>12.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="ascii-tree-container">Map(0) {}</div>
+    </div>
+
+    <!-- 12.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.4</span> Map-এ Data যোগ করা — <code>set()</code></div>
+<p class="text-p">Map-এ data যোগ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.4 JavaScript</span><span>Run</span></div>
+  <pre>set()</pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+user.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+user.set(&quot;</span>age<span class="syn-str">&quot;, 25);
+user.set(&quot;</span>department<span class="syn-str">&quot;, &quot;</span>CSE&quot;);
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="ascii-tree-container">Map(3) {
+    &quot;name&quot; =&gt; &quot;Ripon&quot;,
+    &quot;age&quot; =&gt; 25,
+    &quot;department&quot; =&gt; &quot;CSE&quot;
+}</div>
+    </div>
+
+    <!-- 12.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.5</span> Map থেকে Data নেওয়া — <code>get()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>12.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+user.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+user.set(&quot;</span>age<span class="syn-str">&quot;, 25);
+
+console.log(user.get(&quot;</span>name<span class="syn-str">&quot;));
+console.log(user.get(&quot;</span>age&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon
+25</pre>
+</div>
+<div class="sub-badge" style="background:#fef9c3; color:#854d0e;">📌 মনে রাখো:</div>
+<div class="ascii-tree-container">set() → data রাখে
+get() → data বের করে</div>
+    </div>
+
+    <!-- 12.6 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.6</span> Map-এ Key না থাকলে</div>
+<div class="code-box">
+  <div class="code-top"><span>12.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+user.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+
+console.log(user.get(&quot;</span>age&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>undefined</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>age</pre>
+</div>
+<p class="text-p">key নেই।</p>
+    </div>
+
+    <!-- 12.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.7</span> <code>has()</code> — Key আছে কিনা</div>
+<div class="code-box">
+  <div class="code-top"><span>12.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+user.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+
+console.log(user.has(&quot;</span>name<span class="syn-str">&quot;));
+console.log(user.has(&quot;</span>age&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true
+false</pre>
+</div>
+<div class="sub-badge" style="background:#ede9fe; color:#6d28d9;">⚙️ Syntax:</div>
+<div class="code-box">
+  <div class="code-top"><span>12.7 JavaScript</span><span>Run</span></div>
+  <pre>map.has(key);</pre>
+</div>
+    </div>
+
+    <!-- 12.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.8</span> <code>delete()</code> — Data Remove করা</div>
+<div class="code-box">
+  <div class="code-top"><span>12.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+user.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+user.set(&quot;</span>age<span class="syn-str">&quot;, 25);
+
+user.delete(&quot;</span>age&quot;);
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="ascii-tree-container">Map(1) {
+    &quot;name&quot; =&gt; &quot;Ripon&quot;
+}</div>
+    </div>
+
+    <!-- 12.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.9</span> <code>clear()</code> — সব Data Remove</div>
+<div class="code-box">
+  <div class="code-top"><span>12.9 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+user.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+user.set(&quot;</span>age&quot;, <span class="syn-num">25</span>);
+
+user.clear();
+
+<span class="syn-fn">console</span>.log(user);</pre>
+</div>
+<div class="ascii-tree-container">Map(0) {}</div>
+    </div>
+
+    <!-- 12.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.10</span> <code>size</code> — কতগুলো Item আছে</div>
+<div class="code-box">
+  <div class="code-top"><span>12.10 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+user.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+user.set(&quot;</span>age<span class="syn-str">&quot;, 25);
+user.set(&quot;</span>department<span class="syn-str">&quot;, &quot;</span>CSE&quot;);
+
+<span class="syn-fn">console</span>.log(user.size);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>3</pre>
+</div>
+<p class="text-p">খেয়াল করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.10 JavaScript</span><span>Run</span></div>
+  <pre>map.size</pre>
+</div>
+<p class="text-p">এখানে <code>()</code> নেই।</p>
+    </div>
+
+    <!-- 12.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.11</span> Map-এর Basic Methods</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th>কাজ</th></tr></thead>
+    <tbody>
+      <tr><td><code>set()</code></td><td>Data যোগ করে</td></tr><tr><td><code>get()</code></td><td>Data বের করে</td></tr><tr><td><code>has()</code></td><td>Key আছে কিনা দেখে</td></tr><tr><td><code>delete()</code></td><td>নির্দিষ্ট item remove করে</td></tr><tr><td><code>clear()</code></td><td>সব item remove করে</td></tr><tr><td><code>size</code></td><td>মোট item সংখ্যা</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 12.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.12</span> Map-এর Key শুধু String হতে হবে না</div>
+<p class="text-p">এটাই Map-এর বড় সুবিধাগুলোর একটি।</p>
+<p class="text-p">Object-এ সাধারণত property key string বা symbol-based হয়।</p>
+<p class="text-p">কিন্তু Map-এ key হিসেবে ব্যবহার করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>String
+Number
+Boolean
+Object
+Array
+Function
+Symbol</pre>
+</div>
+<p class="text-p">ইত্যাদি।</p>
+    </div>
+
+    <!-- 12.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.13</span> Number Key</div>
+<div class="code-box">
+  <div class="code-top"><span>12.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> students = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+students.set(<span class="syn-num">101</span>, <span class="syn-str">&quot;Ripon&quot;</span>);
+students.set(<span class="syn-num">102</span>, <span class="syn-str">&quot;Rahim&quot;</span>);
+
+<span class="syn-fn">console</span>.log(students.get(<span class="syn-num">101</span>));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon</pre>
+</div>
+    </div>
+
+    <!-- 12.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.14</span> Boolean Key</div>
+<div class="code-box">
+  <div class="code-top"><span>12.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> data = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+data.set(<span class="syn-bool">true</span>, <span class="syn-str">&quot;Logged In&quot;</span>);
+data.set(<span class="syn-bool">false</span>, <span class="syn-str">&quot;Logged Out&quot;</span>);
+
+<span class="syn-fn">console</span>.log(data.get(<span class="syn-bool">true</span>));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Logged In</pre>
+</div>
+    </div>
+
+    <!-- 12.15 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.15</span> Object as Map Key</div>
+<div class="memory-box">🔥 খুব গুরুত্বপূর্ণ।</div>
+<div class="code-box">
+  <div class="code-top"><span>12.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user1 = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">const</span> user2 = {
+    name: <span class="syn-str">&quot;Rahim&quot;</span>
+};
+
+<span class="syn-kw">const</span> scores = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+scores.set(user1, <span class="syn-num">95</span>);
+scores.set(user2, <span class="syn-num">88</span>);
+
+<span class="syn-fn">console</span>.log(scores.get(user1));
+<span class="syn-fn">console</span>.log(scores.get(user2));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>95
+88</pre>
+</div>
+<p class="text-p">এখানে object-গুলো নিজেরাই key।</p>
+    </div>
+
+    <!-- 12.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.16</span> Array as Map Key</div>
+<div class="code-box">
+  <div class="code-top"><span>12.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> map = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+<span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+map.set(numbers, <span class="syn-str">&quot;Numbers Array&quot;</span>);
+
+<span class="syn-fn">console</span>.log(map.get(numbers));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Numbers Array</pre>
+</div>
+    </div>
+
+    <!-- 12.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.17</span> Function as Map Key</div>
+<div class="code-box">
+  <div class="code-top"><span>12.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> greet() {
+    <span class="syn-fn">console</span>.log(&quot;Hello<span class="syn-str">&quot;);
+}
+
+const map = new Map();
+
+map.set(greet, &quot;</span>Greeting <span class="syn-fn">Function</span>&quot;);
+
+<span class="syn-fn">console</span>.log(map.get(greet));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Greeting Function</pre>
+</div>
+    </div>
+
+    <!-- 12.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.18</span> Map Constructor দিয়ে সরাসরি Data</div>
+<p class="text-p">Map তৈরি করার সময় initial data দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>([
+    [&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;],
+    [&quot;</span>age<span class="syn-str">&quot;, 25],
+    [&quot;</span>department<span class="syn-str">&quot;, &quot;</span>CSE<span class="syn-str">&quot;]
+]);
+
+console.log(user.get(&quot;</span>name&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon</pre>
+</div>
+    </div>
+
+    <!-- 12.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.19</span> Map-এর উপর Loop</div>
+<p class="text-p">Map-এর সবচেয়ে common way:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">for</span>...<span class="syn-kw">of</span></pre>
+</div>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>12.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>([
+    [&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;],
+    [&quot;</span>age<span class="syn-str">&quot;, 25],
+    [&quot;</span>department<span class="syn-str">&quot;, &quot;</span>CSE&quot;]
+]);
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> [key, value] <span class="syn-kw">of</span> user) {
+    <span class="syn-fn">console</span>.log(key, value);
+}</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>name Ripon
+age 25
+department CSE</pre>
+</div>
+    </div>
+
+    <!-- 12.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.20</span> <code>keys()</code></div>
+<p class="text-p">শুধু keys দেখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>([
+    [&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;],
+    [&quot;</span>age<span class="syn-str">&quot;, 25],
+    [&quot;</span>department<span class="syn-str">&quot;, &quot;</span>CSE&quot;]
+]);
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> key <span class="syn-kw">of</span> user.keys()) {
+    <span class="syn-fn">console</span>.log(key);
+}</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>name
+age
+department</pre>
+</div>
+    </div>
+
+    <!-- 12.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.21</span> <code>values()</code></div>
+<p class="text-p">শুধু values:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">const</span> value <span class="syn-kw">of</span> user.values()) {
+    <span class="syn-fn">console</span>.log(value);
+}</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Ripon
+25
+CSE</pre>
+</div>
+    </div>
+
+    <!-- 12.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.22</span> <code>entries()</code></div>
+<p class="text-p">Key + value pair:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">const</span> entry <span class="syn-kw">of</span> user.entries()) {
+    <span class="syn-fn">console</span>.log(entry);
+}</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>[&quot;name&quot;, &quot;Ripon&quot;]
+[&quot;age&quot;, 25]
+[&quot;department&quot;, &quot;CSE&quot;]</pre>
+</div>
+    </div>
+
+    <!-- 12.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.23</span> Map Destructuring</div>
+<p class="text-p">এভাবে সবচেয়ে সুন্দর:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">for</span> (<span class="syn-kw">const</span> [key, value] <span class="syn-kw">of</span> user) {
+    <span class="syn-fn">console</span>.log(`${key}: ${value}`);
+}</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>name: Ripon
+age: 25
+department: CSE</pre>
+</div>
+    </div>
+
+    <!-- 12.24 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">12.24</span> Map-এর Real-Life Example — Student Marks</div>
+<p class="text-p">ধরো Student ID দিয়ে marks store করব।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> marks = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+marks.set(&quot;CSE101<span class="syn-str">&quot;, 85);
+marks.set(&quot;</span>CSE102<span class="syn-str">&quot;, 90);
+marks.set(&quot;</span>CSE103<span class="syn-str">&quot;, 78);
+
+console.log(marks.get(&quot;</span>CSE102&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>90</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">Student ID → Marks</div>
+    </div>
+
+    <!-- 12.25 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">12.25</span> Map-এর Real-Life Example — Product Price</div>
+<div class="code-box">
+  <div class="code-top"><span>12.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> products = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+products.set(&quot;Laptop<span class="syn-str">&quot;, 75000);
+products.set(&quot;</span>Phone<span class="syn-str">&quot;, 35000);
+products.set(&quot;</span>Keyboard<span class="syn-str">&quot;, 2500);
+
+console.log(products.get(&quot;</span>Laptop&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>75000</pre>
+</div>
+    </div>
+
+    <!-- 12.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.26</span> Map ব্যবহার করে Frequency Counter</div>
+<div class="memory-box">এটি খুব গুরুত্বপূর্ণ এবং interview-এও কাজে লাগে।</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> fruits = [
+    <span class="syn-str">&quot;apple&quot;</span>,
+    <span class="syn-str">&quot;banana&quot;</span>,
+    <span class="syn-str">&quot;apple&quot;</span>,
+    <span class="syn-str">&quot;orange&quot;</span>,
+    <span class="syn-str">&quot;banana&quot;</span>,
+    <span class="syn-str">&quot;apple&quot;</span>
+];</pre>
+</div>
+<p class="text-p">আমরা count করতে চাই।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> count = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> fruit <span class="syn-kw">of</span> fruits) {
+    count.set(
+        fruit,
+        (count.get(fruit) || <span class="syn-num">0</span>) + <span class="syn-num">1</span>
+    );
+}
+
+<span class="syn-fn">console</span>.log(count);</pre>
+</div>
+<div class="ascii-tree-container">Map(3) {
+    &quot;apple&quot; =&gt; 3,
+    &quot;banana&quot; =&gt; 2,
+    &quot;orange&quot; =&gt; 1
+}</div>
+<p class="text-p">🔥 এই pattern অনেক useful:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>map.set(
+    key,
+    (map.get(key) || 0) + 1
+);</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Set: Unique Collections &amp; Deduplication (12.27 – 12.44)</div>
+
+    <!-- 12.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.27</span> Set কী?</div>
+<p class="text-p">এখন আসি <code>Set</code>-এ।</p>
+<div class="def-box">
+  <div class="def-text"><strong>Set হলো এমন একটি collection যেখানে duplicate value রাখা হয় না।</strong></div>
+</div>
+<div class="sub-badge">💡 Example:</div>
+<div class="code-box">
+  <div class="code-top"><span>12.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>();
+
+numbers.add(<span class="syn-num">10</span>);
+numbers.add(<span class="syn-num">20</span>);
+numbers.add(<span class="syn-num">10</span>);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="ascii-tree-container">Set(2) {
+    10,
+    20
+}</div>
+<p class="text-p">দুইবার <code>10</code> দেওয়া হলেও একবারই আছে।</p>
+    </div>
+
+    <!-- 12.28 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.28</span> Set তৈরি করা</div>
+<div class="code-box">
+  <div class="code-top"><span>12.28 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>();
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="ascii-tree-container">Set(0) {}</div>
+    </div>
+
+    <!-- 12.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.29</span> <code>add()</code></div>
+<p class="text-p">Set-এ data যোগ করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.29 JavaScript</span><span>Run</span></div>
+  <pre>numbers.add(<span class="syn-num">10</span>);
+numbers.add(<span class="syn-num">20</span>);
+numbers.add(<span class="syn-num">30</span>);</pre>
+</div>
+    </div>
+
+    <!-- 12.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.30</span> Duplicate Data</div>
+<div class="code-box">
+  <div class="code-top"><span>12.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>();
+
+numbers.add(<span class="syn-num">10</span>);
+numbers.add(<span class="syn-num">10</span>);
+numbers.add(<span class="syn-num">10</span>);
+
+<span class="syn-fn">console</span>.log(numbers.size);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>1</pre>
+</div>
+    </div>
+
+    <!-- 12.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.31</span> <code>has()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>12.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>]);
+
+<span class="syn-fn">console</span>.log(numbers.has(<span class="syn-num">20</span>));
+<span class="syn-fn">console</span>.log(numbers.has(<span class="syn-num">50</span>));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true
+false</pre>
+</div>
+    </div>
+
+    <!-- 12.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.32</span> <code>delete()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>12.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>]);
+
+numbers.<span class="syn-kw">delete</span>(<span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="ascii-tree-container">Set(2) {
+    10,
+    30
+}</div>
+    </div>
+
+    <!-- 12.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.33</span> <code>clear()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>12.33 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>]);
+
+numbers.clear();
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="ascii-tree-container">Set(0) {}</div>
+    </div>
+
+    <!-- 12.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.34</span> <code>size</code></div>
+<div class="code-box">
+  <div class="code-top"><span>12.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>]);
+
+<span class="syn-fn">console</span>.log(numbers.size);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>3</pre>
+</div>
+    </div>
+
+    <!-- 12.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.35</span> Set Constructor দিয়ে Array</div>
+<div class="code-box">
+  <div class="code-top"><span>12.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>]);
+
+<span class="syn-fn">console</span>.log(numbers);</pre>
+</div>
+<div class="ascii-tree-container">Set(4) {
+    10,
+    20,
+    30,
+    40
+}</div>
+    </div>
+
+    <!-- 12.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.36</span> Array থেকে Duplicate Remove</div>
+<p class="text-p">🔥 Set-এর সবচেয়ে common practical use।</p>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = [
+    <span class="syn-num">10</span>,
+    <span class="syn-num">20</span>,
+    <span class="syn-num">10</span>,
+    <span class="syn-num">30</span>,
+    <span class="syn-num">20</span>,
+    <span class="syn-num">40</span>
+];</pre>
+</div>
+<p class="text-p">Duplicate remove:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> uniqueNumbers = [...<span class="syn-kw">new</span> <span class="syn-fn">Set</span>(numbers)];
+
+<span class="syn-fn">console</span>.log(uniqueNumbers);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>[10, 20, 30, 40]</pre>
+</div>
+    </div>
+
+    <!-- 12.37 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">12.37</span> Real-Life Example — Unique Skills</div>
+<div class="code-box">
+  <div class="code-top"><span>12.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> skills = [
+    <span class="syn-str">&quot;HTML&quot;</span>,
+    <span class="syn-str">&quot;CSS&quot;</span>,
+    <span class="syn-str">&quot;JavaScript&quot;</span>,
+    <span class="syn-str">&quot;React&quot;</span>,
+    <span class="syn-str">&quot;JavaScript&quot;</span>,
+    <span class="syn-str">&quot;Node.js&quot;</span>,
+    <span class="syn-str">&quot;React&quot;</span>
+];
+
+<span class="syn-kw">const</span> uniqueSkills = [...<span class="syn-kw">new</span> <span class="syn-fn">Set</span>(skills)];
+
+<span class="syn-fn">console</span>.log(uniqueSkills);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>[
+    &quot;HTML&quot;,
+    &quot;CSS&quot;,
+    &quot;JavaScript&quot;,
+    &quot;React&quot;,
+    &quot;Node.js&quot;
+]</pre>
+</div>
+<p class="text-p">এটা real-life portfolio বা form data cleaning-এ কাজে লাগতে পারে।</p>
+    </div>
+
+    <!-- 12.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.38</span> Set-এর উপর Loop</div>
+<div class="code-box">
+  <div class="code-top"><span>12.38 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> skills = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([
+    <span class="syn-str">&quot;HTML&quot;</span>,
+    <span class="syn-str">&quot;CSS&quot;</span>,
+    <span class="syn-str">&quot;JavaScript&quot;</span>
+]);
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> skill <span class="syn-kw">of</span> skills) {
+    <span class="syn-fn">console</span>.log(skill);
+}</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>HTML
+CSS
+JavaScript</pre>
+</div>
+    </div>
+
+    <!-- 12.39 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.39</span> Set-এর <code>keys()</code>, <code>values()</code>, <code>entries()</code></div>
+<p class="text-p">Set-এর ক্ষেত্রে:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.39 JavaScript</span><span>Run</span></div>
+  <pre>set.keys()
+set.values()
+set.entries()</pre>
+</div>
+<p class="text-p">আছে।</p>
+<div class="sub-badge">💡 Example</div>
+<div class="code-box">
+  <div class="code-top"><span>12.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>]);
+
+<span class="syn-fn">console</span>.log([...numbers.keys()]);
+<span class="syn-fn">console</span>.log([...numbers.values()]);
+<span class="syn-fn">console</span>.log([...numbers.entries()]);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>[10, 20, 30]
+
+[10, 20, 30]
+
+[
+    [10, 10],
+    [20, 20],
+    [30, 30]
+]</pre>
+</div>
+<p class="text-p">Set-এ key এবং value একই।</p>
+    </div>
+
+    <!-- 12.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.40</span> Set কি Object-এর মতো?</div>
+<p class="text-p">না।</p>
+<div class="section-subhead">Object</div>
+<div class="code-box">
+  <div class="code-top"><span>12.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+    age: <span class="syn-num">25</span>
+};</pre>
+</div>
+<p class="text-p">Key-value pair:</p>
+<div class="ascii-tree-container">key → value</div>
+<div class="section-subhead">Set</div>
+<div class="code-box">
+  <div class="code-top"><span>12.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> skills = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([
+    <span class="syn-str">&quot;HTML&quot;</span>,
+    <span class="syn-str">&quot;CSS&quot;</span>,
+    <span class="syn-str">&quot;JS&quot;</span>
+]);</pre>
+</div>
+<p class="text-p">শুধু unique values:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>value
+value
+value</pre>
+</div>
+    </div>
+
+    <!-- 12.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.41</span> Map বনাম Object</div>
+<div class="memory-box">খুব গুরুত্বপূর্ণ comparison।</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>Object</th><th>Map</th></tr></thead>
+    <tbody>
+      <tr><td>Key-value</td><td>✅</td><td>✅</td></tr><tr><td>Key type</td><td>String/Symbol</td><td>যেকোনো value</td></tr><tr><td><code>size</code></td><td>সরাসরি নেই</td><td>✅</td></tr><tr><td><code>set()</code></td><td>❌</td><td>✅</td></tr><tr><td><code>get()</code></td><td>❌</td><td>✅</td></tr><tr><td><code>has()</code></td><td>আলাদা methods</td><td>✅</td></tr><tr><td>Iteration</td><td>তুলনামূলক less direct</td><td>সহজ</td></tr><tr><td>Object key</td><td>special handling</td><td>সরাসরি</td></tr><tr><td>Structured data</td><td>খুব ভালো</td><td>ভালো</td></tr><tr><td>Dictionary-like data</td><td>ভালো</td><td>খুব ভালো</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 12.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.42</span> কখন Object ব্যবহার করব?</div>
+<p class="text-p">যখন data-এর structure fixed বা JSON/API-like হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+    email: <span class="syn-str">&quot;ripon@example.com&quot;</span>,
+    department: <span class="syn-str">&quot;CSE&quot;</span>
+};</pre>
+</div>
+<p class="text-p">এখানে Object খুব natural।</p>
+    </div>
+
+    <!-- 12.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.43</span> কখন Map ব্যবহার করব?</div>
+<p class="text-p">যখন:</p>
+<ul class="bullet-list"><li>Dynamic keys আছে</li><li>Key হিসেবে object/array/function লাগবে</li><li>Frequent add/remove দরকার</li><li>Size জানতে হবে</li><li>Key-value collection নিয়ে বেশি কাজ করতে হবে</li></ul>
+<p class="text-p">তখন Map ভালো choice হতে পারে।</p>
+    </div>
+
+    <!-- 12.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.44</span> Set বনাম Array</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>Array</th><th>Set</th></tr></thead>
+    <tbody>
+      <tr><td>Duplicate</td><td>✅</td><td>❌</td></tr><tr><td>Index</td><td>✅</td><td>❌</td></tr><tr><td><code>length</code></td><td>✅</td><td>❌</td></tr><tr><td><code>size</code></td><td>❌</td><td>✅</td></tr><tr><td><code>push()</code></td><td>✅</td><td>❌</td></tr><tr><td><code>add()</code></td><td>❌</td><td>✅</td></tr><tr><td>Unique values</td><td>নিজে handle করতে হয়</td><td>Built-in</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <div class="part-banner">Part 03 — WeakMap &amp; WeakSet: Garbage Collection &amp; Memory Management (12.45 – 12.55)</div>
+
+    <!-- 12.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.45</span> WeakMap কী?</div>
+<p class="text-p">এখন advanced part।</p>
+<div class="memory-box"><code>WeakMap</code> দেখতে Map-এর মতো, কিন্তু এর key-এর ক্ষেত্রে গুরুত্বপূর্ণ restriction আছে:</div>
+<div class="def-box">
+  <div class="def-text"><strong>WeakMap-এর key অবশ্যই object বা non-registered Symbol হতে হবে।</strong></div>
+</div>
+<p class="text-p">সবচেয়ে সহজভাবে object key দিয়ে example দেখি।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> weakMap = <span class="syn-kw">new</span> <span class="syn-fn">WeakMap</span>();
+
+<span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+weakMap.set(user, <span class="syn-str">&quot;Private Data&quot;</span>);
+
+<span class="syn-fn">console</span>.log(weakMap.get(user));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>Private Data</pre>
+</div>
+    </div>
+
+    <!-- 12.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.46</span> WeakMap-এ String Key দেওয়া যাবে?</div>
+<div class="code-box">
+  <div class="code-top"><span>12.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> weakMap = <span class="syn-kw">new</span> <span class="syn-fn">WeakMap</span>();
+
+weakMap.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon&quot;);</pre>
+</div>
+<p class="text-p">এটি কাজ করবে না।</p>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">WeakMap key → Object / non-registered Symbol</div>
+    </div>
+
+    <!-- 12.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.47</span> WeakMap-এর Basic Methods</div>
+<p class="text-p">WeakMap-এ:</p>
+<div class="ascii-tree-container">set()
+get()
+has()
+delete()</div>
+<p class="text-p">আছে।</p>
+<p class="text-p">কিন্তু Map-এর মতো:</p>
+<div class="ascii-tree-container">size
+keys()
+values()
+entries()
+clear()</div>
+<p class="text-p">নেই।</p>
+    </div>
+
+    <!-- 12.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.48</span> WeakMap কেন &quot;Weak&quot;?</div>
+<p class="text-p">এখানে memory management-এর ধারণা আসে।</p>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">const</span> weakMap = <span class="syn-kw">new</span> <span class="syn-fn">WeakMap</span>();
+
+weakMap.set(user, <span class="syn-str">&quot;Private Data&quot;</span>);</pre>
+</div>
+<p class="text-p">এখন <code>user</code> object-এর আর কোনো strong reference না থাকলে garbage collector ভবিষ্যতে object-টিকে memory থেকে remove করতে পারে।</p>
+<p class="text-p">WeakMap সেই object-কে জোর করে memory-তে ধরে রাখে না।</p>
+<p class="text-p">এজন্য:</p>
+<div class="def-box">
+  <div class="def-text"><strong>WeakMap = weak reference behavior</strong></div>
+</div>
+    </div>
+
+    <!-- 12.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.49</span> Garbage Collection-এর Basic Idea</div>
+<p class="text-p">JavaScript automatically unused objects-এর memory reclaim করতে পারে।</p>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};</pre>
+</div>
+<p class="text-p">তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.49 JavaScript</span><span>Run</span></div>
+  <pre>user = <span class="syn-bool">null</span>;</pre>
+</div>
+<p class="text-p">যদি object-টির আর কোনো reachable reference না থাকে, garbage collector ভবিষ্যতে সেটিকে remove করতে পারে।</p>
+<p class="text-p">এটি JavaScript-এর automatic memory management-এর অংশ।</p>
+    </div>
+
+    <!-- 12.50 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">12.50</span> WeakMap Real-Life Use</div>
+<p class="text-p">WeakMap ব্যবহার করা যায় object-এর সাথে extra/private metadata রাখার ক্ষেত্রে।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.50 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> privateData = <span class="syn-kw">new</span> <span class="syn-fn">WeakMap</span>();
+
+<span class="syn-kw">class</span> User {
+    constructor(name, password) {
+        <span class="syn-kw">this</span>.name = name;
+
+        privateData.set(<span class="syn-kw">this</span>, {
+            password: password
+        });
+    }
+
+    checkPassword(password) {
+        <span class="syn-kw">return</span> privateData.get(<span class="syn-kw">this</span>).password === password;
+    }
+}
+
+<span class="syn-kw">const</span> user = <span class="syn-kw">new</span> User(
+    <span class="syn-str">&quot;Ripon&quot;</span>,
+    <span class="syn-str">&quot;12345&quot;</span>
+);
+
+<span class="syn-fn">console</span>.log(user.checkPassword(&quot;<span class="syn-num">12345</span>&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">এখানে password সরাসরি:</p>
+<div class="code-box">
+  <div class="code-top"><span>12.50 JavaScript</span><span>Run</span></div>
+  <pre>user.password</pre>
+</div>
+<p class="text-p">হিসেবে রাখা হয়নি।</p>
+    </div>
+
+    <!-- 12.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.51</span> WeakSet কী?</div>
+<p class="text-p"><code>WeakSet</code> হলো Set-এর weak-reference version।</p>
+<p class="text-p">এখানে সাধারণত object রাখা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.51 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> weakSet = <span class="syn-kw">new</span> <span class="syn-fn">WeakSet</span>();
+
+<span class="syn-kw">const</span> user1 = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">const</span> user2 = {
+    name: <span class="syn-str">&quot;Rahim&quot;</span>
+};
+
+weakSet.add(user1);
+weakSet.add(user2);
+
+<span class="syn-fn">console</span>.log(weakSet.has(user1));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 12.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.52</span> WeakSet-এ Primitive রাখা যাবে?</div>
+<p class="text-p">না।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> weakSet = <span class="syn-kw">new</span> <span class="syn-fn">WeakSet</span>();
+
+weakSet.add(<span class="syn-num">10</span>);</pre>
+</div>
+<p class="text-p">এটি কাজ করবে না।</p>
+<p class="text-p">WeakSet-এ object বা non-registered Symbol ধরনের value ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 12.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.53</span> WeakSet-এর Methods</div>
+<p class="text-p">মূল methods:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>add()
+has()
+delete()</pre>
+</div>
+<p class="text-p"><code>WeakSet</code>-এ:</p>
+<div class="ascii-tree-container">size
+keys()
+values()
+entries()
+clear()</div>
+<p class="text-p">নেই।</p>
+    </div>
+
+    <!-- 12.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.54</span> WeakMap বনাম Map</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>Map</th><th>WeakMap</th></tr></thead>
+    <tbody>
+      <tr><td>Key</td><td>যেকোনো value</td><td>Object / non-registered Symbol</td></tr><tr><td><code>get()</code></td><td>✅</td><td>✅</td></tr><tr><td><code>set()</code></td><td>✅</td><td>✅</td></tr><tr><td><code>has()</code></td><td>✅</td><td>✅</td></tr><tr><td><code>delete()</code></td><td>✅</td><td>✅</td></tr><tr><td><code>size</code></td><td>✅</td><td>❌</td></tr><tr><td>Iteration</td><td>✅</td><td>❌</td></tr><tr><td>Garbage collection friendly</td><td>সাধারণ</td><td>বেশি</td></tr><tr><td>Object metadata</td><td>ভালো</td><td>খুব useful</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 12.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.55</span> WeakSet বনাম Set</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>বিষয়</th><th>Set</th><th>WeakSet</th></tr></thead>
+    <tbody>
+      <tr><td>Values</td><td>যেকোনো value</td><td>Object / non-registered Symbol</td></tr><tr><td>Duplicate</td><td>❌</td><td>❌</td></tr><tr><td><code>add()</code></td><td>✅</td><td>✅</td></tr><tr><td><code>has()</code></td><td>✅</td><td>✅</td></tr><tr><td><code>delete()</code></td><td>✅</td><td>✅</td></tr><tr><td><code>size</code></td><td>✅</td><td>❌</td></tr><tr><td>Iteration</td><td>✅</td><td>❌</td></tr><tr><td>GC-friendly</td><td>সাধারণ</td><td>বেশি</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <div class="part-banner">Part 04 — Integrated Real-World Project &amp; Mental Model (12.56 – 12.60)</div>
+
+    <!-- 12.56 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">12.56</span> Map + Set Practical Project</div>
+<p class="text-p">এবার একটা ছোট বাস্তব example করি।</p>
+<p class="text-p">ধরো আমরা একটা online course platform বানাচ্ছি।</p>
+<p class="text-p">একজন user কোন কোন course enroll করেছে তা রাখতে চাই।</p>
+<div class="code-box">
+  <div class="code-top"><span>12.56 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> enrolledCourses = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+<span class="syn-kw">const</span> user1 = {
+    id: <span class="syn-num">101</span>,
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+enrolledCourses.set(user1, <span class="syn-kw">new</span> <span class="syn-fn">Set</span>([
+    <span class="syn-str">&quot;JavaScript&quot;</span>,
+    <span class="syn-str">&quot;React&quot;</span>,
+    <span class="syn-str">&quot;Node.js&quot;</span>
+]));
+
+<span class="syn-fn">console</span>.log(
+    enrolledCourses.get(user1)
+);</pre>
+</div>
+<div class="ascii-tree-container">Set(3) {
+    &quot;JavaScript&quot;,
+    &quot;React&quot;,
+    &quot;Node.js&quot;
+}</div>
+<p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">Map
+ ↓
+User → Courses
+
+Set
+ ↓
+Unique Courses</div>
+    </div>
+
+    <!-- 12.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.57</span> User-এর Course Check</div>
+<div class="code-box">
+  <div class="code-top"><span>12.57 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> courses = enrolledCourses.get(user1);
+
+<span class="syn-fn">console</span>.log(courses.has(&quot;React<span class="syn-str">&quot;));
+console.log(courses.has(&quot;</span>Python&quot;));</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>true
+false</pre>
+</div>
+    </div>
+
+    <!-- 12.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.58</span> Course Add করা</div>
+<div class="code-box">
+  <div class="code-top"><span>12.58 JavaScript</span><span>Run</span></div>
+  <pre>courses.add(&quot;Python&quot;);
+
+<span class="syn-fn">console</span>.log(courses);</pre>
+</div>
+<div class="ascii-tree-container">Set(4) {
+    &quot;JavaScript&quot;,
+    &quot;React&quot;,
+    &quot;Node.js&quot;,
+    &quot;Python&quot;
+}</div>
+    </div>
+
+    <!-- 12.59 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">12.59</span> Duplicate Course Add</div>
+<div class="code-box">
+  <div class="code-top"><span>12.59 JavaScript</span><span>Run</span></div>
+  <pre>courses.add(&quot;React&quot;);
+
+<span class="syn-fn">console</span>.log(courses.size);</pre>
+</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">CONSOLE OUTPUT</span></div>
+  <pre>4</pre>
+</div>
+<p class="text-p">কারণ React আগেই ছিল।</p>
+    </div>
+
+    <!-- 12.60 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">12.60</span> Map + Set Mental Model</div>
+<p class="text-p">এটা মনে রাখার মতো:</p>
+<div class="ascii-tree-container">                Map
+                 │
+                 ▼
+          User → Set
+                 │
+       ┌─────────┼─────────┐
+       ▼         ▼         ▼
+   JavaScript   React    Node.js</div>
+<p class="text-p">এ ধরনের nested data structure real application-এ ব্যবহার করা যায়।</p>
+    </div>
+
+    <div class="part-banner">Part 05 — Must Know, Cheat Sheet, Decision Guide, Practice Lab &amp; Summary</div>
+
+    <!-- 12.61 Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 12.61 Must Know</div>
+<p class="text-p">Chapter 12 থেকে অবশ্যই জানতে হবে:</p>
+<div class="section-subhead">Map</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> map = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+map.set(&quot;name<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+map.get(&quot;</span>name<span class="syn-str">&quot;);
+map.has(&quot;</span>name<span class="syn-str">&quot;);
+map.delete(&quot;</span>name&quot;);
+map.clear();
+
+map.size;</pre>
+</div>
+<div class="section-subhead">Set</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> set = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>();
+
+set.add(&quot;JavaScript<span class="syn-str">&quot;);
+set.has(&quot;</span>JavaScript<span class="syn-str">&quot;);
+set.delete(&quot;</span>JavaScript&quot;);
+set.clear();
+
+set.size;</pre>
+</div>
+<div class="section-subhead">Duplicate Remove</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> unique = [...<span class="syn-kw">new</span> <span class="syn-fn">Set</span>(array)];</pre>
+</div>
+<div class="section-subhead">WeakMap</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> weakMap = <span class="syn-kw">new</span> <span class="syn-fn">WeakMap</span>();
+
+weakMap.set(object, value);
+weakMap.get(object);
+weakMap.has(object);
+weakMap.<span class="syn-kw">delete</span>(object);</pre>
+</div>
+<div class="section-subhead">WeakSet</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> weakSet = <span class="syn-kw">new</span> <span class="syn-fn">WeakSet</span>();
+
+weakSet.add(object);
+weakSet.has(object);
+weakSet.<span class="syn-kw">delete</span>(object);</pre>
+</div>
+    </div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet</div>
+<div class="ascii-tree-container">Object
+→ Key-value data
+→ সাধারণ structured data
+
+Map
+→ Key-value data
+→ Any type of key
+→ Dynamic collection
+
+Set
+→ Unique values
+→ Duplicate automatically removed
+
+WeakMap
+→ Object/non-registered Symbol keys
+→ Weak reference behavior
+→ No iteration/size
+
+WeakSet
+→ Object/non-registered Symbol values
+→ Weak reference behavior
+→ No iteration/size</div>
+    </div>
+
+    <!-- Decision Guide -->
+    <div class="study-card" style="border-left: 4px solid #f59e0b; background: #fffbeb;">
+      <div class="card-title"><span class="badge-num" style="background: #d97706;">DECISION GUIDE</span> 🎯 কখন কোনটা ব্যবহার করব?</div>
+<div class="ascii-tree-container">আমার data যদি...
+
+Key → Value
+        ↓
+      Object
+
+Dynamic Key → Value
+        ↓
+       Map
+
+শুধু Unique Values
+        ↓
+       Set
+
+Object-এর সাথে extra metadata
+        ↓
+      WeakMap
+
+Object-গুলো tracked/marked রাখতে চাই
+        ↓
+      WeakSet</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — Chapter 12</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 1 — Map</h4>
+<p class="text-p">একটি Map বানাও:</p>
+<div class="ascii-tree-container">101 → Ripon
+102 → Rahim
+103 → Karim</div>
+<p class="text-p">তারপর <code>102</code> দিয়ে নাম বের করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 2 — Set</h4>
+<p class="text-p">এই Array থেকে duplicate remove করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> skills = [
+    <span class="syn-str">&quot;HTML&quot;</span>,
+    <span class="syn-str">&quot;CSS&quot;</span>,
+    <span class="syn-str">&quot;JS&quot;</span>,
+    <span class="syn-str">&quot;React&quot;</span>,
+    <span class="syn-str">&quot;JS&quot;</span>,
+    <span class="syn-str">&quot;CSS&quot;</span>,
+    <span class="syn-str">&quot;Node&quot;</span>
+];</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[
+    &quot;HTML&quot;,
+    &quot;CSS&quot;,
+    &quot;JS&quot;,
+    &quot;React&quot;,
+    &quot;Node&quot;
+]</pre>
+</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 3 — Frequency Counter</h4>
+<p class="text-p">এই Array-তে প্রত্যেক number কতবার আছে বের করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = [
+    <span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">1</span>, <span class="syn-num">4</span>, <span class="syn-num">3</span>
+];</pre>
+</div>
+<p class="text-p">Expected:</p>
+<div class="ascii-tree-container">1 → 3
+2 → 2
+3 → 2
+4 → 1</div>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 4 — Object as Map Key</h4>
+<p class="text-p">দুইজন user object তৈরি করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> user1 = {};
+<span class="syn-kw">const</span> user2 = {};</pre>
+</div>
+<p class="text-p">তারপর Map ব্যবহার করে তাদের score রাখো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 5 — Map + Set</h4>
+<p class="text-p">একটি Map বানাও যেখানে:</p>
+<div class="ascii-tree-container">Student → Courses</div>
+<p class="text-p">যেমন:</p>
+<div class="ascii-tree-container">Ripon → HTML, CSS, JavaScript
+Rahim → JavaScript, React</div>
+<p class="text-p">তারপর check করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Ripon কি React course-এ আছে?</pre>
+</div>
+      </div>
+    </div>
+
+    <!-- Chapter 12 Final Summary -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">SUMMARY</span> 🚀 Chapter 12 Final Summary — Collections &amp; Memory Model</div>
+<p class="text-p">আজ আমরা শিখলাম:</p>
+<div class="ascii-tree-container">Map
+ ↓
+set()
+get()
+has()
+delete()
+clear()
+size
+keys()
+values()
+entries()</div>
+<p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">Set
+ ↓
+add()
+has()
+delete()
+clear()
+size</div>
+<p class="text-p">তারপর advanced:</p>
+<div class="ascii-tree-container">WeakMap
+ ↓
+Object → Metadata
+ ↓
+Weak Reference</div>
+<p class="text-p">এবং:</p>
+<div class="ascii-tree-container">WeakSet
+ ↓
+Objects track করা
+ ↓
+Weak Reference</div>
+<div class="memory-box">সবচেয়ে গুরুত্বপূর্ণ ৪টি লাইন মনে রাখো:</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> map = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+<span class="syn-kw">const</span> set = <span class="syn-kw">new</span> <span class="syn-fn">Set</span>();
+
+<span class="syn-kw">const</span> weakMap = <span class="syn-kw">new</span> <span class="syn-fn">WeakMap</span>();
+
+<span class="syn-kw">const</span> weakSet = <span class="syn-kw">new</span> <span class="syn-fn">WeakSet</span>();</pre>
+</div>
+<p class="text-p">আর practical JavaScript-এ সবচেয়ে বেশি মনে রাখার মতো দুইটি pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-com">// Duplicate remove</span>
+<span class="syn-kw">const</span> unique = [...<span class="syn-kw">new</span> <span class="syn-fn">Set</span>(array)];</pre>
+</div>
+<p class="text-p">এবং:</p>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-com">// Frequency counter</span>
+map.set(key, (map.get(key) || <span class="syn-num">0</span>) + <span class="syn-num">1</span>);</pre>
+</div>
+    </div>
+
+    <!-- Next Chapter Preview -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #f0f9ff;">
+      <div class="card-title"><span class="badge-num">NEXT CHAPTER</span> 📘 Chapter 13 Preview — Built-in Objects</div>
+      <p class="text-p" style="font-size: 12px; line-height: 1.6; color: #0c4a6e;">
+        <strong>Chapter 13</strong>-এ আমরা এরপর <strong>JavaScript Built-in Objects — <code>Date</code>, <code>Math</code>, <code>Number</code>, <code>String</code>, <code>RegExp</code>, <code>Intl</code>, <code>BigInt</code></strong> বিস্তারিতভাবে শিখতে পারি।
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>

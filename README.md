@@ -19,6 +19,8 @@ Comprehensive, production-grade JavaScript study notes, interactive HTML documen
 | **09** | Arrays & Modern Collections | [HTML](Code/Chapter-09-Arrays.html) | [PDF](PDF/Chapter-09-Arrays.pdf) | ✅ Complete |
 | **10** | Objects & Properties | [HTML](Code/Chapter-10-Objects.html) | [PDF](PDF/Chapter-10-Objects.pdf) | ✅ Complete |
 | **11** | Prototypes & Prototype Chain | [HTML](Code/Chapter-11-Prototypes.html) | [PDF](PDF/Chapter-11-Prototypes.pdf) | ✅ Complete |
+| **12** | Map, Set, WeakMap & WeakSet | [HTML](Code/Chapter-12-Map-Set-WeakMap-WeakSet.html) | [PDF](PDF/Chapter-12-Map-Set-WeakMap-WeakSet.pdf) | ✅ Complete |
+| **13** | Built-in Objects: Date, Math, Number, BigInt, Intl & RegExp | [HTML](Code/Chapter-13-Built-in-Objects.html) | [PDF](PDF/Chapter-13-Built-in-Objects.pdf) | ✅ Complete |
 
 ---
 

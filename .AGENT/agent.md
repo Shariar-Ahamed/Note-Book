@@ -141,7 +141,7 @@
 PowerShell-এ হেডলেস ক্রোমের মাধ্যমে নির্ভুল A4 ভেক্টরাইজড PDF কম্পাইল করার স্ট্যান্ডার্ড কমান্ড:
 
 ```powershell
-Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" -ArgumentList "--headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf=`"C:\Users\User\Desktop\Note-Book\PDF\<Chapter-Name>.pdf`" `"C:\Users\User\Desktop\Note-Book\Code\<Chapter-Name>.html`"" -Wait -PassThru
+Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" -ArgumentList "--headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf=`"e:\Git All Repo\Note-Book\PDF\<Chapter-Name>.pdf`" `"e:\Git All Repo\Note-Book\Code\<Chapter-Name>.html`"" -Wait -PassThru
 ```
 
 ---
@@ -154,5 +154,5 @@ Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" 
 3. **পেজ ব্রেক স্ক্রিনিং:** PyMuPDF দিয়ে প্রতিটি পেজের শীর্ষ এবং পাদদেশ স্ক্যান করে নিশ্চিত করা যে কোনো কার্ড মাঝখান থেকে কাটা পড়েনি।
 4. **টেম্প ইমেজ ক্লিনআপ ডিসিপ্লিন:** চেকিংয়ের জন্য ব্যবহৃত সবকটি সাময়িক ইমেজ ফাইল (`temp/*.png`) কাজ শেষ হওয়ামাত্র মুছে ফেলা:
    ```powershell
-   Remove-Item -Path "c:\Users\User\Desktop\Note-Book\temp\*.png" -Force
+   Remove-Item -Path "e:\Git All Repo\Note-Book\temp\*.png" -Force
    ```

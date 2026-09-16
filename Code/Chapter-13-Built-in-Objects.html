@@ -1,0 +1,2512 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS Master Study Documentation — Chapter 13: Built-in Objects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7c3aed;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 16px auto;
+      background: white;
+      padding: 24px 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #ffffff;
+      color: #0369a1;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+    }
+    .banner-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #e0f2fe;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.3);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8.5px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin: 12px 0 8px 0;
+      border-left: 4px solid #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge-num {
+      background: #0284c7;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 6px 0 3px 0;
+    }
+    .sub-badge {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin: 4px 0 2px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .text-p {
+      font-size: 11px;
+      color: #334155;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+    .bullet-list {
+      margin: 3px 0 6px 18px;
+      color: #334155;
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    /* Highlight Callouts */
+    .def-box {
+      background: #f0f9ff;
+      border-left: 3px solid #0284c7;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    .memory-box {
+      background: #fefce8;
+      border-left: 3px solid #eab308;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #854d0e;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin: 4px 0 6px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: #9f1239;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      margin: 5px 0 6px 0;
+      overflow-x: auto;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      text-align: left;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 4px 8px;
+      font-weight: 600;
+      font-family: var(--font-heading);
+      border: 1px solid #1e293b;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 4px 0 6px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 2px 10px;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: var(--font-heading);
+    }
+    .output-box {
+      border: 1px solid #334155;
+    }
+    .output-box .code-top {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .out-label {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+    pre {
+      font-family: var(--font-code) !important;
+      font-size: 10.5px;
+      line-height: 1.4;
+      padding: 6px 10px;
+      color: #e2e8f0;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+      margin: 0;
+    }
+    code {
+      font-family: var(--font-code) !important;
+      font-size: 10px;
+      background: #f1f5f9;
+      color: #0284c7;
+      padding: 1px 4px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      border: none;
+      font-size: inherit;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #38bdf8; font-weight: 600; }
+    .syn-fn { color: #f472b6; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-op { color: #a78bfa; }
+    .syn-bool { color: #f59e0b; font-weight: 600; }
+    .syn-regex { color: #38bdf8; font-style: italic; }
+
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #38bdf8;
+      font-family: 'Courier New', Consolas, monospace !important;
+      font-size: 10.5px;
+      line-height: 1.35;
+      white-space: pre !important;
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-left: 3px solid #0284c7;
+      border-radius: 4px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+        color: #0f172a;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .memory-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+</style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#0284c7;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 13: BUILT-IN OBJECTS — DATE, MATH, NUMBER, BIGINT, INTL &amp; REGEXP</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Sections</div>
+          <div class="meta-val">92 Modules + Practice</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 07 — Core Built-in Standard Library</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Date, Math, Number, BigInt, Intl &amp; RegExp</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 Runtime</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="study-card" style="border-left: 4px solid var(--blue-accent); background: #f8fafc; padding: 10px 14px; margin-bottom: 8px;">
+      <h2 style="font-size: 13px; color: var(--navy-mid); margin-bottom: 4px;">Built-in Objects: Date, Math, Number, BigInt, Intl &amp; RegExp</h2>
+      <p class="text-p">Chapter 12-এ আমরা <strong>Map, Set, WeakMap, WeakSet</strong> শিখেছি। এবার JavaScript-এর built-in tools/objects শিখব। এগুলো practically প্রতিদিনের JavaScript development-এ কাজে লাগে:</p>
+      <div class="def-box" style="margin: 4px 0;">
+        <div class="def-text">Date &nbsp;•&nbsp; Math &nbsp;•&nbsp; Number &nbsp;•&nbsp; BigInt &nbsp;•&nbsp; Intl &nbsp;•&nbsp; RegExp &nbsp;•&nbsp; String Utilities</div>
+      </div>
+      <p class="text-p" style="font-weight: 600; color: #0369a1; margin-top: 4px;">তারিখ, গাণিতিক হিসাব, বড় সংখ্যা ও আন্তর্জাতিক ফরম্যাটিংয়ের ভিত্তি মজবুত করতে এই অধ্যায়টি অত্যন্ত গুরুত্বপূর্ণ। 🔥</p>
+    </div>
+
+    <div class="part-banner">Part 01 — Date Object: Time, Calculations &amp; Intl.DateTimeFormat (13.1 – 13.20)</div>
+
+    <!-- 13.1 -->
+    <div class="study-card" style="page-break-after: always !important; break-after: page !important;">
+      <div class="card-title"><span class="badge-num">13.1</span> Built-in Object কী?</div>
+<p class="text-p">JavaScript আমাদের জন্য আগে থেকেই কিছু object/API তৈরি করে দিয়েছে।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.1 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Math</span>
+Date
+<span class="syn-fn">Number</span>
+<span class="syn-fn">String</span>
+<span class="syn-fn">RegExp</span>
+<span class="syn-fn">JSON</span>
+<span class="syn-fn">Object</span>
+<span class="syn-fn">Array</span>
+<span class="syn-fn">Map</span>
+<span class="syn-fn">Set</span></pre>
+</div>
+<p class="text-p">এগুলোকে আমরা নিজেরা শুরু থেকে তৈরি না করেও ব্যবহার করতে পারি।</p>
+<div class="sub-badge">💡 Real-life Example</div>
+<p class="text-p">একটি e-commerce website-এ দরকার হতে পারে:</p>
+<div class="ascii-tree-container">Product price calculation → Math / Number
+Order date → Date
+Currency formatting → Intl
+Search validation → RegExp
+Large transaction ID → BigInt</div>
+    </div>
+
+    <!-- 13.2 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.2</span> <code>Date</code> Object</div>
+<p class="text-p">JavaScript-এ date এবং time নিয়ে কাজ করার জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.2 JavaScript</span><span>Run</span></div>
+  <pre>Date</pre>
+</div>
+<p class="text-p">ব্যবহার করা হয়।</p>
+<div class="section-subhead">Current Date &amp; Time</div>
+<div class="code-box">
+  <div class="code-top"><span>13.2 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> now = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(now);</pre>
+</div>
+<p class="text-p">Output তোমার computer-এর current date/time অনুযায়ী হবে।</p>
+<p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Wed Sep 16 2026 14:30:00 GMT+0600</pre>
+</div>
+    </div>
+
+    <!-- 13.3 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.3</span> <code>Date.now()</code></div>
+<p class="text-p">বর্তমান সময়ের timestamp পাওয়া যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.3 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(Date.now());</pre>
+</div>
+<p class="text-p">Output এরকম হতে পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1789545600000</pre>
+</div>
+<p class="text-p">এটি হলো:</p>
+<div class="def-box">
+  <div class="def-text"><strong>Unix Timestamp / milliseconds since January 1, 1970 UTC</strong></div>
+</div>
+    </div>
+
+    <!-- 13.4 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.4</span> Date Object-এর বিভিন্ন অংশ</div>
+<div class="code-box">
+  <div class="code-top"><span>13.4 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(date.getFullYear());
+<span class="syn-fn">console</span>.log(date.getMonth());
+<span class="syn-fn">console</span>.log(date.getDate());
+<span class="syn-fn">console</span>.log(date.getDay());
+<span class="syn-fn">console</span>.log(date.getHours());
+<span class="syn-fn">console</span>.log(date.getMinutes());
+<span class="syn-fn">console</span>.log(date.getSeconds());</pre>
+</div>
+    </div>
+
+    <!-- 13.5 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.5</span> <code>getFullYear()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.5 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(date.getFullYear());</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>2026</pre>
+</div>
+    </div>
+
+    <!-- 13.6 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">13.6</span> <code>getMonth()</code> — গুরুত্বপূর্ণ ⚠️</div>
+<div class="code-box">
+  <div class="code-top"><span>13.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(date.getMonth());</pre>
+</div>
+<p class="text-p"><code>getMonth()</code> <strong>0-based</strong>।</p>
+<div class="ascii-tree-container">January   → 0
+February  → 1
+March     → 2
+...
+December  → 11</div>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.6 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> month = <span class="syn-kw">new</span> Date().getMonth() + <span class="syn-num">1</span>;</pre>
+</div>
+<p class="text-p">ব্যবহার করলে সাধারণ 1–12 month number পাওয়া যায়।</p>
+    </div>
+
+    <!-- 13.7 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.7</span> <code>getDate()</code></div>
+<p class="text-p">মাসের কত তারিখ:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.7 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(date.getDate());</pre>
+</div>
+<p class="text-p">যদি 16 September হয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>16</pre>
+</div>
+    </div>
+
+    <!-- 13.8 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.8</span> <code>getDay()</code></div>
+<p class="text-p">সপ্তাহের কোন দিন:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.8 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(date.getDay());</pre>
+</div>
+<p class="text-p">এটিও 0-based:</p>
+<div class="ascii-tree-container">Sunday    → 0
+Monday    → 1
+Tuesday   → 2
+Wednesday → 3
+Thursday  → 4
+Friday    → 5
+Saturday  → 6</div>
+    </div>
+
+    <!-- 13.9 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.9</span> Time Methods</div>
+<div class="code-box">
+  <div class="code-top"><span>13.9 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(date.getHours());
+<span class="syn-fn">console</span>.log(date.getMinutes());
+<span class="syn-fn">console</span>.log(date.getSeconds());
+<span class="syn-fn">console</span>.log(date.getMilliseconds());</pre>
+</div>
+    </div>
+
+    <!-- 13.10 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.10</span> Date থেকে সুন্দরভাবে Date বের করা</div>
+<div class="code-box">
+  <div class="code-top"><span>13.10 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-kw">const</span> year = date.getFullYear();
+<span class="syn-kw">const</span> month = date.getMonth() + <span class="syn-num">1</span>;
+<span class="syn-kw">const</span> day = date.getDate();
+
+<span class="syn-fn">console</span>.log(`${day}/${month}/${year}`);</pre>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>16/9/2026</pre>
+</div>
+    </div>
+
+    <!-- 13.11 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.11</span> Specific Date তৈরি করা</div>
+<div class="code-box">
+  <div class="code-top"><span>13.11 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date(&quot;<span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">16</span>&quot;);
+
+<span class="syn-fn">console</span>.log(date);</pre>
+</div>
+    </div>
+
+    <!-- 13.12 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.12</span> Date Constructor</div>
+<p class="text-p">আরেকভাবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date(<span class="syn-num">2026</span>, <span class="syn-num">8</span>, <span class="syn-num">16</span>);
+
+<span class="syn-fn">console</span>.log(date);</pre>
+</div>
+<div class="warn-box">⚠️ এখানে month:</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0 = January
+1 = February
+...
+8 = September</pre>
+</div>
+<p class="text-p">তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.12 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">new</span> Date(<span class="syn-num">2026</span>, <span class="syn-num">8</span>, <span class="syn-num">16</span>)</pre>
+</div>
+<p class="text-p">মানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>16 September 2026</pre>
+</div>
+    </div>
+
+    <!-- 13.13 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.13</span> Date Comparison</div>
+<p class="text-p">Date object compare করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>13.13 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date1 = <span class="syn-kw">new</span> Date(&quot;<span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">10</span><span class="syn-str">&quot;);
+const date2 = new Date(&quot;</span><span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">20</span>&quot;);
+
+<span class="syn-fn">console</span>.log(date1 &lt; date2);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.14 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.14</span> Date Difference</div>
+<p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> start = <span class="syn-kw">new</span> Date(&quot;<span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">01</span><span class="syn-str">&quot;);
+const end = new Date(&quot;</span><span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">16</span>&quot;);
+
+<span class="syn-kw">const</span> difference = end - start;
+
+<span class="syn-fn">console</span>.log(difference);</pre>
+</div>
+<p class="text-p">এখানে result milliseconds-এ আসবে।</p>
+<p class="text-p">Days বের করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.14 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> days = difference / (<span class="syn-num">1000</span> * <span class="syn-num">60</span> * <span class="syn-num">60</span> * <span class="syn-num">24</span>);
+
+<span class="syn-fn">console</span>.log(days);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>15</pre>
+</div>
+    </div>
+
+    <!-- 13.15 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">13.15</span> Real-Life Example — Internship Duration</div>
+<div class="code-box">
+  <div class="code-top"><span>13.15 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> start = <span class="syn-kw">new</span> Date(&quot;<span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">10</span><span class="syn-str">&quot;);
+const end = new Date(&quot;</span><span class="syn-num">2026</span>-<span class="syn-num">10</span>-<span class="syn-num">10</span>&quot;);
+
+<span class="syn-kw">const</span> difference = end - start;
+
+<span class="syn-kw">const</span> days = difference / (<span class="syn-num">1000</span> * <span class="syn-num">60</span> * <span class="syn-num">60</span> * <span class="syn-num">24</span>);
+
+<span class="syn-fn">console</span>.log(`Duration: ${days} days`);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Duration: 30 days</pre>
+</div>
+    </div>
+
+    <!-- 13.16 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.16</span> Date Setter Methods</div>
+<p class="text-p">Date-এর value পরিবর্তন করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span>13.16 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+date.setFullYear(<span class="syn-num">2030</span>);
+date.setMonth(<span class="syn-num">5</span>);
+date.setDate(<span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(date);</pre>
+</div>
+<p class="text-p">Common methods:</p>
+<div class="ascii-tree-container">setFullYear()
+setMonth()
+setDate()
+setHours()
+setMinutes()
+setSeconds()</div>
+    </div>
+
+    <!-- 13.17 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.17</span> UTC Methods</div>
+<p class="text-p">JavaScript-এ local time এবং UTC time আলাদা হতে পারে।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.17 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(date.getHours());
+<span class="syn-fn">console</span>.log(date.getUTCHours());</pre>
+</div>
+<p class="text-p"><code>getHours()</code> → local time</p>
+<p class="text-p"><code>getUTCHours()</code> → UTC time</p>
+    </div>
+
+    <!-- 13.18 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.18</span> <code>toISOString()</code></div>
+<p class="text-p">API এবং database-এর জন্য খুব useful।</p>
+<div class="code-box">
+  <div class="code-top"><span>13.18 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(date.toISOString());</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>2026-09-16T08:30:00.000Z</pre>
+</div>
+<p class="text-p">ISO format সাধারণত API communication-এ অনেক ব্যবহৃত হয়।</p>
+    </div>
+
+    <!-- 13.19 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.19</span> <code>toLocaleDateString()</code></div>
+<p class="text-p">User-friendly date:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.19 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(
+    date.toLocaleDateString()
+);</pre>
+</div>
+<p class="text-p">Output locale অনুযায়ী পরিবর্তিত হতে পারে।</p>
+    </div>
+
+    <!-- 13.20 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.20</span> <code>Intl.DateTimeFormat</code></div>
+<p class="text-p">Professional date formatting-এর জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.20 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date(&quot;<span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">16</span><span class="syn-str">&quot;);
+
+const formatter = new Intl.DateTimeFormat(
+    &quot;</span>en-US&quot;
+);
+
+<span class="syn-fn">console</span>.log(formatter.format(date));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>9/16/2026</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 02 — Math Object: Arithmetic, Rounding &amp; Random Generators (13.21 – 13.39)</div>
+
+    <!-- 13.21 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.21</span> <code>Math</code> Object</div>
+<p class="text-p">Math object mathematical operations-এর জন্য।</p>
+<div class="code-box">
+  <div class="code-top"><span>13.21 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Math</span></pre>
+</div>
+<p class="text-p">এর অনেক useful method আছে।</p>
+    </div>
+
+    <!-- 13.22 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.22</span> <code>Math.PI</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.22 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.PI);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3.141592653589793</pre>
+</div>
+    </div>
+
+    <!-- 13.23 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.23</span> <code>Math.E</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.23 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.E);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>2.718281828459045</pre>
+</div>
+    </div>
+
+    <!-- 13.24 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.24</span> <code>Math.round()</code></div>
+<p class="text-p">নিকটবর্তী integer:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.24 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.round(<span class="syn-num">4.4</span>));
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.round(<span class="syn-num">4.6</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>4
+5</pre>
+</div>
+    </div>
+
+    <!-- 13.25 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.25</span> <code>Math.floor()</code></div>
+<p class="text-p">নিচের দিকে round:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.25 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.floor(<span class="syn-num">4.9</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>4</pre>
+</div>
+    </div>
+
+    <!-- 13.26 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.26</span> <code>Math.ceil()</code></div>
+<p class="text-p">উপরের দিকে round:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.26 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.ceil(<span class="syn-num">4.1</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>5</pre>
+</div>
+    </div>
+
+    <!-- 13.27 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.27</span> <code>Math.trunc()</code></div>
+<p class="text-p">Decimal অংশ বাদ দেয়:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.trunc(<span class="syn-num">4.99</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>4</pre>
+</div>
+<p class="text-p">Negative number-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.27 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.trunc(-<span class="syn-num">4.99</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>-4</pre>
+</div>
+    </div>
+
+    <!-- 13.28 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">13.28</span> <code>round()</code> বনাম <code>floor()</code> বনাম <code>ceil()</code> বনাম <code>trunc()</code></div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Method</th><th><code>4.7</code></th><th><code>-4.7</code></th></tr></thead>
+    <tbody>
+      <tr><td><code>round()</code></td><td>5</td><td>-5</td></tr><tr><td><code>floor()</code></td><td>4</td><td>-5</td></tr><tr><td><code>ceil()</code></td><td>5</td><td>-4</td></tr><tr><td><code>trunc()</code></td><td>4</td><td>-4</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 13.29 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.29</span> <code>Math.abs()</code></div>
+<p class="text-p">Absolute value:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.29 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.abs(-<span class="syn-num">50</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>50</pre>
+</div>
+    </div>
+
+    <!-- 13.30 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.30</span> <code>Math.pow()</code></div>
+<p class="text-p">Power:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.pow(<span class="syn-num">2</span>, <span class="syn-num">3</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>8</pre>
+</div>
+<p class="text-p">তবে modern JavaScript-এ:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.30 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-num">2</span> ** <span class="syn-num">3</span>);</pre>
+</div>
+<p class="text-p">এটিও ব্যবহার করা যায়।</p>
+    </div>
+
+    <!-- 13.31 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.31</span> <code>Math.sqrt()</code></div>
+<p class="text-p">Square root:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.31 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.sqrt(<span class="syn-num">64</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>8</pre>
+</div>
+    </div>
+
+    <!-- 13.32 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.32</span> <code>Math.cbrt()</code></div>
+<p class="text-p">Cube root:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.32 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.cbrt(<span class="syn-num">27</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3</pre>
+</div>
+    </div>
+
+    <!-- 13.33 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.33</span> <code>Math.max()</code></div>
+<p class="text-p">সবচেয়ে বড় number:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.33 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.max(<span class="syn-num">10</span>, <span class="syn-num">50</span>, <span class="syn-num">20</span>, <span class="syn-num">80</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>80</pre>
+</div>
+    </div>
+
+    <!-- 13.34 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.34</span> <code>Math.min()</code></div>
+<p class="text-p">সবচেয়ে ছোট:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.34 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.min(<span class="syn-num">10</span>, <span class="syn-num">50</span>, <span class="syn-num">20</span>, <span class="syn-num">80</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>10</pre>
+</div>
+    </div>
+
+    <!-- 13.35 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.35</span> Array থেকে Maximum</div>
+<div class="code-box">
+  <div class="code-top"><span>13.35 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">50</span>, <span class="syn-num">20</span>, <span class="syn-num">80</span>];
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.max(...numbers));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>80</pre>
+</div>
+<p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.35 JavaScript</span><span>Run</span></div>
+  <pre>...numbers</pre>
+</div>
+<p class="text-p">spread operator।</p>
+    </div>
+
+    <!-- 13.36 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.36</span> <code>Math.random()</code></div>
+<p class="text-p">Random number:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.36 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Math</span>.random());</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>0.7348234</pre>
+</div>
+<p class="text-p">প্রতিবার আলাদা value আসবে।</p>
+<p class="text-p">Range:</p>
+<div class="ascii-tree-container">0 &lt;= Math.random() &lt; 1</div>
+    </div>
+
+    <!-- 13.37 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.37</span> Random Integer 1–10</div>
+<div class="code-box">
+  <div class="code-top"><span>13.37 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> random = <span class="syn-fn">Math</span>.floor(
+    <span class="syn-fn">Math</span>.random() * <span class="syn-num">10</span>
+) + <span class="syn-num">1</span>;
+
+<span class="syn-fn">console</span>.log(random);</pre>
+</div>
+<p class="text-p">Possible:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1
+2
+3
+...
+10</pre>
+</div>
+    </div>
+
+    <!-- 13.38 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.38</span> Random Integer Function</div>
+<div class="code-box">
+  <div class="code-top"><span>13.38 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> randomNumber(min, max) {
+    <span class="syn-kw">return</span> <span class="syn-fn">Math</span>.floor(
+        <span class="syn-fn">Math</span>.random() * (max - min + <span class="syn-num">1</span>)
+    ) + min;
+}
+
+<span class="syn-fn">console</span>.log(randomNumber(<span class="syn-num">1</span>, <span class="syn-num">100</span>));</pre>
+</div>
+<p class="text-p">Output হতে পারে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>47</pre>
+</div>
+    </div>
+
+    <!-- 13.39 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">13.39</span> Real-Life Example — OTP-like Number</div>
+<div class="code-box">
+  <div class="code-top"><span>13.39 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">function</span> generateCode() {
+    <span class="syn-kw">return</span> <span class="syn-fn">Math</span>.floor(
+        <span class="syn-num">100000</span> + <span class="syn-fn">Math</span>.random() * <span class="syn-num">900000</span>
+    );
+}
+
+<span class="syn-fn">console</span>.log(generateCode());</pre>
+</div>
+<p class="text-p">Possible:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>583214</pre>
+</div>
+<div class="warn-box">⚠️ Security-sensitive authentication/OTP-এর জন্য সাধারণ <code>Math.random()</code> ব্যবহার করা উচিত নয়। সেক্ষেত্রে browser-এর cryptographic random APIs ব্যবহার করতে হয়।</div>
+    </div>
+
+    <div class="part-banner">Part 03 — Number &amp; BigInt: Safe Integers, Precision &amp; Large Numbers (13.40 – 13.56)</div>
+
+    <!-- 13.40 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.40</span> <code>Number</code> Object</div>
+<p class="text-p">JavaScript-এ numbers নিয়ে কাজ করার জন্য <code>Number</code> ব্যবহার করা হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span>13.40 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> price = <span class="syn-num">999</span>;
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> price);</pre>
+</div>
+<div class="ascii-tree-container">number</div>
+    </div>
+
+    <!-- 13.41 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.41</span> <code>Number.isInteger()</code></div>
+<p class="text-p">Integer কিনা:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.41 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.isInteger(<span class="syn-num">10</span>));
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.isInteger(<span class="syn-num">10.5</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false</pre>
+</div>
+    </div>
+
+    <!-- 13.42 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.42</span> <code>Number.isNaN()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.42 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.isNaN(<span class="syn-bool">NaN</span>));
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.isNaN(&quot;hello&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false</pre>
+</div>
+<p class="text-p">এটি strict এবং predictable।</p>
+    </div>
+
+    <!-- 13.43 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.43</span> <code>NaN</code></div>
+<p class="text-p"><code>NaN</code> মানে:</p>
+<div class="def-box">
+  <div class="def-text">Not-a-Number</div>
+</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.43 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> result = <span class="syn-str">&quot;hello&quot;</span> / <span class="syn-num">2</span>;
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>NaN</pre>
+</div>
+    </div>
+
+    <!-- 13.44 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.44</span> <code>Number.isFinite()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.44 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.isFinite(<span class="syn-num">100</span>));
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.isFinite(Infinity));
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.isFinite(&quot;<span class="syn-num">100</span>&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false
+false</pre>
+</div>
+    </div>
+
+    <!-- 13.45 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.45</span> <code>Number.MAX_VALUE</code></div>
+<p class="text-p">JavaScript Number-এর খুব বড় finite value:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.45 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.MAX_VALUE);</pre>
+</div>
+    </div>
+
+    <!-- 13.46 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.46</span> <code>Number.MIN_VALUE</code></div>
+<p class="text-p">সবচেয়ে ছোট positive non-zero number-এর কাছাকাছি:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.46 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.MIN_VALUE);</pre>
+</div>
+<div class="warn-box">⚠️ এটি &quot;সবচেয়ে ছোট negative number&quot; নয়। এটি smallest positive non-zero floating-point value-এর concept।</div>
+    </div>
+
+    <!-- 13.47 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.47</span> <code>Number.MAX_SAFE_INTEGER</code></div>
+<div class="memory-box">এটি খুব গুরুত্বপূর্ণ।</div>
+<div class="code-box">
+  <div class="code-top"><span>13.47 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>.MAX_SAFE_INTEGER);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>9007199254740991</pre>
+</div>
+<p class="text-p">এর পরে integer precision issue হতে পারে।</p>
+    </div>
+
+    <!-- 13.48 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.48</span> Safe Integer</div>
+<div class="code-box">
+  <div class="code-top"><span>13.48 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(
+    <span class="syn-fn">Number</span>.isSafeInteger(<span class="syn-num">9007199254740991</span>)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.49 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.49</span> Unsafe Integer Problem</div>
+<div class="code-box">
+  <div class="code-top"><span>13.49 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(
+    <span class="syn-num">9007199254740991</span> + <span class="syn-num">1</span>
+);
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-num">9007199254740991</span> + <span class="syn-num">2</span>
+);</pre>
+</div>
+<p class="text-p">Large integer precision সীমার কারণে surprising behavior হতে পারে।</p>
+<p class="text-p">এখানে আসে:</p>
+<div class="ascii-tree-container">BigInt</div>
+    </div>
+
+    <!-- 13.50 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.50</span> BigInt কী?</div>
+<p class="text-p"><code>BigInt</code> ব্যবহার করা হয় খুব বড় integer-এর জন্য।</p>
+<p class="text-p">Syntax:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.50 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> bigNumber = <span class="syn-num">123456789012345678901234567890n</span>;</pre>
+</div>
+<p class="text-p">শেষে:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>n</pre>
+</div>
+<p class="text-p">দিতে হয়।</p>
+    </div>
+
+    <!-- 13.51 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.51</span> BigInt Example</div>
+<div class="code-box">
+  <div class="code-top"><span>13.51 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> bigNumber =
+    <span class="syn-num">123456789012345678901234567890n</span>;
+
+<span class="syn-fn">console</span>.log(bigNumber);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>123456789012345678901234567890n</pre>
+</div>
+    </div>
+
+    <!-- 13.52 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.52</span> BigInt Type</div>
+<div class="code-box">
+  <div class="code-top"><span>13.52 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> bigNumber = <span class="syn-num">123n</span>;
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> bigNumber);</pre>
+</div>
+<div class="ascii-tree-container">bigint</div>
+    </div>
+
+    <!-- 13.53 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.53</span> BigInt Calculation</div>
+<div class="code-box">
+  <div class="code-top"><span>13.53 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> a = <span class="syn-num">1000000000000000000n</span>;
+<span class="syn-kw">const</span> b = <span class="syn-num">2000000000000000000n</span>;
+
+<span class="syn-fn">console</span>.log(a + b);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3000000000000000000n</pre>
+</div>
+    </div>
+
+    <!-- 13.54 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.54</span> Number + BigInt</div>
+<p class="text-p">এভাবে করা যাবে না:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.54 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> a = <span class="syn-num">10n</span>;
+<span class="syn-kw">const</span> b = <span class="syn-num">5</span>;
+
+<span class="syn-fn">console</span>.log(a + b);</pre>
+</div>
+<div class="warn-box">এতে TypeError হবে।</div>
+<p class="text-p">দুইটিকে একই type করতে হবে:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.54 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(a + <span class="syn-fn">BigInt</span>(b));</pre>
+</div>
+<p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.54 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>(a) + b);</pre>
+</div>
+<div class="warn-box">⚠️ তবে বড় BigInt-কে Number-এ convert করলে precision loss হতে পারে।</div>
+    </div>
+
+    <!-- 13.55 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.55</span> BigInt Division</div>
+<div class="code-box">
+  <div class="code-top"><span>13.55 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-num">10n</span> / <span class="syn-num">3n</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>3n</pre>
+</div>
+<p class="text-p">Decimal অংশ থাকে না।</p>
+    </div>
+
+    <!-- 13.56 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.56</span> BigInt Comparison</div>
+<div class="code-box">
+  <div class="code-top"><span>13.56 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-num">10n</span> &gt; <span class="syn-num">5</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-num">10n</span> === <span class="syn-num">10</span>);
+<span class="syn-fn">console</span>.log(<span class="syn-num">10n</span> == <span class="syn-num">10</span>);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false
+true</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>10n !== 10</pre>
+</div>
+<p class="text-p">কিন্তু loose equality:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>10n == 10</pre>
+</div>
+<p class="text-p">true হতে পারে।</p>
+    </div>
+
+    <div class="part-banner">Part 04 — Intl API: Internationalization, Currency &amp; Localization (13.57 – 13.64)</div>
+
+    <!-- 13.57 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.57</span> <code>Intl</code> কী?</div>
+<p class="text-p"><code>Intl</code> মানে:</p>
+<div class="def-box">
+  <div class="def-text"><strong>Internationalization</strong></div>
+</div>
+<p class="text-p">এটি বিভিন্ন দেশের:</p>
+<div class="ascii-tree-container">Currency
+Number
+Date
+Time
+Language
+Plural</div>
+<p class="text-p">formatting-এর জন্য ব্যবহার করা হয়।</p>
+    </div>
+
+    <!-- 13.58 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.58</span> Currency Formatting</div>
+<div class="code-box">
+  <div class="code-top"><span>13.58 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> price = <span class="syn-num">75000</span>;
+
+<span class="syn-kw">const</span> formatted = <span class="syn-kw">new</span> <span class="syn-fn">Intl</span>.NumberFormat(
+    <span class="syn-str">&quot;en-BD&quot;</span>,
+    {
+        style: <span class="syn-str">&quot;currency&quot;</span>,
+        currency: <span class="syn-str">&quot;BDT&quot;</span>
+    }
+).format(price);
+
+<span class="syn-fn">console</span>.log(formatted);</pre>
+</div>
+<p class="text-p">Output environment/browser অনুযায়ী formatting variation থাকতে পারে, যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>BDT 75,000.00</pre>
+</div>
+    </div>
+
+    <!-- 13.59 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.59</span> USD</div>
+<div class="code-box">
+  <div class="code-top"><span>13.59 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> price = <span class="syn-num">1500</span>;
+
+<span class="syn-kw">const</span> formatted = <span class="syn-kw">new</span> <span class="syn-fn">Intl</span>.NumberFormat(
+    <span class="syn-str">&quot;en-US&quot;</span>,
+    {
+        style: <span class="syn-str">&quot;currency&quot;</span>,
+        currency: <span class="syn-str">&quot;USD&quot;</span>
+    }
+).format(price);
+
+<span class="syn-fn">console</span>.log(formatted);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>$1,500.00</pre>
+</div>
+    </div>
+
+    <!-- 13.60 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.60</span> EUR</div>
+<div class="code-box">
+  <div class="code-top"><span>13.60 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> price = <span class="syn-num">1500</span>;
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-kw">new</span> <span class="syn-fn">Intl</span>.NumberFormat(&quot;de-DE<span class="syn-str">&quot;, {
+        style: &quot;</span>currency<span class="syn-str">&quot;,
+        currency: &quot;</span>EUR&quot;
+    }).format(price)
+);</pre>
+</div>
+<p class="text-p">Output locale অনুযায়ী:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1.500,00 €</pre>
+</div>
+    </div>
+
+    <!-- 13.61 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.61</span> Number Formatting</div>
+<div class="code-box">
+  <div class="code-top"><span>13.61 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> number = <span class="syn-num">1234567.89</span>;
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-kw">new</span> <span class="syn-fn">Intl</span>.NumberFormat(&quot;en-US&quot;)
+        .format(number)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>1,234,567.89</pre>
+</div>
+    </div>
+
+    <!-- 13.62 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.62</span> Bengali Locale</div>
+<div class="code-box">
+  <div class="code-top"><span>13.62 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> number = <span class="syn-num">1234567.89</span>;
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-kw">new</span> <span class="syn-fn">Intl</span>.NumberFormat(&quot;bn-BD&quot;)
+        .format(number)
+);</pre>
+</div>
+<p class="text-p">এতে Bengali locale অনুযায়ী number formatting পাওয়া যাবে।</p>
+    </div>
+
+    <!-- 13.63 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.63</span> Date Formatting with Intl</div>
+<div class="code-box">
+  <div class="code-top"><span>13.63 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date(&quot;<span class="syn-num">2026</span>-<span class="syn-num">09</span>-<span class="syn-num">16</span><span class="syn-str">&quot;);
+
+const formatted = new Intl.DateTimeFormat(
+    &quot;</span>en-BD<span class="syn-str">&quot;,
+    {
+        dateStyle: &quot;</span>full&quot;
+    }
+).format(date);
+
+<span class="syn-fn">console</span>.log(formatted);</pre>
+</div>
+<p class="text-p">Possible output:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Wednesday, September 16, 2026</pre>
+</div>
+    </div>
+
+    <!-- 13.64 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.64</span> Time Formatting</div>
+<div class="code-box">
+  <div class="code-top"><span>13.64 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> date = <span class="syn-kw">new</span> Date();
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-kw">new</span> <span class="syn-fn">Intl</span>.DateTimeFormat(&quot;en-BD<span class="syn-str">&quot;, {
+        timeStyle: &quot;</span>medium&quot;
+    }).format(date)
+);</pre>
+</div>
+    </div>
+
+    <div class="part-banner">Part 05 — RegExp &amp; String Utilities: Patterns, Validation &amp; Mini Project (13.65 – 13.92)</div>
+
+    <!-- 13.65 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.65</span> <code>RegExp</code> কী?</div>
+<p class="text-p">RegExp = <strong>Regular Expression</strong></p>
+<p class="text-p">এটি text-এর মধ্যে pattern খুঁজতে/validate করতে ব্যবহৃত হয়।</p>
+<p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Email
+Phone
+Password
+Username
+URL
+Search pattern</pre>
+</div>
+    </div>
+
+    <!-- 13.66 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.66</span> RegExp তৈরি করা</div>
+<p class="text-p">দুটি common syntax:</p>
+<div class="section-subhead">Literal</div>
+<div class="code-box">
+  <div class="code-top"><span>13.66 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex">/hello/</span>;</pre>
+</div>
+<div class="section-subhead">Constructor</div>
+<div class="code-box">
+  <div class="code-top"><span>13.66 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-kw">new</span> <span class="syn-fn">RegExp</span>(&quot;hello&quot;);</pre>
+</div>
+    </div>
+
+    <!-- 13.67 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.67</span> <code>test()</code></div>
+<p class="text-p">সবচেয়ে সহজ:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.67 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex">/hello/</span>;
+
+<span class="syn-fn">console</span>.log(
+    pattern.test(&quot;hello world&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.68 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.68</span> Pattern না থাকলে</div>
+<div class="code-box">
+  <div class="code-top"><span>13.68 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex">/hello/</span>;
+
+<span class="syn-fn">console</span>.log(
+    pattern.test(&quot;good morning&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+    </div>
+
+    <!-- 13.69 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.69</span> Case Sensitivity</div>
+<div class="code-box">
+  <div class="code-top"><span>13.69 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex">/hello/</span>;
+
+<span class="syn-fn">console</span>.log(
+    pattern.test(&quot;Hello&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>false</pre>
+</div>
+<p class="text-p">কারণ lowercase <code>hello</code> এবং uppercase <code>Hello</code> আলাদা।</p>
+    </div>
+
+    <!-- 13.70 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.70</span> <code>i</code> Flag</div>
+<p class="text-p">Case-insensitive:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.70 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex">/hello/i</span>;
+
+<span class="syn-fn">console</span>.log(
+    pattern.test(&quot;Hello&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.71 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.71</span> <code>g</code> Flag</div>
+<p class="text-p">Global matching:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.71 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> pattern = <span class="syn-regex">/hello/g</span>;</pre>
+</div>
+<p class="text-p">এটি multiple matches নিয়ে কাজ করতে সাহায্য করে।</p>
+    </div>
+
+    <!-- 13.72 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.72</span> Common RegExp Flags</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Flag</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>i</code></td><td>Case-insensitive</td></tr><tr><td><code>g</code></td><td>Global</td></tr><tr><td><code>m</code></td><td>Multiline</td></tr><tr><td><code>s</code></td><td>Dot matches newline</td></tr><tr><td><code>u</code></td><td>Unicode</td></tr><tr><td><code>y</code></td><td>Sticky</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 13.73 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.73</span> <code>match()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.73 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;JavaScript is great. JavaScript is powerful.&quot;</span>;
+
+<span class="syn-fn">console</span>.log(
+    text.match(/JavaScript/g)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>[
+    &quot;JavaScript&quot;,
+    &quot;JavaScript&quot;
+]</pre>
+</div>
+    </div>
+
+    <!-- 13.74 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.74</span> <code>replace()</code></div>
+<p class="text-p">RegExp দিয়ে text replace:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.74 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;I like cats&quot;</span>;
+
+<span class="syn-kw">const</span> result = text.replace(
+    <span class="syn-regex">/cats/</span>,
+    <span class="syn-str">&quot;dogs&quot;</span>
+);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>I like dogs</pre>
+</div>
+    </div>
+
+    <!-- 13.75 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.75</span> <code>replaceAll()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.75 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;cat cat cat&quot;</span>;
+
+<span class="syn-kw">const</span> result = text.replaceAll(
+    <span class="syn-str">&quot;cat&quot;</span>,
+    <span class="syn-str">&quot;dog&quot;</span>
+);
+
+<span class="syn-fn">console</span>.log(result);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>dog dog dog</pre>
+</div>
+    </div>
+
+    <!-- 13.76 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.76</span> RegExp Character Classes</div>
+<div class="section-subhead"><code>[abc]</code></div>
+<p class="text-p">a অথবা b অথবা c:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.76 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/[abc]/.test(&quot;apple&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>[0-9]</code></div>
+<p class="text-p">যেকোনো digit:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.76 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/[<span class="syn-num">0</span>-<span class="syn-num">9</span>]/.test(&quot;Hello5&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>[a-z]</code></div>
+<p class="text-p">lowercase letter:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.76 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/[a-z]/.test(&quot;123a&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.77 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.77</span> Common RegExp Shortcuts</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Pattern</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>\d</code></td><td>Digit</td></tr><tr><td><code>\D</code></td><td>Not digit</td></tr><tr><td><code>\w</code></td><td>Word character</td></tr><tr><td><code>\W</code></td><td>Not word character</td></tr><tr><td><code>\s</code></td><td>Whitespace</td></tr><tr><td><code>\S</code></td><td>Not whitespace</td></tr><tr><td><code>.</code></td><td>Any character except line terminators</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+
+    <!-- 13.78 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.78</span> <code>\d</code> Example</div>
+<div class="code-box">
+  <div class="code-top"><span>13.78 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/\d/.test(&quot;ABC5&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">কারণ <code>5</code> একটি digit।</p>
+    </div>
+
+    <!-- 13.79 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.79</span> Quantifiers</div>
+<div class="section-subhead"><code>+</code></div>
+<p class="text-p">এক বা একাধিক:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.79 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/\d+/.test(&quot;<span class="syn-num">12345</span>&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>*</code></div>
+<p class="text-p">শূন্য বা একাধিক:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.79 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/\d*/.test(&quot;&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>?</code></div>
+<p class="text-p">শূন্য বা এক:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.79 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/colou?r/.test(&quot;color<span class="syn-str">&quot;));
+console.log(/colou?r/.test(&quot;</span>colour&quot;));</pre>
+</div>
+<p class="text-p">দুটিই:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.80 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.80</span> <code>{n}</code></div>
+<p class="text-p">ঠিক n বার:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.80 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/\d{<span class="syn-num">4</span>}/.test(&quot;<span class="syn-num">2026</span>&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.81 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.81</span> <code>{n,m}</code></div>
+<p class="text-p">কমপক্ষে n, সর্বোচ্চ m:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.81 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/\d{<span class="syn-num">2</span>,<span class="syn-num">4</span>}/.test(&quot;<span class="syn-num">123</span>&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.82 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.82</span> Email Validation — Basic Example</div>
+<div class="code-box">
+  <div class="code-top"><span>13.82 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> emailPattern =
+    <span class="syn-regex">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+
+<span class="syn-fn">console</span>.log(
+    emailPattern.test(&quot;ripon@example.com&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">এটি basic validation pattern; production-grade email validation আরও nuanced হতে পারে।</p>
+    </div>
+
+    <!-- 13.83 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.83</span> Phone Validation — Basic Example</div>
+<p class="text-p">Bangladesh-এর 11-digit mobile number-এর basic pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.83 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> phonePattern = <span class="syn-regex">/^01\d{9}$/</span>;
+
+<span class="syn-fn">console</span>.log(
+    phonePattern.test(&quot;<span class="syn-num">01712345678</span>&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+    </div>
+
+    <!-- 13.84 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.84</span> Password Validation</div>
+<p class="text-p">ধরো password কমপক্ষে 8 characters:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.84 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> password = <span class="syn-str">&quot;Ripon123&quot;</span>;
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-regex">/^.{8,}$/</span>.test(password)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<p class="text-p">আরও strong validation চাইলে uppercase, lowercase, digit, special character আলাদা করে enforce করতে হবে।</p>
+    </div>
+
+    <!-- 13.85 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.85</span> <code>^</code> এবং <code>$</code></div>
+<div class="memory-box">এগুলো খুব গুরুত্বপূর্ণ।</div>
+<div class="ascii-tree-container">^ → শুরু
+$ → শেষ</div>
+<p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.85 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-regex">/^hello$/</span></pre>
+</div>
+<p class="text-p">এর অর্থ:</p>
+<div class="def-box">
+  <div class="def-text">পুরো string-টাই <code>hello</code> হতে হবে।</div>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>13.85 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(/^hello$/.test(&quot;hello<span class="syn-str">&quot;));
+console.log(/^hello$/.test(&quot;</span>hello world&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true
+false</pre>
+</div>
+    </div>
+
+    <!-- 13.86 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">13.86</span> <code>String</code>-এর কিছু গুরুত্বপূর্ণ Built-in Methods</div>
+<div class="memory-box">যদিও String-এর অনেক method আমরা আগের chapters-এ দেখেছি, এখানে built-in utility হিসেবে গুরুত্বপূর্ণগুলো একসাথে রাখি।</div>
+<div class="section-subhead"><code>includes()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.86 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> text = <span class="syn-str">&quot;JavaScript&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.includes(&quot;Script&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>startsWith()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.86 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(
+    <span class="syn-str">&quot;JavaScript&quot;</span>.startsWith(&quot;Java&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>endsWith()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.86 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(
+    <span class="syn-str">&quot;JavaScript&quot;</span>.endsWith(&quot;Script&quot;)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>true</pre>
+</div>
+<div class="section-subhead"><code>repeat()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.86 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(&quot;Hi &quot;.repeat(<span class="syn-num">3</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>Hi Hi Hi</pre>
+</div>
+    </div>
+
+    <!-- 13.87 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.87</span> <code>String.raw()</code></div>
+<p class="text-p">Special string representation পেতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.87 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> path = <span class="syn-fn">String</span>.raw<span class="syn-str">`C:\Users\Ripon\Desktop`</span>;
+
+<span class="syn-fn">console</span>.log(path);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>C:\Users\Ripon\Desktop</pre>
+</div>
+<p class="text-p">Template literal-এর escape processing-এর কিছু ক্ষেত্রে useful।</p>
+    </div>
+
+    <!-- 13.88 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.88</span> Number Conversion</div>
+<p class="text-p">String থেকে Number:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.88 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>(&quot;<span class="syn-num">100</span>&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>100</pre>
+</div>
+<div class="section-subhead"><code>parseInt()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.88 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">parseInt</span>(&quot;100px&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>100</pre>
+</div>
+<div class="section-subhead"><code>parseFloat()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.88 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">parseFloat</span>(&quot;<span class="syn-num">10</span>.50px&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>10.5</pre>
+</div>
+    </div>
+
+    <!-- 13.89 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">13.89</span> <code>Number()</code> বনাম <code>parseInt()</code></div>
+<div class="code-box">
+  <div class="code-top"><span>13.89 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(<span class="syn-fn">Number</span>(&quot;100px<span class="syn-str">&quot;));
+console.log(parseInt(&quot;</span>100px&quot;));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>NaN
+100</pre>
+</div>
+<p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">Number()
+→ পুরো string-কে valid number হতে হবে
+
+parseInt()
+→ শুরু থেকে integer অংশ parse করতে পারে</div>
+    </div>
+
+    <!-- 13.90 -->
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">13.90</span> <code>toFixed()</code></div>
+<p class="text-p">Decimal places control করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.90 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> price = <span class="syn-num">99.5678</span>;
+
+<span class="syn-fn">console</span>.log(price.toFixed(<span class="syn-num">2</span>));</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>99.57</pre>
+</div>
+<div class="warn-box">⚠️ <code>toFixed()</code> string return করে।</div>
+<div class="code-box">
+  <div class="code-top"><span>13.90 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">console</span>.log(
+    <span class="syn-kw">typeof</span> price.toFixed(<span class="syn-num">2</span>)
+);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>string</pre>
+</div>
+    </div>
+
+    <!-- 13.91 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">13.91</span> Real-Life Product Price</div>
+<div class="code-box">
+  <div class="code-top"><span>13.91 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> price = <span class="syn-num">999.5678</span>;
+
+<span class="syn-kw">const</span> finalPrice = <span class="syn-fn">Number</span>(
+    price.toFixed(<span class="syn-num">2</span>)
+);
+
+<span class="syn-fn">console</span>.log(finalPrice);</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>999.57</pre>
+</div>
+    </div>
+
+    <!-- 13.92 -->
+    <div class="study-card" style="border-left: 4px solid #0284c7; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #0284c7;">13.92</span> সবগুলো একসাথে — Mini Project</div>
+<p class="text-p">ধরো একটি product:</p>
+<div class="code-box">
+  <div class="code-top"><span>13.92 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> product = {
+    name: <span class="syn-str">&quot;Laptop&quot;</span>,
+    price: <span class="syn-num">75999.567</span>,
+    discount: <span class="syn-num">10</span>
+};</pre>
+</div>
+<p class="text-p">আমরা:</p>
+<ul class="bullet-list"><li>Discount calculate করব</li><li>2 decimal-এ round করব</li><li>Currency format করব</li><li>Current date দেখাব</li></ul>
+<div class="code-box">
+  <div class="code-top"><span>13.92 JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> product = {
+    name: <span class="syn-str">&quot;Laptop&quot;</span>,
+    price: <span class="syn-num">75999.567</span>,
+    discount: <span class="syn-num">10</span>
+};
+
+<span class="syn-kw">const</span> discountAmount =
+    product.price *
+    product.discount /
+    <span class="syn-num">100</span>;
+
+<span class="syn-kw">const</span> finalPrice =
+    product.price - discountAmount;
+
+<span class="syn-kw">const</span> formattedPrice =
+    <span class="syn-kw">new</span> <span class="syn-fn">Intl</span>.NumberFormat(&quot;en-BD<span class="syn-str">&quot;, {
+        style: &quot;</span>currency<span class="syn-str">&quot;,
+        currency: &quot;</span>BDT<span class="syn-str">&quot;
+    }).format(finalPrice);
+
+console.log(&quot;</span>Product:&quot;, product.name);
+<span class="syn-fn">console</span>.log(&quot;Price:&quot;, formattedPrice);
+<span class="syn-fn">console</span>.log(&quot;Date:&quot;, <span class="syn-kw">new</span> Date().toLocaleDateString());</pre>
+</div>
+<p class="text-p">Possible output:</p>
+<div class="ascii-tree-container">Product: Laptop
+Price: BDT 68,399.61
+Date: 9/16/2026</div>
+<p class="text-p">Formatting browser/locale অনুযায়ী কিছুটা ভিন্ন হতে পারে।</p>
+    </div>
+
+    <div class="part-banner">Part 06 — Must Know, Quick Cheat Sheet, Practice Lab &amp; Mental Map</div>
+
+    <!-- Must Know -->
+    <div class="study-card" style="border-left: 4px solid #ef4444; background: #ffffff;">
+      <div class="card-title"><span class="badge-num" style="background: #dc2626;">MUST KNOW</span> 🔥 Chapter 13 — Must Know</div>
+<p class="text-p">এইগুলো অবশ্যই ভালোভাবে জানতে হবে।</p>
+<div class="section-subhead">Date</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">new</span> Date()
+Date.now()
+
+getFullYear()
+getMonth()
+getDate()
+getDay()
+getHours()
+
+toISOString()
+toLocaleDateString()</pre>
+</div>
+<div class="section-subhead">Math</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Math</span>.round()
+<span class="syn-fn">Math</span>.floor()
+<span class="syn-fn">Math</span>.ceil()
+<span class="syn-fn">Math</span>.trunc()
+
+<span class="syn-fn">Math</span>.max()
+<span class="syn-fn">Math</span>.min()
+
+<span class="syn-fn">Math</span>.random()
+
+<span class="syn-fn">Math</span>.abs()
+<span class="syn-fn">Math</span>.sqrt()
+<span class="syn-fn">Math</span>.cbrt()
+<span class="syn-fn">Math</span>.pow()
+<span class="syn-fn">Math</span>.PI</pre>
+</div>
+<div class="section-subhead">Number</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Number</span>()
+<span class="syn-fn">Number</span>.isInteger()
+<span class="syn-fn">Number</span>.isNaN()
+<span class="syn-fn">Number</span>.isFinite()
+<span class="syn-fn">Number</span>.isSafeInteger()
+
+<span class="syn-fn">Number</span>.MAX_SAFE_INTEGER</pre>
+</div>
+<div class="section-subhead">BigInt</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-num">12345678901234567890n</span></pre>
+</div>
+<div class="section-subhead">Intl</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Intl</span>.NumberFormat
+<span class="syn-fn">Intl</span>.DateTimeFormat</pre>
+</div>
+<div class="section-subhead">RegExp</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-regex">/pattern/</span></pre>
+</div>
+<p class="text-p">Important:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>test()
+match()
+replace()
+replaceAll()
+
+^
+$
+\d
+\w
+\s
++
+*
+?
+{}
+[]</pre>
+</div>
+    </div>
+
+    <!-- Quick Cheat Sheet -->
+    <div class="study-card" style="border-left: 4px solid #10b981; background: #f0fdf4;">
+      <div class="card-title"><span class="badge-num" style="background: #059669;">CHEAT SHEET</span> 🧠 Quick Cheat Sheet</div>
+<div class="ascii-tree-container">Date
+→ Date &amp; Time
+
+Math
+→ Mathematical calculations
+
+Number
+→ Number validation/conversion
+
+BigInt
+→ Very large integers
+
+Intl
+→ International formatting
+
+RegExp
+→ Text pattern matching</div>
+    </div>
+
+    <!-- Practice Set -->
+    <div class="study-card" style="border-left: 4px solid #0284c7;">
+      <div class="card-title"><span class="badge-num">PRACTICE LAB</span> 📝 Practice Set — Chapter 13</div>
+
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 1 — Date</h4>
+<p class="text-p">আজকের:</p>
+<div class="ascii-tree-container">Year
+Month
+Date
+Day
+Hour
+Minute</div>
+<p class="text-p">console-এ print করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 2 — Date Difference</h4>
+<div class="ascii-tree-container">Start: 2026-09-10
+End:   2026-10-10</div>
+<p class="text-p">কত দিন difference বের করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 3 — Random Number</h4>
+<p class="text-p">1 থেকে 100-এর মধ্যে random integer generate করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 4 — Maximum</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">45</span>, <span class="syn-num">22</span>, <span class="syn-num">99</span>, <span class="syn-num">67</span>];</pre>
+</div>
+<p class="text-p">সবচেয়ে বড় এবং ছোট number বের করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 5 — Currency</h4>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">const</span> price = <span class="syn-num">125000</span>;</pre>
+</div>
+<p class="text-p">এটাকে Bangladesh currency format-এ দেখাও।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 6 — BigInt</h4>
+<p class="text-p">দুটি বড় integer:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>12345678901234567890
+98765432109876543210</pre>
+</div>
+<p class="text-p">যোগ করো।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 7 — RegExp</h4>
+<p class="text-p">Check করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>01712345678</pre>
+</div>
+<p class="text-p">এটি basic Bangladesh mobile-number pattern follow করছে কিনা।</p>
+      </div>
+      <div class="practice-item" style="background: white; border: 1px solid var(--border-card); border-left: 4px solid var(--blue-accent); margin-bottom: 8px;">
+        <h4 style="font-size: 12px; font-weight: 700; color: var(--navy-mid); margin-bottom: 3px;">Practice 8 — Email</h4>
+<p class="text-p">Check করো:</p>
+<div class="code-box">
+  <div class="code-top"><span>Text</span></div>
+  <pre>ripon@example.com</pre>
+</div>
+<p class="text-p">এটি basic email pattern follow করছে কিনা।</p>
+      </div>
+    </div>
+
+    <!-- Chapter 13 Final Mental Map -->
+    <div class="study-card" style="border-left: 4px solid #8b5cf6; background: #faf5ff;">
+      <div class="card-title"><span class="badge-num" style="background: #7c3aed;">MENTAL MAP</span> 🎯 Chapter 13 Final Mental Map — Architecture &amp; Core Patterns</div>
+<div class="memory-box">পুরো Chapter-টাকে এভাবে মনে রাখো:</div>
+<div class="ascii-tree-container">                 JavaScript Built-ins
+                         │
+       ┌─────────────────┼─────────────────┐
+       │                 │                 │
+      Date              Math             Number
+       │                 │                 │
+   Date/Time         Calculation       Validation
+       │                 │                 │
+       └──────────────┬──┴─────────────────┘
+                      │
+                    BigInt
+                      │
+               Huge Integers
+                      │
+       ┌──────────────┴──────────────┐
+       │                             │
+      Intl                         RegExp
+       │                             │
+ Formatting                    Pattern Matching
+       │                             │
+ Currency/Date              Email/Phone/Search</div>
+<div class="section-subhead">🔥 Chapter 13-এর সবচেয়ে গুরুত্বপূর্ণ বিষয়</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">new</span> Date()</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Math</span>.random()</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Math</span>.floor()</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Number</span>.isInteger()</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-fn">Number</span>.MAX_SAFE_INTEGER</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-num">12345678901234567890n</span></pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-kw">new</span> <span class="syn-fn">Intl</span>.NumberFormat()</pre>
+</div>
+<div class="code-box">
+  <div class="code-top"><span>JavaScript</span><span>Run</span></div>
+  <pre><span class="syn-regex">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span></pre>
+</div>
+<p class="text-p">এগুলো ভালোভাবে আয়ত্ত করলে JavaScript-এর <strong>date/time, mathematical calculation, number handling, large integers, international formatting এবং pattern validation</strong>-এর ভিত্তি শক্ত হয়ে যাবে।</p>
+    </div>
+
+  </div>
+</body>
+</html>

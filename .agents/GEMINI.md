@@ -1,6 +1,6 @@
 # JavaScript Master Study Documentation Rules
 
-Always follow the comprehensive production and styling rules defined in [.AGENT/agent.md](file:///c:/Users/User/Desktop/Note-Book/.AGENT/agent.md) for generating HTML and PDF book chapters:
+Always follow the comprehensive production and styling rules defined in [.AGENT/agent.md](file:///e:/Git%20All%20Repo/Note-Book/.AGENT/agent.md) for generating HTML and PDF book chapters:
 - 100% Zero-Skipping policy (Never compress, summarize or skip any section, question, or code).
 - Page 1 balance: Master Banner + Intro + Part 1 Banner + Section 1 all fit unbroken on Page 1.
 - Zero mid-card page splits (`page-break-inside: avoid !important`).
