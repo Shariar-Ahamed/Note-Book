@@ -6,7 +6,7 @@ import os
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-# Read source markdown
+# 1. Read source markdown
 with open(r'c:\Users\User\Desktop\Note-Book\temp\ch-24.md', 'r', encoding='utf-8') as f:
     raw_md = f.read().replace('\r\n', '\n').replace('\r', '\n')
 
@@ -56,23 +56,23 @@ def highlight_js(code_str, invalid_token=None):
             continue
             
         if kind in ('COMMENT_MULTI', 'COMMENT_LINE'):
-            out.append(f'<span class="tok-comment">{esc}</span>')
+            out.append(f'<span class="syn-com">{esc}</span>')
         elif kind in ('STRING_TMPL', 'STRING_DBL', 'STRING_SGL'):
-            out.append(f'<span class="tok-string">{esc}</span>')
+            out.append(f'<span class="syn-str">{esc}</span>')
         elif kind == 'KEYWORD':
-            out.append(f'<span class="tok-kw">{esc}</span>')
+            out.append(f'<span class="syn-kw">{esc}</span>')
         elif kind == 'BOOL_NULL':
-            out.append(f'<span class="tok-bool">{esc}</span>')
+            out.append(f'<span class="syn-bool">{esc}</span>')
         elif kind == 'CLASS_NAME':
-            out.append(f'<span class="tok-class">{esc}</span>')
+            out.append(f'<span class="syn-class" style="color: #fb923c; font-weight: 600;">{esc}</span>')
         elif kind == 'PRIVATE_FIELD':
-            out.append(f'<span class="tok-priv">{esc}</span>')
+            out.append(f'<span class="syn-priv" style="color: #f472b6; font-weight: 600;">{esc}</span>')
         elif kind == 'DOM_BUILTIN':
-            out.append(f'<span class="tok-builtin">{esc}</span>')
+            out.append(f'<span class="syn-fn">{esc}</span>')
         elif kind == 'METHOD_CALL':
-            out.append(f'<span class="tok-fn">{esc}</span>')
+            out.append(f'<span class="syn-fn" style="color: #38bdf8;">{esc}</span>')
         elif kind == 'NUMBER':
-            out.append(f'<span class="tok-num">{esc}</span>')
+            out.append(f'<span class="syn-num">{esc}</span>')
         else:
             out.append(esc)
     return ''.join(out)
@@ -81,59 +81,37 @@ def render_code_box(code_text, lang='javascript', title=None, is_invalid=False, 
     code_text = code_text.strip()
     highlighted = highlight_js(code_text, invalid_token=invalid_token)
     
-    badge_cls = 'badge-js'
-    badge_label = 'JavaScript'
     box_extra_cls = ''
-    header_extra = ''
+    tag_color = '#94a3b8'
+    tag_label = 'JavaScript'
     
     if is_invalid:
         box_extra_cls = ' code-box-error'
-        badge_cls = 'badge-error'
-        badge_label = '❌ Invalid / Error'
-        header_extra = '<span class="status-tag status-error">Syntax / Runtime Error</span>'
+        tag_color = '#f87171'
+        tag_label = '❌ Error / Invalid'
     elif is_correct:
         box_extra_cls = ' code-box-correct'
-        badge_cls = 'badge-success'
-        badge_label = '✅ Correct / Valid'
-        header_extra = '<span class="status-tag status-correct">Valid OOP Pattern</span>'
+        tag_color = '#4ade80'
+        tag_label = '✅ Correct'
 
-    display_title = title if title else badge_label
+    display_title = title if title else "JavaScript"
 
     return f'''<div class="code-box{box_extra_cls}">
-    <div class="code-header">
-        <div class="code-dots">
-            <span class="dot dot-red"></span>
-            <span class="dot dot-yellow"></span>
-            <span class="dot dot-green"></span>
-            <span class="code-title">{display_title}</span>
-            {header_extra}
-        </div>
-        <div class="code-actions">
-            <span class="code-badge {badge_cls}">{badge_label}</span>
-            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        </div>
-    </div>
-    <pre><code class="language-{lang}">{highlighted}</code></pre>
+  <div class="code-top"><span style="color: {tag_color}; font-weight: 600;">{display_title}</span><span>{tag_label}</span></div>
+  <pre><code>{highlighted}</code></pre>
 </div>'''
 
-def render_ascii_box(text, title="ASCII Concept Architecture"):
+def render_ascii_box(text, title="Concept Architecture"):
     text = html.escape(text.strip())
     return f'''<div class="ascii-tree-container">
-    <div class="ascii-tree-header">
-        <span class="tree-icon">🧭</span>
-        <span class="tree-title">{title}</span>
-    </div>
-    <pre class="ascii-content">{text}</pre>
-</div>'''
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 {title}</div>
+{text}</div>'''
 
 def render_output_box(text):
     text = html.escape(text.strip())
-    return f'''<div class="output-box">
-    <div class="output-header">
-        <span class="output-icon">▶</span>
-        <span class="output-title">Console Output</span>
-    </div>
-    <pre class="output-content">{text}</pre>
+    return f'''<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{text}</pre>
 </div>'''
 
 def render_table(table_md):
@@ -147,7 +125,7 @@ def render_table(table_md):
         cols = [c.strip() for c in l.strip('|').split('|')]
         rows.append(cols)
         
-    html_out = ['<div class="table-wrap"><table class="data-table"><thead><tr>']
+    html_out = ['<div class="table-wrap"><table><thead><tr>']
     for h in headers:
         html_out.append(f'<th>{inline_format(h)}</th>')
     html_out.append('</tr></thead><tbody>')
@@ -163,679 +141,553 @@ def render_table(table_md):
 pattern = r'\n(?=# (?:(?:🔥\s*)?24\.\d+|🧠\s*Quick Cheat Sheet|📝\s*Practice Set|🎯\s*Final Mental Map))'
 raw_sections = re.split(pattern, raw_md)
 
-print(f'Total raw sections parsed: {len(raw_sections)}')
-
-# Process Section 0 (Master Banner + Opening Card)
+# Extract learning goals from section 0
 sec0 = raw_sections[0].strip()
-
-# Extract learning goals from sec0
 goals_match = re.search(r'# 🎯 Chapter 24 Learning Goals\s*([\s\S]*?)$', sec0)
 learning_goals = []
 if goals_match:
     for g in re.findall(r'^\*\s*(.*)$', goals_match.group(1), re.M):
         learning_goals.append(g.strip())
 
-# Build Header & Styles
+# Build HTML
 html_parts = []
 html_parts.append('''<!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 24 — OOP & JavaScript Classes | JavaScript Master Study Documentation</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Hind+Siliguri:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-body: #0a0d14;
-            --bg-card: #111722;
-            --bg-card-hover: #151d2c;
-            --border-card: #1f293d;
-            --border-focus: #38bdf8;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --text-dim: #64748b;
-            --accent-blue: #38bdf8;
-            --accent-purple: #c084fc;
-            --accent-emerald: #34d399;
-            --accent-amber: #fbbf24;
-            --accent-rose: #f43f5e;
-            --code-bg: #070a0f;
-            --code-border: #1e293b;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            font-family: 'Inter', 'Hind Siliguri', sans-serif;
-            line-height: 1.6;
-            font-size: 14.5px;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .doc-page {
-            max-width: 1060px;
-            margin: 0 auto;
-            padding: 24px 20px;
-        }
-
-        /* Master Banner */
-        .master-banner {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
-            border: 1px solid #312e81;
-            border-radius: 12px;
-            padding: 12px 18px;
-            margin-bottom: 8px;
-            box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .banner-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .banner-logo {
-            width: 48px;
-            height: 48px;
-            background: #f7df1e;
-            color: #000;
-            font-weight: 800;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(247, 223, 30, 0.35);
-        }
-
-        .banner-titles h1 {
-            font-size: 20px;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.02em;
-            margin-bottom: 3px;
-        }
-
-        .banner-titles h2 {
-            font-size: 13.5px;
-            font-weight: 500;
-            color: #93c5fd;
-        }
-
-        .banner-right {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: flex-end;
-        }
-
-        .pill-badge {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            color: #e2e8f0;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            font-size: 11.5px;
-            font-weight: 600;
-            letter-spacing: 0.01em;
-        }
-
-        .pill-highlight {
-            background: rgba(56, 189, 248, 0.15);
-            border-color: rgba(56, 189, 248, 0.4);
-            color: #38bdf8;
-        }
-
-        /* Opening Card */
-        .opening-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 12px;
-            padding: 10px 14px;
-            margin-bottom: 8px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .opening-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--accent-blue);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .opening-desc {
-            font-size: 13.5px;
-            color: #cbd5e1;
-            margin-bottom: 14px;
-            line-height: 1.6;
-        }
-
-        .goals-flex {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px 6px;
-            margin-top: 6px;
-        }
-
-        .goal-tag {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid #1e293b;
-            padding: 2px 7px;
-            border-radius: 4px;
-            font-size: 10px;
-            color: #cbd5e1;
-            white-space: nowrap;
-        }
-
-        .goal-tag::before {
-            content: "✓ ";
-            color: #34d399;
-            font-weight: 700;
-        }
-
-        /* Part Banners */
-        .part-banner {
-            background: linear-gradient(90deg, #1e1b4b 0%, #0f172a 100%);
-            border-left: 4px solid var(--accent-purple);
-            border-radius: 8px;
-            padding: 10px 16px;
-            margin: 12px 0 8px 0;
-            font-size: 15px;
-            font-weight: 700;
-            color: #f1f5f9;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            page-break-after: avoid !important;
-            break-after: avoid !important;
-        }
-
-        /* Study Cards */
-        .study-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 10px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-        }
-
-        .card-title {
-            font-size: 15.5px;
-            font-weight: 700;
-            color: #f8fafc;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-badge {
-            font-size: 11px;
-            font-weight: 600;
-            background: rgba(99, 102, 241, 0.15);
-            color: #a5b4fc;
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        .card-subheading {
-            font-size: 13.5px;
-            font-weight: 700;
-            color: #38bdf8;
-            margin: 14px 0 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .card-body p {
-            margin-bottom: 10px;
-            color: #cbd5e1;
-            font-size: 13.5px;
-        }
-
-        .card-body ul, .card-body ol {
-            margin: 8px 0 12px 20px;
-            color: #cbd5e1;
-            font-size: 13.5px;
-        }
-
-        .card-body li {
-            margin-bottom: 4px;
-        }
-
-        /* Code Boxes */
-        .code-box {
-            background: var(--code-bg);
-            border: 1px solid var(--code-border);
-            border-radius: 8px;
-            margin: 10px 0 14px 0;
-            overflow: hidden;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .code-box-error {
-            border-color: rgba(239, 68, 68, 0.4) !important;
-            background: rgba(239, 68, 68, 0.02) !important;
-        }
-
-        .code-box-correct {
-            border-color: rgba(34, 197, 94, 0.4) !important;
-            background: rgba(34, 197, 94, 0.02) !important;
-        }
-
-        .code-header {
-            background: #0d121c;
-            border-bottom: 1px solid #1e293b;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .code-dots {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .dot-red { background: #ef4444; }
-        .dot-yellow { background: #eab308; }
-        .dot-green { background: #22c55e; }
-
-        .code-title {
-            font-size: 11px;
-            font-family: 'Fira Code', monospace;
-            color: #94a3b8;
-            margin-left: 8px;
-        }
-
-        .status-tag {
-            font-size: 10.5px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 8px;
-        }
-
-        .status-error {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            border: 1px solid rgba(239, 68, 68, 0.4);
-        }
-
-        .status-correct {
-            background: rgba(34, 197, 94, 0.2);
-            color: #86efac;
-            border: 1px solid rgba(34, 197, 94, 0.4);
-        }
-
-        .code-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .code-badge {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-
-        .badge-js {
-            background: rgba(247, 223, 30, 0.15);
-            color: #f7df1e;
-        }
-
-        .badge-error {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
-
-        .badge-success {
-            background: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-        }
-
-        .copy-btn {
-            background: transparent;
-            border: 1px solid #334155;
-            color: #94a3b8;
-            font-size: 10px;
-            padding: 2px 7px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .copy-btn:hover {
-            background: #1e293b;
-            color: #e2e8f0;
-        }
-
-        pre {
-            padding: 12px 16px;
-            margin: 0;
-            overflow-x: hidden !important;
-            white-space: pre-wrap !important;
-            word-break: break-word !important;
-            font-family: 'Fira Code', monospace;
-            font-size: 12.5px;
-            line-height: 1.5;
-        }
-
-        code {
-            font-family: 'Fira Code', monospace;
-        }
-
-        p code, li code {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid #273549;
-            color: #38bdf8;
-            padding: 1px 5px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        /* Invalid token highlighting */
-        .invalid-token {
-            text-decoration: underline wavy #ef4444 !important;
-            text-decoration-skip-ink: none !important;
-            color: #fca5a5 !important;
-            font-weight: 700 !important;
-            background: rgba(239, 68, 68, 0.18) !important;
-            padding: 0 3px !important;
-            border-radius: 3px !important;
-        }
-
-        /* Syntax colors */
-        .tok-kw { color: #ff7b72; font-weight: 600; }
-        .tok-class { color: #ffa657; font-weight: 600; }
-        .tok-priv { color: #f0883e; font-weight: 600; }
-        .tok-fn { color: #7ee787; }
-        .tok-string { color: #a5d6a7; }
-        .tok-num { color: #79c0ff; }
-        .tok-bool { color: #79c0ff; font-weight: 600; }
-        .tok-builtin { color: #d2a8ff; font-weight: 600; }
-        .tok-comment { color: #94a3b8; font-style: italic; }
-
-        /* ASCII Container */
-        .ascii-tree-container {
-            background: #090e17;
-            border: 1px solid #1e293b;
-            border-left: 3px solid #38bdf8;
-            border-radius: 8px;
-            margin: 12px 0 16px 0;
-            overflow: hidden;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .ascii-tree-header {
-            background: #0d1522;
-            border-bottom: 1px solid #1e293b;
-            padding: 6px 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #94a3b8;
-        }
-
-        .ascii-content {
-            color: #38bdf8;
-            font-family: 'Fira Code', monospace;
-            font-size: 12px;
-            line-height: 1.4;
-            padding: 12px 14px;
-            margin: 0;
-            white-space: pre-wrap !important;
-            word-break: break-word !important;
-            overflow-x: hidden !important;
-        }
-
-        /* Output Box */
-        .output-box {
-            background: #070a0e;
-            border: 1px solid #1f2937;
-            border-left: 3px solid #22c55e;
-            border-radius: 8px;
-            margin: 10px 0 14px 0;
-            overflow: hidden;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .output-header {
-            background: #0b111a;
-            border-bottom: 1px solid #1f2937;
-            padding: 5px 12px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #86efac;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .output-content {
-            color: #e2e8f0;
-            font-family: 'Fira Code', monospace;
-            font-size: 12px;
-            padding: 10px 14px;
-            margin: 0;
-            white-space: pre-wrap !important;
-            word-break: break-word !important;
-            overflow-x: hidden !important;
-        }
-
-        /* Table */
-        .table-wrap {
-            overflow-x: auto;
-            margin: 12px 0 16px 0;
-            border: 1px solid var(--border-card);
-            border-radius: 8px;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12.5px;
-            text-align: left;
-        }
-
-        .data-table th {
-            background: #151f30;
-            color: #f8fafc;
-            padding: 9px 12px;
-            font-weight: 600;
-            border-bottom: 1px solid #273549;
-        }
-
-        .data-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #1a2332;
-            color: #cbd5e1;
-        }
-
-        .data-table tr:nth-child(even) {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        /* Callout Boxes */
-        .callout-box {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin: 12px 0;
-            font-size: 13.5px;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .callout-info {
-            background: rgba(56, 189, 248, 0.08);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            border-left: 3px solid #38bdf8;
-            color: #e2e8f0;
-        }
-
-        .callout-warn {
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            border-left: 3px solid #f59e0b;
-            color: #e2e8f0;
-        }
-
-        /* Practice Problem Item */
-        .practice-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-card);
-            border-radius: 10px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            page-break-inside: avoid !important;
-            break-inside: avoid !important;
-        }
-
-        .practice-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .practice-level {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        .level-beginner { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .level-intermediate { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .level-advanced { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-
-        /* Print Strict Settings */
-        @media print {
-            @page {
-                size: A4;
-                margin: 8mm 10mm;
-            }
-
-            body {
-                background: #0a0d14 !important;
-                color: #e2e8f0 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .doc-page {
-                max-width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            .copy-btn {
-                display: none !important;
-            }
-
-            /* Page 1 Strict Balance */
-            #sec-24-1 {
-                page-break-after: always !important;
-                break-after: page !important;
-                margin-bottom: 0 !important;
-            }
-
-            .study-card, .practice-item, .code-box, pre, .ascii-tree-container, .table-wrap, .callout-box {
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 24 — OOP &amp; JavaScript Classes | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --purple-accent: #6366f1;
+      --purple-light: #ede9fe;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      font-family: var(--font-body);
+      color: var(--text-main);
+      line-height: 1.45;
+      font-size: 11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Sticky Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(49, 46, 129, 0.25);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 3px;
+    }
+    .banner-icon {
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 8px;
+      text-transform: uppercase;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+    }
+
+    /* Opening Statement Card */
+    .opening-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid var(--purple-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .goals-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 6px;
+      margin-top: 6px;
+    }
+    .goal-tag {
+      background: #ede9fe;
+      border: 1px solid #ddd6fe;
+      color: #5b21b6;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 9.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .goal-tag::before {
+      content: "✓ ";
+      color: #059669;
+      font-weight: 700;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f8fafc;
+      padding: 6px 12px;
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 5px;
+      margin-top: 8px;
+      margin-bottom: 6px;
+      border-left: 4px solid #6366f1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--navy-mid);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--purple-accent);
+      color: white;
+      font-family: var(--font-code);
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--purple-accent);
+      padding-left: 5px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 3px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-box-error {
+      border: 1px solid #f87171 !important;
+    }
+    .code-box-correct {
+      border: 1px solid #4ade80 !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 2px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.32;
+      padding: 5px 8px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+    }
+    p code, li code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Invalid Token Wave Highlight */
+    .invalid-token {
+      text-decoration: underline wavy #ef4444 !important;
+      text-decoration-skip-ink: none !important;
+      color: #fca5a5 !important;
+      font-weight: 700 !important;
+      background: rgba(239, 68, 68, 0.25) !important;
+      padding: 0 3px !important;
+      border-radius: 3px !important;
+    }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams */
+    .ascii-tree-container {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.25;
+      padding: 6px 10px;
+      border-radius: 5px;
+      margin: 4px 0;
+      white-space: pre;
+      overflow-x: hidden !important;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Items */
+    .practice-item {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 6px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      border-left: 3px solid var(--purple-accent);
+      border-radius: 5px;
+    }
+
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 11px;
+        color: #0f172a !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-24-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="doc-page">
 
-    <!-- MASTER BANNER -->
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#6366f1;">⚡</span> JS MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner -->
     <header class="master-banner">
-        <div class="banner-left">
-            <div class="banner-logo">JS</div>
-            <div class="banner-titles">
-                <h1>Chapter 24 — OOP &amp; JavaScript Classes</h1>
-                <h2>JavaScript Master Study Documentation • ECMAScript 2026 Standard</h2>
-            </div>
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title">JavaScript Master Study Documentation</div>
+      </div>
+      <div class="banner-sub">CHAPTER 24: OOP &amp; JAVASCRIPT CLASSES — OBJECT MODELING, INHERITANCE &amp; ARCHITECTURE</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">50 Modules + Practice Lab</div>
         </div>
-        <div class="banner-right">
-            <span class="pill-badge pill-highlight">50 Core Modules</span>
-            <span class="pill-badge">OOP 4 Pillars</span>
-            <span class="pill-badge">Private Fields (#)</span>
-            <span class="pill-badge">Prototypes &amp; Extends</span>
-            <span class="pill-badge pill-highlight">Practice Lab</span>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 18 — Object-Oriented Architecture</div>
         </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Classes, Encapsulation, Extends &amp; Super</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / OOP Class Fields</div>
+        </div>
+      </div>
     </header>
 
-    <!-- OPENING STATEMENT CARD -->
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
     <div class="opening-card">
-        <div class="opening-title">
-            <span>🎯</span> Chapter 24 Learning Goals &amp; Architecture Roadmap
-        </div>
-        <p class="opening-desc">
-            OOP (Object-Oriented Programming) হলো আধুনিক সফটওয়্যার ইঞ্জিনিয়ারিংয়ের মূল ভিত্তি। বিশেষ করে <strong>React, Node.js, Express, NestJS, এবং large-scale enterprise application</strong> ডেভেলপমেন্টে পরিষ্কার ডেটা মডেলিং এবং মডুলার কোড স্ট্রাকচার সাজাতে ক্লাস এবং অবজেক্টের কনসেপ্ট অপরিহার্য। এই চ্যাপ্টারে আমরা একদম গ্রাউন্ড লেভেল থেকে ইন্টারনাল প্রোটোটাইপ মেকানিজম পর্যন্ত নিখুঁতভাবে শিখব।
-        </p>
-        <div class="goals-flex">
+      <div class="opening-title">
+        <span>🎯</span> Chapter 24 — OOP Architecture &amp; Core Learning Roadmap
+      </div>
+      <p class="text-p">
+        OOP (Object-Oriented Programming) হলো আধুনিক সফটওয়্যার ইঞ্জিনিয়ারিংয়ের মূল ভিত্তি। বিশেষ করে <strong>React, Node.js, Express, NestJS, এবং large-scale enterprise application</strong> ডেভেলপমেন্টে পরিষ্কার ডেটা মডেলিং এবং মডুলার কোড স্ট্রাকচার সাজাতে ক্লাস এবং অবজেক্টের কনসেপ্ট অপরিহার্য। এই চ্যাপ্টারে আমরা একদম গ্রাউন্ড লেভেল থেকে ইন্টারনাল প্রোটোটাইপ মেকানিজম পর্যন্ত নিখুঁতভাবে শিখব।
+      </p>
+      <div class="goals-flex">
 ''')
 
 for g in learning_goals:
-    html_parts.append(f'            <span class="goal-tag">{inline_format(g)}</span>\n')
+    html_parts.append(f'        <span class="goal-tag">{inline_format(g)}</span>\n')
 
-html_parts.append('''        </div>
+html_parts.append('''      </div>
     </div>
 ''')
 
-# Now process sections 1 to 50
-current_part = 0
-
 def get_part_banner(num):
     if num == 1:
-        return '<div class="part-banner part-banner-1">Part 01 — OOP Fundamentals, Objects &amp; Class Syntax (24.1 – 24.10)</div>'
+        return '<div class="part-banner">Part 01 — OOP Fundamentals, Objects &amp; Class Syntax (24.1 – 24.10)</div>'
     elif num == 11:
         return '<div class="part-banner">Part 02 — Methods, Properties, Accessors &amp; Encapsulation (24.11 – 24.23)</div>'
     elif num == 24:
@@ -850,13 +702,10 @@ def get_part_banner(num):
 
 for idx in range(1, 51):
     sec_text = raw_sections[idx].strip()
-    
-    # Check part banner
     pb = get_part_banner(idx)
     if pb:
         html_parts.append(f'    {pb}\n')
         
-    # Extract header
     sec_lines = sec_text.split('\n')
     header_line = sec_lines[0]
     m_head = re.search(r'# (?:🔥\s*)?(24\.\d+)\s*—\s*(.*)', header_line)
@@ -867,87 +716,78 @@ for idx in range(1, 51):
         sec_num = f'24.{idx}'
         sec_title = header_line.replace('#', '').strip()
         
-    # Special card id & style for 24.1
     card_extra = ''
     if idx == 1:
         card_extra = ' id="sec-24-1"'
         
     html_parts.append(f'''    <div class="study-card"{card_extra}>
-        <div class="card-header">
-            <h3 class="card-title"><span>📌</span> {sec_num} — {inline_format(sec_title)}</h3>
-            <span class="card-badge">Module {sec_num}</span>
-        </div>
-        <div class="card-body">
+      <div class="card-title"><span class="badge-num">{sec_num}</span> {inline_format(sec_title)}</div>
 ''')
     
-    # Process section body
     body_text = '\n'.join(sec_lines[1:]).strip()
     
-    # Handle common mistakes specifically for Semantic Code Correctness Policy
     if idx in [44, 45, 46, 47, 48]:
         if idx == 44:
             invalid_c = "class Student {}\n\nconst student = Student();"
             correct_c = "class Student {}\n\nconst student = new Student();"
-            html_parts.append(f'''            <p>Class constructor কখনো <code>new</code> কীওয়ার্ড ছাড়া সরাসরি ফাংশনের মতো কল করা যায় না। এভাবে কল করলে <code>TypeError</code> ছুঁড়ে দেয়।</p>
-            {render_code_box(invalid_c, is_invalid=True, invalid_token='Student()', title='ভুল পদ্ধতি: new কীওয়ার্ড ছাড়া কল')}
-            <div class="output-box" style="border-left-color: #ef4444;">
-                <div class="output-header" style="color: #fca5a5;"><span class="output-icon">✖</span> Runtime Error</div>
-                <pre class="output-content">TypeError: Class constructor Student cannot be invoked without 'new'</pre>
-            </div>
-            <p><strong>সঠিক সমাধান:</strong> অবজেক্ট ইনস্ট্যান্স তৈরি করতে সর্বদা <code>new</code> ব্যবহার করুন।</p>
-            {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: new ব্যবহার')}
+            html_parts.append(f'''      <p class="text-p">Class constructor কখনো <code>new</code> কীওয়ার্ড ছাড়া সরাসরি ফাংশনের মতো কল করা যায় না। এভাবে কল করলে <code>TypeError</code> ছুঁড়ে দেয়।</p>
+      {render_code_box(invalid_c, is_invalid=True, invalid_token='Student()', title='ভুল পদ্ধতি: new কীওয়ার্ড ছাড়া কল')}
+      <div class="code-box output-box" style="border-left-color: #ef4444;">
+        <div class="code-top"><span style="color: #f87171;">✖ RUNTIME ERROR</span><span>TypeError</span></div>
+        <pre>TypeError: Class constructor Student cannot be invoked without 'new'</pre>
+      </div>
+      <p class="text-p"><strong>সঠিক সমাধান:</strong> অবজেক্ট ইনস্ট্যান্স তৈরি করতে সর্বদা <code>new</code> ব্যবহার করুন।</p>
+      {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: new ব্যবহার')}
 ''')
         elif idx == 45:
             invalid_c = "class Animal {\n    constructor(name) {\n        this.name = name;\n    }\n}\n\nclass Dog extends Animal {\n    constructor(name, breed) {\n        this.breed = breed;\n    }\n}"
             correct_c = "class Animal {\n    constructor(name) {\n        this.name = name;\n    }\n}\n\nclass Dog extends Animal {\n    constructor(name, breed) {\n        super(name);\n        this.breed = breed;\n    }\n}"
-            html_parts.append(f'''            <p>Inheritance ব্যবহার করার সময় চাইল্ড ক্লাসের <code>constructor</code>-এ <code>this</code> অ্যাক্সেস করার পূর্বে অবশ্যই প্যারেন্ট ক্লাসের <code>super()</code> কল করতে হবে।</p>
-            {render_code_box(invalid_c, is_invalid=True, invalid_token='this.breed = breed;', title='ভুল পদ্ধতি: super() না ডেকে this অ্যাক্সেস')}
-            <div class="output-box" style="border-left-color: #ef4444;">
-                <div class="output-header" style="color: #fca5a5;"><span class="output-icon">✖</span> Runtime ReferenceError</div>
-                <pre class="output-content">ReferenceError: Must call super constructor in derived class before accessing 'this'</pre>
-            </div>
-            <p><strong>সঠিক সমাধান:</strong> প্যারেন্ট কনস্ট্রাক্টরে প্যারামিটার পাস করতে প্রথমে <code>super(...)</code> কল করুন।</p>
-            {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: super(name) কল')}
+            html_parts.append(f'''      <p class="text-p">Inheritance ব্যবহার করার সময় চাইল্ড ক্লাসের <code>constructor</code>-এ <code>this</code> অ্যাক্সেস করার পূর্বে অবশ্যই প্যারেন্ট ক্লাসের <code>super()</code> কল করতে হবে।</p>
+      {render_code_box(invalid_c, is_invalid=True, invalid_token='this.breed = breed;', title='ভুল পদ্ধতি: super() না ডেকে this অ্যাক্সেস')}
+      <div class="code-box output-box" style="border-left-color: #ef4444;">
+        <div class="code-top"><span style="color: #f87171;">✖ REFERENCE ERROR</span><span>ReferenceError</span></div>
+        <pre>ReferenceError: Must call super constructor in derived class before accessing 'this'</pre>
+      </div>
+      <p class="text-p"><strong>সঠিক সমাধান:</strong> প্যারেন্ট কনস্ট্রাক্টরে প্যারামিটার পাস করতে প্রথমে <code>super(...)</code> কল করুন।</p>
+      {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: super(name) কল')}
 ''')
         elif idx == 46:
             invalid_c = "class User {\n    #password = \"12345\";\n}\n\nconst user = new User();\nconsole.log(user.#password);"
             correct_c = "class User {\n    #password = \"12345\";\n\n    verifyPassword(input) {\n        return this.#password === input;\n    }\n}\n\nconst user = new User();\nconsole.log(user.verifyPassword(\"12345\")); // true"
-            html_parts.append(f'''            <p>Private field (<code>#field</code>) ক্লাসের বাইরে থেকে সরাসরি ডট নোটেশনে অ্যাক্সেস করা যায় না। এটি করলে সিনট্যাক্স এরর দেয়।</p>
-            {render_code_box(invalid_c, is_invalid=True, invalid_token='user.#password', title='ভুল পদ্ধতি: ক্লাসের বাইরে Private Field অ্যাক্সেস')}
-            <div class="output-box" style="border-left-color: #ef4444;">
-                <div class="output-header" style="color: #fca5a5;"><span class="output-icon">✖</span> SyntaxError</div>
-                <pre class="output-content">SyntaxError: Private field '#password' must be declared in an enclosing class</pre>
-            </div>
-            <p><strong>সঠিক সমাধান:</strong> ক্লাসের নিজস্ব মেথড বা গেটারের মাধ্যমে প্রাইভেট ডেটা ভ্যালিডেট বা এক্সেস করুন।</p>
-            {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: মেথড বা গেটারের মাধ্যমে এক্সেস')}
+            html_parts.append(f'''      <p class="text-p">Private field (<code>#field</code>) ক্লাসের বাইরে থেকে সরাসরি ডট নোটেশনে অ্যাক্সেস করা যায় না। এটি করলে সিনট্যাক্স এরর দেয়।</p>
+      {render_code_box(invalid_c, is_invalid=True, invalid_token='user.#password', title='ভুল পদ্ধতি: ক্লাসের বাইরে Private Field অ্যাক্সেস')}
+      <div class="code-box output-box" style="border-left-color: #ef4444;">
+        <div class="code-top"><span style="color: #f87171;">✖ SYNTAX ERROR</span><span>SyntaxError</span></div>
+        <pre>SyntaxError: Private field '#password' must be declared in an enclosing class</pre>
+      </div>
+      <p class="text-p"><strong>সঠিক সমাধান:</strong> ক্লাসের নিজস্ব মেথড বা গেটারের মাধ্যমে প্রাইভেট ডেটা ভ্যালিডেট বা এক্সেস করুন।</p>
+      {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: মেথডের মাধ্যমে এক্সেস')}
 ''')
         elif idx == 47:
             invalid_c = "class Test {\n    static hello() {\n        console.log(\"Hello\");\n    }\n}\n\nconst test = new Test();\ntest.hello();"
             correct_c = "class Test {\n    static hello() {\n        console.log(\"Hello\");\n    }\n}\n\nTest.hello(); // Hello"
-            html_parts.append(f'''            <p>Static method সরাসরি ক্লাসের প্রপার্টি, এটি ইনস্ট্যান্স অবজেক্টে উত্তরাধিকারসূত্রে থাকে না। অবজেক্ট ইনস্ট্যান্স দিয়ে কল করলে TypeError দেয়।</p>
-            {render_code_box(invalid_c, is_invalid=True, invalid_token='test.hello()', title='ভুল পদ্ধতি: অবজেক্ট দিয়ে Static মেথড কল')}
-            <div class="output-box" style="border-left-color: #ef4444;">
-                <div class="output-header" style="color: #fca5a5;"><span class="output-icon">✖</span> TypeError</div>
-                <pre class="output-content">TypeError: test.hello is not a function</pre>
-            </div>
-            <p><strong>সঠিক সমাধান:</strong> সরাসরি ক্লাসের নাম ধরে কল করুন: <code>Test.hello()</code></p>
-            {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: ক্লাসের নাম ধরে কল')}
+            html_parts.append(f'''      <p class="text-p">Static method সরাসরি ক্লাসের প্রপার্টি, এটি ইনস্ট্যান্স অবজেক্টে উত্তরাধিকারসূত্রে থাকে না। অবজেক্ট ইনস্ট্যান্স দিয়ে কল করলে TypeError দেয়।</p>
+      {render_code_box(invalid_c, is_invalid=True, invalid_token='test.hello()', title='ভুল পদ্ধতি: অবজেক্ট দিয়ে Static মেথড কল')}
+      <div class="code-box output-box" style="border-left-color: #ef4444;">
+        <div class="code-top"><span style="color: #f87171;">✖ TYPE ERROR</span><span>TypeError</span></div>
+        <pre>TypeError: test.hello is not a function</pre>
+      </div>
+      <p class="text-p"><strong>সঠিক সমাধান:</strong> সরাসরি ক্লাসের নাম ধরে কল করুন: <code>Test.hello()</code></p>
+      {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: ক্লাসের নাম ধরে কল')}
 ''')
         elif idx == 48:
             invalid_c = "class Student {\n    constructor(name) {\n        name = name; // প্যারামিটার নিজের উপর অ্যাসাইন হচ্ছে, ইনস্ট্যান্সে নয়!\n    }\n}\n\nconst s = new Student(\"Shariar\");\nconsole.log(s.name); // undefined"
             correct_c = "class Student {\n    constructor(name) {\n        this.name = name; // ইনস্ট্যান্স অবজেক্টে প্রপার্টি সেট হলো\n    }\n}\n\nconst s = new Student(\"Shariar\");\nconsole.log(s.name); // 'Shariar'"
-            html_parts.append(f'''            <p>কনস্ট্রাক্টরের ভেতর <code>this.property = value</code> না লিখলে অবজেক্টের প্রপার্টি ইনিশিয়ালাইজ হয় না; শুধু লোকাল ভেরিয়েবল অ্যাসাইন হয়।</p>
-            {render_code_box(invalid_c, is_invalid=True, invalid_token='name = name;', title='ভুল পদ্ধতি: this ছাড়া নাম অ্যাসাইন')}
-            <div class="output-box" style="border-left-color: #ef4444;">
-                <div class="output-header" style="color: #fca5a5;"><span class="output-icon">▶</span> Output Mismatch</div>
-                <pre class="output-content">undefined</pre>
-            </div>
-            <p><strong>সঠিক সমাধান:</strong> অবজেক্টের প্রপার্টি সেট করতে সর্বদা <code>this.name</code> ব্যবহার করুন।</p>
-            {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: this.name ব্যবহার')}
+            html_parts.append(f'''      <p class="text-p">কনস্ট্রাক্টরের ভেতর <code>this.property = value</code> না লিখলে অবজেক্টের প্রপার্টি ইনিশিয়ালাইজ হয় না; শুধু লোকাল ভেরিয়েবল অ্যাসাইন হয়।</p>
+      {render_code_box(invalid_c, is_invalid=True, invalid_token='name = name;', title='ভুল পদ্ধতি: this ছাড়া নাম অ্যাসাইন')}
+      <div class="code-box output-box" style="border-left-color: #ef4444;">
+        <div class="code-top"><span style="color: #f87171;">▶ OUTPUT MISMATCH</span><span>Undefined</span></div>
+        <pre>undefined</pre>
+      </div>
+      <p class="text-p"><strong>সঠিক সমাধান:</strong> অবজেক্টের প্রপার্টি সেট করতে সর্বদা <code>this.name</code> ব্যবহার করুন।</p>
+      {render_code_box(correct_c, is_correct=True, title='সঠিক পদ্ধতি: this.name ব্যবহার')}
 ''')
     else:
-        # Standard section rendering
-        # Tokenize body into paragraphs, headings, code blocks, ascii diagrams
         chunks = re.split(r'(```[\s\S]*?```|###[^\n]+)', body_text)
         for ch in chunks:
             ch_str = ch.strip()
@@ -964,18 +804,16 @@ for idx in range(1, 51):
                         if any(c in code_val for c in ['│', '┌', '└', '├', '──', '─', '↓', '→', 'OOP']):
                             html_parts.append(render_ascii_box(code_val))
                         else:
-                            # It's output or simple text
                             html_parts.append(render_output_box(code_val))
                     else:
                         html_parts.append(render_code_box(code_val, lang=clang, title=clang.upper()))
             elif ch_str.startswith('###'):
                 sub_title = ch_str.replace('###', '').strip()
                 if sub_title.lower() == 'output':
-                    pass # Output is rendered via box
+                    pass
                 else:
-                    html_parts.append(f'            <div class="card-subheading"><span>🔹</span> {inline_format(sub_title)}</div>\n')
+                    html_parts.append(f'      <div class="section-subhead">🔹 {inline_format(sub_title)}</div>\n')
             else:
-                # Normal paragraph or bullets
                 lines = ch_str.split('\n')
                 p_acc = []
                 in_list = False
@@ -986,48 +824,39 @@ for idx in range(1, 51):
                     if ls.startswith('* ') or ls.startswith('- '):
                         if not in_list:
                             if p_acc:
-                                html_parts.append(f'            <p>{inline_format(" ".join(p_acc))}</p>\n')
+                                html_parts.append(f'      <p class="text-p">{inline_format(" ".join(p_acc))}</p>\n')
                                 p_acc = []
-                            html_parts.append('            <ul>\n')
+                            html_parts.append('      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">\n')
                             in_list = True
-                        html_parts.append(f'                <li>{inline_format(ls[2:])}</li>\n')
+                        html_parts.append(f'        <li>{inline_format(ls[2:])}</li>\n')
                     else:
                         if in_list:
-                            html_parts.append('            </ul>\n')
+                            html_parts.append('      </ul>\n')
                             in_list = False
                         p_acc.append(ls)
                 if in_list:
-                    html_parts.append('            </ul>\n')
+                    html_parts.append('      </ul>\n')
                 if p_acc:
-                    html_parts.append(f'            <p>{inline_format(" ".join(p_acc))}</p>\n')
+                    html_parts.append(f'      <p class="text-p">{inline_format(" ".join(p_acc))}</p>\n')
                     
-    html_parts.append('''        </div>
-    </div>
-''')
+    html_parts.append('    </div>\n')
 
 # Section 51: Quick Cheat Sheet
 sec51 = raw_sections[51].strip()
 m_table = re.search(r'(\|[\s\S]*\|)', sec51)
 if m_table:
     html_parts.append(f'''    <div class="study-card">
-        <div class="card-header">
-            <h3 class="card-title"><span>🧠</span> Quick Cheat Sheet — Class &amp; OOP Syntax Reference</h3>
-            <span class="card-badge">Summary</span>
-        </div>
-        <div class="card-body">
-            <p>JavaScript Class এবং Object-Oriented Programming এর দ্রুত রেফারেন্সের জন্য সম্পূর্ণ সিনট্যাক্স টেবিল:</p>
-            {render_table(m_table.group(1))}
-        </div>
+      <div class="card-title"><span class="badge-num">24.Quick</span> 🧠 Quick Cheat Sheet — Class &amp; OOP Syntax Reference</div>
+      <p class="text-p">JavaScript Class এবং Object-Oriented Programming এর দ্রুত রেফারেন্সের জন্য সম্পূর্ণ সিনট্যাক্স টেবিল:</p>
+      {render_table(m_table.group(1))}
     </div>
 ''')
 
 # Section 52: Practice Set
-sec52 = raw_sections[52].strip()
 practice_solutions = [
     {
         "id": "Practice 1",
         "level": "Beginner",
-        "level_cls": "level-beginner",
         "title": "Car Class — Brand, Model, Year & showInfo() Method",
         "req": "<code>Car</code> নামে একটি ক্লাস বানান যাতে <code>brand</code>, <code>model</code>, <code>year</code> প্রোপার্টি থাকবে এবং <code>showInfo()</code> মেথড গাড়ির সম্পূর্ণ বিবরণ প্রিন্ট করবে।",
         "code": """class Car {
@@ -1050,7 +879,6 @@ myCar.showInfo();""",
     {
         "id": "Practice 2",
         "level": "Beginner",
-        "level_cls": "level-beginner",
         "title": "Student Class — Name, ID, Department & introduce() Method",
         "req": "<code>Student</code> নামে একটি ক্লাস বানান যাতে <code>name</code>, <code>id</code>, <code>department</code> প্রোপার্টি থাকবে এবং <code>introduce()</code> মেথড শিক্ষার্থীর পরিচয় প্রিন্ট করবে।",
         "code": """class Student {
@@ -1073,7 +901,6 @@ s1.introduce();""",
     {
         "id": "Practice 3",
         "level": "Beginner",
-        "level_cls": "level-beginner",
         "title": "Rectangle Class — Width, Height, area() & perimeter() Calculation",
         "req": "<code>Rectangle</code> নামে একটি ক্লাস বানান যার <code>width</code> ও <code>height</code> প্রোপার্টি থাকবে এবং আয়তক্ষেত্রের ক্ষেত্রফল ও পরিসীমা নির্ণয়ের জন্য <code>area()</code> ও <code>perimeter()</code> মেথড থাকবে।",
         "code": """class Rectangle {
@@ -1100,7 +927,6 @@ console.log("Perimeter:", rect.perimeter());""",
     {
         "id": "Practice 4",
         "level": "Intermediate",
-        "level_cls": "level-intermediate",
         "title": "BankAccount with Private #balance, Deposit & Withdraw Validations",
         "req": "<code>BankAccount</code> ক্লাস বানান যাতে ব্যালেন্স প্রাইভেট (<code>#balance</code>) থাকবে এবং <code>deposit(amount)</code>, <code>withdraw(amount)</code>, ও <code>getBalance()</code> মেথডের মাধ্যমে সুরক্ষিতভাবে লেনদেন করা যাবে।",
         "code": """class BankAccount {
@@ -1139,14 +965,12 @@ console.log("Perimeter:", rect.perimeter());""",
 const account = new BankAccount(500);
 account.deposit(200);
 account.withdraw(150);
-console.log("Final Balance:", account.getBalance());
-// console.log(account.#balance); // ❌ SyntaxError (Fully Protected)""",
+console.log("Final Balance:", account.getBalance());""",
         "output": "Deposited $200. New balance: $700\nWithdrawn $150. Remaining balance: $550\nFinal Balance: 550"
     },
     {
         "id": "Practice 5",
         "level": "Intermediate",
-        "level_cls": "level-intermediate",
         "title": "Inheritance Architecture: Employee Base Class to Developer Derived Class",
         "req": "<code>Employee</code> (name, salary) বেস ক্লাস থেকে <code>Developer</code> (language, code()) চাইল্ড ক্লাস তৈরি করুন এবং <code>super()</code> এর মাধ্যমে প্যারেন্ট প্রোপার্টি ইনিশিয়ালাইজ করুন।",
         "code": """class Employee {
@@ -1180,7 +1004,6 @@ dev.code();""",
     {
         "id": "Practice 6",
         "level": "Advanced",
-        "level_cls": "level-advanced",
         "title": "Mini E-commerce Architecture: Product, Cart, Order & User Interaction",
         "req": "একটি পূর্ণাঙ্গ অবজেক্ট-ওরিয়েন্টেড মিনি ই-কমার্স আর্কিটেকচার তৈরি করুন যাতে <code>Product</code>, <code>Cart</code>, <code>Order</code>, এবং <code>User</code> ক্লাসগুলো একে অপরের সাথে ইন্টারঅ্যাক্ট করে মোট মূল্য ও কার্ট প্রসেসিং সম্পন্ন করবে।",
         "code": """class Product {
@@ -1244,29 +1067,20 @@ order.printReceipt();""",
 ]
 
 html_parts.append('''    <div class="study-card">
-        <div class="card-header">
-            <h3 class="card-title"><span>📝</span> Hands-On Practice Lab — 6 Real-World OOP Challenges</h3>
-            <span class="card-badge">Practical Lab</span>
-        </div>
-        <div class="card-body">
-            <p>থিওরি এবং কনসেপ্ট আয়ত্ত করার পর বাস্তব প্রজেক্টে ক্লাস ব্যবহারের দক্ষতা যাচাই করার জন্য নিচে ৬টি প্র্যাকটিস প্রবলেমের বিস্তারিত সমাধান দেওয়া হলো:</p>
+      <div class="card-title"><span class="badge-num">24.Lab</span> 📝 Hands-On Practice Lab — 6 Real-World OOP Challenges</div>
+      <p class="text-p">থিওরি এবং কনসেপ্ট আয়ত্ত করার পর বাস্তব প্রজেক্টে ক্লাস ব্যবহারের দক্ষতা যাচাই করার জন্য নিচে ৬টি প্র্যাকটিস প্রবলেমের বিস্তারিত সমাধান দেওয়া হলো:</p>
 ''')
 
 for p in practice_solutions:
-    html_parts.append(f'''            <div class="practice-item">
-                <div class="practice-header">
-                    <div style="font-weight: 700; font-size: 14px; color: #f8fafc;">{p["id"]}: {p["title"]}</div>
-                    <span class="practice-level {p["level_cls"]}">{p["level"]}</span>
-                </div>
-                <p style="margin-bottom: 8px;"><strong>Problem Requirement:</strong> {p["req"]}</p>
-                {render_code_box(p["code"], is_correct=True, title=f'{p["id"]} Model Solution')}
-                {render_output_box(p["output"])}
-            </div>
+    html_parts.append(f'''      <div class="practice-item">
+        <div style="font-weight: 700; font-size: 11px; color: var(--navy-deep); margin-bottom: 3px;">{p["id"]}: {p["title"]} <span style="font-size: 9px; color: #6366f1; background: #ede9fe; padding: 1px 5px; border-radius: 3px; margin-left: 6px;">{p["level"]}</span></div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> {p["req"]}</p>
+        {render_code_box(p["code"], is_correct=True, title=f'{p["id"]} Model Solution')}
+        {render_output_box(p["output"])}
+      </div>
 ''')
 
-html_parts.append('''        </div>
-    </div>
-''')
+html_parts.append('    </div>\n')
 
 # Section 53: Final Mental Map
 sec53 = raw_sections[53].strip()
@@ -1274,48 +1088,28 @@ ascii_map_match = re.search(r'```text([\s\S]*?)```', sec53)
 ascii_map = ascii_map_match.group(1).strip() if ascii_map_match else ""
 
 html_parts.append(f'''    <div class="study-card">
-        <div class="card-header">
-            <h3 class="card-title"><span>🎯</span> Final Mental Map &amp; Prototype Connection</h3>
-            <span class="card-badge">Concept Architecture</span>
-        </div>
-        <div class="card-body">
-            <p>JavaScript-এর সম্পূর্ণ Object-Oriented Programming ইকোসিস্টেম, ক্লাস ফিল্ডস, ইনহেরিট্যান্স এবং মেথড স্ট্রাকচারের সামগ্রিক ভিজ্যুয়াল আর্কিটেকচার:</p>
-            {render_ascii_box(ascii_map, title="JavaScript OOP Master Architecture Tree")}
-            
-            <div class="card-subheading"><span>⭐</span> সবচেয়ে গুরুত্বপূর্ণ Connection</div>
-            <p>তুমি <strong>Chapter 10-এ Objects</strong>, <strong>Chapter 11-এ Prototypes</strong>, এবং <strong>Chapter 24-এ Classes/OOP</strong> পড়ার পর এই তিনটির পারস্পরিক যোগসূত্র এভাবে মনে রাখবে:</p>
-            {render_ascii_box("Object\\n  ↓\\nPrototype\\n  ↓\\nClass syntax\\n  ↓\\nInheritance\\n  ↓\\nOOP architecture", title="Evolution of JavaScript Object System")}
-            
-            <div class="callout-box callout-info" style="margin-top: 14px;">
-                <strong>Key Takeaway:</strong> JavaScript-এ <code>class</code> কোনো সম্পূর্ণ নতুন অবজেক্ট মডেল নয়; এটি আসলে JavaScript-এর বিদ্যমান <strong>Prototypal Inheritance</strong> সিস্টেমের ওপর নির্মিত অত্যন্ত মার্জিত এবং আধুনিক সিনট্যাকটিক সুগার (Syntactic Sugar)। এই কনসেপ্টটি আয়ত্ত করলে React এর ক্লাস কম্পোনেন্ট, TypeScript এর ক্লাস মডেলিং এবং Node.js/NestJS আর্কিটেকচার বোঝা অত্যন্ত সহজ হয়ে যাবে।
-            </div>
-        </div>
+      <div class="card-title"><span class="badge-num">24.Map</span> 🎯 Final Mental Map &amp; Prototype Connection</div>
+      <p class="text-p">JavaScript-এর সম্পূর্ণ Object-Oriented Programming ইকোসিস্টেম, ক্লাস ফিল্ডস, ইনহেরিট্যান্স এবং মেথড স্ট্রাকচারের সামগ্রিক ভিজ্যুয়াল আর্কিটেকচার:</p>
+      {render_ascii_box(ascii_map, title="JavaScript OOP Master Architecture Tree")}
+      
+      <div class="section-subhead">⭐ সবচেয়ে গুরুত্বপূর্ণ Connection</div>
+      <p class="text-p">তুমি <strong>Chapter 10-এ Objects</strong>, <strong>Chapter 11-এ Prototypes</strong>, এবং <strong>Chapter 24-এ Classes/OOP</strong> পড়ার পর এই তিনটির পারস্পরিক যোগসূত্র এভাবে মনে রাখবে:</p>
+      {render_ascii_box("Object\\n  ↓\\nPrototype\\n  ↓\\nClass syntax\\n  ↓\\nInheritance\\n  ↓\\nOOP architecture", title="Evolution of JavaScript Object System")}
+      
+      <div class="def-box" style="margin-top: 6px;">
+        <div class="def-text">Key Takeaway: JavaScript-এ class কোনো সম্পূর্ণ নতুন অবজেক্ট মডেল নয়; এটি আসলে JavaScript-এর বিদ্যমান Prototypal Inheritance সিস্টেমের ওপর নির্মিত অত্যন্ত মার্জিত এবং আধুনিক সিনট্যাকটিক সুগার (Syntactic Sugar)। এই কনসেপ্টটি আয়ত্ত করলে React এর ক্লাস কম্পোনেন্ট, TypeScript এর ক্লাস মডেলিং এবং Node.js/NestJS আর্কিটেকচার বোঝা অত্যন্ত সহজ হয়ে যাবে।</div>
+      </div>
     </div>
 ''')
 
-# Footer & Copy Script
-html_parts.append('''    <footer style="text-align: center; padding: 24px 0; color: #64748b; font-size: 12px; border-top: 1px solid #1e293b; margin-top: 30px;">
-        <p>JavaScript Master Study Documentation • Chapter 24: OOP &amp; JavaScript Classes</p>
-        <p>Verified with 100% Zero-Skipping Policy • ECMAScript 2026 Ready</p>
+# Footer
+html_parts.append('''    <footer style="text-align: center; padding: 14px 0; color: #64748b; font-size: 10px; border-top: 1px solid #e2e8f0; margin-top: 20px;">
+      <p>JavaScript Master Study Documentation • Chapter 24: OOP &amp; JavaScript Classes</p>
+      <p>Verified with 100% Zero-Skipping Policy • Standard Master Book Edition</p>
     </footer>
 
-</div>
+  </div>
 
-<script>
-function copyCode(btn) {
-    const pre = btn.closest('.code-box').querySelector('pre code');
-    if (!pre) return;
-    navigator.clipboard.writeText(pre.innerText).then(() => {
-        const orig = btn.innerText;
-        btn.innerText = 'Copied!';
-        btn.style.color = '#34d399';
-        setTimeout(() => {
-            btn.innerText = orig;
-            btn.style.color = '';
-        }, 1800);
-    });
-}
-</script>
 </body>
 </html>
 ''')
