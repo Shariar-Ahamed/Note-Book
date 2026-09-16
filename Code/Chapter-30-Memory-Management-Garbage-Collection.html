@@ -1,0 +1,2202 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 30 — JavaScript Memory Management &amp; Garbage Collection | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid #64748b;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #334155;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #9f1239;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0 5px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-box-error {
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-left: 3px solid #ef4444;
+    }
+    .code-box-correct {
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      border-left: 3px solid #22c55e;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 2.5px 8px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+      text-transform: uppercase;
+    }
+    .code-box pre {
+      margin: 0;
+      padding: 6px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .code-box code {
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.35;
+      color: #f1f5f9;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .syn-kw { color: #f472b6; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #4ade80; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+    .invalid-token {
+      color: #fca5a5 !important;
+      text-decoration: underline wavy #ef4444 1.5px !important;
+      background: rgba(239, 68, 68, 0.25) !important;
+      padding: 0 3px !important;
+      border-radius: 3px !important;
+    }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Checklist Grid */
+    .checklist-container {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 6px 0;
+    }
+    .checklist-header {
+      background: #1e293b;
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 5px 12px;
+      letter-spacing: 0.5px;
+    }
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 8px 12px;
+    }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: white;
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 9.5px;
+    }
+    .check-box {
+      color: #059669;
+      font-weight: bold;
+      font-size: 11px;
+    }
+    .check-text {
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 5px;
+      padding: 6px 9px;
+      margin-bottom: 6px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-30-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item, .checklist-container {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 30</span>
+        </div>
+      </div>
+      <div class="banner-sub">JAVASCRIPT MEMORY MANAGEMENT, GARBAGE COLLECTION &amp; RUNTIME LIFECYCLE OPTIMIZATION</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">64 Modules + Practice Lab</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 24 — Memory &amp; GC Architecture</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Stack vs Heap, Mark &amp; Sweep, WeakRef</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / V8 GC Engine Spec</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🎯</span> JavaScript Memory Management &amp; Garbage Collection — মেমরি আর্কিটেকচার শেখার মূল উদ্দেশ্য
+      </div>
+      <p class="text-p">
+        JavaScript-এ মেমরি কীভাবে বরাদ্দ হয়, অবজেক্ট রেফারেন্স কীভাবে কাজ করে এবং মেমরি লিক এড়াতে কী কী সতর্কতা প্রয়োজন—তা জানা একজন প্রোডাকশন ইঞ্জিনিয়ারের জন্য অপরিহার্য। এই চ্যাপ্টারে আমরা <strong>Stack vs Heap</strong>, <strong>Mark-and-Sweep Garbage Collection</strong>, <strong>Reachability Tree</strong>, <strong>Closure Memory</strong>, <strong>Detached DOM Nodes</strong>, <strong>WeakMap/WeakSet</strong> এবং <strong>Chrome DevTools Heap Profiling</strong> গভীরভাবে শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Memory Allocation</div>
+        <div class="roadmap-item"><span>📌</span> 2. Stack vs Heap</div>
+        <div class="roadmap-item"><span>📌</span> 3. References &amp; Values</div>
+        <div class="roadmap-item"><span>📌</span> 4. Reachability &amp; Roots</div>
+        <div class="roadmap-item"><span>📌</span> 5. Mark-and-Sweep GC</div>
+        <div class="roadmap-item"><span>📌</span> 6. Circular References</div>
+        <div class="roadmap-item"><span>📌</span> 7. Memory Leak Traps</div>
+        <div class="roadmap-item"><span>📌</span> 8. Detached DOM Nodes</div>
+        <div class="roadmap-item"><span>📌</span> 9. WeakMap &amp; WeakRef</div>
+        <div class="roadmap-item"><span>📌</span> 10. Heap Profiling</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Core Concepts, Runtime Architecture & Memory Allocation (30.1 – 30.9)</div>
+    <div class="study-card" id="sec-30-1">
+      <div class="card-title"><span class="badge-num">30.1</span> Memory Management কী?</div>
+      <p class="text-p">Program চলার সময় বিভিন্ন data রাখার জন্য computer memory ব্যবহার করে। যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+<span class="syn-kw">const</span> age = <span class="syn-num">23</span>;
+
+<span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+    age: <span class="syn-num">23</span>
+};</code></pre>
+</div>      <p class="text-p">এই data program চলার সময় memory-তে রাখা হয়। তারপর যখন data আর প্রয়োজন হয় না, JavaScript সেই memory reclaim করার ব্যবস্থা করে। এই পুরো process:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 MEMORY LIFECYCLE & RECLAMATION FLOW</div>
+  <pre class="ascii-tree-content">Memory Allocation
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Use Memory
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+No Longer Needed
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Garbage Collection
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #4ade80; font-weight: 700;">Memory Reclaimed</span></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.2</span> JavaScript কি নিজে Memory Manage করে?</div>
+      <p class="text-p">হ্যাঁ। C/C++-এর মতো language-এ developer-কে অনেক ক্ষেত্রে manually memory manage করতে হয়। JavaScript-এ সাধারণত:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Developer
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Create <span style="color: #fde047; font-weight: 600;">Object</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+JavaScript Runtime
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Memory Management
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Garbage Collector</span></pre>
+</div>      <p class="text-p">তাই JavaScript-কে <strong>garbage-collected language</strong> বলা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.3</span> Memory Lifecycle</div>
+      <p class="text-p">একটি সাধারণ memory lifecycle:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 MEMORY LIFECYCLE & RECLAMATION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">1. Allocate</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">2. Use</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">3. No longer reachable</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">4. Garbage Collector detects</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">5. Memory reclaimed</span></pre>
+</div>      <p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};</code></pre>
+</div>      <p class="text-p">Object তৈরি হলো। পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">যদি object-এর আর কোনো reference না থাকে, objectটি garbage collection-এর জন্য eligible হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.4</span> Memory Allocation</div>
+      <p class="text-p">যখন আমরা data তৈরি করি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;</code></pre>
+</div>      <p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];</code></pre>
+</div>      <p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};</code></pre>
+</div>      <p class="text-p">JavaScript runtime প্রয়োজন অনুযায়ী memory allocate করে। Conceptually:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">name
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+&quot;<span style="color: #fde047; font-weight: 600;">Ripon</span>&quot;
+
+numbers
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+[10, 20, 30]
+
+<span style="color: #fde047; font-weight: 600;">user</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+{ name: &quot;<span style="color: #fde047; font-weight: 600;">Ripon</span>&quot; }</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.5</span> Stack vs Heap</div>
+      <p class="text-p">Chapter 29-এ আমরা Call Stack এবং Heap দেখেছিলাম। Memory-এর basic mental model:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 STACK VS HEAP CONCEPTUAL ARCHITECTURE</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Stack</span>
+<span style="color: #334155;">----------------</span>
+<span style="color: #34d399; font-weight: 700;">Execution-related</span>
+Primitive values / references
+Function frames
+<span style="color: #334155;">----------------</span>
+
+<span style="color: #34d399; font-weight: 700;">Heap</span>
+<span style="color: #334155;">----------------</span>
+Objects
+Arrays
+Functions
+Dynamic data
+<span style="color: #334155;">----------------</span></pre>
+</div>      <p class="text-p">তবে একটি গুরুত্বপূর্ণ কথা: &gt; Stack বনাম Heap-এর exact implementation JavaScript specification দ্বারা এভাবে নির্ধারিত নয়। এটি বোঝার জন্য একটি useful conceptual model।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.6</span> Primitive Values</div>
+      <p class="text-p">JavaScript-এর primitive values:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">string
+number
+bigint
+boolean
+undefined
+null
+symbol</pre>
+</div>      <p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> age = <span class="syn-num">23</span>;
+<span class="syn-kw">let</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+<span class="syn-kw">let</span> isStudent = <span class="syn-bool">true</span>;</code></pre>
+</div>      <p class="text-p">এগুলো primitive values।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.7</span> Objects এবং Reference</div>
+      <p class="text-p">Object:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};</code></pre>
+</div>      <p class="text-p">এখানে <code>user</code> variable object-এর সাথে একটি reference-এর মাধ্যমে সম্পর্কিত। Conceptually:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">user</span>
+ <span style="color: #475569;">│</span>
+ <span style="color: #38bdf8; font-weight: 700;">▼</span>
+<span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────</span><span style="color: #475569;">┐</span>
+<span style="color: #475569;">│</span> <span style="color: #fde047; font-weight: 600;">Object</span>          <span style="color: #475569;">│</span>
+<span style="color: #475569;">│</span> name: &quot;<span style="color: #fde047; font-weight: 600;">Ripon</span>&quot;   <span style="color: #475569;">│</span>
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────</span><span style="color: #475569;">┘</span></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.8</span> Reference কী?</div>
+      <p class="text-p">দেখো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user1 = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">const</span> user2 = user1;</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 OBJECT REFERENCE POINTER MODEL</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">user1</span> <span style="color: #0ea5e9; font-weight: 600;">─────</span><span style="color: #475569;">┐</span>
+           <span style="color: #38bdf8; font-weight: 700;">▼</span>
+       <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┐</span>
+       <span style="color: #475569;">│</span> <span style="color: #fde047; font-weight: 600;">Object</span>   <span style="color: #475569;">│</span>
+       <span style="color: #475569;">│</span> <span style="color: #fde047; font-weight: 600;">Ripon</span>    <span style="color: #475569;">│</span>
+       <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┘</span>
+           <span style="color: #38bdf8; font-weight: 700;">▲</span>
+           <span style="color: #475569;">│</span>
+<span style="color: #fde047; font-weight: 600;">user2</span> <span style="color: #0ea5e9; font-weight: 600;">─────</span><span style="color: #475569;">┘</span></pre>
+</div>      <p class="text-p">দুটো variable একই object-কে reference করছে। তাই:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user2.name = <span class="syn-str">&quot;Shariar&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user1.name);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Shariar</pre>
+</div>      <p class="text-p">কারণ <code>user1</code> এবং <code>user2</code> একই object-এর দিকে reference করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.9</span> Primitive Copy vs Reference</div>
+      <p class="text-p">Primitive:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> a = <span class="syn-num">10</span>;
+<span class="syn-kw">let</span> b = a;
+
+b = <span class="syn-num">20</span>;
+
+<span class="syn-fn">console</span>.log(a);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10</pre>
+</div>      <p class="text-p">কারণ primitive value copy হয়েছে। অন্যদিকে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> a = {
+    value: <span class="syn-num">10</span>
+};
+
+<span class="syn-kw">const</span> b = a;
+
+b.value = <span class="syn-num">20</span>;
+
+<span class="syn-fn">console</span>.log(a.value);</code></pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>20</pre>
+</div>      <p class="text-p">কারণ একই object reference করা হয়েছে।</p>
+    </div>
+    <div class="part-banner">Part 02 — Reachability, Active Roots & Object Graphs (30.10 – 30.13)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.10</span> Reachability — সবচেয়ে গুরুত্বপূর্ণ Concept 🔥</div>
+      <p class="text-p">Garbage Collection বোঝার জন্য সবচেয়ে গুরুত্বপূর্ণ concept: &gt; <strong>Reachability</strong> সহজভাবে: &gt; কোনো object যদি program-এর active references থেকে এখনও পৌঁছানো যায়, তাহলে সেটি reachable। আর যদি আর কোনো active reference দিয়ে পৌঁছানো না যায়, তাহলে সেটি garbage collection-এর জন্য eligible হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.11</span> Root কী?</div>
+      <p class="text-p">Garbage Collector সাধারণত কিছু <strong>roots</strong> থেকে object reachability track করার concept ব্যবহার করে। Examples:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Global references</li>
+        <li>বর্তমানে executing function-এর reachable references</li>
+        <li>অন্যান্য runtime roots</li>
+      </ul>
+      <p class="text-p">Simplified:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">ROOT</span>
+ <span style="color: #475569;">│</span>
+ <span style="color: #38bdf8; font-weight: 700;">▼</span>
+<span style="color: #fde047; font-weight: 600;">Object</span> A
+ <span style="color: #475569;">│</span>
+ <span style="color: #38bdf8; font-weight: 700;">▼</span>
+<span style="color: #fde047; font-weight: 600;">Object</span> B</pre>
+</div>      <p class="text-p">যদি Root থেকে B পর্যন্ত পৌঁছানো যায়:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">B = <span style="color: #4ade80; font-weight: 700;">Reachable</span></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.12</span> Reachable Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};</code></pre>
+</div>      <p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Global</span>
+  <span style="color: #475569;">│</span>
+  <span style="color: #38bdf8; font-weight: 700;">▼</span>
+<span style="color: #fde047; font-weight: 600;">user</span>
+  <span style="color: #475569;">│</span>
+  <span style="color: #38bdf8; font-weight: 700;">▼</span>
+<span style="color: #fde047; font-weight: 600;">Object</span></pre>
+</div>      <p class="text-p">Object reachable।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.13</span> Unreachable Object</div>
+      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+user = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">আগের object-এর দিকে আর <code>user</code> reference নেই। Conceptually:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Global</span>
+  <span style="color: #475569;">│</span>
+  <span style="color: #f43f5e; font-weight: bold;">X</span>
+
+<span style="color: #fde047; font-weight: 600;">Object</span></pre>
+</div>      <p class="text-p">Object unreachable হয়ে যেতে পারে। তখন Garbage Collector পরে সেটার memory reclaim করতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 03 — Garbage Collection Engine & Mark-and-Sweep Algorithm (30.14 – 30.21)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.14</span> Garbage Collection কী?</div>
+      <p class="text-p">Garbage Collector-এর কাজ: &gt; যেসব object আর reachable নয় এবং আর ব্যবহার করা সম্ভব নয়, সেগুলোর memory reclaim করা। সহজভাবে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Object</span> created
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Used
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+No reference
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #f43f5e; font-weight: 700;">Unreachable</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Garbage Collector</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Memory reclaimed</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.15</span> Garbage Collection Manual নয়</div>
+      <p class="text-p">তুমি সাধারণত এমন code লিখবে না:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>free(user);</code></pre>
+</div>      <p class="text-p">JavaScript-এ সাধারণভাবে এইভাবে manually object free করতে হয় না। বরং:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">এর মাধ্যমে reference remove করতে পারো। তারপর object unreachable হলে GC পরে memory reclaim করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.16</span> <code>null</code> কি Object Delete করে?</div>
+      <p class="text-p">এটা খুব important।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+user = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p"><code>null</code> বসানোর সাথে সাথে object <strong>অবশ্যই সঙ্গে সঙ্গে delete হয়ে যায়</strong>—এমন নয়। বরং:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">user</span> reference removed
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Object</span> may become unreachable
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+GC may reclaim later</pre>
+</div>      <p class="text-p">Garbage collection-এর timing runtime control করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.17</span> Garbage Collection সঙ্গে সঙ্গে হয় না</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> data = {
+    huge: <span class="syn-str">&quot;some data&quot;</span>
+};
+
+data = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">এখন object unreachable হতে পারে। কিন্তু:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">data = null</pre>
+</div>      <p class="text-p">হওয়ার সাথে সাথেই GC necessarily run করবে—এটা ধরে নেওয়া ঠিক নয়। Garbage Collector কখন memory reclaim করবে সেটা runtime-এর implementation এবং heuristics-এর ওপর নির্ভর করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.18</span> Mark-and-Sweep</div>
+      <p class="text-p">Garbage Collection বোঝার জন্য classic concept: &gt; <strong>Mark-and-Sweep</strong> Simplified process:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Step 1</span>
+Start from roots
+
+<span style="color: #c084fc; font-weight: 700;">Step 2</span>
+Mark reachable objects
+
+<span style="color: #c084fc; font-weight: 700;">Step 3</span>
+Find unmarked objects
+
+<span style="color: #c084fc; font-weight: 700;">Step 4</span>
+Reclaim their memory</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.19</span> Mark-and-Sweep Example</div>
+      <p class="text-p">ধরো:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 MARK-AND-SWEEP GC REACHABILITY GRAPH</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Root</span>
+ <span style="color: #475569;">│</span>
+ <span style="color: #38bdf8; font-weight: 700;">▼</span>
+ A
+ <span style="color: #475569;">│</span>
+ <span style="color: #38bdf8; font-weight: 700;">▼</span>
+ B
+
+C</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 MARK-AND-SWEEP GC REACHABILITY GRAPH</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Root</span> <span style="color: #38bdf8; font-weight: 700;">→</span> A <span style="color: #38bdf8; font-weight: 700;">→</span> B</pre>
+</div>      <p class="text-p">তাই:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #4ade80; font-weight: 700;">A = reachable</span>
+<span style="color: #4ade80; font-weight: 700;">B = reachable</span>
+<span style="color: #f43f5e; font-weight: 700;">C = unreachable</span></pre>
+</div>      <p class="text-p">Garbage Collector:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 MARK-AND-SWEEP GC REACHABILITY GRAPH</div>
+  <pre class="ascii-tree-content">Mark:
+A <span style="color: #4ade80; font-weight: bold;">✓</span>
+B <span style="color: #4ade80; font-weight: bold;">✓</span>
+C <span style="color: #f43f5e; font-weight: bold;">✗</span>
+
+Sweep:
+C removed/reclaimed</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.20</span> Circular Reference</div>
+      <p class="text-p">আগে পুরনো কিছু garbage collection model-এ circular reference নিয়ে সমস্যা ছিল। কিন্তু modern JavaScript garbage collectors শুধু reference count-এর ওপর নির্ভর করে না; reachability-based tracing techniques ব্যবহার করে। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> a = {};
+
+<span class="syn-kw">let</span> b = {};
+
+a.other = b;
+b.other = a;</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">a <span style="color: #38bdf8; font-weight: 700;">→</span> b
+<span style="color: #38bdf8; font-weight: 700;">↑</span>   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">───</span><span style="color: #475569;">┘</span></pre>
+</div>      <p class="text-p">এটি circular reference। পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>a = <span class="syn-bool">null</span>;
+b = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">যদি আর কোনো root reference না থাকে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 MARK-AND-SWEEP GC REACHABILITY GRAPH</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Root</span>
+ <span style="color: #f43f5e; font-weight: bold;">X</span></pre>
+</div>      <p class="text-p">পুরো cycle unreachable হতে পারে এবং garbage collection-এর জন্য eligible হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.21</span> Reference Counting কেন যথেষ্ট নয়?</div>
+      <p class="text-p">যদি শুধু reference count ব্যবহার করা হতো:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">A <span style="color: #38bdf8; font-weight: 700;">→</span> B
+B <span style="color: #38bdf8; font-weight: 700;">→</span> A</pre>
+</div>      <p class="text-p">তাহলে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">A <span style="color: #fde047; font-weight: 600;">count</span> = 1
+B <span style="color: #fde047; font-weight: 600;">count</span> = 1</pre>
+</div>      <p class="text-p">দেখে মনে হতে পারে তারা এখনও alive। কিন্তু Root থেকে কেউ তাদের access করতে পারছে না। তাই modern GC reachability-based tracing অনেক বেশি useful।</p>
+    </div>
+    <div class="part-banner">Part 04 — Memory Leaks, Retained References & Detached DOM Nodes (30.22 – 30.28)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.22</span> Memory Leak কী?</div>
+      <p class="text-p"><strong>Memory Leak</strong> হলো এমন situation যেখানে program-এর আর প্রয়োজন নেই এমন memory references-এর কারণে memory unnecessarily retained থাকে। সহজভাবে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Memory ব্যবহার হচ্ছে
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Data আর দরকার নেই
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+কিন্তু reference রয়ে গেছে
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+GC reclaim করতে পারছে না
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Memory usage বাড়ছে</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.23</span> Memory Leak Example — Global Variable</div>
+<div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JavaScript Source</span><span>❌ Memory Leak / Anti-Pattern</span></div>
+  <pre><code><span class="syn-fn">window</span>.myData = [];
+
+<span class="syn-kw">function</span> addData(data) {
+    <span class="syn-fn">window</span>.myData.push(data);
+}</code></pre>
+</div>      <p class="text-p">যদি application continuously বড় data যোগ করে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">myData</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Huge Array
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+More Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+More Data</pre>
+</div>      <p class="text-p">এবং application-এর আর প্রয়োজন না থাকলেও global reference ধরে রাখে, memory বাড়তে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.24</span> Event Listener Memory Leak</div>
+      <p class="text-p">একটি common frontend problem:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> button = <span class="syn-fn">document</span>.querySelector(&quot;#button<span class="syn-str">&quot;);
+
+function handleClick() {
+    console.log(&quot;</span>Clicked<span class="syn-str">&quot;);
+}
+
+button.addEventListener(&quot;</span>click&quot;, handleClick);</code></pre>
+</div>      <p class="text-p">যদি dynamically created component পরে remove করা হয় কিন্তু listener lifecycle ঠিকভাবে manage না করা হয়, কিছু situation-এ unnecessary references retain হতে পারে। বিশেষ করে SPA/framework applications-এ lifecycle management গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.25</span> Event Listener Cleanup</div>
+      <p class="text-p">যদি listener আর দরকার না হয়:</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code>button.<span class="syn-fn">removeEventListener</span>(&quot;click&quot;, handleClick);</code></pre>
+</div>      <p class="text-p">Important:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>button.<span class="syn-fn">addEventListener</span>(&quot;click&quot;, handleClick);</code></pre>
+</div>      <p class="text-p">এর পরে remove করতে হলে একই function reference ব্যবহার করা ভালো:</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code>button.<span class="syn-fn">removeEventListener</span>(&quot;click&quot;, handleClick);</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.26</span> Anonymous Function-এর Common Problem</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>button.<span class="syn-fn">addEventListener</span>(&quot;click<span class="syn-str">&quot;, () =&gt; {
+    console.log(&quot;</span>Clicked&quot;);
+});</code></pre>
+</div>      <p class="text-p">পরে:</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code>button.<span class="syn-fn">removeEventListener</span>(&quot;click<span class="syn-str">&quot;, () =&gt; {
+    console.log(&quot;</span>Clicked&quot;);
+});</code></pre>
+</div>      <p class="text-p">এটা listener remove করবে না। কারণ দুইটা function আলাদা।</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">First function ≠ Second function</pre>
+</div>      <p class="text-p">Better:</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code><span class="syn-kw">function</span> handleClick() {
+    <span class="syn-fn">console</span>.log(&quot;Clicked<span class="syn-str">&quot;);
+}
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, handleClick);
+
+button.removeEventListener(&quot;</span>click&quot;, handleClick);</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.27</span> Detached DOM Node</div>
+      <p class="text-p">Frontend-এ একটি গুরুত্বপূর্ণ memory issue: &gt; Detached DOM node ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> div = <span class="syn-fn">document</span>.createElement(&quot;div<span class="syn-str">&quot;);
+
+const data = {
+    name: &quot;</span>Ripon&quot;
+};
+
+div.data = data;</code></pre>
+</div>      <p class="text-p">তারপর DOM থেকে node remove করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>div.remove();</code></pre>
+</div>      <p class="text-p">কিন্তু যদি অন্য কোথাও <code>div</code>-এর reference থেকে যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>someGlobalReference = div;</code></pre>
+</div>      <p class="text-p">তাহলে node এবং তার associated references memory-তে retained থাকতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.28</span> DOM Memory Leak-এর Simple Mental Model</div>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 DETACHED DOM NODE RETENTION GRAPH</div>
+  <pre class="ascii-tree-content">JavaScript Reference
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+DOM Node
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+More Data</pre>
+</div>      <p class="text-p">DOM থেকে remove করলেই সব memory সঙ্গে সঙ্গে free হবে না। যদি JavaScript থেকে এখনও reference থাকে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 DETACHED DOM NODE RETENTION GRAPH</div>
+  <pre class="ascii-tree-content">JS Reference
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+DOM Node</pre>
+</div>      <p class="text-p">তাহলে সেটা reachable থাকতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 05 — Closures & Lexical Scope Memory Lifecycle (30.29 – 30.32)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.29</span> Closure এবং Memory</div>
+      <p class="text-p">Chapter 26-এ closure দেখেছিলাম। Closure outer variables retain করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createCounter() {
+    <span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> () {
+        count++;
+        <span class="syn-kw">return</span> count;
+    };
+}
+
+<span class="syn-kw">const</span> counter = createCounter();</code></pre>
+</div>      <p class="text-p">এখন <code>counter</code> function-এর মাধ্যমে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">count</span></pre>
+</div>      <p class="text-p">accessible। Conceptually:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 CLOSURE LEXICAL SCOPE MEMORY RETENTION</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">counter</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">closure</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">count</span></pre>
+</div>      <p class="text-p">তাই closure-এর lifetime বুঝতে memory concepts গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.30</span> Closure Memory Leak হতে পারে?</div>
+      <p class="text-p">Closure নিজে memory leak নয়। কিন্তু closure যদি accidentally বড় object/reference ধরে রাখে এবং সেটা দীর্ঘসময় reachable থাকে, তাহলে unnecessary memory retention হতে পারে। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createHandler() {
+    <span class="syn-kw">const</span> hugeData = <span class="syn-kw">new</span> <span class="syn-fn">Array</span>(<span class="syn-num">1000000</span>).fill(&quot;data&quot;);
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> () {
+        <span class="syn-fn">console</span>.log(hugeData.length);
+    };
+}
+
+<span class="syn-kw">const</span> handler = createHandler();</code></pre>
+</div>      <p class="text-p"><code>handler</code> যতক্ষণ <code>hugeData</code>-কে closure-এর মাধ্যমে retain করে, ততক্ষণ সেই data reachable থাকতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.31</span> Function Scope এবং Memory</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> test() {
+    <span class="syn-kw">const</span> data = {
+        name: <span class="syn-str">&quot;Ripon&quot;</span>
+    };
+
+    <span class="syn-fn">console</span>.log(data);
+}
+
+test();</code></pre>
+</div>      <p class="text-p"><code>test()</code> execution শেষ হলে সাধারণভাবে <code>data</code> আর reachable না থাকলে তার associated memory GC-এর জন্য eligible হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.32</span> But Closure Changes the Lifetime</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> test() {
+    <span class="syn-kw">const</span> data = {
+        name: <span class="syn-str">&quot;Ripon&quot;</span>
+    };
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> () {
+        <span class="syn-kw">return</span> data;
+    };
+}
+
+<span class="syn-kw">const</span> getData = test();</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 CLOSURE LEXICAL SCOPE MEMORY RETENTION</div>
+  <pre class="ascii-tree-content">getData
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">closure</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+data</pre>
+</div>      <p class="text-p">তাই <code>test()</code> শেষ হলেও <code>data</code> retain হতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 06 — Weak References & Memory-Safe Collections (WeakMap / WeakSet) (30.33 – 30.37)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.33</span> <code>WeakMap</code> কেন?</div>
+      <p class="text-p">Chapter 12-এ আমরা <code>WeakMap</code> দেখেছি। Memory management-এর দিক থেকে <code>WeakMap</code> গুরুত্বপূর্ণ।</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code><span class="syn-kw">const</span> weakMap = <span class="syn-kw">new</span> <span class="syn-fn">WeakMap</span>();
+
+<span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+weakMap.set(user, <span class="syn-str">&quot;Private Data&quot;</span>);</code></pre>
+</div>      <p class="text-p">যদি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">এবং object-এর আর কোনো strong reference না থাকে, <code>WeakMap</code> সেই object-কে এমনভাবে retain করে না যাতে garbage collection বাধ্যতামূলকভাবে বন্ধ হয়ে যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.34</span> WeakMap-এর Mental Model</div>
+      <p class="text-p">Normal Map:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Map</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Object</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Strong reference</pre>
+</div>      <p class="text-p">WeakMap:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 WEAK REFERENCE MEMORY ASSOCIATION</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">WeakMap</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Object</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Weak association</pre>
+</div>      <p class="text-p">তাই object অন্য কোথাও unreachable হলে WeakMap-এর association garbage collection-এর সাথে disappear হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.35</span> WeakSet</div>
+      <p class="text-p">একই ধারণা <code>WeakSet</code>-এর ক্ষেত্রেও।</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code><span class="syn-kw">const</span> weakSet = <span class="syn-kw">new</span> <span class="syn-fn">WeakSet</span>();
+
+<span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+weakSet.add(user);
+
+user = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">যদি আর কোনো strong reference না থাকে, object garbage collection-এর জন্য eligible হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.36</span> WeakMap কোথায় ব্যবহার করা হয়?</div>
+      <p class="text-p">একটি practical example:</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code><span class="syn-kw">const</span> metadata = <span class="syn-kw">new</span> <span class="syn-fn">WeakMap</span>();
+
+<span class="syn-kw">function</span> setMetadata(element, data) {
+    metadata.set(element, data);
+}</code></pre>
+</div>      <p class="text-p">DOM element:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> button = <span class="syn-fn">document</span>.querySelector(&quot;button&quot;);
+
+setMetadata(button, {
+    clicked: <span class="syn-bool">true</span>
+});</code></pre>
+</div>      <p class="text-p">যদি button পরে DOM এবং application-এর অন্য strong references থেকে চলে যায়, WeakMap-এর association object lifetime-এর সাথে automatically disappear করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.37</span> Cache এবং Memory</div>
+      <p class="text-p">Caching performance বাড়ায়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> cache = <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+
+cache.set(&quot;user:<span class="syn-num">1</span><span class="syn-str">&quot;, {
+    name: &quot;</span>Ripon&quot;
+});</code></pre>
+</div>      <p class="text-p">কিন্তু unlimited cache:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Cache</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+More Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+More Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #f43f5e; font-weight: 700;">Huge Memory</span></pre>
+</div>      <p class="text-p">হতে পারে। তাই cache design করতে হয়:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Maximum size</li>
+        <li>Expiration</li>
+        <li>LRU strategy</li>
+        <li>Cleanup</li>
+        <li>Appropriate data structure</li>
+      </ul>
+    </div>
+    <div class="part-banner">Part 07 — Memory Pressure, High Usage & Optimization Rules (30.38 – 30.43)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.38</span> Infinite Array — Memory Problem</div>
+<div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JavaScript Source</span><span>❌ Memory Leak / Anti-Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> data = [];
+
+<span class="syn-fn">setInterval</span>(() =&gt; {
+    data.push(<span class="syn-kw">new</span> <span class="syn-fn">Array</span>(<span class="syn-num">10000</span>).fill(&quot;data&quot;));
+}, <span class="syn-num">100</span>);</code></pre>
+</div>      <p class="text-p">এখানে array ক্রমাগত বড় হচ্ছে।</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fb923c; font-weight: 700;">10000</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fb923c; font-weight: 700;">20000</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fb923c; font-weight: 700;">30000</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+...</pre>
+</div>      <p class="text-p">Memory usage continuously বাড়তে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.39</span> Memory Leak vs High Memory Usage</div>
+      <p class="text-p">দুটো এক নয়।</p>
+      <div class="section-subhead">🔹 High Memory Usage</div>
+      <p class="text-p">Program legitimately বড় data ব্যবহার করছে।</p>
+      <div class="section-subhead">🔹 Memory Leak</div>
+      <p class="text-p">Program-এর প্রয়োজন না থাকা data/reference unnecessarily retained হচ্ছে। Example:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">High memory</span>:
+Large image processing</pre>
+</div>      <p class="text-p">vs</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">Leak</span>:
+Old objects never released</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.40</span> Garbage Collection-এর Cost</div>
+      <p class="text-p">Garbage Collection automatic হলেও completely free নয়। GC-এর জন্য:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">CPU
++
+Memory
++
+Time</pre>
+</div>      <p class="text-p">ব্যবহার হতে পারে। যদি application continuously huge temporary objects তৈরি করে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> process() {
+    <span class="syn-kw">const</span> huge = <span class="syn-kw">new</span> <span class="syn-fn">Array</span>(<span class="syn-num">1000000</span>).fill(<span class="syn-num">0</span>);
+}</code></pre>
+</div>      <p class="text-p">অনেক repeated allocation হলে GC pressure বাড়তে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.41</span> Allocation Pressure</div>
+      <p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">1000000</span>; i++) {
+    <span class="syn-kw">const</span> obj = {
+        value: i
+    };
+}</code></pre>
+</div>      <p class="text-p">অনেক temporary object তৈরি হচ্ছে। এগুলো পরে unreachable হলে GC reclaim করতে পারে। কিন্তু excessive allocation performance-এর ওপর চাপ তৈরি করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.42</span> Object Creation Optimization</div>
+      <p class="text-p">প্রয়োজনের বাইরে বারবার object তৈরি করা avoid করা যায়। Bad pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> calculate(user) {
+    <span class="syn-kw">return</span> {
+        name: user.name,
+        age: user.age
+    };
+}</code></pre>
+</div>      <p class="text-p">যদি millions of unnecessary temporary objects তৈরি হয়, performance impact হতে পারে। তবে premature optimization করা উচিত নয়। প্রথমে: &gt; Correctness → Measure → Optimize</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.43</span> Memory Optimization Rules</div>
+      <div class="section-subhead">🔹 Rule 1</div>
+      <p class="text-p">Unnecessary global variables avoid করো।</p>
+      <div class="section-subhead">🔹 Rule 2</div>
+      <p class="text-p">Event listeners cleanup করো।</p>
+      <div class="section-subhead">🔹 Rule 3</div>
+      <p class="text-p">Large caches unlimited রাখবে না।</p>
+      <div class="section-subhead">🔹 Rule 4</div>
+      <p class="text-p">Unused references release করো।</p>
+      <div class="section-subhead">🔹 Rule 5</div>
+      <p class="text-p">Huge objects unnecessarily closure-এ retain করো না।</p>
+      <div class="section-subhead">🔹 Rule 6</div>
+      <p class="text-p">DOM references lifecycle-এর সাথে manage করো।</p>
+      <div class="section-subhead">🔹 Rule 7</div>
+      <p class="text-p">Huge arrays continuously grow করতে দিও না।</p>
+      <div class="section-subhead">🔹 Rule 8</div>
+      <p class="text-p">Performance problem হলে আগে measure করো।</p>
+    </div>
+    <div class="part-banner">Part 08 — Chrome DevTools Profiling, Heap Snapshots & Retainers (30.44 – 30.47)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.44</span> Chrome DevTools Memory</div>
+      <p class="text-p">Browser memory সমস্যা investigate করতে Chrome DevTools ব্যবহার করা যায়। Chrome:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">F12</pre>
+</div>      <p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Memory</pre>
+</div>      <p class="text-p">Tab। এখানে সাধারণত:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Heap Snapshot</li>
+        <li>Allocation instrumentation</li>
+        <li>Allocation timeline</li>
+      </ul>
+      <p class="text-p">এর মতো tools পাওয়া যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.45</span> Heap Snapshot</div>
+      <p class="text-p">Heap Snapshot দিয়ে JavaScript heap-এর object allocation/retention investigate করা যায়। Conceptually:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Before Action
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Heap</span> Snapshot
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Perform Action
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Cleanup
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Another Snapshot
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Compare</pre>
+</div>      <p class="text-p">যদি object বারবার retained হতে থাকে, leak investigation করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.46</span> Retainers</div>
+      <p class="text-p">Memory debugging-এ একটি গুরুত্বপূর্ণ term: &gt; <strong>Retainer</strong> একটি object কেন memory-তে এখনও আছে? কোন reference সেটাকে ধরে রেখেছে? উদাহরণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Global</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+cache
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">user</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+largeObject</pre>
+</div>      <p class="text-p">এখানে <code>cache</code> indirectly <code>largeObject</code>-কে retain করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.47</span> Garbage Collector কখন Object Collect করবে?</div>
+      <p class="text-p">এটা predict করে exact time বলা যায় না। তুমি শুধু বুঝবে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Object</span> unreachable
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Eligible for GC
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+GC eventually reclaims</pre>
+</div>      <p class="text-p"><strong>Eligible ≠ Immediately Collected</strong> এই distinction interview-এ গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="part-banner">Part 09 — Advanced WeakRef, FinalizationRegistry & Explicit Cleanup (30.48 – 30.55)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.48</span> <code>WeakRef</code></div>
+      <p class="text-p">JavaScript-এ advanced feature:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">WeakRef</span></code></pre>
+</div>      <p class="text-p">এটি object-এর weak reference তৈরি করতে পারে। Example:</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">const</span> weakRef = <span class="syn-kw">new</span> <span class="syn-fn">WeakRef</span>(user);</code></pre>
+</div>      <p class="text-p">পরে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> value = weakRef.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">deref</span>();</code></pre>
+</div>      <p class="text-p">object এখনও available থাকলে object পাওয়া যেতে পারে। কিন্তু object garbage collected হয়ে গেলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>weakRef.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">deref</span>();</code></pre>
+</div>      <p class="text-p"><code>undefined</code> দিতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.49</span> WeakRef কেন সাধারণভাবে Avoid করা হয়?</div>
+      <p class="text-p"><code>WeakRef</code> advanced use case-এর জন্য। কারণ garbage collection timing deterministic নয়। তাই normal application logic এভাবে design করা উচিত নয়:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">&quot;GC কখন object remove করবে?&quot;</pre>
+</div>      <p class="text-p">এর ওপর নির্ভর করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.50</span> <code>FinalizationRegistry</code></div>
+      <p class="text-p">আরেকটি advanced feature:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">FinalizationRegistry</span></code></pre>
+</div>      <p class="text-p">এটি object garbage-collected হওয়ার পরে cleanup-related notification-এর জন্য ব্যবহার করা যেতে পারে। কিন্তু এটাও: &gt; deterministic cleanup mechanism নয়। Critical resource cleanup-এর জন্য এর ওপর নির্ভর করা উচিত নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.51</span> Resource Cleanup বনাম Garbage Collection</div>
+      <p class="text-p">খুব গুরুত্বপূর্ণ distinction। Garbage Collection memory reclaim করে। কিন্তু file/network/socket/database resource cleanup আলাদা বিষয় হতে পারে। উদাহরণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Memory cleanup
+≠
+Business resource cleanup</pre>
+</div>      <p class="text-p">Browser frontend-এ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">event listener
+subscription
+timer
+WebSocket
+observer</pre>
+</div>      <p class="text-p">এগুলোর lifecycle explicitভাবে manage করা লাগতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.52</span> Timer Cleanup</div>
+      <p class="text-p">ধরো:</p>
+<div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JavaScript Source</span><span>❌ Memory Leak / Anti-Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> id = <span class="syn-fn">setInterval</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Running...&quot;);
+}, <span class="syn-num">1000</span>);</code></pre>
+</div>      <p class="text-p">যখন আর দরকার নেই:</p>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code><span class="syn-fn">clearInterval</span>(id);</code></pre>
+</div>      <p class="text-p">React-এর মতো framework-এ component unmount হলে এই ধরনের cleanup গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.53</span> Event Listener Cleanup</div>
+<div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JavaScript Source</span><span>✅ Clean / Memory Safe</span></div>
+  <pre><code><span class="syn-kw">function</span> handleClick() {
+    <span class="syn-fn">console</span>.log(&quot;Clicked<span class="syn-str">&quot;);
+}
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, handleClick);
+
+// later
+button.removeEventListener(&quot;</span>click&quot;, handleClick);</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.54</span> Observer Cleanup</div>
+      <p class="text-p">যদি তুমি observer ব্যবহার করো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> observer = <span class="syn-kw">new</span> MutationObserver(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Changed&quot;);
+});
+
+observer.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">observe</span>(element, {
+    childList: <span class="syn-bool">true</span>
+});</code></pre>
+</div>      <p class="text-p">আর প্রয়োজন না হলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>observer.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">disconnect</span>();</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.55</span> WebSocket Cleanup</div>
+      <p class="text-p">যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> socket = <span class="syn-kw">new</span> WebSocket(&quot;wss://example.com&quot;);</code></pre>
+</div>      <p class="text-p">আর প্রয়োজন না হলে appropriate lifecycle অনুযায়ী:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>socket.close();</code></pre>
+</div>      <p class="text-p">এগুলো memory management-এর পাশাপাশি <strong>resource lifecycle management</strong>।</p>
+    </div>
+    <div class="part-banner">Part 10 — React Component Memory Architecture & Lifecycle Leaks (30.56 – 30.58)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.56</span> React-এর সাথে Memory Management</div>
+      <p class="text-p">React application-এ common cleanup:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>useEffect(() =&gt; {
+    <span class="syn-kw">const</span> id = <span class="syn-fn">setInterval</span>(() =&gt; {
+        <span class="syn-fn">console</span>.log(&quot;Running&quot;);
+    }, <span class="syn-num">1000</span>);
+
+    <span class="syn-kw">return</span> () =&gt; {
+        <span class="syn-fn">clearInterval</span>(id);
+    };
+}, []);</code></pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Component Mount
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Timer Start
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Component Unmount
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Cleanup
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+clearInterval()</pre>
+</div>      <p class="text-p">এটা unnecessary work এবং retained references কমাতে সাহায্য করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.57</span> Memory Leak Example — React Style</div>
+      <p class="text-p">Problematic pattern:</p>
+<div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JavaScript Source</span><span>❌ Memory Leak / Anti-Pattern</span></div>
+  <pre><code>useEffect(() =&gt; {
+    <span class="syn-kw">const</span> id = <span class="syn-fn">setInterval</span>(() =&gt; {
+        fetchData();
+    }, <span class="syn-num">1000</span>);
+}, []);</code></pre>
+</div>      <p class="text-p">যদি effect lifecycle-এর সাথে timer cleanup না করা হয়, component lifecycle অনুযায়ী unnecessary interval running/retention হতে পারে। Better:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>useEffect(() =&gt; {
+    <span class="syn-kw">const</span> id = <span class="syn-fn">setInterval</span>(() =&gt; {
+        fetchData();
+    }, <span class="syn-num">1000</span>);
+
+    <span class="syn-kw">return</span> () =&gt; {
+        <span class="syn-fn">clearInterval</span>(id);
+    };
+}, []);</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.58</span> Real-Life Example</div>
+      <p class="text-p">ধরো তোমার একটি warehouse আছে।</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Warehouse = Memory
+Products = Objects
+Warehouse Manager = <span style="color: #c084fc; font-weight: 700;">Garbage Collector</span>
+Inventory List = References</pre>
+</div>      <p class="text-p">নতুন product এলো:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 MEMORY LIFECYCLE & RECLAMATION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Allocate</span></pre>
+</div>      <p class="text-p">Product ব্যবহার হচ্ছে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Use</pre>
+</div>      <p class="text-p">Product আর প্রয়োজন নেই এবং inventory-তেও নেই:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">Unreachable</span></pre>
+</div>      <p class="text-p">Manager:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Garbage Collector</span></pre>
+</div>      <p class="text-p">পুরনো product সরিয়ে জায়গা free করে। কিন্তু inventory list-এ product-এর reference থাকলে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content">Reference
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Product</pre>
+</div>      <p class="text-p">manager সেটাকে ফেলে দিতে পারবে না। এটাই memory retention-এর basic idea।</p>
+    </div>
+    <div class="part-banner">Part 11 — Interview Deep Dives, Golden Rules & Memory Leak Checklist (30.59 – 30.64)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.59</span> 🔥 Interview Question</div>
+      <div class="section-subhead">🔹 প্রশ্ন:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">let</span> admin = user;
+
+user = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">Object কি garbage collected হবে?</p>
+      <div class="section-subhead">🔹 Answer:</div>
+      <p class="text-p">না, <strong>এই মুহূর্তে necessarily নয়</strong>। কারণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 ARCHITECTURE & MEMORY GRAPH DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">admin</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Object</span></pre>
+</div>      <p class="text-p">এখনও reference আছে। তাই object reachable।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.60</span> আরেকটি</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">let</span> admin = user;
+
+user = <span class="syn-bool">null</span>;
+admin = <span class="syn-bool">null</span>;</code></pre>
+</div>      <p class="text-p">এখন যদি আর কোনো reference না থাকে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 MARK-AND-SWEEP GC REACHABILITY GRAPH</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Object</span>
+   <span style="color: #f43f5e; font-weight: bold;">X</span>
+<span style="color: #34d399; font-weight: 700;">Root</span></pre>
+</div>      <p class="text-p">Object unreachable হতে পারে এবং garbage collection-এর জন্য eligible হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.61</span> Closure Question</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> create() {
+    <span class="syn-kw">const</span> secret = <span class="syn-str">&quot;Hello&quot;</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> () {
+        <span class="syn-fn">console</span>.log(secret);
+    };
+}
+
+<span class="syn-kw">const</span> fn = create();</code></pre>
+</div>      <p class="text-p"><code>create()</code> execution শেষ হলেও <code>secret</code> কেন থাকতে পারে? কারণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 CLOSURE LEXICAL SCOPE MEMORY RETENTION</div>
+  <pre class="ascii-tree-content">fn
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Closure
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+secret</pre>
+</div>      <p class="text-p"><code>fn</code> যতক্ষণ reachable এবং closure <code>secret</code> ব্যবহার করতে পারে, <code>secret</code> retained হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.62</span> 🔥 Memory Management-এর Golden Rule</div>
+      <p class="text-p">&gt; <strong>Garbage Collector দেখে object reachable কি না; তুমি object আর ব্যবহার না করলেও যদি কোনো active reference সেটাকে ধরে রাখে, তাহলে GC সেটাকে reclaim করতে পারবে না।</strong></p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.63</span> Memory Leak Checklist</div>
+      <p class="text-p">যদি application-এর memory ক্রমাগত বাড়তে থাকে, check করো:</p>
+      <div class="checklist-container">
+  <div class="checklist-header">🛡️ 12-POINT MEMORY AUDIT &amp; LEAK CHECKLIST</div>
+  <div class="checklist-grid">
+    <div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Global variables</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Large arrays</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Unlimited cache</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Event listeners</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">setInterval</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">setTimeout</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">DOM references</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Detached DOM nodes</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Closures</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Subscriptions</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">WebSocket</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Observers</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Large Maps/Sets</span>
+</div><div class="check-item">
+  <span class="check-box">✔</span>
+  <span class="check-text">Long-lived objects</span>
+</div>
+  </div>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.64</span> 🔥 MUST KNOW — মেমরি ম্যানেজমেন্টের প্রধান স্তম্ভসমূহ</div>
+      <p class="text-p">চ্যাপ্টার ৩০ থেকে প্রতিটি সফটওয়্যার ইঞ্জিনিয়ারের যেসব বিষয় মুখস্থ নয়, সরাসরি মস্তিষ্কে গেঁথে থাকা বাধ্যতামূলক:</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #0369a1; font-size: 10px; margin-bottom: 3px;">📌 1. Memory Basics</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li>Memory Allocation (Primitive vs Object)</li>
+            <li>Stack (Execution contexts &amp; primitive values)</li>
+            <li>Heap (Dynamic collections, objects &amp; arrays)</li>
+            <li>References &amp; Memory Addresses</li>
+            <li>Reachability &amp; Active Root Graphs</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #059669; font-size: 10px; margin-bottom: 3px;">📌 2. Garbage Collection</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li>Mark-and-Sweep Core Engine Algorithm</li>
+            <li>Active Roots Traversal &amp; Mark Bit Setting</li>
+            <li>Unreachable vs Nullified References</li>
+            <li>Circular References handled cleanly by GC</li>
+            <li>GC Runs Asynchronously (Non-deterministic)</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #dc2626; font-size: 10px; margin-bottom: 3px;">📌 3. Memory Leaks Traps</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li>Accidental Global Variables (window.data)</li>
+            <li>Uncleared Timers (setInterval/setTimeout)</li>
+            <li>Forgotten Event Listeners on unmounted DOM</li>
+            <li>Detached DOM Nodes retained in JS collections</li>
+            <li>Closures retaining heavy parent lexical scopes</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #7c3aed; font-size: 10px; margin-bottom: 3px;">📌 4. Advanced Diagnostics</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li>WeakMap &amp; WeakSet (Garbage-collectible keys)</li>
+            <li>WeakRef &amp; FinalizationRegistry</li>
+            <li>Chrome DevTools Heap Snapshots &amp; Retainers</li>
+            <li>Allocation Instrumentation on timeline</li>
+            <li>Explicit Resource Cleanup (Freeing buffers)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="part-banner">Part 12 — Quick Cheat Sheet, Practice Lab with Detailed Solutions & Final Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.Cheat</span> 🧠 Quick Cheat Sheet — JavaScript Memory &amp; GC Terminology</div>
+      <p class="text-p">মেমরি ম্যানেজমেন্টের সর্বাধিক ব্যবহৃত টার্মগুলোর তাৎক্ষণিক অর্থ ও ভূমিকা:</p>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Term</th><th>Meaning</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Memory Allocation</td><td>Data-এর জন্য memory নেওয়া</td></tr><tr><td>Reference</td><td>Object-এর দিকে reference</td></tr><tr><td>Reachable</td><td>Root থেকে object-এ পৌঁছানো যায়</td></tr><tr><td>Unreachable</td><td>আর কোনো active path নেই</td></tr><tr><td>Garbage Collector</td><td>Unreachable memory reclaim করে</td></tr><tr><td>Mark-and-Sweep</td><td>Reachable mark, unreachable reclaim</td></tr><tr><td>Memory Leak</td><td>প্রয়োজনহীন data retained থাকা</td></tr><tr><td>Closure</td><td>Outer variables retain করতে পারে</td></tr><tr><td>Detached DOM</td><td>DOM থেকে remove হলেও reference retained</td></tr><tr><td>WeakMap</td><td>Weakly held object-key association</td></tr><tr><td>WeakSet</td><td>Weakly held object collection</td></tr><tr><td>WeakRef</td><td>Weak reference</td></tr><tr><td>Heap Snapshot</td><td>Memory analysis tool</td></tr><tr><td>Retainer</td><td>কোন reference object-কে ধরে রেখেছে</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.Lab</span> 📝 Hands-On Practice Lab — 6 Memory Lifecycle &amp; GC Trace Problems</div>
+      <p class="text-p">মেমরি ম্যানেজমেন্ট ও রিচেবিলিটির খুঁটিনাটি যাচাই করার জন্য নিচে ৬টি প্রোডাকশন ইন্টারভিউ চ্যালেঞ্জের পূর্ণাঙ্গ ব্যাখ্যাসহ সমাধান দেওয়া হলো:</p>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 1: Object Eligibility for Garbage Collection</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ Object কি garbage collection-এর জন্য eligible হতে পারে? কেন?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 1 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+user = <span class="syn-bool">null</span>;</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Eligible for Garbage Collection</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Memory Mechanics:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. হ্যাঁ, অবজেক্টটি Garbage Collection-এর জন্য নিশ্চিতভাবে Eligible হবে।
+২. কারণ: শুরুতে Global/Stack-এর 'user' ভেরিয়েবলটি Memory Heap-এ থাকা '{ name: "Ripon" }' অবজেক্টকে রেফারেন্স করছিল।
+৩. যখন 'user = null' অ্যাসাইন করা হলো, তখন অবজেক্টটির সাথে রুট (Root)-এর একমাত্র রেফারেন্স সংযোগটি বিচ্ছিন্ন হয়ে যায়।
+৪. অবজেক্টটি সম্পূর্ণ 'Unreachable' হয়ে পড়ে। Mark-and-Sweep অ্যালগরিদম পরবর্তী GC সাইকেলে রুট থেকে ট্রাভার্স করার সময় এই অবজেক্টে পৌঁছাতে পারবে না, ফলে এর দখলকৃত মেমরি রিক্লেইম (মুক্ত) করে দেবে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 2: Object Reference Copy vs Value Mutability</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ নিচের কোডটি রান করলে আউটপুট কী আসবে এবং মেমরিতে কী ঘটবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 2 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> a = {
+    value: <span class="syn-num">10</span>
+};
+
+<span class="syn-kw">const</span> b = a;
+
+b.value = <span class="syn-num">20</span>;
+
+<span class="syn-fn">console</span>.log(a.value);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>20</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Memory Mechanics:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. আউটপুট আসবে '20'।
+২. মেমরি বিশ্লেষণ: JavaScript-এ অবজেক্ট সরাসরি ভ্যালু হিসেবে কপি হয় না। যখন 'const b = a' লেখা হয়, তখন অবজেক্টের মেমরি অ্যাড্রেস (Reference Pointer) 'b'-তে কপি হয়।
+৩. ফলে 'a' এবং 'b' উভয়েই Memory Heap-এর একই ফিজিক্যাল অবজেক্টকে পয়েন্ট করে থাকে।
+৪. সুতরাং 'b.value = 20' মিউটেট করলে একই অবজেক্টের অভ্যন্তরীণ প্রোপার্টি পরিবর্তিত হয়, তাই 'a.value'-ও ২০ প্রিন্ট করে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 3: Active Multi-Reference Reachability Check</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ নিচের কোডে user = null করার পরও অবজেক্ট কি reachable থাকবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 3 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">let</span> admin = user;
+
+user = <span class="syn-bool">null</span>;</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Object remains Reachable (Retained)</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Memory Mechanics:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. হ্যাঁ, অবজেক্টটি এখনো সম্পূর্ণ Reachable থাকবে এবং Garbage Collector এটিকে মুছবে না।
+২. কারণ: যদিও 'user = null' করে একটি রেফারেন্স মুছে ফেলা হয়েছে, কিন্তু 'admin' ভেরিয়েবলটি এখনো সেই অবজেক্টের মেমরি অ্যাড্রেস ধরে রেখেছে।
+৩. রুট থেকে অবজেক্টে পৌঁছানোর পথ এখনো অক্ষত আছে: (Global Scope → admin → Heap Object)।
+৪. অবজেক্ট তখনই Unreachable হবে যখন 'admin'-কেও null বা অন্য ভ্যালুতে রি-অ্যাসাইন করা হবে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 4: Complete Unreachability Point Determination</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ ঠিক কোন লাইনের এক্সিকিউশনের পর অবজেক্টটি GC-এর জন্য eligible হবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 4 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">let</span> admin = user;
+
+user = <span class="syn-bool">null</span>;
+admin = <span class="syn-bool">null</span>; <span class="syn-com">// &lt;--- Critical Transition Point</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Eligible right after &#x27;admin = null;&#x27;</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Memory Mechanics:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. ঠিক 'admin = null;' স্টেটমেন্টটি এক্সিকিউট হওয়ার পরপরই অবজেক্টটি GC-এর জন্য Eligible হবে।
+২. ধাপ ১: 'user = null' করার পর অবজেক্টের রেফারেন্স কাউন্ট ১ ছিল (admin রেফারেন্স করছিল)।
+৩. ধাপ ২: যখন 'admin = null' কার্যকর হলো, তখন অবজেক্টটির দিকে কোনো সক্রিয় রুট রেফারেন্স অবশিষ্ট থাকল না।
+৪. ফলশ্রুতিতে অবজেক্টটি পুরোপুরি আনরিচেবল গ্রাফ আইল্যান্ডে পরিণত হলো এবং পরবর্তী ইঞ্জিন সুইপ ফেজে মেমরি ফ্রি করার জন্য চূড়ান্তভাবে প্রস্তুত হলো।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 5: Closure Lexical Environment Retention</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ createCounter() এর এক্সিকিউশন শেষ হওয়ার পরও 'count' ভেরিয়েবল মেমরিতে কীভাবে বাঁচে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 5 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> createCounter() {
+    <span class="syn-kw">let</span> count = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> () {
+        count++;
+        <span class="syn-kw">return</span> count;
+    };
+}
+
+<span class="syn-kw">const</span> counter = createCounter();
+<span class="syn-fn">console</span>.log(counter()); <span class="syn-com">// 1</span>
+<span class="syn-fn">console</span>.log(counter()); <span class="syn-com">// 2</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Memory Mechanics:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. সাধারণ ফাংশনের ক্ষেত্রে এক্সিকিউশন শেষ হওয়ামাত্রই কল স্ট্যাক ফ্রেম ধ্বংস হয়ে যায় এবং লোকাল ভেরিয়েবল মুছে যায়।
+২. কিন্তু এখানে 'createCounter' একটি ইনার ফাংশন রিটার্ন করেছে যা তার প্যারেন্ট স্কোপের 'count' ভেরিয়েবলকে ব্যবহার করে (Closure)।
+৩. JavaScript ইঞ্জিন দেখে যে রিটার্ন করা ফাংশনটি গ্লোবাল ভেরিয়েবল 'counter'-এ অ্যাসাইন করা হয়েছে (Reachable Root)।
+৪. ইঞ্জিন ফাংশনটির Lexical Environment-কে স্ট্যাক থেকে হিপে স্থানান্তরিত করে জিইয়ে রাখে, যতক্ষণ 'counter' ভেরিয়েবলটি মেমরিতে সক্রিয় থাকবে।
+৫. মেমরি সতর্কতা: ক্লোজার যদি ভারী ডেটা রেফারেন্স করে রাখে, তবে কাজ শেষে 'counter = null' না করলে মেমরি রিটেইনড থাকে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 6: Timer Interval Memory Leak Audit & Production Lifecycle Cleanup</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ নিচের কোডে সম্ভাব্য Memory Leak কী এবং কীভাবে ক্লিনআপ করতে হবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 6 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-com">// ❌ Leaky Implementation:</span>
+<span class="syn-kw">function</span> start() {
+    <span class="syn-fn">setInterval</span>(() =&gt; {
+        <span class="syn-fn">console</span>.log(&quot;Running...&quot;);
+    }, <span class="syn-num">1000</span>);
+}
+start();
+
+<span class="syn-com">// ✅ Production Clean Lifecycle Pattern:</span>
+<span class="syn-kw">let</span> timerId = <span class="syn-bool">null</span>;
+
+<span class="syn-kw">function</span> startService() {
+    <span class="syn-kw">if</span> (timerId !== <span class="syn-bool">null</span>) <span class="syn-kw">return</span>;
+    timerId = <span class="syn-fn">setInterval</span>(() =&gt; {
+        <span class="syn-fn">console</span>.log(&quot;Service pulse active...&quot;);
+    }, <span class="syn-num">1000</span>);
+}
+
+<span class="syn-kw">function</span> stopService() {
+    <span class="syn-kw">if</span> (timerId !== <span class="syn-bool">null</span>) {
+        <span class="syn-fn">clearInterval</span>(timerId);
+        timerId = <span class="syn-bool">null</span>;
+        <span class="syn-fn">console</span>.log(&quot;Timer destroyed &amp; memory released cleanly.&quot;);
+    }
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Service pulse active...
+Timer destroyed &amp; memory released cleanly.</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Memory Mechanics:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. মেমরি সমস্যা: 'setInterval' ব্রাউজার বা Node.js হোস্ট এনভায়রনমেন্টের ইন্টারনাল টাইমার টেবিলে রেজিস্টার হয়ে থাকে। ফাংশন শেষ হলেও টাইমার অবজেক্ট এবং তার কলব্যাকটি মেমরিতে চিরতরে আটকে থাকে।
+২. কলব্যাকের ভেতরে কোনো ভ্যারিয়েবল, অবজেক্ট বা DOM রেফারেন্স থাকলে তারা কখনো GC হবে না।
+৩. প্রতিকার: টাইমার আইডিটি সংরক্ষণ করতে হবে এবং কম্পোনেন্ট আনমাউন্ট বা কাজ শেষ হলে 'clearInterval(timerId)' ও 'timerId = null' কল করে হোস্ট মেমরি মুক্ত করতে হবে।
+৪. React কম্পোনেন্টে এটি useEffect-এর return cleanup ফাংশনে হ্যান্ডল করা বাধ্যতামূলক।</div>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">30.Map</span> 🎯 Final Mental Map — JavaScript Memory Architecture</div>
+      <p class="text-p">JavaScript রানটাইমে মেমরি রূপান্তর, রিচেবিলিটি চেক এবং গার্বেজ কালেকশন প্রবাহের পূর্ণাঙ্গ মানসিক মানচিত্র:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 JavaScript Memory & GC Global Coordination Tree</div>
+  <pre class="ascii-tree-content">JavaScript Memory
+                        <span style="color: #475569;">│</span>
+            <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────────</span><span style="color: #475569;">┴</span><span style="color: #0ea5e9; font-weight: 600;">───────────</span><span style="color: #475569;">┐</span>
+            <span style="color: #38bdf8; font-weight: 700;">▼</span>                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+          <span style="color: #34d399; font-weight: 700;">Stack</span>                   <span style="color: #34d399; font-weight: 700;">Heap</span>
+            <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+       Execution               <span style="color: #34d399; font-weight: 700;">Objects/Data</span>
+            <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+            <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">───────────</span><span style="color: #475569;">┬</span><span style="color: #0ea5e9; font-weight: 600;">───────────</span><span style="color: #475569;">┘</span>
+                        <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                   References
+                        <span style="color: #475569;">│</span>
+                        <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                   Reachability
+                        <span style="color: #475569;">│</span>
+             <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┴</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┐</span>
+             <span style="color: #38bdf8; font-weight: 700;">▼</span>                     <span style="color: #38bdf8; font-weight: 700;">▼</span>
+        <span style="color: #4ade80; font-weight: 700;">Reachable</span>             <span style="color: #f43f5e; font-weight: 700;">Unreachable</span>
+             <span style="color: #475569;">│</span>                     <span style="color: #475569;">│</span>
+             <span style="color: #475569;">│</span>                     <span style="color: #38bdf8; font-weight: 700;">▼</span>
+             <span style="color: #475569;">│</span>                <span style="color: #c084fc; font-weight: 700;">GC Eligible</span>
+             <span style="color: #475569;">│</span>                     <span style="color: #475569;">│</span>
+             <span style="color: #475569;">│</span>                     <span style="color: #38bdf8; font-weight: 700;">▼</span>
+             <span style="color: #475569;">│</span>              <span style="color: #c084fc; font-weight: 700;">Garbage Collector</span>
+             <span style="color: #475569;">│</span>                     <span style="color: #475569;">│</span>
+             <span style="color: #475569;">│</span>                     <span style="color: #38bdf8; font-weight: 700;">▼</span>
+             <span style="color: #475569;">│</span>              <span style="color: #4ade80; font-weight: 700;">Memory Reclaimed</span>
+             <span style="color: #475569;">│</span>
+             <span style="color: #38bdf8; font-weight: 700;">▼</span>
+       Memory <span style="color: #f43f5e; font-weight: 700;">Retained</span></pre>
+</div>
+      
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #f8fafc; border-left: 3px solid #38bdf8;">
+        <div style="font-weight: 700; font-size: 10px; color: #0369a1; margin-bottom: 3px;">⭐ সবচেয়ে গুরুত্বপূর্ণ ৫টি গোল্ডেন রুল:</div>
+        <div style="font-size: 9px; color: #334155; line-height: 1.45;">
+          1️⃣ <strong>স্বয়ংক্রিয় মেমরি পরিচালনা:</strong> JavaScript স্বয়ংক্রিয়ভাবে মেমরি বরাদ্দ ও মুক্ত করে, কোনো ম্যানুয়াল free() প্রয়োজন হয় না।<br>
+          2️⃣ <strong>রেফারেন্সের মাধ্যমে অবজেক্ট অ্যাক্সেস:</strong> অবজেক্ট ভ্যালু আকারে কপি হয় না, কেবল পয়েন্টার রেফারেন্স শেয়ার হয়।<br>
+          3️⃣ <strong>সক্রিয় অবজেক্ট রিচেবল থাকে:</strong> রুট (Root) থেকে পৌঁছানো যায় এমন সব ডেটাকে ইঞ্জিন বাঁচিয়ে রাখে।<br>
+          4️⃣ <strong>আনরিচেবল অবজেক্টই GC যোগ্য:</strong> কোনো অবজেক্টের রেফারেন্স চেইন ছিন্ন হলেই কেবল তা গার্বেজ কালেকশন উপযোগী হয়।<br>
+          5️⃣ <strong>মেমরি লিকের মূল কারণ:</strong> প্রয়োজনহীন ডেটা যখন ভুলে কোনো সক্রিয় রুট রেফারেন্সের সাথে আবদ্ধ থাকে।
+        </div>
+      </div>
+
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #f0fdf4; border-left: 3px solid #10b981;">
+        <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">🔥 এক নজরে মূল কথা (Core Essence):</div>
+        <div style="font-size: 9.5px; color: #047857; line-height: 1.45;">
+          JavaScript-এর Garbage Collector মেমরি নিজে থেকে পরিষ্কার করে, কিন্তু কোনো অপ্রয়োজনীয় অবজেক্ট যদি এখনও কোনো সক্রিয় রেফারেন্সের মাধ্যমে রিচেবল থাকে, তাহলে Garbage Collector সেটাকে রিক্লেইম করতে পারে না—এটাই মেমরি ম্যানেজমেন্ট বোঝার মূল চাবিকাঠি।
+        </div>
+      </div>
+
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #eff6ff; border-left: 3px solid #2563eb;">
+        <div style="font-weight: 700; font-size: 10px; color: #1e40af; margin-bottom: 2px;">🚀 Next Chapter Preview:</div>
+        <div style="font-family: var(--font-heading); font-size: 10px; font-weight: 700; color: #0369a1;">
+          Chapter 31 — JavaScript Security &amp; Web Security
+        </div>
+        <div style="font-size: 9px; color: #334155; margin-top: 2px;">পরবর্তী চ্যাপ্টারে আমরা শিখব XSS, CSRF, CORS, CSP, DOM-based attacks, Prototype Pollution, Token &amp; Storage Security এবং স্যানিটাইজেশন প্রোডাকশন প্যাটার্ন।</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

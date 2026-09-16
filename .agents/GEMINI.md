@@ -7,4 +7,5 @@ Always follow the comprehensive production and styling rules defined in [.AGENT/
 - Zero mid-card page splits (page-break-inside: avoid !important).
 - Strict margins: @page { size: A4; margin: 8mm 10mm; } and .doc-page { padding: 0 !important; margin: 0 !important; }.
 - No horizontal scrollbars in code blocks (overflow-x: hidden !important; white-space: pre-wrap !important; word-break: break-word !important;).
-- Clean up all temporary .png files in 	emp/ immediately after inspection.
+- Clean up all temporary .png files in temp/ immediately after inspection.
+- **Git Commit & Push Policy**: Do NOT automatically commit or push to Git. Only commit and push when the user explicitly instructs to do so.

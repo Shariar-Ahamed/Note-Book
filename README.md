@@ -35,6 +35,9 @@ Comprehensive, production-grade JavaScript study notes, interactive HTML documen
 | **25** | Functional JavaScript | [HTML](Code/Chapter-25-Functional-JavaScript.html) | [PDF](PDF/Chapter-25-Functional-JavaScript.pdf) | ✅ Complete |
 | **26** | Closures, IIFE, Currying & Function Composition | [HTML](Code/Chapter-26-Closures-IIFE-Currying.html) | [PDF](PDF/Chapter-26-Closures-IIFE-Currying.pdf) | ✅ Complete |
 | **27** | Iterators & Generators | [HTML](Code/Chapter-27-Iterators-Generators.html) | [PDF](PDF/Chapter-27-Iterators-Generators.pdf) | ✅ Complete |
+| **28** | Symbols, Proxy & Reflect | [HTML](Code/Chapter-28-Symbols-Proxy-Reflect.html) | [PDF](PDF/Chapter-28-Symbols-Proxy-Reflect.pdf) | ✅ Complete |
+| **29** | JavaScript Execution Model & Event Loop | [HTML](Code/Chapter-29-Execution-Model-Event-Loop.html) | [PDF](PDF/Chapter-29-Execution-Model-Event-Loop.pdf) | ✅ Complete |
+| **30** | JavaScript Memory Management & Garbage Collection | [HTML](Code/Chapter-30-Memory-Management-Garbage-Collection.html) | [PDF](PDF/Chapter-30-Memory-Management-Garbage-Collection.pdf) | ✅ Complete |
 
 ---
 

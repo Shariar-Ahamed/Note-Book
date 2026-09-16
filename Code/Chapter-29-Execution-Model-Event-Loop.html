@@ -1,0 +1,2334 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 29 — JavaScript Execution Model &amp; Event Loop | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-weight: 900;
+      font-size: 13px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      flex-shrink: 0;
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 13.5px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 7.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bae6fd;
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 1px;
+    }
+
+    /* Chapter Opening Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px 8px;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: 1px solid #e0f2fe;
+    }
+    .roadmap-item {
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--blue-accent);
+      padding-left: 5px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+    .warn-box {
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #991b1b;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    th {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      padding: 5px 8px;
+      border: 1px solid #334155;
+      text-align: left;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      line-height: 1.35;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Boxes */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-box-error {
+      border: 1px solid #ef4444 !important;
+    }
+    .code-box-correct {
+      border: 1px solid #10b981 !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.32;
+      padding: 5px 8px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+    }
+    p code, li code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Invalid Token Wave Highlight */
+    .invalid-token {
+      text-decoration: underline wavy #ef4444 !important;
+      text-decoration-skip-ink: none !important;
+      color: #fca5a5 !important;
+      font-weight: 700 !important;
+      background: rgba(239, 68, 68, 0.25) !important;
+      padding: 0 3px !important;
+      border-radius: 3px !important;
+    }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre */
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 3px 8px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    .ascii-tree-content {
+      color: #38bdf8 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9px !important;
+      line-height: 1.28 !important;
+      padding: 6px 10px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 5px;
+      padding: 6px 9px;
+      margin-bottom: 6px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-29-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .output-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 29</span>
+        </div>
+      </div>
+      <div class="banner-sub">JAVASCRIPT EXECUTION MODEL, EVENT LOOP &amp; ASYNCHRONOUS RUNTIME ARCHITECTURE</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">55 Modules + Practice Lab</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 23 — Execution Model &amp; Event Loop</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Call Stack, Microtasks, Task Queue &amp; V8</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">HTML5 Event Loop Spec / ECMAScript 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🎯</span> JavaScript Execution Model &amp; Event Loop — অ্যাসিঙ্ক আর্কিটেকচার শেখার মূল উদ্দেশ্য
+      </div>
+      <p class="text-p">
+        JavaScript সিঙ্গেল-থ্রেডেড হয়েও কীভাবে বিলিয়ন রিকোয়েস্ট, নেটওয়ার্ক আই/ও এবং নন-ব্লকিং ইউআই পরিচালনা করে—তার পেছনের চালিকাশক্তি হলো <strong>Event Loop ও Execution Context</strong>। এই চ্যাপ্টারে আমরা <strong>Call Stack (LIFO), Memory Heap, Web APIs, Microtask Queue (Promises), Macrotask Queue (Timers)</strong> এবং ব্রাউজার রেন্ডারিং পাইপলাইন গভীরভাবে শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Execution Model</div>
+        <div class="roadmap-item"><span>📌</span> 2. Single-Threaded Nature</div>
+        <div class="roadmap-item"><span>📌</span> 3. Runtime Components</div>
+        <div class="roadmap-item"><span>📌</span> 4. V8 Engine Architecture</div>
+        <div class="roadmap-item"><span>📌</span> 5. Call Stack (LIFO)</div>
+        <div class="roadmap-item"><span>📌</span> 6. Stack Overflow Trap</div>
+        <div class="roadmap-item"><span>📌</span> 7. Memory Heap Allocations</div>
+        <div class="roadmap-item"><span>📌</span> 8. Execution Context (GEC/FEC)</div>
+        <div class="roadmap-item"><span>📌</span> 9. Creation &amp; Execution Phase</div>
+        <div class="roadmap-item"><span>📌</span> 10. Lexical Scope Chain</div>
+        <div class="roadmap-item"><span>📌</span> 11. Browser Host Web APIs</div>
+        <div class="roadmap-item"><span>📌</span> 12. Event Loop Core Algorithm</div>
+        <div class="roadmap-item"><span>📌</span> 13. Task / Macrotask Queue</div>
+        <div class="roadmap-item"><span>📌</span> 14. Microtask Queue Priority</div>
+        <div class="roadmap-item"><span>📌</span> 15. setTimeout(fn, 0) Reality</div>
+        <div class="roadmap-item"><span>📌</span> 16. Promise Microtask Drain</div>
+        <div class="roadmap-item"><span>📌</span> 17. Async/Await Execution Order</div>
+        <div class="roadmap-item"><span>📌</span> 18. fetch() &amp; DOM Queues</div>
+        <div class="roadmap-item"><span>📌</span> 19. Microtask Starvation</div>
+        <div class="roadmap-item"><span>📌</span> 20. Rendering Frame Sync</div>
+        <div class="roadmap-item"><span>📌</span> 21. queueMicrotask() API</div>
+        <div class="roadmap-item"><span>📌</span> 22. React Concurrent Mode</div>
+        <div class="roadmap-item"><span>📌</span> 23. Node.js Event Loop Phases</div>
+        <div class="roadmap-item"><span>📌</span> 24. 4 Execution Trace Labs</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — JavaScript Engine, Call Stack &amp; Memory Heap (29.1 – 29.10)</div>
+    <div class="study-card" id="sec-29-1">
+      <div class="card-title"><span class="badge-num">29.1</span> JavaScript Execution Model কী?</div>
+      <p class="text-p">JavaScript code কীভাবে: 1. Read করে 2. Execute করে 3. Function call handle করে 4. Asynchronous কাজ manage করে 5. পরে result execute করে —এই পুরো system-টাই JavaScript-এর <strong>Execution Model</strong>। সহজভাবে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">JavaScript Code
+      ↓
+Execution Context
+      ↓
+Call Stack
+      ↓
+Synchronous Execution
+      ↓
+Async কাজ → Host APIs
+      ↓
+Task / Microtask Queue
+      ↓
+Event Loop
+      ↓
+Call Stack
+      ↓
+Execution</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.2</span> JavaScript কি Single-Threaded?</div>
+      <p class="text-p">সাধারণ JavaScript execution model-এ একটি main JavaScript execution thread-এ এক সময়ে <strong>একটি piece of JavaScript code</strong> execute হয়। তাই আমরা বলি: &gt; JavaScript is single-threaded. উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+console.log(&quot;</span>B<span class="syn-str">&quot;);
+console.log(&quot;</span>C&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+B
+C</pre>
+</div>      <p class="text-p">একসাথে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+B
+C</pre>
+</div>      <p class="text-p">execute হয় না। একটির execution শেষ হওয়ার পর পরেরটি execute হয়।</p>
+      <div class="section-subhead">🔹 কিন্তু একটা গুরুত্বপূর্ণ বিষয়</div>
+      <p class="text-p">এর মানে এই নয় যে browser একেবারেই parallel কাজ করতে পারে না। Browser/Node.js-এর মতো <strong>host environment</strong> JavaScript-এর বাইরে বিভিন্ন কাজ handle করতে পারে—যেমন:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Timer</li>
+        <li>Network request</li>
+        <li>File I/O</li>
+        <li>DOM events</li>
+        <li>Background operations</li>
+      </ul>
+      <p class="text-p">এবং JavaScript পরে সেই কাজের result handle করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.3</span> JavaScript Runtime-এর Main Components</div>
+      <p class="text-p">একটি simplified browser JavaScript runtime:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">JavaScript Runtime
+┌──────────────────────────────────────────┐
+│                                          │
+│       ┌───────────────┐                  │
+│       │   Call Stack   │                  │
+│       └───────┬───────┘                  │
+│               │                          │
+│       ┌───────▼───────┐                  │
+│       │  JavaScript    │                  │
+│       │     Engine     │                  │
+│       └───────────────┘                  │
+│                                          │
+│       ┌──────────────────┐               │
+│       │      Heap        │               │
+│       └──────────────────┘               │
+│                                          │
+└──────────────────────────────────────────┘
+
+Browser / Host Environment
+        │
+        ├── Web APIs
+        │
+        ├── Task Queue
+        │
+        ├── Microtask Queue
+        │
+        └── Event Loop</pre>
+</div>      <p class="text-p">এগুলো একে একে বুঝি।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.4</span> JavaScript Engine</div>
+      <p class="text-p">JavaScript Engine হলো সেই software system যেটা JavaScript code বুঝে execute করে। Popular engines:</p>
+      <div class="table-wrap"><table><thead><tr><th>Environment</th><th>Engine</th></tr></thead><tbody><tr><td>Chrome</td><td>V8</td></tr><tr><td>Edge</td><td>V8</td></tr><tr><td>Node.js</td><td>V8</td></tr><tr><td>Firefox</td><td>SpiderMonkey</td></tr><tr><td>Safari</td><td>JavaScriptCore</td></tr></tbody></table></div>
+      <p class="text-p">উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-fn">console</span>.log(x);</code></pre>
+</div>      <p class="text-p">Engine এই code process করে execute করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.5</span> Call Stack কী?</div>
+      <p class="text-p"><strong>Call Stack</strong> হলো JavaScript-এর function execution track করার একটি mechanism। সহজভাবে: &gt; কোন function এখন execute হচ্ছে এবং কোন function থেকে call হয়েছে—Call Stack সেটা track করে। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> one() {
+    two();
+}
+
+<span class="syn-kw">function</span> two() {
+    three();
+}
+
+<span class="syn-kw">function</span> three() {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}
+
+one();</code></pre>
+</div>      <p class="text-p">Execution:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">one()
+  ↓
+two()
+  ↓
+three()</pre>
+</div>      <p class="text-p">Call Stack:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">┌─────────┐
+│ three() │
+├─────────┤
+│ two()   │
+├─────────┤
+│ one()   │
+└─────────┘</pre>
+</div>      <p class="text-p"><code>three()</code> শেষ হলে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>three() removed</pre>
+</div>      <p class="text-p">তারপর:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>two() removed</pre>
+</div>      <p class="text-p">তারপর:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>one() removed</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.6</span> Call Stack — Real Life Example</div>
+      <p class="text-p">ধরো তুমি একটি restaurant-এ order দিচ্ছো।</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Customer
+   ↓
+Order
+   ↓
+Food preparation</pre>
+</div>      <p class="text-p">যে কাজটি এখন চলছে সেটা top-এ থাকবে। একইভাবে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">main()
+  ↓
+login()
+  ↓
+validateUser()</pre>
+</div>      <p class="text-p">সবচেয়ে নিচে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>main()</pre>
+</div>      <p class="text-p">সবচেয়ে উপরে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>validateUser()</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.7</span> Stack হলো LIFO</div>
+      <p class="text-p">Call Stack সাধারণত <strong>LIFO</strong> principle follow করে। &gt; Last In, First Out উদাহরণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">A()
+ ↓
+B()
+ ↓
+C()</pre>
+</div>      <p class="text-p">প্রথমে <code>C()</code> শেষ হবে।</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>C()
+B()
+A()</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.8</span> Simple Call Stack Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;Start<span class="syn-str">&quot;);
+
+function hello() {
+    console.log(&quot;</span>Hello<span class="syn-str">&quot;);
+}
+
+hello();
+
+console.log(&quot;</span>End&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Start
+Hello
+End</pre>
+</div>      <p class="text-p">Execution:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">console.log(&quot;Start&quot;)
+       ↓
+hello()
+       ↓
+console.log(&quot;Hello&quot;)
+       ↓
+console.log(&quot;End&quot;)</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.9</span> Stack Overflow</div>
+      <p class="text-p">যদি function নিজেকেই continuously call করে এবং কোনো stopping condition না থাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> test() {
+    test();
+}
+
+test();</code></pre>
+</div>      <p class="text-p">তাহলে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>test()
+test()
+test()
+test()
+...</pre>
+</div>      <p class="text-p">Call Stack পূর্ণ হয়ে যাবে। শেষে error:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>RangeError: Maximum call stack size exceeded</pre>
+</div>      <p class="text-p">এটাকে বলে: &gt; <strong>Stack Overflow</strong></p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.10</span> Heap কী?</div>
+      <p class="text-p"><strong>Heap</strong> হলো memory-এর একটি area যেখানে JavaScript runtime dynamically allocated data রাখে। যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+    age: <span class="syn-num">23</span>
+};</code></pre>
+</div>      <p class="text-p">Object-এর data runtime memory-তে রাখা হয়। Array:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];</code></pre>
+</div>      <p class="text-p">Function/object-এর মতো reference-based data heap-এর সাথে সম্পর্কিত। সহজভাবে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Call Stack
+→ execution tracking
+
+Heap
+→ dynamically allocated objects/data</pre>
+</div>      <p class="text-p">Memory Management বিস্তারিতভাবে আমরা <strong>Chapter 30</strong>-এ দেখব।</p>
+    </div>
+    <div class="part-banner">Part 02 — Execution Context, Lifecycle Phases &amp; Scope Chain (29.11 – 29.17)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.11</span> Execution Context কী?</div>
+      <p class="text-p">JavaScript যখন code execute করে, তখন তার জন্য একটি <strong>Execution Context</strong> তৈরি হয়। সহজভাবে: &gt; JavaScript code execute করার জন্য যে environment তৈরি হয় সেটাই Execution Context। প্রধানত:</p>
+      <div class="section-subhead">🔹 1. Global Execution Context</div>
+      <p class="text-p">সবচেয়ে প্রথমে তৈরি হয়।</p>
+      <div class="section-subhead">🔹 2. Function Execution Context</div>
+      <p class="text-p">প্রতিবার function call হলে তৈরি হয়।</p>
+      <div class="section-subhead">🔹 3. Eval Execution Context</div>
+      <p class="text-p"><code>eval()</code> ব্যবহার করলে তৈরি হতে পারে। Modern development-এ সাধারণত avoid করা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.12</span> Global Execution Context</div>
+      <p class="text-p">এই code:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name);</code></pre>
+</div>      <p class="text-p">execute করার সময় JavaScript একটি:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Global Execution Context</pre>
+</div>      <p class="text-p">তৈরি করে। এখানে global-level variables/functions এবং অন্যান্য execution information থাকে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.13</span> Function Execution Context</div>
+      <p class="text-p">এই code:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-fn">console</span>.log(name);
+}
+
+greet(&quot;Ripon&quot;);</code></pre>
+</div>      <p class="text-p"><code>greet()</code> call হলে নতুন Function Execution Context তৈরি হয়।</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Global Execution Context
+        ↓
+Function Execution Context
+        ↓
+greet()</pre>
+</div>      <p class="text-p"><code>greet()</code> শেষ হলে function context চলে যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.14</span> Execution Context-এর Creation Phase</div>
+      <p class="text-p">একটি execution context তৈরি হওয়ার সময় JavaScript আগে execution-এর জন্য environment প্রস্তুত করে। সহজভাবে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Creation Phase
+      ↓
+Environment তৈরি
+      ↓
+Declarations setup
+      ↓
+Execution Phase
+      ↓
+Code execute</pre>
+</div>      <p class="text-p">এই কারণে আমরা <strong>hoisting</strong> দেখতে পাই। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(x);
+
+<span class="syn-kw">var</span> x = <span class="syn-num">10</span>;</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>undefined</pre>
+</div>      <p class="text-p">কারণ <code>var x</code> declaration আগে থেকেই environment-এ setup হয়। তবে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(x);
+
+<span class="syn-kw">let</span> x = <span class="syn-num">10</span>;</code></pre>
+</div>      <p class="text-p">এতে error:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>ReferenceError</pre>
+</div>      <p class="text-p">কারণ <code>let</code> এবং <code>const</code> declaration execution-এর আগে scope-এ থাকলেও initialization-এর আগে access করা যায় না। এই সময়টাকে <strong>Temporal Dead Zone (TDZ)</strong> বলা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.15</span> Execution Phase</div>
+      <p class="text-p">তারপর actual code execute হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> x = <span class="syn-num">10</span>;
+
+<span class="syn-fn">console</span>.log(x);</code></pre>
+</div>      <p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Creation Phase
+     ↓
+x environment-এ setup
+     ↓
+Execution Phase
+     ↓
+x = 10
+     ↓
+console.log(x)</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.16</span> Lexical Environment</div>
+      <p class="text-p">JavaScript variables কোথায় থাকবে এবং কোন variable কোথা থেকে accessible হবে—এটার সাথে <strong>Lexical Environment</strong> সম্পর্কিত। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> globalName = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-kw">function</span> greet() {
+    <span class="syn-kw">const</span> message = <span class="syn-str">&quot;Hello&quot;</span>;
+
+    <span class="syn-fn">console</span>.log(globalName);
+    <span class="syn-fn">console</span>.log(message);
+}
+
+greet();</code></pre>
+</div>      <p class="text-p"><code>greet()</code> access করতে পারে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>message
+globalName</pre>
+</div>      <p class="text-p">কারণ scope chain-এর মাধ্যমে outer environment পাওয়া যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.17</span> Scope Chain</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> a = <span class="syn-num">10</span>;
+
+<span class="syn-kw">function</span> outer() {
+    <span class="syn-kw">const</span> b = <span class="syn-num">20</span>;
+
+    <span class="syn-kw">function</span> inner() {
+        <span class="syn-kw">const</span> c = <span class="syn-num">30</span>;
+
+        <span class="syn-fn">console</span>.log(a);
+        <span class="syn-fn">console</span>.log(b);
+        <span class="syn-fn">console</span>.log(c);
+    }
+
+    inner();
+}
+
+outer();</code></pre>
+</div>      <p class="text-p"><code>inner()</code> দেখতে পারে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">c → নিজের scope
+b → outer scope
+a → global scope</pre>
+</div>      <p class="text-p">এটাই scope chain-এর basic ধারণা। Closure-এর সাথে এই বিষয়টি খুব গুরুত্বপূর্ণ—যেটা Chapter 26-এ আমরা বিস্তারিত করেছি।</p>
+    </div>
+    <div class="part-banner">Part 03 — Asynchronous Mechanics, Web APIs &amp; Event Loop Architecture (29.18 – 29.26)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.18</span> Synchronous JavaScript</div>
+      <p class="text-p">Synchronous code line-by-line execute হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;<span class="syn-num">1</span><span class="syn-str">&quot;);
+console.log(&quot;</span><span class="syn-num">2</span><span class="syn-str">&quot;);
+console.log(&quot;</span><span class="syn-num">3</span>&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3</pre>
+</div>      <p class="text-p">Flow:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">1
+↓
+2
+↓
+3</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.19</span> Asynchronous JavaScript কেন দরকার?</div>
+      <p class="text-p">ধরো server থেকে data আনতে 5 seconds লাগছে। যদি JavaScript পুরো thread block করে অপেক্ষা করত:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Request
+ ↓
+Wait 5 seconds
+ ↓
+Continue</pre>
+</div>      <p class="text-p">তাহলে webpage freeze হয়ে যেত। তাই browser/host environment asynchronous APIs ব্যবহার করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.20</span> Web APIs কী?</div>
+      <p class="text-p">Browser JavaScript language-এর নিজস্ব অংশ নয়, কিন্তু browser কিছু APIs দেয়। যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>()
+<span class="syn-fn">fetch</span>()
+<span class="syn-fn">document</span>.querySelector()
+<span class="syn-async" style="color: #38bdf8; font-weight: 600;">addEventListener</span>()
+localStorage</code></pre>
+</div>      <p class="text-p">এগুলো browser/host environment-এর capabilities-এর সাথে কাজ করে। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}, <span class="syn-num">2000</span>);</code></pre>
+</div>      <p class="text-p">Timer-এর কাজ host environment handle করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.21</span> Event Loop কী?</div>
+      <p class="text-p">Event Loop হলো এমন একটি mechanism যা দেখে: &gt; Call Stack কখন empty হয়েছে এবং queued asynchronous callbacks কখন JavaScript-এর execution-এর জন্য Stack-এ পাঠানো যাবে। Simplified model:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">┌───────────────┐
+          │  Call Stack   │
+          └───────┬───────┘
+                  │
+             Stack Empty?
+                  │
+                  ▼
+          ┌───────────────┐
+          │  Event Loop   │
+          └───────┬───────┘
+                  │
+        ┌─────────┴─────────┐
+        ▼                   ▼
+ Microtask Queue        Task Queue</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.22</span> Task Queue / Macrotask Queue</div>
+      <p class="text-p">Task queue-তে বিভিন্ন asynchronous callback অপেক্ষা করতে পারে। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Timer&quot;);
+}, <span class="syn-num">0</span>);</code></pre>
+</div>      <p class="text-p">Timer-এর callback ready হলে task queue-তে যেতে পারে। আরও উদাহরণ:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li><code>setTimeout</code></li>
+        <li><code>setInterval</code></li>
+        <li>কিছু DOM events</li>
+        <li>অন্যান্য host-scheduled tasks</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.23</span> Microtask Queue</div>
+      <p class="text-p">Microtask Queue সাধারণত asynchronous callbacks-এর জন্য ব্যবহৃত হয় যেগুলো current task শেষ হওয়ার পর দ্রুত execute হওয়ার জন্য schedule হয়। সবচেয়ে গুরুত্বপূর্ণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">then</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-kw">catch</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-kw">finally</span>()
+<span class="syn-fn">queueMicrotask</span>()</code></pre>
+</div>      <p class="text-p">Browser-এ <code>MutationObserver</code>-ও microtask mechanism ব্যবহার করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.24</span> সবচেয়ে গুরুত্বপূর্ণ Rule 🔥</div>
+      <p class="text-p">Simplified browser model:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Current JavaScript Task
+        ↓
+Call Stack Empty
+        ↓
+Microtasks Drain
+        ↓
+Browser may render
+        ↓
+Next Task</pre>
+</div>      <p class="text-p">অর্থাৎ: &gt; <strong>Microtask সাধারণত next task-এর আগে execute হয়।</strong> এটা Event Loop-এর সবচেয়ে গুরুত্বপূর্ণ concept।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.25</span> First Event Loop Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+}, 0);
+
+console.log(&quot;</span>C&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+C
+B</pre>
+</div>      <p class="text-p">কেন?</p>
+      <div class="section-subhead">🔹 Step 1</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A</pre>
+</div>      <div class="section-subhead">🔹 Step 2</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>(...)</code></pre>
+</div>      <p class="text-p">Timer host environment-এ schedule হয়।</p>
+      <div class="section-subhead">🔹 Step 3</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;C&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>C</pre>
+</div>      <div class="section-subhead">🔹 Step 4</div>
+      <p class="text-p">Current synchronous code শেষ। তারপর timer callback execute করার সুযোগ পায়।</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>B</pre>
+</div>      <p class="text-p">Final:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+C
+B</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.26</span> <code>setTimeout(..., 0)</code> মানে Immediately নয়</div>
+      <p class="text-p">এটা খুব গুরুত্বপূর্ণ।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Hello&quot;);
+}, <span class="syn-num">0</span>);</code></pre>
+</div>      <p class="text-p"><code>0</code> মানে: &gt; যত তাড়াতাড়ি সম্ভব timer-এর callback task হিসেবে schedule করার সুযোগ তৈরি করা। এটা <strong>immediately execute</strong> বোঝায় না। যদি stack-এ blocking কাজ থাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Timer&quot;);
+}, <span class="syn-num">0</span>);
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">1000000000</span>; i++) {
+    <span class="syn-com">// heavy work</span>
+}</code></pre>
+</div>      <p class="text-p">তাহলে timer অপেক্ষা করবে।</p>
+    </div>
+    <div class="part-banner">Part 04 — Microtasks vs Macrotasks: Promises &amp; Execution Order (29.27 – 29.36)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.27</span> Microtask vs Task — সবচেয়ে গুরুত্বপূর্ণ Example 🔥🔥</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span>C<span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span>D&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+D
+C
+B</pre>
+</div>      <p class="text-p">কেন?</p>
+      <div class="section-subhead">🔹 প্রথমে synchronous:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+D</pre>
+</div>      <p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Microtask
+↓
+C</pre>
+</div>      <p class="text-p">তারপর:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Task
+↓
+B</pre>
+</div>      <p class="text-p">তাই:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+D
+C
+B</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.28</span> Execution Diagram</div>
+      <p class="text-p">উপরের code:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; console.log(&quot;</span>B<span class="syn-str">&quot;), 0);
+
+Promise.resolve().then(() =&gt; console.log(&quot;</span>C<span class="syn-str">&quot;));
+
+console.log(&quot;</span>D&quot;);</code></pre>
+</div>      <p class="text-p">Flow:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Call Stack
+                  │
+          ┌───────┴────────┐
+          │                │
+          ▼                ▼
+     console.log A     console.log D
+          │                │
+          └───────┬────────┘
+                  │
+                  ▼
+           Stack becomes empty
+                  │
+                  ▼
+          Microtask Queue
+                  │
+                  ▼
+                  C
+                  │
+                  ▼
+             Task Queue
+                  │
+                  ▼
+                  B</pre>
+</div>      <p class="text-p">Final:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+D
+C
+B</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.29</span> Promise কেন আগে চলে?</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">resolve</span>().<span class="syn-async" style="color: #38bdf8; font-weight: 600;">then</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Promise</span><span class="syn-str">&quot;);
+});
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>Timer&quot;);
+}, <span class="syn-num">0</span>);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Promise
+Timer</pre>
+</div>      <p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Promise callback → Microtask
+Timer callback   → Task</pre>
+</div>      <p class="text-p">Current task শেষ হলে microtasks আগে drain হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.30</span> Nested Microtasks</div>
+      <p class="text-p">এবার একটু tricky:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+
+    Promise.resolve().then(() =&gt; {
+        console.log(&quot;</span>C<span class="syn-str">&quot;);
+    });
+});
+
+console.log(&quot;</span>D&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+D
+B
+C</pre>
+</div>      <p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">A
+D
+↓
+Microtask B
+↓
+B-এর ভিতর C নতুন microtask
+↓
+C</pre>
+</div>      <p class="text-p">Microtask queue drain হওয়ার সময় নতুন microtask যোগ হলে সেটাও current microtask checkpoint-এ process হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.31</span> Timer-এর ভিতরে Promise</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Timer<span class="syn-str">&quot;);
+
+    Promise.resolve().then(() =&gt; {
+        console.log(&quot;</span><span class="syn-fn">Promise</span>&quot;);
+    });
+}, <span class="syn-num">0</span>);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Timer
+Promise</pre>
+</div>      <p class="text-p">কারণ timer callback একটি task। তার callback-এর synchronous অংশ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Timer</pre>
+</div>      <p class="text-p">শেষ হওয়ার পর তার তৈরি করা microtask:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Promise</pre>
+</div>      <p class="text-p">execute হওয়ার সুযোগ পায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.32</span> Promise-এর ভিতরে Timer</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">resolve</span>().<span class="syn-async" style="color: #38bdf8; font-weight: 600;">then</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Promise</span><span class="syn-str">&quot;);
+
+    setTimeout(() =&gt; {
+        console.log(&quot;</span>Timer&quot;);
+    }, <span class="syn-num">0</span>);
+});</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Promise
+Timer</pre>
+</div>      <p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Promise → Microtask
+Timer   → Task</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.33</span> Async/Await এবং Event Loop</div>
+      <p class="text-p"><code>async/await</code> internally Promise-based behavior-এর সাথে কাজ করে। উদাহরণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> test() {
+    <span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+    await Promise.resolve();
+
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+}
+
+test();
+
+console.log(&quot;</span>C&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+C
+B</pre>
+</div>      <p class="text-p">কেন? <code>await</code>-এর পরে function-এর continuation পরে resume হয়। Conceptually:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">test()
+ ↓
+A
+ ↓
+await
+ ↓
+function pauses
+ ↓
+C
+ ↓
+microtask
+ ↓
+B</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.34</span> Async/Await Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> getData() {
+    <span class="syn-fn">console</span>.log(&quot;Start<span class="syn-str">&quot;);
+
+    const result = await Promise.resolve(&quot;</span>Data<span class="syn-str">&quot;);
+
+    console.log(result);
+}
+
+getData();
+
+console.log(&quot;</span>End&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Start
+End
+Data</pre>
+</div>      <p class="text-p">কারণ <code>await</code>-এর পরের অংশ asynchronous continuation হিসেবে পরে resume করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.35</span> <code>fetch()</code> এবং Event Loop</div>
+      <p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">fetch</span>(&quot;/api/users&quot;)
+    .<span class="syn-async" style="color: #38bdf8; font-weight: 600;">then</span>(response =&gt; response.json())
+    .<span class="syn-async" style="color: #38bdf8; font-weight: 600;">then</span>(data =&gt; {
+        <span class="syn-fn">console</span>.log(data);
+    });</code></pre>
+</div>      <p class="text-p">Simplified flow:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">fetch()
+  ↓
+Browser handles network operation
+  ↓
+Response arrives
+  ↓
+Promise settles
+  ↓
+.then() callback → Microtask Queue
+  ↓
+Event Loop
+  ↓
+Call Stack
+  ↓
+Callback executes</pre>
+</div>      <p class="text-p">তাই <code>fetch()</code> network-এর জন্য JavaScript thread-কে একইভাবে blocking করে বসিয়ে রাখে না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.36</span> DOM Event এবং Event Loop</div>
+      <p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>button.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&quot;click<span class="syn-str">&quot;, () =&gt; {
+    console.log(&quot;</span>Clicked&quot;);
+});</code></pre>
+</div>      <p class="text-p">User click করলে browser event handling mechanism callback schedule করে। Simplified:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">User clicks button
+       ↓
+Browser detects event
+       ↓
+Event callback becomes runnable
+       ↓
+Task
+       ↓
+Event Loop
+       ↓
+Call Stack
+       ↓
+Callback executes</pre>
+</div>    </div>
+    <div class="part-banner">Part 05 — Advanced Runtime Internals, Starvation &amp; Node.js (29.37 – 29.54)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.37</span> Blocking Code</div>
+      <p class="text-p">এই code:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;Start<span class="syn-str">&quot;);
+
+for (let i = 0; i &lt; 1000000000; i++) {
+    // heavy computation
+}
+
+console.log(&quot;</span>End&quot;);</code></pre>
+</div>      <p class="text-p">JavaScript main execution thread heavy কাজ করতে থাকলে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Start
+↓
+Heavy Work
+↓
+End</pre>
+</div>      <p class="text-p">এই সময়:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>UI response slow হতে পারে</li>
+        <li>click handling delay হতে পারে</li>
+        <li>timers delay হতে পারে</li>
+        <li>rendering delay হতে পারে</li>
+        <li>network result callback execution delay হতে পারে</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.38</span> Event Loop Magic নয়</div>
+      <p class="text-p">অনেকে ভাবে: &gt; JavaScript single-threaded, তাহলে এত asynchronous কাজ কীভাবে করে? উত্তর:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">JavaScript
++
+Host Environment
++
+Queues
++
+Event Loop</pre>
+</div>      <p class="text-p">এই combination asynchronous programming সম্ভব করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.39</span> Browser Runtime Mental Model</div>
+      <p class="text-p">একটি simplified diagram মনে রাখো:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">JavaScript
+                     │
+                     ▼
+              ┌─────────────┐
+              │ Call Stack  │
+              └──────┬──────┘
+                     │
+                     │
+       ┌─────────────┴─────────────┐
+       │                           │
+       ▼                           ▼
+   Web APIs                    JavaScript
+       │                       execution
+       │
+       ├── Timer
+       ├── Fetch
+       ├── DOM Events
+       └── etc.
+       │
+       ▼
+ ┌──────────────────┐
+ │ Task Queue       │
+ └──────────────────┘
+
+ ┌──────────────────┐
+ │ Microtask Queue  │
+ └──────────────────┘
+
+             ▲
+             │
+        Event Loop</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.40</span> Microtask Queue-এর গুরুত্বপূর্ণ Sources</div>
+      <p class="text-p">মনে রাখো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">then</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-kw">catch</span>()
+<span class="syn-fn">Promise</span>.<span class="syn-kw">finally</span>()
+<span class="syn-fn">queueMicrotask</span>()</code></pre>
+</div>      <p class="text-p">Browser-এ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>MutationObserver</pre>
+</div>      <p class="text-p">এগুলো microtask scheduling-এর সাথে সম্পর্কিত।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.41</span> Task Queue-এর Common Examples</div>
+      <p class="text-p">Common examples:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>()
+<span class="syn-fn">setInterval</span>()</code></pre>
+</div>      <p class="text-p">এছাড়া browser-এর বিভিন্ন event/task scheduling mechanism আছে। যেমন:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>click
+keyboard event
+timer
+message</pre>
+</div>      <p class="text-p">তবে exact browser scheduling details API/context অনুযায়ী পরিবর্তিত হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.42</span> Event Loop-এর Simplified Algorithm</div>
+      <p class="text-p">একটি useful mental model:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">1. Execute current task
+        ↓
+2. Call Stack becomes empty
+        ↓
+3. Drain Microtask Queue
+        ↓
+4. Browser may perform rendering
+        ↓
+5. Take next Task
+        ↓
+6. Repeat</pre>
+</div>      <p class="text-p">সবচেয়ে গুরুত্বপূর্ণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Current Task
+    ↓
+Microtasks
+    ↓
+Next Task</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.43</span> 🔥 Interview Question</div>
+      <p class="text-p">Code:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;<span class="syn-num">1</span><span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span><span class="syn-num">2</span><span class="syn-str">&quot;);
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span><span class="syn-num">3</span><span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span><span class="syn-num">4</span>&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+4
+3
+2</pre>
+</div>      <div class="section-subhead">🔹 কেন?</div>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">1 → synchronous
+4 → synchronous
+3 → microtask
+2 → task</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.44</span> আরেকটি গুরুত্বপূর্ণ Question</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;Start<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>Timer<span class="syn-str">&quot;);
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span><span class="syn-fn">Promise</span> <span class="syn-num">1</span><span class="syn-str">&quot;);
+});
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span><span class="syn-fn">Promise</span> <span class="syn-num">2</span><span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span>End&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Start
+End
+Promise 1
+Promise 2
+Timer</pre>
+</div>      <p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Synchronous
+↓
+Start
+End
+
+Microtasks
+↓
+Promise 1
+Promise 2
+
+Task
+↓
+Timer</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.45</span> আরও Tricky Example 🔥🔥🔥</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+
+    Promise.resolve().then(() =&gt; {
+        console.log(&quot;</span>C<span class="syn-str">&quot;);
+    });
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span>D<span class="syn-str">&quot;);
+
+    setTimeout(() =&gt; {
+        console.log(&quot;</span>E<span class="syn-str">&quot;);
+    }, 0);
+});
+
+console.log(&quot;</span>F&quot;);</code></pre>
+</div>      <p class="text-p">Expected output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+F
+D
+B
+C
+E</pre>
+</div>      <p class="text-p">Flow:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">A
+F
+ ↓
+Microtask
+ ↓
+D
+ ↓
+schedule E timer
+ ↓
+Next task
+ ↓
+B
+ ↓
+microtask
+ ↓
+C
+ ↓
+Next task
+ ↓
+E</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.46</span> Microtask Starvation</div>
+      <p class="text-p">যদি আমরা continuously microtask তৈরি করতে থাকি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> loop() {
+    <span class="syn-fn">queueMicrotask</span>(loop);
+}
+
+loop();</code></pre>
+</div>      <p class="text-p">তাহলে microtask queue কখনো empty হওয়ার সুযোগ নাও পেতে পারে। ফলে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Microtasks
+Microtasks
+Microtasks
+Microtasks
+...</pre>
+</div>      <p class="text-p">এবং অন্য tasks/rendering অনেক delay হতে পারে। এটাকে broadly: &gt; <strong>Microtask Starvation</strong> বলা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.47</span> কেন Infinite Microtask Dangerous?</div>
+      <p class="text-p">ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">queueMicrotask</span>(<span class="syn-kw">function</span> repeat() {
+    <span class="syn-fn">queueMicrotask</span>(repeat);
+});</code></pre>
+</div>      <p class="text-p">তখন timer:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">setTimeout</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Timer&quot;);
+}, <span class="syn-num">0</span>);</code></pre>
+</div>      <p class="text-p">প্রত্যাশিত সময়ের মধ্যে execute নাও করতে পারে। কারণ microtask queue repeatedly নতুন কাজ তৈরি করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.48</span> Rendering এবং Event Loop</div>
+      <p class="text-p">Browser-এ JavaScript execution এবং rendering-এর মধ্যে সম্পর্ক আছে। Heavy synchronous JavaScript:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+}</code></pre>
+</div>      <p class="text-p">করলে browser:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>UI update করতে পারবে না</li>
+        <li>user interaction respond করতে পারবে না</li>
+        <li>page freeze করতে পারে</li>
+      </ul>
+      <p class="text-p">তাই frontend development-এ: &gt; <strong>Don&#x27;t block the main thread unnecessarily.</strong></p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.49</span> Real-Life Example</div>
+      <p class="text-p">ধরো একটি university cafeteria।</p>
+      <div class="section-subhead">🔹 JavaScript Main Thread</div>
+      <p class="text-p">একজন cashier:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Cashier</pre>
+</div>      <p class="text-p">একসাথে একজন customer-এর order process করছে।</p>
+      <div class="section-subhead">🔹 Host APIs</div>
+      <p class="text-p">Kitchen staff:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Kitchen</pre>
+</div>      <p class="text-p">তারা food প্রস্তুত করছে।</p>
+      <div class="section-subhead">🔹 Task Queue</div>
+      <p class="text-p">Ready orders-এর queue:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Order 1
+Order 2
+Order 3</pre>
+</div>      <div class="section-subhead">🔹 Microtask Queue</div>
+      <p class="text-p">Priority ছোট follow-up কাজ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Urgent follow-up</pre>
+</div>      <div class="section-subhead">🔹 Event Loop</div>
+      <p class="text-p">Manager দেখছে:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Cashier free?
+   ↓
+Priority follow-up আছে?
+   ↓
+তারপর next order</pre>
+</div>      <p class="text-p">এটা exact browser implementation নয়, কিন্তু concept বোঝার জন্য useful analogy।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.50</span> Node.js-এ Event Loop</div>
+      <p class="text-p">Browser আর Node.js-এর host environment এক নয়। Node.js-এ event loop-এর নিজস্ব phases আছে, যেমন:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Timers
+↓
+Pending callbacks
+↓
+Poll
+↓
+Check
+↓
+Close callbacks</pre>
+</div>      <p class="text-p">Node.js-এ আরও গুরুত্বপূর্ণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>process.nextTick()</code></pre>
+</div>      <p class="text-p">এটি Node-specific এবং সাধারণ Promise microtask-এর সাথে একেবারে একই queue হিসেবে ভাবা উচিত নয়। Node.js event loop আমরা <strong>Node.js-focused Chapter 39</strong>-এ আরও গভীরভাবে দেখব।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.51</span> <code>queueMicrotask()</code></div>
+      <p class="text-p">নিজে microtask schedule করতে পারো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+queueMicrotask(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span>C&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+C
+B</pre>
+</div>      <p class="text-p">কারণ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">A → sync
+C → sync
+B → microtask</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.52</span> <code>Promise.resolve().then()</code> বনাম <code>queueMicrotask()</code></div>
+      <p class="text-p">দুটিই microtask scheduling-এর common way:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">resolve</span>().<span class="syn-async" style="color: #38bdf8; font-weight: 600;">then</span>(() =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Promise</span><span class="syn-str">&quot;);
+});
+
+queueMicrotask(() =&gt; {
+    console.log(&quot;</span>Microtask&quot;);
+});</code></pre>
+</div>      <p class="text-p">দুটিই microtask queue-তে callback schedule করে। তবে API behavior/error handling-এর কিছু পার্থক্য আছে। সাধারণ microtask scheduling-এর জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">queueMicrotask</span>()</code></pre>
+</div>      <p class="text-p">একটি সরাসরি API।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.53</span> Event Loop + React-এর সম্পর্ক</div>
+      <p class="text-p">React development-এর জন্য Event Loop বোঝা খুব useful। যেমন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>button.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&quot;click<span class="syn-str">&quot;, async () =&gt; {
+    const response = await fetch(&quot;</span>/api/users&quot;);
+
+    <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.json();
+
+    <span class="syn-fn">console</span>.log(data);
+});</code></pre>
+</div>      <p class="text-p">Flow:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Click
+ ↓
+Event callback
+ ↓
+fetch()
+ ↓
+Browser handles network
+ ↓
+Promise settles
+ ↓
+await continuation
+ ↓
+Microtask
+ ↓
+JavaScript continues
+ ↓
+React state update হতে পারে
+ ↓
+Browser rendering</pre>
+</div>      <p class="text-p">তাই React-এর:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>useEffect()</code></pre>
+</div>      <p class="text-p">সহ asynchronous programming বুঝতেও Event Loop knowledge কাজে লাগে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.54</span> Common Mistakes</div>
+      <div class="section-subhead">🔹 ❌ Mistake 1</div>
+      <p class="text-p"><code>setTimeout(fn, 0)</code> মানে immediately।</p>
+      <div class="section-subhead">🔹 Correct:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Minimum delay + task scheduling</pre>
+</div>      <div class="section-subhead">🔹 ❌ Mistake 2</div>
+      <p class="text-p">Promise synchronous।</p>
+      <div class="section-subhead">🔹 Correct:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span class="syn-async" style="color: #38bdf8; font-weight: 600;">resolve</span>().<span class="syn-async" style="color: #38bdf8; font-weight: 600;">then</span>(fn);</code></pre>
+</div>      <p class="text-p"><code>fn</code> asynchronous callback হিসেবে microtask-এ চলে।</p>
+      <div class="section-subhead">🔹 ❌ Mistake 3</div>
+      <p class="text-p">JavaScript-এর সব asynchronous কাজ JavaScript নিজেই background-এ করে।</p>
+      <div class="section-subhead">🔹 Correct:</div>
+      <p class="text-p">Host environment/browser/Node.js বিভিন্ন asynchronous operation handle করে।</p>
+      <div class="section-subhead">🔹 ❌ Mistake 4</div>
+      <p class="text-p">Single-threaded মানে browser কিছুই parallel করতে পারে না।</p>
+      <div class="section-subhead">🔹 Correct:</div>
+      <p class="text-p">JavaScript execution-এর main thread single-threaded হলেও host environment এবং workers আলাদা execution capabilities দিতে পারে।</p>
+      <div class="section-subhead">🔹 ❌ Mistake 5</div>
+      <p class="text-p">Microtask এবং Task একই।</p>
+      <div class="section-subhead">🔹 Correct:</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Microtask
+Task</pre>
+</div>      <p class="text-p">দুটির scheduling semantics আলাদা।</p>
+    </div>
+    <div class="part-banner">Part 06 — Production Mastery, Practice Lab &amp; Mental Map (29.55 – 29.59)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.55</span> 🔥 MUST KNOW</div>
+      <p class="text-p">এই Chapter থেকে অবশ্যই জানতে হবে:</p>
+      <div class="section-subhead">🔹 Core</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>JavaScript execution model</li>
+        <li>JavaScript single-threaded concept</li>
+        <li>JavaScript engine</li>
+        <li>Call Stack</li>
+        <li>Heap</li>
+        <li>Execution Context</li>
+        <li>Global Execution Context</li>
+        <li>Function Execution Context</li>
+        <li>Creation phase</li>
+        <li>Execution phase</li>
+        <li>Lexical Environment</li>
+        <li>Scope Chain</li>
+      </ul>
+      <div class="section-subhead">🔹 Event Loop</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Event Loop</li>
+        <li>Task Queue</li>
+        <li>Microtask Queue</li>
+        <li>Web APIs / Host APIs</li>
+        <li><code>setTimeout</code></li>
+        <li>Promise callbacks</li>
+        <li><code>queueMicrotask</code></li>
+        <li><code>async/await</code></li>
+        <li><code>fetch</code></li>
+        <li>DOM events</li>
+      </ul>
+      <div class="section-subhead">🔹 সবচেয়ে গুরুত্বপূর্ণ</div>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Synchronous Code
+       ↓
+Call Stack
+       ↓
+Microtask Queue
+       ↓
+Task Queue</pre>
+</div>      <p class="text-p">এবং:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Promise → Microtask
+setTimeout → Task</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.Cheat</span> 🧠 Quick Cheat Sheet — Event Loop &amp; Execution Components</div>
+      <p class="text-p">JavaScript রানটাইমের প্রতিটি মেকানিজম এবং তার প্রধান ভূমিকার দ্রুত রেফারেন্স টেবিল:</p>
+      <div class="table-wrap"><table><thead><tr><th>Concept</th><th>সহজ অর্থ</th></tr></thead><tbody><tr><td>Call Stack</td><td>কোন JS function এখন চলছে</td></tr><tr><td>Heap</td><td>Dynamic memory/data-এর সাথে সম্পর্কিত memory area</td></tr><tr><td>Execution Context</td><td>Code execute করার environment</td></tr><tr><td>Global Context</td><td>Global code-এর execution environment</td></tr><tr><td>Function Context</td><td>Function call-এর execution environment</td></tr><tr><td>Web API</td><td>Browser-provided capabilities</td></tr><tr><td>Event Loop</td><td>Queue থেকে runnable work execution-এর দিকে আনে</td></tr><tr><td>Task Queue</td><td>Timer/event ইত্যাদির queued callbacks</td></tr><tr><td>Microtask Queue</td><td>Promise/queueMicrotask-এর callbacks</td></tr><tr><td>Promise callback</td><td>Microtask</td></tr><tr><td><code>setTimeout</code></td><td>Task scheduling</td></tr><tr><td><code>await</code></td><td>Promise settle হওয়ার পর continuation resume করে</td></tr><tr><td>Stack Overflow</td><td>Call Stack অতিরিক্ত পূর্ণ হওয়া</td></tr><tr><td>Blocking</td><td>Main JS execution আটকে রাখা</td></tr><tr><td>Starvation</td><td>অন্য কাজ দীর্ঘসময় সুযোগ না পাওয়া</td></tr></tbody></table></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.Formula</span> 🎯 Output Question Shortcut — ৩ ধাপের গোল্ডেন রুল</div>
+      <p class="text-p">যেকোনো জটিল ইন্টারভিউ কোডের এক্সিকিউশন অর্ডার তাৎক্ষণিকভাবে বের করার শর্টকাট ফর্মুলা:</p>
+      <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px;">
+        <div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Sample Execution Problem</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span>C<span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span>D&quot;);</code></pre>
+</div>        </div>
+        <div>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Golden Execution Priority</div>
+  <pre class="ascii-tree-content">1️⃣ Synchronous (Immediate)
+       ↓
+2️⃣ Microtask Queue (Promises)
+       ↓
+3️⃣ Macrotask Queue (Timers)</pre>
+</div><div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+D
+C
+B</pre>
+</div>        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.Map</span> 🎯 Final Mental Map &amp; Event Loop Architecture</div>
+      <p class="text-p">JavaScript সিংক্রোনাস ও অ্যাসিনক্রোনাস কোঅর্ডিনেশনের পূর্ণাঙ্গ আর্কিটেকচারাল ফ্লো ম্যাপ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Event Loop Global Coordination Tree</div>
+  <pre class="ascii-tree-content">JavaScript
+                      │
+                      ▼
+              Execution Context
+                      │
+                      ▼
+                 Call Stack
+                      │
+             ┌────────┴────────┐
+             │                 │
+             ▼                 ▼
+       Synchronous          Async Work
+                               │
+                               ▼
+                         Host / Web APIs
+                               │
+                    ┌──────────┴──────────┐
+                    ▼                     ▼
+              Microtask Queue        Task Queue
+                    │                     │
+                    └──────────┬──────────┘
+                               ▼
+                          Event Loop
+                               │
+                               ▼
+                          Call Stack
+                               │
+                               ▼
+                           Execute</pre>
+</div>
+      
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #f0fdf4; border-left: 3px solid #10b981;">
+        <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">⭐ এক নজরে মূল কথা (Key Takeaway):</div>
+        <div style="font-size: 9.5px; color: #047857; line-height: 1.45;">
+          JavaScript code প্রথমে Call Stack-এ synchronous-ভাবে execute হয়; asynchronous কাজ host environment-এর মাধ্যমে schedule হয়; Call Stack খালি হলে microtasks আগে process হয়, তারপর tasks-এর সুযোগ আসে—এই coordination-ই Event Loop-এর মূল ভিত্তি।
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">29.Lab</span> 📝 Hands-On Practice Lab — 4 Event Loop Execution Trace Challenges</div>
+      <p class="text-p">ইভেন্ট লুপের বিভিন্ন ফেজের অগ্রাধিকার নিখুঁতভাবে যাচাই করতে নিচে ৪টি বহুল জিজ্ঞাসিত চ্যালেঞ্জের সম্পূর্ণ স্টেপ-বাই-স্টেপ ট্রেস সলিউশন দেওয়া হলো:</p>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 1: Timer vs Synchronous Code</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;">setTimeout(fn, 0) বনাম সাধারণ console.log এর এক্সিকিউশন অর্ডার যাচাই:</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 1 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+}, 0);
+
+console.log(&quot;</span>C&quot;);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+C
+B</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Step-by-Step Execution Trace:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.35; white-space: pre-wrap;">১. 'A' কল স্ট্যাকে তাৎক্ষণিকভাবে এক্সিকিউট হয়ে প্রিন্ট হয়।
+২. setTimeout কল হয়ে টাইমার হোস্ট APIs-এ হ্যান্ডল হয় এবং ০ms পর Macrotask Queue-তে যুক্ত হয়।
+৩. 'C' কল স্ট্যাকে এক্সিকিউট হয়ে প্রিন্ট হয়।
+৪. কল স্ট্যাক খালি হলে ইভেন্ট লুপ Macrotask Queue থেকে 'B' এনে এক্সিকিউট করে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 2: Promise Microtask vs Synchronous Code</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;">Promise.resolve().then() বনাম সাধারণ console.log এর এক্সিকিউশন অর্ডার:</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 2 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span>C&quot;);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+C
+B</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Step-by-Step Execution Trace:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.35; white-space: pre-wrap;">১. 'A' সিঙ্ক্রোনাসভাবে প্রিন্ট হয়।
+২. Promise.resolve() এর .then() কলব্যাক Microtask Queue-তে শিডিউল হয়।
+৩. 'C' সিঙ্ক্রোনাসভাবে প্রিন্ট হয়।
+৪. সিনক্রোনাস স্ক্রিপ্ট শেষ হওয়ামাত্রই কল স্ট্যাক খালি পেয়ে Microtask Queue থেকে 'B' এক্সিকিউট হয়।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 3: Combined Multi-Priority Execution Trace</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;">Synchronous, Timer ও একাধিক Promise-এর সম্মিলিত এক্সিকিউশন ট্রেস:</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 3 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;<span class="syn-num">1</span><span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span><span class="syn-num">2</span><span class="syn-str">&quot;);
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span><span class="syn-num">3</span><span class="syn-str">&quot;);
+});
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span><span class="syn-num">4</span><span class="syn-str">&quot;);
+});
+
+console.log(&quot;</span><span class="syn-num">5</span>&quot;);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+5
+3
+4
+2</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Step-by-Step Execution Trace:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.35; white-space: pre-wrap;">১. সিনক্রোনাস কোড: '1' এবং '5' আগে প্রিন্ট হবে।
+২. মাইক্রোটাস্ক ড্রেন: '3' এবং '4' মাইক্রোটাস্ক কিউতে থাকায় টাইমার টাস্কের আগে পরপর প্রিন্ট হবে।
+৩. ম্যাক্রোটাস্ক এক্সিকিউশন: সব মাইক্রোটাস্ক শেষ হলে ইভেন্ট লুপ টাস্ক কিউ থেকে '2' এক্সিকিউট করবে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 4: Interleaved Nested Microtasks & Macrotasks</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;">টাইমারের ভেতর প্রমিজ এবং প্রমিজের ভেতর টাইমারের জটিল ইন্টারলিভড এক্সিকিউশন:</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 4 Code Challenge</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;A<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+    console.log(&quot;</span>B<span class="syn-str">&quot;);
+
+    Promise.resolve().then(() =&gt; {
+        console.log(&quot;</span>C<span class="syn-str">&quot;);
+    });
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+    console.log(&quot;</span>D<span class="syn-str">&quot;);
+
+    setTimeout(() =&gt; {
+        console.log(&quot;</span>E<span class="syn-str">&quot;);
+    }, 0);
+});
+
+console.log(&quot;</span>F&quot;);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>A
+F
+D
+B
+C
+E</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Step-by-Step Execution Trace:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.35; white-space: pre-wrap;">১. সিনক্রোনাস ফেজ: 'A' প্রিন্ট হয়, Macrotask Q-তে ঢোকে Timer-B, Microtask Q-তে ঢোকে Promise-D, 'F' প্রিন্ট হয়। [Output: A, F]
+২. মাইক্রোটাস্ক ফেজ: Promise-D চলে, 'D' প্রিন্ট করে Macrotask Q-তে Timer-E পাঠায়। [Output: D]
+৩. প্রথম ম্যাক্রোটাস্ক: Timer-B চলে, 'B' প্রিন্ট করে Microtask Q-তে Promise-C পাঠায়। [Output: B]
+৪. মাইক্রোটাস্ক চেক: পরবর্তী ম্যাক্রোটাস্কে যাওয়ার আগে ইভেন্ট লুপ মাইক্রোটাস্ক Promise-C রান করে। [Output: C]
+৫. দ্বিতীয় ম্যাক্রোটাস্ক: Timer-E চলে 'E' প্রিন্ট করে। [Output: E]
+চূড়ান্ত রেজাল্ট: A → F → D → B → C → E</div>
+        </div>
+      </div>
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #f0fdf4; border-left: 3px solid #10b981;">
+        <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">🚀 Next Chapter Preview:</div>
+        <div style="font-family: var(--font-heading); font-size: 10px; font-weight: 700; color: #0369a1;">
+          Chapter 30 — JavaScript Memory Management &amp; Garbage Collection
+        </div>
+        <div style="font-size: 9px; color: #334155; margin-top: 2px;">পরবর্তী চ্যাপ্টারে আমরা শিখব Memory Lifecycle, Memory Allocation, Stack vs Heap, Reference Counting, Mark-and-Sweep Garbage Collection এবং Memory Leak প্রতিকার।</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

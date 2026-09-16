@@ -1,0 +1,2205 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 28 — Symbols, Proxy &amp; Reflect | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-weight: 900;
+      font-size: 13px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      flex-shrink: 0;
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 13.5px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 7.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bae6fd;
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 1px;
+    }
+
+    /* Chapter Opening Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px 8px;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: 1px solid #e0f2fe;
+    }
+    .roadmap-item {
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--blue-accent);
+      padding-left: 5px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+    .warn-box {
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #991b1b;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    th {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      padding: 5px 8px;
+      border: 1px solid #334155;
+      text-align: left;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      line-height: 1.35;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Boxes */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-box-error {
+      border: 1px solid #ef4444 !important;
+    }
+    .code-box-correct {
+      border: 1px solid #10b981 !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.32;
+      padding: 5px 8px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+    }
+    p code, li code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Invalid Token Wave Highlight */
+    .invalid-token {
+      text-decoration: underline wavy #ef4444 !important;
+      text-decoration-skip-ink: none !important;
+      color: #fca5a5 !important;
+      font-weight: 700 !important;
+      background: rgba(239, 68, 68, 0.25) !important;
+      padding: 0 3px !important;
+      border-radius: 3px !important;
+    }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre */
+    .ascii-tree-container {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 3px 8px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    .ascii-tree-content {
+      color: #38bdf8 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9px !important;
+      line-height: 1.28 !important;
+      padding: 6px 10px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 5px;
+      padding: 6px 9px;
+      margin-bottom: 6px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-28-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .output-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 28</span>
+        </div>
+      </div>
+      <div class="banner-sub">SYMBOLS, PROXY &amp; REFLECT — METAPROGRAMMING, INTERCEPTION &amp; OBJECT ARCHITECTURE</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">56 Modules + Practice Lab</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 22 — JavaScript Metaprogramming</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Symbol, Proxy Handlers &amp; Reflect API</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / Modern V8 Internals</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🎯</span> JavaScript Metaprogramming — Symbols, Proxy &amp; Reflect শেখার মূল উদ্দেশ্য
+      </div>
+      <p class="text-p">
+        JavaScript-এ অবজেক্টের স্বাভাবিক আচরণ পরিবর্তন, অপারেশন ইন্টারসেপ্ট ও কাস্টম লজিক যুক্ত করার আর্কিটেকচারাল মেকানিজমের নাম হলো <strong>Metaprogramming</strong>। এই চ্যাপ্টারে আমরা <strong>Unique Symbol Keys, Global Symbol Registry, Proxy Handler Traps (get, set, has, deleteProperty), Reflect API</strong> এবং রিঅ্যাক্টিভ ফ্রেমওয়ার্ক আর্কিটেকচার নিখুঁতভাবে শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Primitive Symbol</div>
+        <div class="roadmap-item"><span>📌</span> 2. Unique Property Keys</div>
+        <div class="roadmap-item"><span>📌</span> 3. Symbol.for() Registry</div>
+        <div class="roadmap-item"><span>📌</span> 4. Symbol.keyFor()</div>
+        <div class="roadmap-item"><span>📌</span> 5. Well-Known Symbols</div>
+        <div class="roadmap-item"><span>📌</span> 6. Symbol.iterator</div>
+        <div class="roadmap-item"><span>📌</span> 7. Symbol.toPrimitive</div>
+        <div class="roadmap-item"><span>📌</span> 8. Proxy Target &amp; Handler</div>
+        <div class="roadmap-item"><span>📌</span> 9. get &amp; set Traps</div>
+        <div class="roadmap-item"><span>📌</span> 10. Schema Validation</div>
+        <div class="roadmap-item"><span>📌</span> 11. has &amp; deleteProperty</div>
+        <div class="roadmap-item"><span>📌</span> 12. apply &amp; construct</div>
+        <div class="roadmap-item"><span>📌</span> 13. Proxy.revocable</div>
+        <div class="roadmap-item"><span>📌</span> 14. Reflect Static API</div>
+        <div class="roadmap-item"><span>📌</span> 15. Reflect.get/set</div>
+        <div class="roadmap-item"><span>📌</span> 16. Reflect.ownKeys</div>
+        <div class="roadmap-item"><span>📌</span> 17. Proxy + Reflect Pair</div>
+        <div class="roadmap-item"><span>📌</span> 18. Read-Only Objects</div>
+        <div class="roadmap-item"><span>📌</span> 19. Access Control System</div>
+        <div class="roadmap-item"><span>📌</span> 20. Vue Reactivity Engine</div>
+        <div class="roadmap-item"><span>📌</span> 21. 5 Common Traps</div>
+        <div class="roadmap-item"><span>📌</span> 22. 9 Practice Challenges</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Symbols &amp; Unique Property Keys (28.1 – 28.12)</div>
+    <div class="study-card" id="sec-28-1">
+      <div class="card-title"><span class="badge-num">28.1</span> Symbol কী?</div>
+      <p class="text-p"><code>Symbol</code> হলো JavaScript-এর একটি <strong>primitive data type</strong>। JavaScript-এর primitive types:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>String
+Number
+BigInt
+Boolean
+Undefined
+Null
+Symbol</pre>
+</div>      <p class="text-p">Symbol তৈরি করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> id = <span class="syn-fn">Symbol</span>();</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.2</span> Symbol কেন দরকার?</div>
+      <p class="text-p">ধরো দুটি property একই নামের:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    id: <span class="syn-num">101</span>
+};
+
+user.id = <span class="syn-num">202</span>;</code></pre>
+</div>      <p class="text-p">আগের value replace হয়ে যাবে। কিন্তু Symbol ব্যবহার করলে unique key তৈরি করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> id1 = <span class="syn-fn">Symbol</span>();
+<span class="syn-kw">const</span> id2 = <span class="syn-fn">Symbol</span>();
+
+<span class="syn-fn">console</span>.log(id1 === id2);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>false</pre>
+</div>      <p class="text-p">প্রতিটি Symbol সাধারণত unique।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.3</span> Symbol-এর Real-Life Idea</div>
+      <p class="text-p">ধরো একটি বড় application-এ অনেক developer কাজ করছে। একজন লিখল:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user.status</code></pre>
+</div>      <p class="text-p">আরেকজনও লিখল:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user.status</code></pre>
+</div>      <p class="text-p">Property collision হতে পারে। Symbol:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> internalStatus = <span class="syn-fn">Symbol</span>();
+
+user[internalStatus] = <span class="syn-str">&quot;active&quot;</span>;</code></pre>
+</div>      <p class="text-p">এতে একটি unique key তৈরি হলো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.4</span> Symbol-এর Type</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> id = <span class="syn-fn">Symbol</span>();
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> id);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>symbol</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.5</span> Symbol Description</div>
+      <p class="text-p">Symbol তৈরি করার সময় description দেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> id = <span class="syn-fn">Symbol</span>(&quot;userId&quot;);
+
+<span class="syn-fn">console</span>.log(id);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Symbol(userId)</pre>
+</div>      <p class="text-p">Description মূলত debugging-এর জন্য helpful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.6</span> Description Access</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> id = <span class="syn-fn">Symbol</span>(&quot;userId&quot;);
+
+<span class="syn-fn">console</span>.log(id.description);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>userId</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.7</span> Symbol Always Unique</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> a = <span class="syn-fn">Symbol</span>(&quot;id<span class="syn-str">&quot;);
+const b = Symbol(&quot;</span>id&quot;);
+
+<span class="syn-fn">console</span>.log(a === b);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>false</pre>
+</div>      <p class="text-p">যদিও description একই:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>id</pre>
+</div>      <p class="text-p">তবুও Symbol দুটো আলাদা।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.8</span> Symbol as Object Property</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> userId = <span class="syn-fn">Symbol</span>(&quot;userId<span class="syn-str">&quot;);
+
+const user = {
+    name: &quot;</span>Shariar&quot;,
+    [userId]: <span class="syn-num">101</span>
+};
+
+<span class="syn-fn">console</span>.log(user.name);
+<span class="syn-fn">console</span>.log(user[userId]);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Shariar
+101</pre>
+</div>      <p class="text-p">খেয়াল করো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>[userId]</code></pre>
+</div>      <p class="text-p">computed property syntax ব্যবহার করা হয়েছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.9</span> Dot Notation দিয়ে Symbol Access করা যায় না</div>
+      <p class="text-p">এটা ভুল:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user.userId</code></pre>
+</div>      <p class="text-p">কারণ <code>userId</code> এখানে Symbol variable নয়। সঠিক:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user[userId]</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.10</span> Symbol Property কি Hidden?</div>
+      <p class="text-p">Symbol property <strong>private নয়</strong>। এটা খুব গুরুত্বপূর্ণ।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> secret = <span class="syn-fn">Symbol</span>(&quot;secret<span class="syn-str">&quot;);
+
+const user = {
+    name: &quot;</span>Shariar<span class="syn-str">&quot;,
+    [secret]: &quot;</span>Hello&quot;
+};</code></pre>
+</div>      <p class="text-p"><code>Object.keys()</code> করলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.keys(user));</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[&quot;name&quot;]</pre>
+</div>      <p class="text-p">Symbol key এখানে আসে না। কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.getOwnPropertySymbols(user));</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[Symbol(secret)]</pre>
+</div>      <p class="text-p">অর্থাৎ: &gt; Symbol property hidden from some normal enumeration, কিন্তু private/security mechanism নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.11</span> <code>Reflect.ownKeys()</code></div>
+      <p class="text-p">String এবং Symbol—দুই ধরনের own keys পেতে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> id = <span class="syn-fn">Symbol</span>(&quot;id<span class="syn-str">&quot;);
+
+const user = {
+    name: &quot;</span>Shariar&quot;,
+    [id]: <span class="syn-num">101</span>
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">ownKeys</span>(user));</code></pre>
+</div>      <p class="text-p">Output-এর ধারণা:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[&quot;name&quot;, Symbol(id)]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.12</span> Symbol বনাম String Key</div>
+      <div class="table-wrap"><table><thead><tr><th>String Key</th><th>Symbol Key</th></tr></thead><tbody><tr><td><code>&quot;id&quot;</code></td><td><code>Symbol(&quot;id&quot;)</code></td></tr><tr><td>collision হতে পারে</td><td>unique</td></tr><tr><td><code>Object.keys()</code>-এ আসে</td><td><code>Object.keys()</code>-এ আসে না</td></tr><tr><td>সাধারণ property</td><td>special property key</td></tr><tr><td>সাধারণভাবে enumerable</td><td>Symbol property-ও enumerable হতে পারে, কিন্তু Object.keys-এ আসে না</td></tr></tbody></table></div>
+    </div>
+    <div class="part-banner">Part 02 — Global Symbol Registry &amp; Well-Known Symbols (28.13 – 28.21)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.13</span> <code>Symbol.for()</code></div>
+      <p class="text-p">এখন একটি গুরুত্বপূর্ণ বিষয়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> a = <span class="syn-fn">Symbol</span>(&quot;user<span class="syn-str">&quot;);
+const b = Symbol(&quot;</span>user&quot;);
+
+<span class="syn-fn">console</span>.log(a === b);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>false</pre>
+</div>      <p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> a = <span class="syn-fn">Symbol</span>.<span class="syn-kw">for</span>(&quot;user<span class="syn-str">&quot;);
+const b = Symbol.for(&quot;</span>user&quot;);
+
+<span class="syn-fn">console</span>.log(a === b);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>true</pre>
+</div>      <p class="text-p">কারণ <code>Symbol.for()</code> <strong>Global Symbol Registry</strong> ব্যবহার করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.14</span> <code>Symbol.for()</code> কীভাবে কাজ করে?</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Symbol</span>.<span class="syn-kw">for</span>(&quot;app.user&quot;)</code></pre>
+</div>      <p class="text-p">প্রথমবার তৈরি হলে registry-তে রাখে। আবার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Symbol</span>.<span class="syn-kw">for</span>(&quot;app.user&quot;)</code></pre>
+</div>      <p class="text-p">করলে একই Symbol পাওয়া যায়। Mental model:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Symbol(&quot;user&quot;)
+   ↓
+নতুন unique Symbol
+
+Symbol.for(&quot;user&quot;)
+   ↓
+Global Registry
+   ↓
+একই key হলে একই Symbol</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.15</span> <code>Symbol.keyFor()</code></div>
+      <p class="text-p"><code>Symbol.for()</code> দিয়ে তৈরি Symbol-এর key বের করতে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> userSymbol = <span class="syn-fn">Symbol</span>.<span class="syn-kw">for</span>(&quot;user&quot;);
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">keyFor</span>(userSymbol));</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>user</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.16</span> <code>Symbol.for()</code> বনাম <code>Symbol()</code></div>
+      <div class="table-wrap"><table><thead><tr><th><code>Symbol()</code></th><th><code>Symbol.for()</code></th></tr></thead><tbody><tr><td>নতুন Symbol তৈরি করে</td><td>Registry থেকে Symbol নেয়</td></tr><tr><td>প্রতিবার unique</td><td>একই key → একই Symbol</td></tr><tr><td>Global registry নয়</td><td>Global Symbol Registry</td></tr><tr><td><code>Symbol.keyFor()</code> কাজ করে না</td><td><code>Symbol.keyFor()</code> কাজ করে</td></tr></tbody></table></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.17</span> Well-Known Symbols</div>
+      <p class="text-p">JavaScript কিছু built-in Symbol দিয়েছে যেগুলো language behavior customize করতে সাহায্য করে। Examples:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Symbol.iterator
+Symbol.toStringTag
+Symbol.toPrimitive
+Symbol.toStringTag
+Symbol.hasInstance
+Symbol.asyncIterator
+Symbol.species
+Symbol.isConcatSpreadable</pre>
+</div>      <p class="text-p">সবচেয়ে গুরুত্বপূর্ণ কয়েকটি আমরা দেখব।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.18</span> <code>Symbol.iterator</code></div>
+      <p class="text-p">Chapter 27-এ আমরা এটা দেখেছি। এটি কোনো object-এর iteration behavior define করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = {
+
+    *[<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">iterator</span>]() {
+
+        <span class="syn-kw">yield</span> <span class="syn-num">10</span>;
+        <span class="syn-kw">yield</span> <span class="syn-num">20</span>;
+        <span class="syn-kw">yield</span> <span class="syn-num">30</span>;
+
+    }
+
+};
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> numbers) {
+    <span class="syn-fn">console</span>.log(number);
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10
+20
+30</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">iterator</span></code></pre>
+</div>      <p class="text-p">object-টাকে iterable করেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.19</span> <code>Symbol.toStringTag</code></div>
+      <p class="text-p">Object-এর <code>Object.prototype.toString()</code> result customize করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+
+    [<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">toStringTag</span>]: <span class="syn-str">&quot;User&quot;</span>
+
+};
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.prototype.toString.call(user));</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[object User]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.20</span> <code>Symbol.toPrimitive</code></div>
+      <p class="text-p">Object primitive value-তে convert হওয়ার সময় behavior customize করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> money = {
+
+    value: <span class="syn-num">100</span>,
+
+    [<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">toPrimitive</span>](hint) {
+
+        <span class="syn-kw">if</span> (hint === <span class="syn-str">&quot;number&quot;</span>) {
+            <span class="syn-kw">return</span> <span class="syn-kw">this</span>.value;
+        }
+
+        <span class="syn-kw">return</span> <span class="syn-str">`$${this.value}`</span>;
+    }
+};
+
+<span class="syn-fn">console</span>.log(+money);
+<span class="syn-fn">console</span>.log(`${money}`);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>100
+$100</pre>
+</div>      <p class="text-p">এটি advanced metaprogramming-এর example।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.21</span> <code>Symbol.hasInstance</code></div>
+      <p class="text-p"><code>instanceof</code> behavior customize করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">class</span> EvenNumber {
+
+    <span class="syn-kw">static</span> [<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">hasInstance</span>](value) {
+
+        <span class="syn-kw">return</span> <span class="syn-kw">typeof</span> value === <span class="syn-str">&quot;number&quot;</span> &amp;&amp; value % <span class="syn-num">2</span> === <span class="syn-num">0</span>;
+
+    }
+
+}
+
+<span class="syn-fn">console</span>.log(<span class="syn-num">2</span> <span class="syn-kw">instanceof</span> EvenNumber);
+<span class="syn-fn">console</span>.log(<span class="syn-num">3</span> <span class="syn-kw">instanceof</span> EvenNumber);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>true
+false</pre>
+</div>      <p class="text-p">এখানে <code>instanceof</code>-এর behavior custom করা হয়েছে।</p>
+      <div class="section-subhead" style="color: #d97706; border-color: #f59e0b;">🔥 Symbol-এর সবচেয়ে গুরুত্বপূর্ণ ব্যবহার</div>
+      <p class="text-p">Practical JavaScript-এ তোমার জন্য সবচেয়ে গুরুত্বপূর্ণ:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1. Unique property keys
+2. Avoid property collisions
+3. Symbol.iterator
+4. Well-known Symbols
+5. Metaprogramming</pre>
+</div>    </div>
+    <div class="part-banner">Part 03 — Proxy Fundamentals &amp; Core Traps (28.22 – 28.36)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.22</span> এখন আসি Proxy-তে</div>
+      <p class="text-p"><code>Proxy</code> হলো JavaScript-এর একটি powerful feature যেটা কোনো object-এর operations <strong>intercept এবং customize</strong> করতে পারে। সহজ ভাষায়: &gt; Proxy হলো object-এর সামনে একটি &quot;middle layer&quot;। Mental model:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Code
+  ↓
+Proxy
+  ↓
+Target Object</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.23</span> Basic Proxy</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {});
+
+<span class="syn-fn">console</span>.log(proxy.name);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Shariar</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>user = target
+proxy = wrapper</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.24</span> Proxy Handler</div>
+      <p class="text-p">Proxy তৈরি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(target, handler)</code></pre>
+</div>      <p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">const</span> handler = {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property) {
+
+        <span class="syn-fn">console</span>.log(`Reading: ${property}`);
+
+        <span class="syn-kw">return</span> target[property];
+    }
+
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, handler);
+
+<span class="syn-fn">console</span>.log(proxy.name);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Reading: name
+Shariar</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.25</span> <code>get</code> Trap</div>
+      <p class="text-p"><code>get</code> trap property access intercept করে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property) {
+
+        <span class="syn-fn">console</span>.log(&quot;Accessing:&quot;, property);
+
+        <span class="syn-kw">return</span> target[property];
+    }
+
+});
+
+<span class="syn-fn">console</span>.log(proxy.name);
+<span class="syn-fn">console</span>.log(proxy.age);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Accessing: name
+Shariar
+
+Accessing: age
+23</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.26</span> <code>set</code> Trap</div>
+      <p class="text-p">Property set করার সময় intercept করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, property, value) {
+
+        <span class="syn-fn">console</span>.log(`Setting ${property} = ${value}`);
+
+        target[property] = value;
+
+        <span class="syn-kw">return</span> <span class="syn-bool">true</span>;
+    }
+
+});
+
+proxy.name = <span class="syn-str">&quot;Ripon&quot;</span>;</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Setting name = Ripon</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.27</span> Proxy দিয়ে Validation</div>
+      <p class="text-p">এটি খুব practical।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, property, value) {
+
+        <span class="syn-kw">if</span> (property === <span class="syn-str">&quot;age&quot;</span>) {
+
+            <span class="syn-kw">if</span> (<span class="syn-kw">typeof</span> value !== <span class="syn-str">&quot;number&quot;</span>) {
+                <span class="syn-kw">throw</span> <span class="syn-kw">new</span> TypeError(&quot;Age must be a number<span class="syn-str">&quot;);
+            }
+
+            if (value &lt; 0) {
+                throw new RangeError(&quot;</span>Age cannot be negative&quot;);
+            }
+        }
+
+        target[property] = value;
+
+        <span class="syn-kw">return</span> <span class="syn-bool">true</span>;
+    }
+
+});
+
+proxy.age = <span class="syn-num">25</span>;
+
+<span class="syn-fn">console</span>.log(proxy.age);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>25</pre>
+</div>      <p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>proxy.age = -<span class="syn-num">10</span>;</code></pre>
+</div>      <p class="text-p">Error:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>RangeError: Age cannot be negative</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.28</span> <code>has</code> Trap</div>
+      <p class="text-p"><code>in</code> operator intercept করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">has</span>(target, property) {
+
+        <span class="syn-fn">console</span>.log(`Checking: ${property}`);
+
+        <span class="syn-kw">return</span> property <span class="syn-kw">in</span> target;
+    }
+
+});
+
+<span class="syn-fn">console</span>.log(&quot;name&quot; <span class="syn-kw">in</span> proxy);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Checking: name
+true</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.29</span> <code>deleteProperty</code> Trap</div>
+      <p class="text-p"><code>delete</code> operation intercept করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">deleteProperty</span>(target, property) {
+
+        <span class="syn-fn">console</span>.log(`Deleting: ${property}`);
+
+        <span class="syn-kw">return</span> <span class="syn-kw">delete</span> target[property];
+    }
+
+});
+
+<span class="syn-kw">delete</span> proxy.age;
+
+<span class="syn-fn">console</span>.log(user);</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.30</span> <code>ownKeys</code> Trap</div>
+      <p class="text-p"><code>Object.keys()</code>/reflection-related key retrieval customize করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">ownKeys</span>(target) {
+
+        <span class="syn-kw">return</span> [&quot;name&quot;];
+    }
+
+});
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">Object</span>.keys(proxy));</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[&quot;name&quot;]</pre>
+</div>      <p class="text-p">এখানে <code>age</code> hide করা হয়েছে enumeration থেকে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.31</span> Proxy Logging System</div>
+      <p class="text-p">Proxy দিয়ে property access log করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+};
+
+<span class="syn-kw">const</span> loggedUser = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property) {
+
+        <span class="syn-fn">console</span>.log(
+            <span class="syn-str">`GET → ${String(property)}`</span>
+        );
+
+        <span class="syn-kw">return</span> target[property];
+    },
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, property, value) {
+
+        <span class="syn-fn">console</span>.log(
+            <span class="syn-str">`SET → ${String(property)} = ${value}`</span>
+        );
+
+        target[property] = value;
+
+        <span class="syn-kw">return</span> <span class="syn-bool">true</span>;
+    }
+
+});
+
+<span class="syn-fn">console</span>.log(loggedUser.name);
+
+loggedUser.age = <span class="syn-num">24</span>;</code></pre>
+</div>      <p class="text-p">এটি debugging বা development tooling-এ useful হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.32</span> <code>apply</code> Trap</div>
+      <p class="text-p">Proxy শুধু object-এর property operation intercept করে না। Function-এর invocation-ও intercept করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> greet(name) {
+    <span class="syn-kw">return</span> <span class="syn-str">`Hello ${name}`</span>;
+}
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(greet, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">apply</span>(target, thisArg, args) {
+
+        <span class="syn-fn">console</span>.log(&quot;Function called<span class="syn-str">&quot;);
+
+        return target(...args);
+    }
+
+});
+
+console.log(proxy(&quot;</span>Shariar&quot;));</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Function called
+Hello Shariar</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.33</span> <code>construct</code> Trap</div>
+      <p class="text-p"><code>new</code> operation intercept করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">class</span> User {
+
+    constructor(name) {
+        <span class="syn-kw">this</span>.name = name;
+    }
+
+}
+
+<span class="syn-kw">const</span> ProxyUser = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(User, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">construct</span>(target, args) {
+
+        <span class="syn-fn">console</span>.log(&quot;Creating User<span class="syn-str">&quot;);
+
+        return new target(...args);
+    }
+
+});
+
+const user = new ProxyUser(&quot;</span>Shariar&quot;);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Creating User</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.34</span> Proxy Trap Summary</div>
+      <p class="text-p">সব trap মুখস্থ করার দরকার নেই। Important:</p>
+      <div class="table-wrap"><table><thead><tr><th>Trap</th><th>Intercepts</th></tr></thead><tbody><tr><td><code>get</code></td><td>property read</td></tr><tr><td><code>set</code></td><td>property write</td></tr><tr><td><code>has</code></td><td><code>in</code></td></tr><tr><td><code>deleteProperty</code></td><td><code>delete</code></td></tr><tr><td><code>ownKeys</code></td><td>keys</td></tr><tr><td><code>apply</code></td><td>function call</td></tr><tr><td><code>construct</code></td><td><code>new</code></td></tr></tbody></table></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.35</span> Proxy + Private Fields</div>
+      <p class="text-p">এখানে একটি গুরুত্বপূর্ণ limitation আছে। Private class fields:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>#password</code></pre>
+</div>      <p class="text-p">Proxy দিয়ে সাধারণ property-এর মতো intercept করা যায় না।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">class</span> User {
+
+    #password = <span class="syn-str">&quot;12345&quot;</span>;
+
+}</code></pre>
+</div>      <p class="text-p">Private field-এর access language-level private mechanism দ্বারা controlled। তাই Proxy-কে security boundary হিসেবে ব্যবহার করা উচিত নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.36</span> Proxy Revocable</div>
+      <p class="text-p">একটি Proxy temporarily disable/revoke করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">const</span> { proxy, <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">revoke</span> } = <span class="syn-fn">Proxy</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">revocable</span>(user, {});
+
+<span class="syn-fn">console</span>.log(proxy.name);
+
+<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">revoke</span>();
+
+<span class="syn-fn">console</span>.log(proxy.name);</code></pre>
+</div>      <p class="text-p">শেষ access-এর সময় error হবে।</p>
+    </div>
+    <div class="part-banner">Part 04 — Reflect API &amp; Metaprogramming (28.37 – 28.45)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.37</span> এখন আসি Reflect-এ</div>
+      <p class="text-p"><code>Reflect</code> হলো JavaScript-এর built-in object যেটা অনেক <strong>object operation-এর standard methods</strong> দেয়। Examples:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">has</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">deleteProperty</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">ownKeys</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">construct</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">apply</span>()</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.38</span> <code>Reflect.get()</code></div>
+      <p class="text-p">সাধারণ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>user.name</code></pre>
+</div>      <p class="text-p">Reflect:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(user, <span class="syn-str">&quot;name&quot;</span>);</code></pre>
+</div>      <p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(user, <span class="syn-str">&quot;name&quot;</span>)
+);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Shariar</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.39</span> <code>Reflect.set()</code></div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {};
+
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(user, <span class="syn-str">&quot;name&quot;</span>, <span class="syn-str">&quot;Shariar&quot;</span>);
+
+<span class="syn-fn">console</span>.log(user.name);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Shariar</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.40</span> <code>Reflect.has()</code></div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">has</span>(user, <span class="syn-str">&quot;name&quot;</span>)
+);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>true</pre>
+</div>      <p class="text-p">এটি conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-str">&quot;name&quot;</span> <span class="syn-kw">in</span> user</code></pre>
+</div>      <p class="text-p">এর মতো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.41</span> <code>Reflect.deleteProperty()</code></div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>
+};
+
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">deleteProperty</span>(user, <span class="syn-str">&quot;age&quot;</span>);
+
+<span class="syn-fn">console</span>.log(user);</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.42</span> <code>Reflect.ownKeys()</code></div>
+      <p class="text-p">String + Symbol keys:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> id = <span class="syn-fn">Symbol</span>(&quot;id<span class="syn-str">&quot;);
+
+const user = {
+    name: &quot;</span>Shariar&quot;,
+    [id]: <span class="syn-num">101</span>
+};
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">ownKeys</span>(user)
+);</code></pre>
+</div>      <p class="text-p">এটি দুই ধরনের key দিতে পারে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>&quot;name&quot;
+Symbol(id)</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.43</span> Reflect কেন Proxy-এর সাথে বেশি দেখা যায়?</div>
+      <p class="text-p">এটি খুব গুরুত্বপূর্ণ। Proxy handler-এ manually:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>target[property] = value;</code></pre>
+</div>      <p class="text-p">করার পরিবর্তে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, property, value);</code></pre>
+</div>      <p class="text-p">ব্যবহার করা অনেক ক্ষেত্রে safer এবং cleaner।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.44</span> Proxy + Reflect</div>
+      <p class="text-p">Recommended pattern:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property, receiver) {
+
+        <span class="syn-fn">console</span>.log(`GET: ${String(property)}`);
+
+        <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(
+            target,
+            property,
+            receiver
+        );
+    },
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, property, value, receiver) {
+
+        <span class="syn-fn">console</span>.log(
+            <span class="syn-str">`SET: ${String(property)} = ${value}`</span>
+        );
+
+        <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(
+            target,
+            property,
+            value,
+            receiver
+        );
+    }
+
+});
+
+<span class="syn-fn">console</span>.log(proxy.name);
+
+proxy.name = <span class="syn-str">&quot;Ripon&quot;</span>;</code></pre>
+</div>      <div class="section-subhead" style="color: #0369a1; border-color: #0284c7;">🧠 Proxy + Reflect Mental Model</div>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Code
+ ↓
+Proxy
+ ↓
+Trap
+ ↓
+Reflect
+ ↓
+Target Object</pre>
+</div>      <p class="text-p">অর্থাৎ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Proxy = intercept
+Reflect = perform standard operation</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.45</span> Metaprogramming কী?</div>
+      <p class="text-p"><strong>Metaprogramming</strong> মানে এমন code লেখা যা program-এর behavior/structure-এর ওপর কাজ করতে পারে বা customize করতে পারে। JavaScript-এ:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Proxy
+Reflect
+Symbols
+Property Descriptors</pre>
+</div>      <p class="text-p">এসব metaprogramming-এর tools।</p>
+    </div>
+    <div class="part-banner">Part 05 — Production Architectures, Reactivity &amp; Common Mistakes (28.46 – 28.55)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.46</span> Real-Life Example: Read-Only Object</div>
+      <p class="text-p">Proxy দিয়ে property পরিবর্তন block করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> settings = {
+
+    theme: <span class="syn-str">&quot;dark&quot;</span>,
+    language: <span class="syn-str">&quot;en&quot;</span>
+
+};
+
+<span class="syn-kw">const</span> readOnlySettings = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(settings, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>() {
+
+        <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(
+            <span class="syn-str">&quot;Settings are read-only&quot;</span>
+        );
+
+    }
+
+});
+
+<span class="syn-fn">console</span>.log(readOnlySettings.theme);
+
+readOnlySettings.theme = <span class="syn-str">&quot;light&quot;</span>;</code></pre>
+</div>      <p class="text-p">শেষ line-এ error হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.47</span> Real-Life Example: Access Control</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    role: <span class="syn-str">&quot;user&quot;</span>,
+    salary: <span class="syn-num">50000</span>
+
+};
+
+<span class="syn-kw">const</span> safeUser = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property) {
+
+        <span class="syn-kw">if</span> (property === <span class="syn-str">&quot;salary&quot;</span>) {
+
+            <span class="syn-kw">if</span> (target.role !== <span class="syn-str">&quot;admin&quot;</span>) {
+                <span class="syn-kw">return</span> <span class="syn-str">&quot;Access denied&quot;</span>;
+            }
+
+        }
+
+        <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property);
+    }
+
+});
+
+<span class="syn-fn">console</span>.log(safeUser.name);
+<span class="syn-fn">console</span>.log(safeUser.salary);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Shariar
+Access denied</pre>
+</div>      <p class="text-p">⚠️ এটি demonstration। Real application security-এর জন্য server-side authorization অবশ্যই প্রয়োজন।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.48</span> Reactive Systems-এর সাথে Connection</div>
+      <p class="text-p">Proxy modern frontend architecture-এর কিছু concept বুঝতে সাহায্য করে। ধরো:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> state = {
+    count: <span class="syn-num">0</span>
+};</code></pre>
+</div>      <p class="text-p">Proxy দিয়ে change detect:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> reactiveState = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(state, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, property, value) {
+
+        <span class="syn-fn">console</span>.log(
+            <span class="syn-str">`${property} changed`</span>
+        );
+
+        <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(
+            target,
+            property,
+            value
+        );
+    }
+
+});
+
+reactiveState.count = <span class="syn-num">1</span>;</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>count changed</pre>
+</div>      <p class="text-p">এই ধরনের concept reactive systems/framework internals বোঝার ক্ষেত্রে গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.49</span> Symbol + Proxy একসাথে</div>
+      <p class="text-p">Symbol দিয়ে internal-like metadata রাখা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> metadata = <span class="syn-fn">Symbol</span>(&quot;metadata<span class="syn-str">&quot;);
+
+const user = {
+
+    name: &quot;</span>Shariar<span class="syn-str">&quot;,
+
+    [metadata]: {
+        createdBy: &quot;</span>system&quot;
+    }
+
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property) {
+
+        <span class="syn-kw">if</span> (property === metadata) {
+            <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property);
+        }
+
+        <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property);
+    }
+
+});</code></pre>
+</div>      <p class="text-p">এখানে Symbol unique key হিসেবে কাজ করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.50</span> Proxy Performance Consideration</div>
+      <p class="text-p">Proxy powerful হলেও সব জায়গায় ব্যবহার করা উচিত নয়। কারণ proxy layer:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">property access
+     ↓
+trap
+     ↓
+target</pre>
+</div>      <p class="text-p">অতিরিক্ত abstraction তৈরি করতে পারে। তাই performance-sensitive code-এ অপ্রয়োজনীয় Proxy ব্যবহার avoid করা ভালো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.51</span> Common Mistake: Symbol-কে Private ভাবা</div>
+      <p class="text-p">ভুল ধারণা: &gt; Symbol মানেই private property। ❌ না। Symbol property discover করা যায়:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Object</span>.getOwnPropertySymbols(obj)</code></pre>
+</div>      <p class="text-p">অথবা:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">ownKeys</span>(obj)</code></pre>
+</div>      <p class="text-p">তাই Symbol: &gt; <strong>Unique property key</strong>, security/privacy mechanism নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.52</span> Common Mistake: <code>Symbol(&quot;id&quot;)</code> একই হবে ভাবা</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> a = <span class="syn-fn">Symbol</span>(&quot;id<span class="syn-str">&quot;);
+const b = Symbol(&quot;</span>id&quot;);
+
+<span class="syn-fn">console</span>.log(a === b);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>false</pre>
+</div>      <p class="text-p">একই description ≠ same Symbol।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.53</span> Common Mistake: Proxy Target Automatically Protected</div>
+      <p class="text-p">Proxy বানালেই original object protected হয় না।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Shariar&quot;</span>
+};
+
+<span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {});
+
+user.name = <span class="syn-str">&quot;Ripon&quot;</span>;</code></pre>
+</div>      <p class="text-p">Original target সরাসরি পরিবর্তন করা সম্ভব।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.54</span> Common Mistake: <code>set</code> Trap-এ Boolean Return</div>
+      <p class="text-p"><code>set</code> trap-এর ক্ষেত্রে সাধারণত success indicate করতে boolean return করতে হয়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, property, value) {
+
+    target[property] = value;
+
+    <span class="syn-kw">return</span> <span class="syn-bool">true</span>;
+}</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.55</span> Common Mistake: Proxy-কে Security Boundary ভাবা</div>
+      <p class="text-p">Proxy দিয়ে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>salary access block
+password property hide</code></pre>
+</div>      <p class="text-p">করলেও client-side JavaScript-এর ওপর security নির্ভর করা উচিত নয়। Real security:</p>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Frontend
+   ↓
+Backend Authorization
+   ↓
+Database</pre>
+</div>    </div>
+    <div class="part-banner">Part 06 — Production Mastery, Practice Lab &amp; Mental Map (28.56 – 28.59)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.56</span> MUST KNOW</div>
+      <div class="section-subhead">🔹 Symbol</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> id = <span class="syn-fn">Symbol</span>(&quot;id&quot;);</code></pre>
+</div>      <div class="section-subhead">🔹 Symbol Property</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>obj[id] = <span class="syn-num">100</span>;</code></pre>
+</div>      <div class="section-subhead">🔹 Global Symbol</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Symbol</span>.<span class="syn-kw">for</span>(&quot;id&quot;);</code></pre>
+</div>      <div class="section-subhead">🔹 Well-known Symbol</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">iterator</span></code></pre>
+</div>      <div class="section-subhead">🔹 Proxy</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(target, handler);</code></pre>
+</div>      <div class="section-subhead">🔹 Get trap</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, property)</code></pre>
+</div>      <div class="section-subhead">🔹 Set trap</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, property, value)</code></pre>
+</div>      <div class="section-subhead">🔹 Reflect</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">has</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">deleteProperty</span>()
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">ownKeys</span>()</code></pre>
+</div>      <div class="section-subhead">🔹 Most important relationship</div>
+<div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Architecture / Concept Flow</div>
+  <pre class="ascii-tree-content">Proxy → intercept
+Reflect → perform operation
+Symbol → customize/identify</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.Cheat</span> 🧠 Quick Cheat Sheet — Symbol, Proxy &amp; Reflect Matrix</div>
+      <p class="text-p">Metaprogramming-এর ৩টি মূল স্তম্ভের সংক্ষিপ্ত ব্যবহারিক সিনট্যাক্স সামারি:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+        <div>
+          <div style="font-weight: 700; font-size: 10px; color: #0369a1; margin-bottom: 2px;">1. Symbol Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Symbol Reference</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> s = <span class="syn-fn">Symbol</span>(&quot;desc<span class="syn-str">&quot;);
+const g = Symbol.for(&quot;</span>app.id&quot;);
+<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">keyFor</span>(g); <span class="syn-com">// &#x27;app.id&#x27;</span>
+obj[<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">iterator</span>] = ...;</code></pre>
+</div>        </div>
+        <div>
+          <div style="font-weight: 700; font-size: 10px; color: #0369a1; margin-bottom: 2px;">2. Proxy Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Proxy Pattern</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> proxy = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(target, {
+  <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, prop, receiver) {
+    <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(...arguments);
+  },
+  <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, prop, val, receiver) {
+    <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(...arguments);
+  }
+});</code></pre>
+</div>        </div>
+        <div>
+          <div style="font-weight: 700; font-size: 10px; color: #0369a1; margin-bottom: 2px;">3. Reflect Syntax</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Reflect Methods</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, prop);
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, prop, val);
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">has</span>(target, prop);
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">deleteProperty</span>(target, p);
+<span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">ownKeys</span>(target);</code></pre>
+</div>        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.Lab</span> 📝 Hands-On Practice Lab — 9 Production Metaprogramming Challenges</div>
+      <p class="text-p">Symbol, Proxy Traps এবং Reflect API সম্পূর্ণ আয়ত্তে আনতে নিচে ৩টি লেভেলের ৯টি প্র্যাকটিক্যাল চ্যালেঞ্জের সম্পূর্ণ মডেল সলিউশন দেওয়া হলো:</p>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 1: Symbol as Object Property Key</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি <code>userId</code> সিম্বল তৈরি করো এবং অবজেক্টের প্রোপার্টি হিসেবে ব্যবহার করে তা কনসোলে অ্যাক্সেস করো।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 1 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> userId = <span class="syn-fn">Symbol</span>(&quot;userId<span class="syn-str">&quot;);
+
+const user = {
+    name: &quot;</span>Ripon<span class="syn-str">&quot;,
+    [userId]: 1001
+};
+
+console.log(&quot;</span>Name:&quot;, user.name);
+<span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Symbol</span> ID:&quot;, user[userId]);
+<span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Object</span> Keys:&quot;, <span class="syn-fn">Object</span>.keys(user)); <span class="syn-com">// Symbol excluded</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Name: Ripon
+Symbol ID: 1001
+Object Keys: [&#x27;name&#x27;]</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 2: Symbol Uniqueness Verification</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একই বিবরণ (description) দিয়ে দুটি পৃথক <code>Symbol('id')</code> তৈরি করে প্রমাণ করো যে তারা কখনো সমান হয় না।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 2 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> id1 = <span class="syn-fn">Symbol</span>(&quot;id<span class="syn-str">&quot;);
+const id2 = Symbol(&quot;</span>id<span class="syn-str">&quot;);
+
+console.log(&quot;</span>id1 === id2:&quot;, id1 === id2);
+<span class="syn-fn">console</span>.log(&quot;id1 description:&quot;, id1.description);
+<span class="syn-fn">console</span>.log(&quot;id2 description:&quot;, id2.description);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>id1 === id2: false
+id1 description: id
+id2 description: id</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 3: Global Symbol Registry with Symbol.for()</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> <code>Symbol.for('app.user')</code> দিয়ে একটি গ্লোবাল সিম্বল তৈরি করে <code>Symbol.keyFor()</code> দিয়ে তার রেজিস্ট্রি কি রিট্রিভ করো।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 3 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> globalSym1 = <span class="syn-fn">Symbol</span>.<span class="syn-kw">for</span>(&quot;app.user<span class="syn-str">&quot;);
+const globalSym2 = Symbol.for(&quot;</span>app.user<span class="syn-str">&quot;);
+
+console.log(&quot;</span>Global Symbols Same?&quot;, globalSym1 === globalSym2);
+<span class="syn-fn">console</span>.log(&quot;Registry Key:&quot;, <span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">keyFor</span>(globalSym1));</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Global Symbols Same? true
+Registry Key: app.user</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 4: Custom Iterable with Symbol.iterator</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি অবজেক্ট তৈরি করো যাতে <code>[Symbol.iterator]</code> মেথড ইমপ্লিমেন্ট করে সরাসরি <code>for...of</code> দিয়ে উপাদান পাওয়া যায়।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 4 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> collection = {
+    items: [&quot;JavaScript<span class="syn-str">&quot;, &quot;</span>TypeScript<span class="syn-str">&quot;, &quot;</span>Node.js&quot;],
+    *[<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">iterator</span>]() {
+        <span class="syn-kw">for</span> (<span class="syn-kw">const</span> item <span class="syn-kw">of</span> <span class="syn-kw">this</span>.items) {
+            <span class="syn-kw">yield</span> item;
+        }
+    }
+};
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> tech <span class="syn-kw">of</span> collection) {
+    <span class="syn-fn">console</span>.log(tech);
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>JavaScript
+TypeScript
+Node.js</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 5: Proxy Age Validation</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি প্রক্সি তৈরি করো যা <code>age</code> প্রোপার্টিতে শুধু পজিটিভ সংখ্যা লিখতে দেবে, অন্যথায় <code>TypeError</code> থ্রো করবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 5 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> person = {};
+
+<span class="syn-kw">const</span> validator = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(person, {
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, prop, value) {
+        <span class="syn-kw">if</span> (prop === <span class="syn-str">&quot;age&quot;</span>) {
+            <span class="syn-kw">if</span> (<span class="syn-kw">typeof</span> value !== <span class="syn-str">&quot;number&quot;</span> || value &lt; <span class="syn-num">0</span>) {
+                <span class="syn-kw">throw</span> <span class="syn-kw">new</span> TypeError(&quot;Age must be a positive number!&quot;);
+            }
+        }
+        target[prop] = value;
+        <span class="syn-kw">return</span> <span class="syn-bool">true</span>;
+    }
+});
+
+validator.age = <span class="syn-num">25</span>;
+<span class="syn-fn">console</span>.log(&quot;Valid Age:&quot;, validator.age);
+<span class="syn-com">// validator.age = -5; // Throws TypeError</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Valid Age: 25</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 6: Proxy Property Access Logger</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি প্রক্সি তৈরি করো যা প্রতিটি প্রোপার্টি পড়া (GET) এবং লেখার (SET) সময় কনসোলে স্বয়ংক্রিয়ভাবে লগ তৈরি করবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 6 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> user = { name: <span class="syn-str">&quot;Ripon&quot;</span> };
+
+<span class="syn-kw">const</span> loggedUser = <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(user, {
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, prop) {
+        <span class="syn-fn">console</span>.log(`GET → ${String(prop)}`);
+        <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, prop);
+    },
+    <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, prop, value) {
+        <span class="syn-fn">console</span>.log(`SET → ${String(prop)} = ${value}`);
+        <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, prop, value);
+    }
+});
+
+<span class="syn-kw">const</span> currentName = loggedUser.name;
+loggedUser.age = <span class="syn-num">28</span>;</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>GET → name
+SET → age = 28</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 7: Read-Only Object Proxy with Reflect</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি <code>createReadOnly(target)</code> হেল্পার বানাও যা অবজেক্টের কোনো প্রোপার্টি পরিবর্তন বা ডিলিট করতে দেবে না।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 7 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">function</span> createReadOnly(target) {
+    <span class="syn-kw">return</span> <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(target, {
+        <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(t, prop) {
+            <span class="syn-fn">console</span>.warn(`Cannot <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span> <span class="syn-str">&#x27;${String(prop)}&#x27;</span>: <span class="syn-fn">Object</span> is read-only!`);
+            <span class="syn-kw">return</span> <span class="syn-bool">false</span>;
+        },
+        <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">deleteProperty</span>(t, prop) {
+            <span class="syn-fn">console</span>.warn(`Cannot <span class="syn-kw">delete</span> <span class="syn-str">&#x27;${String(prop)}&#x27;</span>: <span class="syn-fn">Object</span> is read-only!`);
+            <span class="syn-kw">return</span> <span class="syn-bool">false</span>;
+        }
+    });
+}
+
+<span class="syn-kw">const</span> config = createReadOnly({ apiEndpoint: <span class="syn-str">&quot;https://api.example.com&quot;</span> });
+config.apiEndpoint = <span class="syn-str">&quot;https://hacked.com&quot;</span>; <span class="syn-com">// Warning logged</span>
+<span class="syn-fn">console</span>.log(&quot;Safe Config:&quot;, config.apiEndpoint);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Cannot set &#x27;apiEndpoint&#x27;: Object is read-only!
+Safe Config: https://api.example.com</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 8: Role-Based Access Control (RBAC) Proxy</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> এমন একটি প্রক্সি তৈরি করো যেখানে <code>user</code> রোল শুধু <code>name</code> এবং <code>admin</code> রোল <code>salary</code> দেখতে পারবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 8 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">function</span> createSecureAccount(data, role) {
+    <span class="syn-kw">return</span> <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(data, {
+        <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, prop) {
+            <span class="syn-kw">if</span> (prop === <span class="syn-str">&quot;salary&quot;</span> &amp;&amp; role !== <span class="syn-str">&quot;admin&quot;</span>) {
+                <span class="syn-kw">return</span> <span class="syn-str">&quot;⛔ Access Denied: Admin role required&quot;</span>;
+            }
+            <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">get</span>(target, prop);
+        }
+    });
+}
+
+<span class="syn-kw">const</span> employee = { name: <span class="syn-str">&quot;Anisur Rahman&quot;</span>, salary: <span class="syn-num">85000</span> };
+<span class="syn-kw">const</span> userView = createSecureAccount(employee, <span class="syn-str">&quot;user&quot;</span>);
+<span class="syn-kw">const</span> adminView = createSecureAccount(employee, <span class="syn-str">&quot;admin&quot;</span>);
+
+<span class="syn-fn">console</span>.log(&quot;User views name:&quot;, userView.name);
+<span class="syn-fn">console</span>.log(&quot;User views salary:&quot;, userView.salary);
+<span class="syn-fn">console</span>.log(&quot;Admin views salary:&quot;, adminView.salary);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>User views name: Anisur Rahman
+User views salary: ⛔ Access Denied: Admin role required
+Admin views salary: 85000</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 9: Integrated Metaprogramming Architecture</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি কাস্টম ক্লাস তৈরি করো যাতে <code>Symbol.iterator</code>, <code>Proxy</code> এবং <code>Reflect</code> তিনটি কনসেপ্ট একসাথে যুক্ত থাকবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 9 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">class</span> ObservableStore {
+    constructor(initialData = {}) {
+        <span class="syn-kw">this</span>.data = initialData;
+
+        <span class="syn-com">// Wrap internal data in proxy using Reflect</span>
+        <span class="syn-kw">return</span> <span class="syn-kw">new</span> <span class="syn-fn">Proxy</span>(<span class="syn-kw">this</span>, {
+            <span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, prop, value) {
+                <span class="syn-fn">console</span>.log(`[Store Event] Mutated <span class="syn-str">&#x27;${String(prop)}&#x27;</span> to:`, value);
+                <span class="syn-kw">return</span> <span class="syn-fn">Reflect</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">set</span>(target, prop, value);
+            }
+        });
+    }
+
+    *[<span class="syn-fn">Symbol</span>.<span class="syn-proxy" style="color: #38bdf8; font-weight: 600;">iterator</span>]() {
+        <span class="syn-kw">for</span> (<span class="syn-kw">const</span> [key, val] <span class="syn-kw">of</span> <span class="syn-fn">Object</span>.entries(<span class="syn-kw">this</span>.data)) {
+            <span class="syn-kw">yield</span> { key, val };
+        }
+    }
+}
+
+<span class="syn-kw">const</span> store = <span class="syn-kw">new</span> ObservableStore({ theme: <span class="syn-str">&quot;dark&quot;</span>, lang: <span class="syn-str">&quot;bn&quot;</span> });
+store.version = <span class="syn-str">&quot;1.0.0&quot;</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> entry <span class="syn-kw">of</span> store) {
+    <span class="syn-fn">console</span>.log(`Iterated: ${entry.key} = ${entry.val}`);
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[Store Event] Mutated &#x27;version&#x27; to: 1.0.0
+Iterated: theme = dark
+Iterated: lang = bn</pre>
+</div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">28.Map</span> 🎯 Final Mental Map &amp; Metaprogramming Architecture</div>
+      <p class="text-p">JavaScript Metaprogramming-এর ৩টি স্তম্ভ—Symbol, Proxy ও Reflect-এর সমন্বিত আর্কিটেকচার ম্যাপ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧭 Metaprogramming Architecture Tree (Symbol, Proxy, Reflect)</div>
+  <pre class="ascii-tree-content">JavaScript Metaprogramming
+                              │
+             ┌────────────────┼────────────────┐
+             │                │                │
+          Symbol            Proxy           Reflect
+             │                │                │
+       Unique Keys       Intercept Ops     Object Ops
+             │                │                │
+      ┌──────┴──────┐   ┌─────┴──────┐    ┌───┴────┐
+      │             │   │            │    │        │
+Symbol.iterator   Symbol.for   get/set   apply   get/set
+      │                         │
+      ↓                         ↓
+   Iterable                  Validation
+                            Logging
+                            Access Control
+                            Reactivity</pre>
+</div>
+      
+      <div class="section-subhead">⭐ এক নজরে ৩টি প্রধান স্তম্ভের ভূমিকা</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 5px 0;">
+        <div class="def-box" style="margin: 0; padding: 6px 8px;">
+          <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">1️⃣ Symbol</div>
+          <div style="font-size: 9px; color: #047857; line-height: 1.35;">“আমার একটি অনন্য (Unique) কী বা অন্তর্নিহিত স্পেশাল প্রটোকল বিহেভিয়ার দরকার।”</div>
+        </div>
+        <div class="def-box" style="margin: 0; padding: 6px 8px;">
+          <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">2️⃣ Proxy</div>
+          <div style="font-size: 9px; color: #047857; line-height: 1.35;">“কেউ অবজেক্টের সাথে কী অপারেশন করছে (get, set, has), তা ইন্টারসেপ্ট করে কাস্টম লজিক চালাতে চাই।”</div>
+        </div>
+        <div class="def-box" style="margin: 0; padding: 6px 8px;">
+          <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">3️⃣ Reflect</div>
+          <div style="font-size: 9px; color: #047857; line-height: 1.35;">“ইন্টারসেপ্ট করা অপারেশনটিকে স্ট্যান্ডার্ড ও পরিষ্কারভাবে মূল টার্গেট অবজেক্টের ওপর সম্পন্ন করতে চাই।”</div>
+        </div>
+      </div>
+
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #f0fdf4; border-left: 3px solid #10b981;">
+        <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">📌 Next Chapter Preview:</div>
+        <div style="font-family: var(--font-heading); font-size: 10px; font-weight: 700; color: #0369a1;">
+          Chapter 29 — JavaScript Execution Model &amp; Event Loop
+        </div>
+        <div style="font-size: 9px; color: #334155; margin-top: 2px;">পরবর্তী চ্যাপ্টারে আমরা শিখব Execution Context, Call Stack, Memory Heap, Microtask Queue, Macrotask Queue, Web APIs এবং Asynchronous Order of Execution।</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
