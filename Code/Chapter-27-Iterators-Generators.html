@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 27 — Iterators &amp; Generators | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-weight: 900;
+      font-size: 13px;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-code);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      flex-shrink: 0;
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 15.5px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 13.5px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.4px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      font-weight: 600;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.25);
+      padding: 5px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 7.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #bae6fd;
+      font-family: var(--font-heading);
+      font-weight: 600;
+    }
+    .meta-val {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 1px;
+    }
+
+    /* Chapter Opening Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 4px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px 8px;
+      margin-top: 5px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px 8px;
+      border-radius: 5px;
+      border: 1px solid #e0f2fe;
+    }
+    .roadmap-item {
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Part Banner */
+    .part-banner {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      border-left: 2px solid var(--blue-accent);
+      padding-left: 5px;
+    }
+
+    /* Definition / Note Boxes */
+    .def-box {
+      background: #f0fdf4;
+      border-left: 3px solid #10b981;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .def-text {
+      font-size: 10px;
+      font-weight: 600;
+      color: #065f46;
+    }
+    .warn-box {
+      background: #fef2f2;
+      border-left: 3px solid #ef4444;
+      padding: 5px 8px;
+      border-radius: 4px;
+      margin: 4px 0;
+      font-size: 10px;
+      color: #991b1b;
+      font-weight: 500;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    th {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      padding: 5px 8px;
+      border: 1px solid #334155;
+      text-align: left;
+    }
+    td {
+      padding: 4px 8px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      line-height: 1.35;
+    }
+    tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Code Boxes */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-box-error {
+      border: 1px solid #ef4444 !important;
+    }
+    .code-box-correct {
+      border: 1px solid #10b981 !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      line-height: 1.32;
+      padding: 5px 8px;
+      color: #f8fafc;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    code {
+      font-family: var(--font-code);
+    }
+    p code, li code {
+      font-family: var(--font-code);
+      font-size: 9.5px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; }
+    .syn-str { color: #a3e635; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Invalid Token Wave Highlight */
+    .invalid-token {
+      text-decoration: underline wavy #ef4444 !important;
+      text-decoration-skip-ink: none !important;
+      color: #fca5a5 !important;
+      font-weight: 700 !important;
+      background: rgba(239, 68, 68, 0.25) !important;
+      padding: 0 3px !important;
+      border-radius: 3px !important;
+    }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams */
+    .ascii-tree-container {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.25;
+      padding: 6px 10px;
+      border-radius: 5px;
+      margin: 4px 0;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 5px;
+      padding: 6px 9px;
+      margin-bottom: 6px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-27-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-wrap, .def-box, .output-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 27</span>
+        </div>
+      </div>
+      <div class="banner-sub">ITERATORS, GENERATORS &amp; CUSTOM ITERABLE ARCHITECTURE — PROTOCOLS, LAZY EVALUATION &amp; STREAMS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">43 Modules + Practice Lab</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 21 — Iteration Protocols &amp; Generators</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Symbol.iterator, next(), yield &amp; Streams</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">ECMAScript 2026 / Modern V8 Internals</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🎯</span> Iterators &amp; Generators — JavaScript Sequence &amp; Stream Architecture
+      </div>
+      <p class="text-p">
+        JavaScript-এ ডেটা ক্রমান্বয়ে অ্যাক্সেস করার পেছনে একটি শক্তিশালী অন্তর্নিহিত মেকানিজম কাজ করে—যার নাম <strong>Iteration Protocols</strong>। এই চ্যাপ্টারে আমরা <strong>Iterable, Iterator, <code>Symbol.iterator</code>, Generator Functions (<code>function*</code>), <code>yield</code>, Lazy Evaluation</strong> এবং ইনফিনিট স্ট্রিম প্রসেসিংয়ের গভীরতম খুঁটিনাটি একদম বাস্তব উদাহরণসহ নিখুঁতভাবে শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Iterable Concept</div>
+        <div class="roadmap-item"><span>📌</span> 2. Iterator Protocol</div>
+        <div class="roadmap-item"><span>📌</span> 3. Symbol.iterator</div>
+        <div class="roadmap-item"><span>📌</span> 4. next() Mechanics</div>
+        <div class="roadmap-item"><span>📌</span> 5. { value, done }</div>
+        <div class="roadmap-item"><span>📌</span> 6. for...of Loop Internal</div>
+        <div class="roadmap-item"><span>📌</span> 7. Custom Iterators</div>
+        <div class="roadmap-item"><span>📌</span> 8. Generator Function*</div>
+        <div class="roadmap-item"><span>📌</span> 9. yield Operator</div>
+        <div class="roadmap-item"><span>📌</span> 10. Pause &amp; Resume</div>
+        <div class="roadmap-item"><span>📌</span> 11. Generator State Machine</div>
+        <div class="roadmap-item"><span>📌</span> 12. Two-way next(val)</div>
+        <div class="roadmap-item"><span>📌</span> 13. return() &amp; throw()</div>
+        <div class="roadmap-item"><span>📌</span> 14. yield* Delegation</div>
+        <div class="roadmap-item"><span>📌</span> 15. Infinite Streams</div>
+        <div class="roadmap-item"><span>📌</span> 16. Lazy Evaluation</div>
+        <div class="roadmap-item"><span>📌</span> 17. Fibonacci Generator</div>
+        <div class="roadmap-item"><span>📌</span> 18. Range Generator</div>
+        <div class="roadmap-item"><span>📌</span> 19. Custom Iterable Class</div>
+        <div class="roadmap-item"><span>📌</span> 20. Object as Iterable</div>
+        <div class="roadmap-item"><span>📌</span> 21. API Pagination Stream</div>
+        <div class="roadmap-item"><span>📌</span> 22. Async Generators</div>
+        <div class="roadmap-item"><span>📌</span> 23. Memory Optimization</div>
+        <div class="roadmap-item"><span>📌</span> 24. 9 Production Challenges</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Iterables, Iteration Protocols &amp; Symbol.iterator (27.1 – 27.8)</div>
+    <div class="study-card" id="sec-27-1">
+      <div class="card-title"><span class="badge-num">27.1</span> প্রথমে একটা সমস্যা বুঝি</div>
+      <p class="text-p">ধরো আমাদের কাছে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];</code></pre>
+</div>      <p class="text-p">আমরা লিখতে পারি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> numbers) {
+    <span class="syn-fn">console</span>.log(number);
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10
+20
+30
+40</pre>
+</div>      <p class="text-p">কিন্তু প্রশ্ন হলো: &gt; JavaScript কীভাবে জানে যে array-এর কোন value আগে দিতে হবে এবং কোনটা পরে দিতে হবে? এর পেছনে আছে <strong>Iterator</strong>।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.2</span> Iterable কী?</div>
+      <p class="text-p"><strong>Iterable</strong> হলো এমন কোনো value যেটাকে একটার পর একটা করে iterate করা যায়। Common iterable:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Array
+String
+Map
+Set
+TypedArray
+Generator</pre>
+</div>      <p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> numbers) {
+    <span class="syn-fn">console</span>.log(number);
+}</code></pre>
+</div>      <p class="text-p">Array হলো iterable।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.3</span> String-ও Iterable</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> word = <span class="syn-str">&quot;HELLO&quot;</span>;
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> letter <span class="syn-kw">of</span> word) {
+    <span class="syn-fn">console</span>.log(letter);
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>H
+E
+L
+L
+O</pre>
+</div>      <p class="text-p">কারণ String-ও iterable।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.4</span> <code>Symbol.iterator</code></div>
+      <p class="text-p">Iterable object-এর একটি বিশেষ method থাকে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span></code></pre>
+</div>      <p class="text-p">Array-এর ক্ষেত্রে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];
+
+<span class="syn-fn">console</span>.log(numbers[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]);</code></pre>
+</div>      <p class="text-p">Output function-এর মতো কিছু দেখতে পারো:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[Function: values]</pre>
+</div>      <p class="text-p">এই method একটি <strong>iterator</strong> return করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.5</span> Iterator কী?</div>
+      <p class="text-p">Iterator হলো এমন একটি object যেটা sequentially values provide করে। একটি iterator-এর মূল method:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>()</code></pre>
+</div>      <p class="text-p">Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];
+
+<span class="syn-kw">const</span> <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span> = numbers[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]();
+
+<span class="syn-fn">console</span>.log(<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{ value: 10, done: false }
+{ value: 20, done: false }
+{ value: 30, done: false }
+{ value: undefined, done: true }</pre>
+</div>      <div class="section-subhead" style="color: #0369a1; border-color: #0284c7;">🧠 <code>next()</code> কী return করে?</div>
+      <p class="text-p">প্রতিবার <code>next()</code> একটি object return করে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>{
+    value: ...,
+    done: ...
+}</code></pre>
+</div>      <p class="text-p">দুটি property:</p>
+      <div class="table-wrap"><table><thead><tr><th>Property</th><th>অর্থ</th></tr></thead><tbody><tr><td><code>value</code></td><td>বর্তমান value</td></tr><tr><td><code>done</code></td><td>iteration শেষ হয়েছে কিনা</td></tr></tbody></table></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.6</span> <code>done</code> বুঝি</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>];
+
+<span class="syn-kw">const</span> <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span> = numbers[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]();
+
+<span class="syn-fn">console</span>.log(<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{ value: 10, done: false }
+{ value: 20, done: false }
+{ value: undefined, done: true }</pre>
+</div>      <p class="text-p">শেষে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>done: <span class="syn-bool">true</span></code></pre>
+</div>      <p class="text-p">মানে: &gt; আর কোনো value নেই।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.7</span> Iterator Manually চালানো</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">100</span>, <span class="syn-num">200</span>, <span class="syn-num">300</span>];
+
+<span class="syn-kw">const</span> <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span> = numbers[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]();
+
+<span class="syn-kw">let</span> result = <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>();
+
+<span class="syn-kw">while</span> (!result.done) {
+
+    <span class="syn-fn">console</span>.log(result.value);
+
+    result = <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>();
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>100
+200
+300</pre>
+</div>      <p class="text-p">অর্থাৎ <code>for...of</code> মূলত এই ধরনের iteration mechanism ব্যবহার করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.8</span> <code>for...of</code> কীভাবে কাজ করে?</div>
+      <p class="text-p">তুমি লিখলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> numbers) {
+    <span class="syn-fn">console</span>.log(number);
+}</code></pre>
+</div>      <p class="text-p">Conceptually:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+numbers
+   ↓
+Symbol.iterator
+   ↓
+iterator
+   ↓
+next()
+   ↓
+value
+   ↓
+next()
+   ↓
+value
+   ↓
+done === true</div>      <p class="text-p">অর্থাৎ:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">for</span>...<span class="syn-kw">of</span></code></pre>
+</div>      <p class="text-p">এর পেছনে iterator protocol কাজ করছে।</p>
+    </div>
+    <div class="part-banner">Part 02 — Custom Iterators &amp; Practical Sequences (27.9 – 27.13)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.9</span> Iterable বনাম Iterator</div>
+      <p class="text-p">এটা খুব গুরুত্বপূর্ণ।</p>
+      <div class="section-subhead">🔹 Iterable</div>
+      <p class="text-p">যার কাছে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span></code></pre>
+</div>      <p class="text-p">থাকে।</p>
+      <div class="section-subhead">🔹 Iterator</div>
+      <p class="text-p">যার কাছে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>()</code></pre>
+</div>      <p class="text-p">থাকে। সহজভাবে:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Iterable → Iterator তৈরি করতে পারে
+
+Iterator → next() দিয়ে value দেয়</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.10</span> Array Example</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> arr = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">const</span> <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span> = arr[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]();
+
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> arr[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]);
+<span class="syn-fn">console</span>.log(<span class="syn-kw">typeof</span> <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>function
+function</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.11</span> Custom Iterator</div>
+      <p class="text-p">এখন আমরা নিজের Iterator বানাবো। ধরো:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10
+20
+30</pre>
+</div>      <p class="text-p">আমরা চাই object-টাকে <code>for...of</code> দিয়ে iterate করতে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = {
+
+    <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">values</span>: [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>],
+
+    [<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]() {
+
+        <span class="syn-kw">let</span> index = <span class="syn-num">0</span>;
+
+        <span class="syn-kw">return</span> {
+
+            <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>: () =&gt; {
+
+                <span class="syn-kw">if</span> (index &lt; <span class="syn-kw">this</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">values</span>.length) {
+
+                    <span class="syn-kw">return</span> {
+                        value: <span class="syn-kw">this</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">values</span>[index++],
+                        done: <span class="syn-bool">false</span>
+                    };
+
+                }
+
+                <span class="syn-kw">return</span> {
+                    value: <span class="syn-bool">undefined</span>,
+                    done: <span class="syn-bool">true</span>
+                };
+            }
+        };
+    }
+};</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> numbers) {
+    <span class="syn-fn">console</span>.log(number);
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10
+20
+30</pre>
+</div>      <div class="section-subhead" style="color: #0369a1; border-color: #0284c7;">🧠 এখানে কী হলো?</div>
+      <p class="text-p">আমরা বললাম:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]()</code></pre>
+</div>      <p class="text-p">যখন call হবে, তখন একটা iterator return করবে। Iterator-এর:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>()</code></pre>
+</div>      <p class="text-p">method আছে। তারপর <code>for...of</code> বারবার <code>next()</code> call করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.12</span> Custom Iterator সহজ Version</div>
+      <p class="text-p">একটু ছোট করে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> range = {
+
+    start: <span class="syn-num">1</span>,
+    end: <span class="syn-num">5</span>,
+
+    [<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]() {
+
+        <span class="syn-kw">let</span> current = <span class="syn-kw">this</span>.start;
+
+        <span class="syn-kw">return</span> {
+
+            <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>: () =&gt; {
+
+                <span class="syn-kw">if</span> (current &lt;= <span class="syn-kw">this</span>.end) {
+
+                    <span class="syn-kw">return</span> {
+                        value: current++,
+                        done: <span class="syn-bool">false</span>
+                    };
+
+                }
+
+                <span class="syn-kw">return</span> {
+                    done: <span class="syn-bool">true</span>
+                };
+            }
+        };
+    }
+};
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> range) {
+    <span class="syn-fn">console</span>.log(number);
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3
+4
+5</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.13</span> Real-Life Example: Pagination</div>
+      <p class="text-p">ধরো API থেকে data আসে:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Page 1
+Page 2
+Page 3
+Page 4</pre>
+</div>      <p class="text-p">Iterator concept দিয়ে আমরা page-by-page data process করতে পারি।</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Page 1 → process
+Page 2 → process
+Page 3 → process
+...</div>      <p class="text-p">সব data একসাথে memory-তে রাখার প্রয়োজন নাও হতে পারে। এখান থেকেই আসে <strong>lazy processing</strong>।</p>
+    </div>
+    <div class="part-banner">Part 03 — Generators, yield Mechanics &amp; Execution Control (27.14 – 27.25)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.14</span> Generator কী?</div>
+      <p class="text-p">Generator হলো JavaScript-এর এমন একটি special function যেটা execution <strong>pause এবং resume</strong> করতে পারে। Generator function লিখতে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>*</code></pre>
+</div>      <p class="text-p">ব্যবহার করা হয়। Example:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">10</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">20</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">30</span>;
+
+}</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.15</span> Generator Call</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">10</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">20</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">30</span>;
+
+}
+
+<span class="syn-kw">const</span> generator = numbers();
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{ value: 10, done: false }
+{ value: 20, done: false }
+{ value: 30, done: false }
+{ value: undefined, done: true }</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.16</span> <code>yield</code> কী?</div>
+      <p class="text-p"><code>yield</code> generator-এর execution pause করে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* test() {
+
+    <span class="syn-fn">console</span>.log(&quot;Step <span class="syn-num">1</span><span class="syn-str">&quot;);
+
+    yield &quot;</span>Hello<span class="syn-str">&quot;;
+
+    console.log(&quot;</span>Step <span class="syn-num">2</span><span class="syn-str">&quot;);
+
+    yield &quot;</span>World<span class="syn-str">&quot;;
+
+    console.log(&quot;</span>Step <span class="syn-num">3</span>&quot;);
+
+}</code></pre>
+</div>      <p class="text-p">এখন:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> generator = test();
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());</code></pre>
+</div>      <p class="text-p">Output roughly:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Step 1
+{ value: &quot;Hello&quot;, done: false }
+
+Step 2
+{ value: &quot;World&quot;, done: false }
+
+Step 3
+{ value: undefined, done: true }</pre>
+</div>      <div class="section-subhead" style="color: #0369a1; border-color: #0284c7;">🧠 Generator-এর Mental Model</div>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+generator start
+      ↓
+   yield 1
+      ↓
+    pause
+      ↓
+ next()
+      ↓
+   yield 2
+      ↓
+    pause
+      ↓
+ next()
+      ↓
+   yield 3
+      ↓
+    pause
+      ↓
+ next()
+      ↓
+   done</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.17</span> Generator-এর সবচেয়ে গুরুত্বপূর্ণ বৈশিষ্ট্য</div>
+      <p class="text-p">Normal function:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span> test() {
+
+    <span class="syn-kw">return</span> <span class="syn-num">10</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-num">20</span>;
+}</code></pre>
+</div>      <p class="text-p"><code>return</code> করার পর function শেষ। কিন্তু Generator:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* test() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">10</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">20</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">30</span>;
+
+}</code></pre>
+</div>      <p class="text-p">একাধিক value sequentially দিতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.18</span> Generator State</div>
+      <p class="text-p">Generator state মনে রাখে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* counter() {
+
+    <span class="syn-kw">let</span> count = <span class="syn-num">1</span>;
+
+    <span class="syn-kw">yield</span> count++;
+
+    <span class="syn-kw">yield</span> count++;
+
+    <span class="syn-kw">yield</span> count++;
+
+}
+
+<span class="syn-kw">const</span> generator = counter();
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3</pre>
+</div>      <p class="text-p">প্রতিবার state preserve হচ্ছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.19</span> Generator + <code>for...of</code></div>
+      <p class="text-p">Generator নিজেই iterable।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">10</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">20</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">30</span>;
+
+}
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> numbers()) {
+
+    <span class="syn-fn">console</span>.log(number);
+
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10
+20
+30</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.20</span> Generator + Array Spread</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">10</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">20</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">30</span>;
+
+}
+
+<span class="syn-kw">const</span> result = [...numbers()];
+
+<span class="syn-fn">console</span>.log(result);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>[10, 20, 30]</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.21</span> Generator Parameters</div>
+      <p class="text-p">Generator-এর ভিতরে parameters নেওয়া যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* greeting(name) {
+
+    <span class="syn-kw">yield</span> <span class="syn-str">`Hello ${name}`</span>;
+
+    <span class="syn-kw">yield</span> <span class="syn-str">&quot;Welcome to JavaScript&quot;</span>;
+
+}
+
+<span class="syn-kw">const</span> generator = greeting(&quot;Shariar&quot;);
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Hello Shariar
+Welcome to JavaScript</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.22</span> <code>next(value)</code></div>
+      <p class="text-p">এটি Generator-এর advanced feature। <code>next()</code> দিয়ে generator-এ value পাঠানো যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* test() {
+
+    <span class="syn-kw">const</span> value = <span class="syn-kw">yield</span> <span class="syn-str">&quot;Enter a value&quot;</span>;
+
+    <span class="syn-kw">yield</span> <span class="syn-str">`You entered: ${value}`</span>;
+
+}
+
+<span class="syn-kw">const</span> generator = test();
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>(<span class="syn-num">100</span>));</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{ value: &quot;Enter a value&quot;, done: false }
+{ value: &quot;You entered: 100&quot;, done: false }</pre>
+</div>      <div class="section-subhead">🔹 কীভাবে কাজ করছে?</div>
+      <p class="text-p">প্রথম:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>()</code></pre>
+</div>      <p class="text-p">Generator চলে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> value = <span class="syn-kw">yield</span> <span class="syn-str">&quot;Enter a value&quot;</span>;</code></pre>
+</div>      <p class="text-p">এখানে pause। তারপর:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>(<span class="syn-num">100</span>)</code></pre>
+</div>      <p class="text-p">এর <code>100</code> গিয়ে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>value</code></pre>
+</div>      <p class="text-p">এর মধ্যে ঢুকে যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.23</span> Generator <code>return()</code></div>
+      <p class="text-p">Generator manually stop করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">1</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">2</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">3</span>;
+
+}
+
+<span class="syn-kw">const</span> generator = numbers();
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-kw">return</span>(&quot;Stopped&quot;));
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>());</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{ value: 1, done: false }
+{ value: &quot;Stopped&quot;, done: true }
+{ value: undefined, done: true }</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.24</span> Generator <code>throw()</code></div>
+      <p class="text-p">Generator-এর ভিতরে error throw করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* test() {
+
+    <span class="syn-kw">try</span> {
+
+        <span class="syn-kw">yield</span> <span class="syn-str">&quot;Hello&quot;</span>;
+
+    } <span class="syn-kw">catch</span> (error) {
+
+        <span class="syn-fn">console</span>.log(&quot;<span class="syn-fn">Error</span> handled<span class="syn-str">&quot;);
+
+    }
+
+}
+
+const generator = test();
+
+console.log(generator.next());
+
+generator.throw(new Error(&quot;</span>Something went wrong&quot;));</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>{ value: &quot;Hello&quot;, done: false }
+Error handled</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.25</span> <code>yield*</code></div>
+      <p class="text-p">একটি generator অন্য generator-এর values yield করতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">1</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">2</span>;
+
+}
+
+<span class="syn-kw">function</span>* allNumbers() {
+
+    <span class="syn-kw">yield</span>* numbers();
+
+    <span class="syn-kw">yield</span> <span class="syn-num">3</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">4</span>;
+
+}
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> allNumbers()) {
+
+    <span class="syn-fn">console</span>.log(number);
+
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3
+4</pre>
+</div>    </div>
+    <div class="part-banner">Part 04 — Lazy Evaluation, Streams &amp; Infinite Sequences (27.26 – 27.33)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.26</span> Generator দিয়ে ID Generator</div>
+      <p class="text-p">এটি খুব practical example।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* idGenerator() {
+
+    <span class="syn-kw">let</span> id = <span class="syn-num">1</span>;
+
+    <span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+
+        <span class="syn-kw">yield</span> id++;
+
+    }
+
+}
+
+<span class="syn-kw">const</span> generateId = idGenerator();
+
+<span class="syn-fn">console</span>.log(generateId.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(generateId.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(generateId.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(generateId.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3
+4</pre>
+</div>      <p class="text-p">এখানে generator <strong>infinite</strong>। কিন্তু সমস্যা নেই, কারণ একসাথে সব generate করছে না। যখন দরকার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>()</code></pre>
+</div>      <p class="text-p">তখন value দিচ্ছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.27</span> Infinite Generator</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* infiniteNumbers() {
+
+    <span class="syn-kw">let</span> number = <span class="syn-num">1</span>;
+
+    <span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+
+        <span class="syn-kw">yield</span> number++;
+
+    }
+
+}</code></pre>
+</div>      <p class="text-p">এটি theoretically infinite:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3
+4
+5
+...
+∞</pre>
+</div>      <p class="text-p">কিন্তু:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> generator = infiniteNumbers();
+
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);</code></pre>
+</div>      <p class="text-p">শুধু প্রয়োজনীয় তিনটি value তৈরি হয়েছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.28</span> Lazy Evaluation</div>
+      <p class="text-p">এটি Iterators/Generators-এর সবচেয়ে গুরুত্বপূর্ণ practical concept-এর একটি। <strong>Lazy Evaluation</strong> মানে: &gt; প্রয়োজন হওয়ার আগে value তৈরি না করা। ধরো 1 থেকে 1 billion পর্যন্ত numbers। Normal array:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= 1_000_000_000; i++) {
+    numbers.push(i);
+}</code></pre>
+</div>      <p class="text-p">এখানে huge memory লাগবে। Generator:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">let</span> i = <span class="syn-num">1</span>;
+
+    <span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+
+        <span class="syn-kw">yield</span> i++;
+
+    }
+
+}</code></pre>
+</div>      <p class="text-p">এখানে সব number memory-তে একসাথে রাখা হচ্ছে না। যখন দরকার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>();</code></pre>
+</div>      <p class="text-p">তখন value তৈরি হচ্ছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.29</span> Practical Lazy Processing</div>
+      <p class="text-p">ধরো আমরা শুধু প্রথম 5টি value চাই:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">let</span> i = <span class="syn-num">1</span>;
+
+    <span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+        <span class="syn-kw">yield</span> i++;
+    }
+
+}
+
+<span class="syn-kw">const</span> generator = numbers();
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">5</span>; i++) {
+
+    <span class="syn-fn">console</span>.log(generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3
+4
+5</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.30</span> Generator দিয়ে Fibonacci</div>
+      <p class="text-p">Fibonacci:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>0
+1
+1
+2
+3
+5
+8
+13
+21
+...</pre>
+</div>      <p class="text-p">Generator:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* fibonacci() {
+
+    <span class="syn-kw">let</span> a = <span class="syn-num">0</span>;
+    <span class="syn-kw">let</span> b = <span class="syn-num">1</span>;
+
+    <span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+
+        <span class="syn-kw">yield</span> a;
+
+        [a, b] = [b, a + b];
+
+    }
+
+}</code></pre>
+</div>      <p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> fib = fibonacci();
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">10</span>; i++) {
+
+    <span class="syn-fn">console</span>.log(fib.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>0
+1
+1
+2
+3
+5
+8
+13
+21
+34</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.31</span> Generator দিয়ে Range</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* range(start, end, step = <span class="syn-num">1</span>) {
+
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> value = start; value &lt;= end; value += step) {
+
+        <span class="syn-kw">yield</span> value;
+
+    }
+
+}
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> range(<span class="syn-num">1</span>, <span class="syn-num">10</span>, <span class="syn-num">2</span>)) {
+
+    <span class="syn-fn">console</span>.log(number);
+
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+3
+5
+7
+9</pre>
+</div>      <p class="text-p">এটি reusable utility হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.32</span> Custom Iterable Class</div>
+      <p class="text-p">Class-এর সাথে Iterator combine করা যায়।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">class</span> NumberRange {
+
+    constructor(start, end) {
+
+        <span class="syn-kw">this</span>.start = start;
+        <span class="syn-kw">this</span>.end = end;
+
+    }
+
+    *[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]() {
+
+        <span class="syn-kw">for</span> (
+            <span class="syn-kw">let</span> number = <span class="syn-kw">this</span>.start;
+            number &lt;= <span class="syn-kw">this</span>.end;
+            number++
+        ) {
+
+            <span class="syn-kw">yield</span> number;
+
+        }
+
+    }
+
+}
+
+<span class="syn-kw">const</span> range = <span class="syn-kw">new</span> NumberRange(<span class="syn-num">1</span>, <span class="syn-num">5</span>);
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> number <span class="syn-kw">of</span> range) {
+
+    <span class="syn-fn">console</span>.log(number);
+
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>1
+2
+3
+4
+5</pre>
+</div>      <p class="text-p">এখানে:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>*[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]()</code></pre>
+</div>      <p class="text-p">একটি generator method।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.33</span> Generator Method</div>
+      <p class="text-p">Class-এর method-ও generator হতে পারে।</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">class</span> UserList {
+
+    constructor(users) {
+        <span class="syn-kw">this</span>.users = users;
+    }
+
+    *getUsers() {
+
+        <span class="syn-kw">for</span> (<span class="syn-kw">const</span> user <span class="syn-kw">of</span> <span class="syn-kw">this</span>.users) {
+
+            <span class="syn-kw">yield</span> user;
+
+        }
+
+    }
+
+}
+
+<span class="syn-kw">const</span> users = <span class="syn-kw">new</span> UserList([
+    <span class="syn-str">&quot;Shariar&quot;</span>,
+    <span class="syn-str">&quot;Rahim&quot;</span>,
+    <span class="syn-str">&quot;Karim&quot;</span>
+]);
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> user <span class="syn-kw">of</span> users.getUsers()) {
+
+    <span class="syn-fn">console</span>.log(user);
+
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Shariar
+Rahim
+Karim</pre>
+</div>    </div>
+    <div class="part-banner">Part 05 — Architectural Comparisons &amp; Async Streaming (27.34 – 27.42)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.34</span> Iterator vs Generator</div>
+      <div class="table-wrap"><table><thead><tr><th>Iterator</th><th>Generator</th></tr></thead><tbody><tr><td><code>next()</code> manually implement করতে হয়</td><td><code>yield</code> ব্যবহার করা যায়</td></tr><tr><td>বেশি code লাগে</td><td>কম code</td></tr><tr><td><code>Symbol.iterator</code> manually লিখতে হতে পারে</td><td>generator automatically iterable</td></tr><tr><td>More control</td><td>Easier syntax</td></tr><tr><td>Low-level concept</td><td>Higher-level abstraction</td></tr></tbody></table></div>
+      <div class="section-subhead">🔹 Iterator:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span> = {
+
+    <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>() {
+        <span class="syn-kw">return</span> {
+            value: <span class="syn-num">1</span>,
+            done: <span class="syn-bool">false</span>
+        };
+    }
+
+};</code></pre>
+</div>      <div class="section-subhead">🔹 Generator:</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* generator() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">1</span>;
+
+}</code></pre>
+</div>      <p class="text-p">Generator অনেক ক্ষেত্রে iterator তৈরি করা সহজ করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.35</span> Iterable vs Iterator vs Generator</div>
+      <p class="text-p">এটা অবশ্যই clear রাখতে হবে।</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Iterable
+   │
+   └── Symbol.iterator()
+            │
+            ↓
+        Iterator
+            │
+            └── next()
+                  │
+                  ↓
+             { value, done }</div>      <p class="text-p">Generator:</p>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Architecture / Concept Flow</div>
+Generator Function
+       ↓
+Generator Object
+       ↓
+Iterable + Iterator</div>      <p class="text-p">অর্থাৎ Generator object সাধারণত দুটোই: &gt; <strong>Iterable + Iterator</strong></p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.36</span> কোনগুলো Iterable?</div>
+      <div class="table-wrap"><table><thead><tr><th>Value</th><th>Iterable?</th></tr></thead><tbody><tr><td>Array</td><td>✅</td></tr><tr><td>String</td><td>✅</td></tr><tr><td>Map</td><td>✅</td></tr><tr><td>Set</td><td>✅</td></tr><tr><td>Generator</td><td>✅</td></tr><tr><td>Object <code>{}</code></td><td>❌ সাধারণভাবে</td></tr><tr><td>Number</td><td>❌</td></tr><tr><td>Boolean</td><td>❌</td></tr></tbody></table></div>
+      <p class="text-p">এই জন্য:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">const</span> value <span class="syn-kw">of</span> {}) {
+}</code></pre>
+</div>      <p class="text-p">❌ TypeError হবে। কারণ সাধারণ object iterable নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.37</span> Object-কে Iterable করা</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+
+    name: <span class="syn-str">&quot;Shariar&quot;</span>,
+    age: <span class="syn-num">23</span>,
+
+    *[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]() {
+
+        <span class="syn-kw">yield</span> <span class="syn-kw">this</span>.name;
+        <span class="syn-kw">yield</span> <span class="syn-kw">this</span>.age;
+
+    }
+
+};
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> value <span class="syn-kw">of</span> user) {
+
+    <span class="syn-fn">console</span>.log(value);
+
+}</code></pre>
+</div>      <p class="text-p">Output:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Shariar
+23</pre>
+</div>      <p class="text-p">এখন object iterable হয়ে গেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.38</span> Generator vs Normal Function</div>
+      <div class="table-wrap"><table><thead><tr><th>Normal Function</th><th>Generator</th></tr></thead><tbody><tr><td><code>function</code></td><td><code>function*</code></td></tr><tr><td><code>return</code></td><td><code>yield</code></td></tr><tr><td>একবার execute</td><td>Pause/resume</td></tr><tr><td>সাধারণত single result</td><td>Multiple sequential results</td></tr><tr><td>state execution শেষে শেষ</td><td>state preserve করে</td></tr><tr><td>lazy sequence নয়</td><td>lazy sequence তৈরি করতে পারে</td></tr></tbody></table></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.39</span> Real-Life Example: API Pagination</div>
+      <p class="text-p">ধরো API-এর data:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>/page=1
+/page=2
+/page=3
+...</pre>
+</div>      <p class="text-p">Conceptually:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span>* fetchPages() {
+
+    <span class="syn-kw">let</span> page = <span class="syn-num">1</span>;
+
+    <span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+
+        <span class="syn-kw">const</span> response =
+            <span class="syn-kw">await</span> fetch(`/api/users?page=${page}`);
+
+        <span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.json();
+
+        <span class="syn-kw">if</span> (data.length === <span class="syn-num">0</span>) {
+            <span class="syn-kw">return</span>;
+        }
+
+        <span class="syn-kw">yield</span> data;
+
+        page++;
+    }
+
+}</code></pre>
+</div>      <p class="text-p">ব্যবহার:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">for</span> <span class="syn-kw">await</span> (<span class="syn-kw">const</span> users <span class="syn-kw">of</span> fetchPages()) {
+
+    <span class="syn-fn">console</span>.log(users);
+
+}</code></pre>
+</div>      <p class="text-p">এটি <strong>Async Generator</strong>। এটা আমরা পরে Async JavaScript-এর সাথে আরও গভীরভাবে ব্যবহার করব।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.40</span> Sync Generator বনাম Async Generator</div>
+      <div class="section-subhead">🔹 Sync Generator</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">1</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">2</span>;
+
+}</code></pre>
+</div>      <div class="section-subhead">🔹 Async Generator</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span>* numbers() {
+
+    <span class="syn-kw">yield</span> <span class="syn-num">1</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">2</span>;
+
+}</code></pre>
+</div>      <p class="text-p">Async generator asynchronous data stream-এর জন্য useful। যেমন:</p>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>API pagination
+Database cursor
+Streaming data
+WebSocket-like data processing
+Large data processing</pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.41</span> Generator কখন ব্যবহার করবে?</div>
+      <p class="text-p">Generator useful হতে পারে যখন:</p>
+      <div class="section-subhead">🔹 1. Large data</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Millions of records</pre>
+</div>      <div class="section-subhead">🔹 2. Infinite sequence</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>ID
+Counter
+Fibonacci</pre>
+</div>      <div class="section-subhead">🔹 3. Lazy processing</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Generate only when needed</pre>
+</div>      <div class="section-subhead">🔹 4. Pagination</div>
+<div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Page 1
+Page 2
+Page 3</pre>
+</div>      <div class="section-subhead">🔹 5. Custom iteration</div>
+      <p class="text-p">নিজের object-কে <code>for...of</code> compatible করা।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.42</span> Generator কখন ব্যবহার না করাই ভালো?</div>
+      <p class="text-p">প্রতিটি সমস্যায় Generator দরকার নেই। যদি:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>];</code></pre>
+</div>      <p class="text-p">এতটুকুই হয়, তাহলে normal array যথেষ্ট। অযথা:</p>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* ...</code></pre>
+</div>      <p class="text-p">ব্যবহার করলে code unnecessarily complex হতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 06 — Production Mastery, Practice Lab &amp; Mental Map (27.43 – 27.46)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.43</span> MUST KNOW</div>
+      <p class="text-p">এই Chapter থেকে অবশ্যই মনে রাখবে:</p>
+      <div class="section-subhead">🔹 Iterable</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span></code></pre>
+</div>      <p class="text-p">থাকে।</p>
+      <div class="section-subhead">🔹 Iterator</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>()</code></pre>
+</div>      <p class="text-p">থাকে।</p>
+      <div class="section-subhead">🔹 Iterator result</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>{
+    value,
+    done
+}</code></pre>
+</div>      <div class="section-subhead">🔹 Generator</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* test() {}</code></pre>
+</div>      <div class="section-subhead">🔹 Yield</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">yield</span> value;</code></pre>
+</div>      <div class="section-subhead">🔹 Generator execution</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code>generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>();</code></pre>
+</div>      <div class="section-subhead">🔹 Infinite Generator</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+    <span class="syn-kw">yield</span> value;
+}</code></pre>
+</div>      <div class="section-subhead">🔹 Generator delegation</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">yield</span>* anotherGenerator();</code></pre>
+</div>      <div class="section-subhead">🔹 Async Generator</div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JavaScript Source</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span>* test() {}</code></pre>
+</div>    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.Cheat</span> 🧠 Quick Cheat Sheet — Iterators &amp; Generators Syntax Matrix</div>
+      <p class="text-p">Iteration Protocols এবং Generator স্টেট মেশিনের দ্রুত রেফারেন্সের জন্য সম্পূর্ণ ফ্লো ও সিনট্যাক্স সামারি:</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+        <div>
+<div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Iteration Flow</div>
+Iterable
+   ↓
+Symbol.iterator
+   ↓
+Iterator
+   ↓
+next()
+   ↓
+{ value, done }</div>        </div>
+        <div>
+<div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Generator Pattern</span><span>JavaScript</span></div>
+  <pre><code><span class="syn-kw">function</span>* numbers() {
+    <span class="syn-kw">yield</span> <span class="syn-num">1</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">2</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">3</span>;
+}
+
+<span class="syn-kw">const</span> generator = numbers();
+generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>(); <span class="syn-com">// { value: 1, done: false }</span>
+generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>(); <span class="syn-com">// { value: 2, done: false }</span>
+generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>(); <span class="syn-com">// { value: 3, done: false }</span>
+generator.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>(); <span class="syn-com">// { value: undefined, done: true }</span></code></pre>
+</div>        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 5px;">
+        <div class="def-box" style="margin: 0;">
+          <div style="font-weight: 700; font-size: 9.5px; color: #065f46;">yield</div>
+          <div style="font-size: 8.5px; color: #047857;">বর্তমান মান রিটার্ন করে এবং ফাংশনের এক্সিকিউশন স্টেট সাময়িকভাবে পজ (Pause) করে।</div>
+        </div>
+        <div class="def-box" style="margin: 0;">
+          <div style="font-weight: 700; font-size: 9.5px; color: #065f46;">next()</div>
+          <div style="font-size: 8.5px; color: #047857;">পজ হওয়া জেনারেটর এক্সিকিউশনকে পুনরায় শুরু (Resume) করে পরবর্তী yield পর্যন্ত চালায়।</div>
+        </div>
+        <div class="def-box" style="margin: 0;">
+          <div style="font-weight: 700; font-size: 9.5px; color: #065f46;">yield*</div>
+          <div style="font-size: 8.5px; color: #047857;">অন্য কোনো Iterable বা Generator-এ ডেলিগেট করে তার প্রতিটি মান ধারাবাহিকভাবে yield করে।</div>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.Lab</span> 📝 Hands-On Practice Lab — 9 Production Mastery Challenges</div>
+      <p class="text-p">Iterators, Custom Iterables এবং Generators কনসেপ্টগুলোকে সম্পূর্ণ আয়ত্তে আনতে নিচে ৩টি লেভেলের ৯টি প্র্যাকটিক্যাল চ্যালেঞ্জের সম্পূর্ণ মডেল সলিউশন দেওয়া হলো:</p>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 1: Static Numeric Generator</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি জেনারেটর ফাংশন <code>generateTenToFifty()</code> তৈরি করো যা ক্রমান্বয়ে 10, 20, 30, 40, 50 মানগুলো <code>yield</code> দিয়ে প্রদান করবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 1 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">function</span>* generateTenToFifty() {
+    <span class="syn-kw">yield</span> <span class="syn-num">10</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">20</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">30</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">40</span>;
+    <span class="syn-kw">yield</span> <span class="syn-num">50</span>;
+}
+
+<span class="syn-kw">const</span> gen = generateTenToFifty();
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> val <span class="syn-kw">of</span> gen) {
+    <span class="syn-fn">console</span>.log(val);
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>10
+20
+30
+40
+50</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 2: Loop-Driven Sequence Generator</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> লুপের সাহায্যে একটি জেনারেটর ফাংশন <code>countToOneTen()</code> তৈরি করো যা 1 থেকে 10 পর্যন্ত সংখ্যা জেনারেট করবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 2 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">function</span>* countToOneTen() {
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">1</span>; i &lt;= <span class="syn-num">10</span>; i++) {
+        <span class="syn-kw">yield</span> i;
+    }
+}
+
+<span class="syn-kw">const</span> sequence = [...countToOneTen()];
+<span class="syn-fn">console</span>.log(&quot;Generated Sequence:&quot;, sequence);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Generated Sequence: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 3: Manual Iterator Traversal</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি সাধারণ অ্যারের <code>[Symbol.iterator]()</code> মেথড কল করে <code>while</code> লুপ ও <code>next()</code> দিয়ে ম্যানুয়ালি সব উপাদান প্রিন্ট করো।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 3 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> fruits = [&quot;Apple<span class="syn-str">&quot;, &quot;</span>Mango<span class="syn-str">&quot;, &quot;</span>Banana&quot;];
+
+<span class="syn-com">// Manually extract iterator from array</span>
+<span class="syn-kw">const</span> <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span> = fruits[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]();
+
+<span class="syn-kw">let</span> result = <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>();
+<span class="syn-kw">while</span> (!result.done) {
+    <span class="syn-fn">console</span>.log(result.value);
+    result = <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>();
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Apple
+Mango
+Banana</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 4: Custom range(start, end) Generator</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> Python-এর মতো একটি <code>range(start, end)</code> জেনারেটর ফাংশন বানাও যা <code>range(5, 10)</code> কল করলে 5 থেকে 10 রিটার্ন করবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 4 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">function</span>* range(start, end) {
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> current = start; current &lt;= end; current++) {
+        <span class="syn-kw">yield</span> current;
+    }
+}
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> num <span class="syn-kw">of</span> range(<span class="syn-num">5</span>, <span class="syn-num">10</span>)) {
+    <span class="syn-fn">console</span>.log(num);
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>5
+6
+7
+8
+9
+10</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 5: Zero-Padded User ID Generator</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি ইনফিনিট আইডি জেনারেটর তৈরি করো যা কল করলে <code>USER-001</code>, <code>USER-002</code>, <code>USER-003</code> ফরম্যাটে প্যাডেড আইডি তৈরি করবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 5 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">function</span>* createUserIdGenerator(prefix = <span class="syn-str">&quot;USER&quot;</span>) {
+    <span class="syn-kw">let</span> id = <span class="syn-num">1</span>;
+    <span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+        <span class="syn-kw">const</span> formatted = String(id).padStart(<span class="syn-num">3</span>, <span class="syn-str">&quot;0&quot;</span>);
+        <span class="syn-kw">yield</span> <span class="syn-str">`${prefix}-${formatted}`</span>;
+        id++;
+    }
+}
+
+<span class="syn-kw">const</span> idGen = createUserIdGenerator();
+<span class="syn-fn">console</span>.log(idGen.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value); <span class="syn-com">// USER-001</span>
+<span class="syn-fn">console</span>.log(idGen.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value); <span class="syn-com">// USER-002</span>
+<span class="syn-fn">console</span>.log(idGen.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value); <span class="syn-com">// USER-003</span>
+<span class="syn-fn">console</span>.log(idGen.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value); <span class="syn-com">// USER-004</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>USER-001
+USER-002
+USER-003
+USER-004</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 6: Fibonacci Infinite Generator</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি ইনফিনিট ফিবোনাচ্চি জেনারেটর তৈরি করে তা থেকে প্রথম 10টি ফিবোনাচ্চি সংখ্যা সংগ্রহ করে প্রিন্ট করো।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 6 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">function</span>* fibonacci() {
+    <span class="syn-kw">let</span> current = <span class="syn-num">0</span>;
+    <span class="syn-kw">let</span> <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span> = <span class="syn-num">1</span>;
+    <span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+        <span class="syn-kw">yield</span> current;
+        [current, <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>] = [<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>, current + <span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>];
+    }
+}
+
+<span class="syn-kw">const</span> fib = fibonacci();
+<span class="syn-kw">const</span> firstTen = [];
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">10</span>; i++) {
+    firstTen.push(fib.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+}
+
+<span class="syn-fn">console</span>.log(&quot;First <span class="syn-num">10</span> Fibonacci:&quot;, firstTen);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>First 10 Fibonacci: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 7: Dynamic Pagination Generator</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি <code>paginate(items, pageSize)</code> জেনারেটর ফাংশন তৈরি করো যা বড় অ্যারে থেকে পেজ অনুযায়ী চাঙ্ক (chunks) <code>yield</code> করবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 7 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">function</span>* paginate(items, pageSize = <span class="syn-num">3</span>) {
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; items.length; i += pageSize) {
+        <span class="syn-kw">yield</span> items.slice(i, i + pageSize);
+    }
+}
+
+<span class="syn-kw">const</span> dataset = [<span class="syn-num">101</span>, <span class="syn-num">102</span>, <span class="syn-num">103</span>, <span class="syn-num">104</span>, <span class="syn-num">105</span>, <span class="syn-num">106</span>, <span class="syn-num">107</span>];
+<span class="syn-kw">const</span> pager = paginate(dataset, <span class="syn-num">3</span>);
+
+<span class="syn-fn">console</span>.log(&quot;Page <span class="syn-num">1</span>:&quot;, pager.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(&quot;Page <span class="syn-num">2</span>:&quot;, pager.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(&quot;Page <span class="syn-num">3</span>:&quot;, pager.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().value);
+<span class="syn-fn">console</span>.log(&quot;End:&quot;, pager.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">next</span>().done);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Page 1: [101, 102, 103]
+Page 2: [104, 105, 106]
+Page 3: [107]
+End: true</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 8: Custom Iterable Class Implementation</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি <code>NumberRange</code> ক্লাস তৈরি করো যা <code>[Symbol.iterator]()</code> মেথড ইমপ্লিমেন্ট করবে যাতে ক্লাসের ইন্সট্যান্স সরাসরি <code>for...of</code> সমর্থন করে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 8 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-kw">class</span> NumberRange {
+    constructor(<span class="syn-kw">from</span>, to) {
+        <span class="syn-kw">this</span>.<span class="syn-kw">from</span> = <span class="syn-kw">from</span>;
+        <span class="syn-kw">this</span>.to = to;
+    }
+
+    *[<span class="syn-fn">Symbol</span>.<span class="syn-gen" style="color: #38bdf8; font-weight: 600;">iterator</span>]() {
+        <span class="syn-kw">for</span> (<span class="syn-kw">let</span> current = <span class="syn-kw">this</span>.<span class="syn-kw">from</span>; current &lt;= <span class="syn-kw">this</span>.to; current++) {
+            <span class="syn-kw">yield</span> current;
+        }
+    }
+}
+
+<span class="syn-kw">const</span> myRange = <span class="syn-kw">new</span> NumberRange(<span class="syn-num">1</span>, <span class="syn-num">5</span>);
+<span class="syn-kw">const</span> collected = [...myRange];
+<span class="syn-fn">console</span>.log(&quot;Spread <span class="syn-kw">from</span> <span class="syn-kw">class</span>:&quot;, collected);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Spread from class: [1, 2, 3, 4, 5]</pre>
+</div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 9: Async Generator for Streamed API Paging</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px;"><strong>Problem Requirement:</strong> একটি <code>async function* fetchPages(totalPages)</code> জেনারেটর তৈরি করো যা অ্যাসিঙ্ক নেটওয়ার্ক রিকোয়েস্ট সিমুলেট করে <code>for await (const page of ...)</code> দিয়ে প্রসেস হবে।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 9 Model Solution</span><span>✅ Standard Pattern</span></div>
+  <pre><code><span class="syn-com">// Simulating asynchronous API page delay</span>
+<span class="syn-kw">const</span> wait = ms =&gt; <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>(res =&gt; <span class="syn-fn">setTimeout</span>(res, ms));
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span>* fetchPages(totalPages = <span class="syn-num">3</span>) {
+    <span class="syn-kw">for</span> (<span class="syn-kw">let</span> p = <span class="syn-num">1</span>; p &lt;= totalPages; p++) {
+        <span class="syn-kw">await</span> wait(<span class="syn-num">50</span>); <span class="syn-com">// Simulated network latency</span>
+        <span class="syn-kw">yield</span> { page: p, data: [`Item ${p}A<span class="syn-str">`, `</span>Item ${p}B<span class="syn-str">`] };
+    }
+}
+
+async function runStream() {
+    for await (const pageData of fetchPages(3)) {
+        console.log(`</span>Received Page ${pageData.page}:`, pageData.data);
+    }
+}
+
+runStream();</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE OUTPUT</span><span>Output</span></div>
+  <pre>Received Page 1: [&#x27;Item 1A&#x27;, &#x27;Item 1B&#x27;]
+Received Page 2: [&#x27;Item 2A&#x27;, &#x27;Item 2B&#x27;]
+Received Page 3: [&#x27;Item 3A&#x27;, &#x27;Item 3B&#x27;]</pre>
+</div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">27.Map</span> 🎯 Final Mental Map &amp; Iteration Protocol Architecture</div>
+      <p class="text-p">JavaScript Iteration Ecosystem-এর সম্পূর্ণ মেমরি ও কনসেপ্ট কাঠামোর চূড়ান্ত চিত্র:</p>
+      <div class="ascii-tree-container">
+<div style="color: #94a3b8; font-size: 8.5px; border-bottom: 1px solid #334155; padding-bottom: 2px; margin-bottom: 4px; text-transform: uppercase;">🧭 Iterators & Generators Ecosystem Map</div>
+Iteration
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+       Iterable              Iterator
+          │                     │
+ Symbol.iterator              next()
+          │                     │
+          └──────────┬──────────┘
+                     │
+               { value, done }
+                     
+                     
+                 Generator
+                     │
+             function* / yield
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+       Pause                 Resume
+          │                     │
+        yield()              next()
+          │
+          ↓
+      Lazy Evaluation
+          │
+     ┌────┼─────┬────────┐
+     │    │     │        │
+   Large  IDs  Paging  Streams
+   Data</div>
+      
+      <div class="section-subhead">⭐ সবচেয়ে গুরুত্বপূর্ণ ৫টি টেক-অ্যাওয়ে</div>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 4px 0;">
+        <div class="def-box" style="margin: 0; padding: 4px;">
+          <div style="font-weight: 700; font-size: 9px; color: #065f46;">1️⃣ Iterable</div>
+          <div style="font-size: 8px; color: #047857;">[Symbol.iterator]() ফাংশন থাকে যা ইটারেটর রিটার্ন করে।</div>
+        </div>
+        <div class="def-box" style="margin: 0; padding: 4px;">
+          <div style="font-weight: 700; font-size: 9px; color: #065f46;">2️⃣ Iterator</div>
+          <div style="font-size: 8px; color: #047857;">next() মেথড থাকে যা সিকোয়েন্সিয়াল ভ্যালু দেয়।</div>
+        </div>
+        <div class="def-box" style="margin: 0; padding: 4px;">
+          <div style="font-weight: 700; font-size: 9px; color: #065f46;">3️⃣ Result</div>
+          <div style="font-size: 8px; color: #047857;">&#123; value, done &#125; অবজেক্ট আকারে আউটপুট দেয়।</div>
+        </div>
+        <div class="def-box" style="margin: 0; padding: 4px;">
+          <div style="font-weight: 700; font-size: 9px; color: #065f46;">4️⃣ Generator</div>
+          <div style="font-size: 8px; color: #047857;">function* সিনট্যাক্স দিয়ে পজেবল ইটারেটর তৈরি।</div>
+        </div>
+        <div class="def-box" style="margin: 0; padding: 4px;">
+          <div style="font-weight: 700; font-size: 9px; color: #065f46;">5️⃣ yield</div>
+          <div style="font-size: 8px; color: #047857;">মান সরবরাহ করে স্টেট পজ করে, next() তা রিজ্যুম করে।</div>
+        </div>
+      </div>
+      <div class="def-box" style="margin-top: 6px;">
+        <div class="def-text">Core Relationship Formula: <code>for...of</code> &nbsp;→&nbsp; Iterable (<code>Symbol.iterator</code>) &nbsp;→&nbsp; Iterator &nbsp;→&nbsp; <code>next()</code> &nbsp;→&nbsp; <code>&#123; value, done &#125;</code></div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
