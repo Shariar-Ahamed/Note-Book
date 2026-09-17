@@ -1,9 +1,16 @@
 # Python cache
 __pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 
 # Temporary images and inspection files
+*.png
+*.jpg
+*.webp
 temp/*.png
 temp/*.jpg
 temp/*.webp
+**/temp/*.png
+**/temp/*.jpg
+**/temp/*.webp

@@ -1,7 +1,7 @@
 # 📘 Master Study Note-Book (মাল্টি-ল্যাঙ্গুয়েজ স্টাডি নোটবুক)
 
 > 🚀 **Live Interactive Web Book:** [https://shariar-ahamed.github.io/Note-Book/](https://shariar-ahamed.github.io/Note-Book/)  
-> 📖 **Direct JavaScript Track:** [https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/](https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/)
+> 📖 **Direct JavaScript Track:** [https://shariar-ahamed.github.io/Note-Book/JavaScript/code/](https://shariar-ahamed.github.io/Note-Book/JavaScript/code/)
 
 A production-grade, highly structured multi-language software engineering documentation repository. Built with strict formatting standards, deep architectural diagrams, and a **100% Zero-Skipping Policy**.
 
@@ -11,7 +11,7 @@ A production-grade, highly structured multi-language software engineering docume
 
 | Language / Track | Scope & Content | Documentation Index | Status |
 | :--- | :--- | :---: | :---: |
-| **💛 JavaScript (Full Stack)** | 40 Chapters • Fundamentals to React/Node.js Architecture • 1200+ Pages | [🌐 Live Web Book](https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/) • [Browse Track](JavaScript/README.md) | ✅ **100% Complete** (HTML & Print-Ready PDF) |
+| **💛 JavaScript (Full Stack)** | 40 Chapters • Fundamentals to React/Node.js Architecture • 1200+ Pages | [🌐 Live Web Book](https://shariar-ahamed.github.io/Note-Book/JavaScript/code/) • [Browse Track](Components/JavaScript/README.md) | ✅ **100% Complete** (HTML & Print-Ready PDF) |
 | **💙 TypeScript** | Type Systems, Generics, Utility Types, Enterprise Architecture | *In Pipeline* | ⏳ Upcoming |
 | **🐍 Python** | Core Mechanics, AsyncIO, Metaprogramming & Web Architecture | *In Pipeline* | ⏳ Upcoming |
 | **🦀 Go / Rust** | Systems Programming, Concurrency, Memory Safety & Cloud Native | *In Pipeline* | ⏳ Upcoming |
@@ -22,21 +22,30 @@ A production-grade, highly structured multi-language software engineering docume
 
 ```
 Note-Book/
-├── .AGENT/                     # Universal formatting rules, print engine & theme guides
-├── .agents/                    # IDE instructions & customization
-├── JavaScript/                 # 📂 Complete JavaScript Master Study Documentation (40 Chapters)
-│   ├── Code/                   # 40 Interactive HTML source documents
-│   ├── PDF/                    # 40 Print-ready vectorized A4 PDFs
-│   ├── temp/                   # Markdown source drafts & syllabus files
-│   ├── all-ch.md               # Master curriculum & syllabus
-│   ├── last-update.md          # Chapter revision history
-│   └── README.md               # Dedicated JavaScript chapter index & table
+├── HTML/                       # 📂 HTML Curriculum & Tracks
+├── CSS/                        # 📂 CSS Curriculum & Tracks
+├── JavaScript/                 # 📂 Published JavaScript Track (Production Distribution)
+│   ├── code/                   # Live Interactive Web Book (HTML, CSS, JS)
+│   ├── single-chapters-pdf/    # 40 Print-ready vectorized A4 PDFs (Chapter-01 to 40)
+│   └── full-chapter-pdf/       # Complete Omnibus Master PDF (1,212 Pages)
+├── Components/                 # 📂 Development & Modular Source Components
+│   ├── HTML/                   # HTML source components & drafts
+│   ├── CSS/                    # CSS source components & drafts
+│   └── JavaScript/             # JavaScript source files & generators
+│       ├── .AGENT/             # Formatting rules, print engine & theme guides
+│       ├── .agents/            # IDE instructions & customization
+│       ├── Code/               # 40 Single-chapter HTML source documents
+│       ├── temp/               # Markdown source drafts & build scripts
+│       ├── all-ch.md           # Master curriculum & syllabus
+│       ├── last-update.md      # Chapter revision history
+│       └── README.md           # Dedicated JavaScript chapter index & table
+├── index.html                  # Root landing & auto-redirect engine
 └── README.md                   # Multi-language master hub (this file)
 ```
 
 ---
 
-## 🎯 Production & Publishing Standards ([Rulebook](.AGENT/agent.md))
+## 🎯 Production & Publishing Standards ([Rulebook](Components/JavaScript/.AGENT/agent.md))
 
 - **100% Zero-Skipping Policy:** All technical definitions, language edge cases, deep code samples, ASCII diagrams, and interview problems are rendered verbatim.
 - **Page 1 Balance:** Master Banner + Chapter Intro + Part 01 Banner + Section 1 Card fit unbroken on Page 1.

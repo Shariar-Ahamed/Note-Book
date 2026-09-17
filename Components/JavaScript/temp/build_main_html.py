@@ -99,8 +99,9 @@ def scope_css(css_text, scope_class):
     return final_css, page_rules
 
 def build_all():
-    files = sorted(glob.glob('JavaScript/Code/Chapter-*.html'))
-    print(f"Processing {len(files)} chapters...")
+    src_dir = 'Components/JavaScript/Code'
+    files = sorted(glob.glob(os.path.join(src_dir, 'Chapter-*.html')))
+    print(f"Processing {len(files)} chapters from {src_dir}...")
     assert len(files) == 40, f"Expected 40 chapters, got {len(files)}"
     
     all_scoped_css = []
@@ -1486,12 +1487,9 @@ document.addEventListener('keydown', function(e) {
 
     # File mappings to write
     files_to_write = [
-        ('JavaScript/Full-Book/index.html', linked_html),
-        ('JavaScript/Full-Book/css/style.css', master_css),
-        ('JavaScript/Full-Book/js/app.js', app_js),
-        ('Full-Book/index.html', linked_html),
-        ('Full-Book/css/style.css', master_css),
-        ('Full-Book/js/app.js', app_js),
+        ('JavaScript/code/index.html', linked_html),
+        ('JavaScript/code/css/style.css', master_css),
+        ('JavaScript/code/js/app.js', app_js),
     ]
 
     for rel_path, file_content in files_to_write:
