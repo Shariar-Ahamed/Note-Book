@@ -103,39 +103,54 @@
     .master-banner {
       background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
       color: white;
-      padding: 14px 18px;
+      padding: 12px 18px;
       border-radius: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
     }
     .banner-top {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .banner-left {
+      display: flex;
+      align-items: center;
       gap: 10px;
-      margin-bottom: 4px;
     }
     .banner-icon {
-      background: #ffffff;
-      color: #0369a1;
-      font-weight: 800;
-      font-size: 13px;
-      padding: 2px 8px;
-      border-radius: 5px;
+      background: #f7df1e;
+      color: #000000;
       font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 12px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .banner-title {
       font-family: var(--font-heading);
-      font-size: 17px;
+      font-size: 13.5px;
       font-weight: 800;
-      letter-spacing: -0.3px;
+      letter-spacing: 0.5px;
+      color: #ffffff;
       text-transform: uppercase;
     }
-    .banner-sub {
-      font-size: 11.5px;
-      font-weight: 600;
-      color: #e0f2fe;
-      margin-bottom: 8px;
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       letter-spacing: 0.5px;
+      white-space: nowrap;
     }
     .meta-grid {
       display: grid;
@@ -388,17 +403,18 @@
     .syn-bool { color: #f59e0b; font-weight: 600; }
 
     .ascii-tree-container {
-      background: #0f172a;
+      background: #090d16;
       border: 1px solid #1e293b;
       border-radius: 6px;
       padding: 6px 10px;
       color: #38bdf8;
-      font-family: 'Courier New', Consolas, monospace !important;
+      font-family: 'Fira Code', 'Courier New', Consolas, monospace !important;
       font-size: 10.5px;
       line-height: 1.35;
       white-space: pre !important;
       overflow-x: auto;
       margin: 4px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
       page-break-inside: avoid !important;
       break-inside: avoid !important;
     }
@@ -474,10 +490,12 @@
     <!-- Header Master Banner -->
     <header class="master-banner">
       <div class="banner-top">
-        <div class="banner-icon">JS</div>
-        <div class="banner-title">JavaScript Master Study Documentation</div>
+        <div class="banner-left">
+          <div class="banner-icon">JS</div>
+          <span class="banner-title">Arrays &amp; Modern Collections — অ্যারে ও আধুনিক কালেকশন</span>
+        </div>
+        <span class="chapter-badge">Chapter 09</span>
       </div>
-      <div class="banner-sub">CHAPTER 09: ARRAYS &amp; MODERN COLLECTIONS</div>
       <div class="meta-grid">
         <div class="meta-item">
           <div class="meta-label">Total Sections</div>

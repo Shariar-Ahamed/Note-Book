@@ -194,3 +194,20 @@ Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" 
    - **রেফারেন্স ফাইল:** [`.AGENT/dark_developer_theme.md`](file:///c:/Users/User/Desktop/Note-Book/.AGENT/dark_developer_theme.md)
    - **কী-কালার:** Body (`#0a0d14`), Cards (`#111722`), Border (`#1f293d`), Text (`#e2e8f0`), Accents (`#38bdf8`, `#c084fc`, `#34d399`, `#f43f5e`)
 
+---
+
+## 🏷️ ১০. চ্যাপ্টার হেডার ও ব্যানার রিনোভেশন গাইডলাইন (Top-Right Badge & Custom Title Standard)
+
+Chapter 01 থেকে Chapter 25 রিনোভেশনের সময় নিচের ৫টি নিয়ম শতভাগ মেনে চলতে হবে:
+
+1. **ব্যানার হেডিং পরিবর্তন:**
+   - ব্যানারের মূল টাইটেল `.banner-title`-এ generic `"JAVASCRIPT MASTER STUDY DOCUMENTATION"` বাদ দিয়ে সেখানে সরাসরি **Chapter Title / Name** যুক্ত করতে হবে।
+2. **টপ-রাইট ইয়েলো চ্যাপ্টার ব্যাজ (Top-Right Yellow Badge):**
+   - ব্যানারের টপ-রাইট কর্নারে `.banner-top`-এর ভেতরে `<span class="chapter-badge">Chapter XX</span>` স্থাপন করতে হবে।
+   - স্টাইলিং: `background: #f7df1e; color: #000000; font-family: var(--font-heading); font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); letter-spacing: 0.5px;` (হুবহু Ch 39 ও 40-এর মতো)।
+3. **জেএস লোগো ম্যাচিং (JS Brand Icon):**
+   - বাঁদিকের `JS` আইকন `.banner-icon`-কে হলুদ ব্যাকগ্রাউন্ড `#f7df1e` এবং গাঢ় কালো `#000000` বোল্ড টেক্সট দিয়ে স্টাইল করতে হবে।
+4. **ডায়াগ্রামের সৌন্দর্য বৃদ্ধি (Diagram Aesthetics):**
+   - ভেতরের প্রতিটি ডায়াগ্রামের মূল কন্টেন্ট, টেক্সট এবং কাঠামো **১০০% অক্ষত রেখে**, Chapter 39 ও 40-এর মতো প্রিমিয়াম আধুনিক স্টাইলিং (ডার্ক কন্টেইনার `#090d16`, ক্লিন বর্ডার `#1e293b`, হেডার বার `#111c2e` ও কালার হাইলাইটস) দিয়ে উপস্থাপন করতে হবে।
+5. **জিরো কনটেন্ট অল্টারেশন নীতি (CRITICAL ZERO CONTENT MODIFICATION POLICY):**
+   - উল্লেখিত ৪টি পয়েন্ট ছাড়া পিডিএফ-এর ভেতরের অন্য কোনো টেক্সট, কোড, ব্যাখ্যা, প্রশ্ন বা আউটপুটে সামান্যতম হাত দেওয়া যাবে না। বাকি পুরো পিডিএফ ১০০% হুবহু অপরিবর্তিত থাকবে।

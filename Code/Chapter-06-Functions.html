@@ -113,33 +113,46 @@
     .banner-top {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 4px;
+      justify-content: space-between;
+      margin-bottom: 8px;
     }
-    .banner-icon {
-      width: 28px;
-      height: 28px;
-      background: rgba(255,255,255,0.15);
-      border: 2px solid #38bdf8;
-      border-radius: 6px;
+    .banner-left {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 13px;
+      gap: 10px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       font-weight: 800;
+      font-size: 12px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .banner-title {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 20px;
+      font-size: 13.5px;
       font-weight: 800;
       letter-spacing: 0.5px;
+      color: #ffffff;
       text-transform: uppercase;
     }
-    .banner-sub {
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 12px;
-      color: #93c5fd;
-      margin-bottom: 10px;
-      margin-left: 40px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
     }
     .meta-grid {
       display: grid;
@@ -383,17 +396,18 @@
     .syn-bool { color: #f59e0b; font-weight: 600; }
 
     .ascii-tree-container {
-      background: #0f172a;
+      background: #090d16;
       border: 1px solid #1e293b;
       border-radius: 6px;
-      padding: 6px 10px;
+      padding: 8px 12px;
       color: #38bdf8;
-      font-family: 'Courier New', Consolas, monospace !important;
-      font-size: 10.5px;
-      line-height: 1.35;
+      font-family: 'Fira Code', 'Courier New', Consolas, monospace !important;
+      font-size: 10px;
+      line-height: 1.45;
       white-space: pre !important;
       overflow-x: auto;
-      margin: 4px 0;
+      margin: 5px 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
     }
 
     /* Practice Items */
@@ -467,10 +481,12 @@
     <!-- Header Master Banner -->
     <header class="master-banner">
       <div class="banner-top">
-        <div class="banner-icon">JS</div>
-        <div class="banner-title">JavaScript Master Study Documentation</div>
+        <div class="banner-left">
+          <div class="banner-icon">JS</div>
+          <span class="banner-title">Functions &amp; Execution Engine — ফাংশন ও এক্সিকিউশন ইঞ্জিন</span>
+        </div>
+        <span class="chapter-badge">Chapter 06</span>
       </div>
-      <div class="banner-sub">CHAPTER 06: FUNCTIONS &amp; EXECUTION ENGINE</div>
       <div class="meta-grid">
         <div class="meta-item">
           <div class="meta-label">Total Sections</div>

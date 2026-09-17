@@ -9,3 +9,12 @@ Always follow the comprehensive production and styling rules defined in [.AGENT/
 - No horizontal scrollbars in code blocks (overflow-x: hidden !important; white-space: pre-wrap !important; word-break: break-word !important;).
 - Clean up all temporary .png files in temp/ immediately after inspection.
 - **Git Commit & Push Policy**: Do NOT automatically commit or push to Git. Only commit and push when the user explicitly instructs to do so.
+
+## 🏷️ Chapter Renovation Guidelines (Top-Right Badge & Custom Title Standard)
+When updating/renovating chapters (e.g. Chapter 01 - 25):
+1. **Banner Heading Replacement**: Remove generic "JAVASCRIPT MASTER STUDY DOCUMENTATION" as the main banner title (`.banner-title`) and replace it with the specific **Chapter Name** (e.g., `JAVASCRIPT FUNDAMENTALS — JAVASCRIPT-এর ভিত্তি`).
+2. **Top-Right Yellow Chapter Badge**: Place a bright yellow badge at the top-right of `.banner-top` (e.g., `<span class="chapter-badge">Chapter 01</span>`) using `#f7df1e` background and bold black `#000000` text, matching Chapter 39 & 40 style.
+3. **JS Logo Theme Matching**: Style the left-side `JS` logo (`.banner-icon`) with matching JavaScript brand colors (`background: #f7df1e; color: #000000; font-weight: 800;`).
+4. **Enhanced Diagrams**: Retain 100% of the diagram content and logic intact, while upgrading visual presentation to match Chapter 39 & 40 standards (sleek dark `#090d16` background, clean `#1e293b` borders, and color accents).
+5. **CRITICAL ZERO CONTENT MODIFICATION POLICY**: Absolutely DO NOT alter, skip, rewrite, or remove any other single word, code snippet, explanation, question, or text in the PDF. Everything else remains 100% identical.
+
