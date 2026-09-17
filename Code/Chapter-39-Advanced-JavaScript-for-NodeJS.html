@@ -1,0 +1,2561 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 39 — Advanced JavaScript for Node.js | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      background-color: #cbd5e1;
+      font-family: var(--font-body);
+      font-size: 11px;
+      line-height: 1.55;
+      color: var(--text-main);
+    }
+
+    /* Screen Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* A4 Document Container */
+    .doc-page {
+      max-width: 210mm;
+      margin: 20px auto;
+      background: var(--bg-page);
+      padding: 12mm 14mm;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      border-radius: 4px;
+    }
+
+    /* Master Top Banner (Chapter 39 in Top Right) */
+    .master-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .banner-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-num {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid #bae6fd;
+    }
+
+    /* Section Subheadings */
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin: 6px 0 3px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Paragraphs and Text */
+    .text-p {
+      margin-bottom: 5px;
+      text-align: justify;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.5;
+    }
+    .text-p strong {
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    /* Definitions / Quotes / Tips */
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid var(--blue-accent);
+      padding: 5px 9px;
+      border-radius: 0 4px 4px 0;
+      margin: 4px 0 6px 0;
+      font-size: 10px;
+      color: #1e293b;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      color: #94a3b8;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      margin: 0;
+      padding: 7px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.4 !important;
+      color: #e2e8f0;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-39-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Chapter 39 Badge in TOP RIGHT as requested!) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-left">
+          <div class="banner-icon">JS</div>
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+        </div>
+        <span class="chapter-badge">Chapter 39</span>
+      </div>
+      <div class="banner-sub">ADVANCED JAVASCRIPT FOR NODE.JS: ARCHITECTURE, EVENT LOOP, STREAMS, APIS &amp; PRODUCTION BACKEND</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">76 Modules + 10 Practice Labs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 33 — Backend Architecture &amp; Node.js</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Innovations</div>
+          <div class="meta-val">V8, Libuv, Streams, Buffers, Async I/O</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Target Architecture</div>
+          <div class="meta-val">REST APIs, Express, Microservices &amp; Security</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>✨</span> Advanced JavaScript for Node.js — সার্ভার-সাইড জাভাস্ক্রিপ্ট ও ফুলস্ট্যাক ব্যাকএন্ড
+      </div>
+      <p class="text-p">
+        Node.js কোনো আলাদা প্রোগ্রামিং ভাষা নয়, বরং এটি একটি শক্তিশালী <strong>JavaScript Runtime Environment</strong> যা ব্রাউজারের বাইরে সার্ভারে জাভাস্ক্রিপ্ট চালানোর সুযোগ করে দেয়। V8 ইঞ্জিন, Libuv, ইভেন্ট লুপ, নন-ব্লকিং অ্যাসিনক্রোনাস I/O, প্রসেস অবজেক্ট, এনভায়রনমেন্ট ভ্যারিয়েবল, কমনজেএস বনাম ইএস মডিউল, <code>fs</code>, <code>path</code>, <code>os</code>, <code>events</code>, <code>Buffer</code>, <code>Streams</code> এবং সিকিউর এক্সপ্রেস আর্কিটেকচার এই চ্যাপ্টারের মূল উপজীব্য।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. V8 &amp; Event Loop</div>
+        <div class="roadmap-item"><span>📌</span> 2. process &amp; env</div>
+        <div class="roadmap-item"><span>📌</span> 3. CommonJS vs ESM</div>
+        <div class="roadmap-item"><span>📌</span> 4. File System (fs)</div>
+        <div class="roadmap-item"><span>📌</span> 5. path &amp; os Modules</div>
+        <div class="roadmap-item"><span>📌</span> 6. EventEmitter &amp; once</div>
+        <div class="roadmap-item"><span>📌</span> 7. Buffer &amp; Streams</div>
+        <div class="roadmap-item"><span>📌</span> 8. HTTP &amp; Express APIs</div>
+        <div class="roadmap-item"><span>📌</span> 9. Auth &amp; Pool Security</div>
+        <div class="roadmap-item"><span>📌</span> 10. Graceful Shutdown</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Node.js Foundations, V8 Engine & Event Loop Architecture (39.1 – 39.7)</div>
+    <div class="study-card" id="sec-39-1">
+      <div class="card-title"><span class="badge-num">39.1</span> Node.js কী?</div>
+      <p class="text-p">Node.js হলো এমন একটি runtime environment যার মাধ্যমে browser-এর বাইরে JavaScript চালানো যায়। আগে JavaScript মূলত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Browser
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chrome / Firefox / Edge
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+JavaScript</pre>
+</div>
+      <p class="text-p">Node.js-এর মাধ্যমে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">Computer</span> / <span style="color: #fde047; font-weight: 700;">Server</span>
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+      <span style="color: #fde047; font-weight: 700;">Node.js</span>
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+   JavaScript</pre>
+</div>
+      <p class="text-p">চালানো যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.2</span> Node.js দিয়ে কী করা যায়?</div>
+      <p class="text-p">Node.js দিয়ে তৈরি করা যায়:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Backend server</li>
+        <li>REST API</li>
+        <li>Authentication system</li>
+        <li>Real-time application</li>
+        <li>WebSocket server</li>
+        <li>CLI tools</li>
+        <li>File processing</li>
+        <li>Automation</li>
+        <li>Database applications</li>
+        <li>Microservices</li>
+        <li>Streaming applications</li>
+      </ul>
+      <p class="text-p">তোমার Full Stack Developer journey-তে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK JAVASCRIPT SYSTEM TOPOLOGY</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">React</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">Node.js</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">Express</span>.js
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Database</span></pre>
+</div>
+      <p class="text-p">খুব গুরুত্বপূর্ণ architecture।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.3</span> Browser JavaScript বনাম Node.js</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Feature</th><th>Browser</th><th>Node.js</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>JavaScript</td><td>✅</td><td>✅</td></tr><tr><td>DOM</td><td>✅</td><td>❌</td></tr><tr><td><code>window</code></td><td>✅</td><td>❌</td></tr><tr><td><code>document</code></td><td>✅</td><td>❌</td></tr><tr><td><code>process</code></td><td>❌</td><td>✅</td></tr><tr><td>File System</td><td>সীমিত</td><td>✅</td></tr><tr><td>Server তৈরি</td><td>❌</td><td>✅</td></tr><tr><td>HTTP Server</td><td>Browser API</td><td>✅</td></tr><tr><td><code>fs</code> module</td><td>❌</td><td>✅</td></tr><tr><td><code>path</code> module</td><td>❌</td><td>✅</td></tr><tr><td>Database access</td><td>সাধারণত API দিয়ে</td><td>✅</td></tr><tr><td><code>npm</code> ecosystem</td><td>ব্যবহার করা যায়</td><td>মূল ecosystem</td></tr>
+    </tbody>
+  </table>
+</div>
+      <div class="section-subhead">🔹 সহজভাবে:</div>
+      <p class="text-p">Browser:</p>
+      <div class="def-box">💡 Web page control করার জন্য JavaScript।</div>
+      <p class="text-p">Node.js:</p>
+      <div class="def-box">💡 Server/system-side কাজ করার জন্য JavaScript।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.4</span> Node.js-এর ভিতরে কী আছে?</div>
+      <p class="text-p">Simplified architecture:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS INTERNAL ARCHITECTURE & EVENT LOOP</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">Node.js</span> Application
+                <span style="color: #475569;">│</span>
+                <span style="color: #38bdf8; font-weight: 700;">↓</span>
+          JavaScript Code
+                <span style="color: #475569;">│</span>
+                <span style="color: #38bdf8; font-weight: 700;">↓</span>
+            <span style="color: #fde047; font-weight: 700;">V8</span> Engine
+                <span style="color: #475569;">│</span>
+                <span style="color: #38bdf8; font-weight: 700;">↓</span>
+         <span style="color: #fde047; font-weight: 700;">Node.js</span> <span style="color: #fde047; font-weight: 700;">Runtime</span>
+        <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────</span><span style="color: #475569;">┴</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┐</span>
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>                <span style="color: #38bdf8; font-weight: 700;">↓</span>
+     <span style="color: #fde047; font-weight: 700;">libuv</span>          <span style="color: #fde047; font-weight: 700;">Node</span> APIs
+        <span style="color: #475569;">│</span>
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+ OS / <span style="color: #38bdf8; font-weight: 600;">Network</span> / File System</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.5</span> V8 Engine</div>
+      <p class="text-p">V8 হলো Google-এর JavaScript engine। Chrome-এ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Chrome
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">V8</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+JavaScript</pre>
+</div>
+      <p class="text-p">Node.js-এ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">Node.js</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">V8</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+JavaScript</pre>
+</div>
+      <p class="text-p">V8 JavaScript code execute করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.6</span> Node.js Event Loop</div>
+      <p class="text-p">Node.js-এর সবচেয়ে গুরুত্বপূর্ণ conceptগুলোর একটি হলো <strong>Event Loop</strong>। Node.js সাধারণত:</p>
+      <div class="def-box">💡 Single JavaScript thread + asynchronous I/O model</div>
+      <p class="text-p">ব্যবহার করে। উদাহরণ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;Start<span class="syn-str">&quot;);
+
+setTimeout(() =&gt; {
+  console.log(&quot;</span>Timer<span class="syn-str">&quot;);
+}, 0);
+
+console.log(&quot;</span>End&quot;);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Start
+End
+Timer</pre>
+</div>
+      <p class="text-p">কারণ <code>setTimeout()</code> callback পরে execute হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.7</span> Node.js কেন দ্রুত?</div>
+      <p class="text-p">Node.js-এর শক্তিশালী দিক হলো <strong>non-blocking I/O</strong>। ধরো server-কে file read করতে হবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Request
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+File Read
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Waiting...</pre>
+</div>
+      <p class="text-p">পুরো JavaScript execution block না করে Node অন্য কাজ handle করতে পারে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Request A
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+File I/O <span style="color: #0ea5e9; font-weight: 600;">─────────</span><span style="color: #475569;">┐</span>
+                  <span style="color: #475569;">│</span>
+Request B <span style="color: #38bdf8; font-weight: 700;">←</span> <span style="color: #fde047; font-weight: 700;">Node</span>  <span style="color: #475569;">│</span>
+                  <span style="color: #475569;">│</span>
+Request C <span style="color: #38bdf8; font-weight: 700;">←</span> <span style="color: #fde047; font-weight: 700;">Node</span>  <span style="color: #475569;">│</span>
+                  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+             File Result</pre>
+</div>
+      <p class="text-p">এটি high-concurrency application-এর জন্য useful।</p>
+    </div>
+    <div class="part-banner">Part 02 — Process Object, CLI Arguments & Environment Variables (39.8 – 39.17)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.8</span> <code>process</code> Object</div>
+      <p class="text-p">Node.js-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>);</code></pre>
+</div>
+      <p class="text-p"><code>process</code> হলো Node.js process সম্পর্কিত information/control দেওয়ার global object।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.9</span> <code>process.version</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.version);</code></pre>
+</div>
+      <p class="text-p">Example output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">v24.x.x</pre>
+</div>
+      <p class="text-p">তোমার নিজের system-এ installed Node version অনুযায়ী output আলাদা হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.10</span> <code>process.platform</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.<span style="color: #38bdf8; font-weight: 600;">platform</span>);</code></pre>
+</div>
+      <p class="text-p">Windows হলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">win32</pre>
+</div>
+      <p class="text-p">Linux হলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">linux</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.11</span> <code>process.arch</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.<span style="color: #38bdf8; font-weight: 600;">arch</span>);</code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">x64</pre>
+</div>
+      <p class="text-p">CPU architecture জানা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.12</span> <code>process.argv</code></div>
+      <p class="text-p">Command-line arguments পাওয়া যায়:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.argv);</code></pre>
+</div>
+      <p class="text-p">Run:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code>node app.js hello</code></pre>
+</div>
+      <p class="text-p">তাহলে <code>process.argv</code>-তে command-line arguments থাকবে। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> name <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">process</span>.argv[<span class="syn-num">2</span>];
+
+<span class="syn-fn">console</span>.log(`Hello ${name}`);</code></pre>
+</div>
+      <p class="text-p">Run:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code>node app.js Ripon</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Hello <span style="color: #38bdf8; font-weight: 600;">Ripon</span></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life use</div>
+      <p class="text-p">CLI application:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code>node create-user.js Ripon</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.13</span> Environment Variables</div>
+      <p class="text-p">Server application-এ secret/configuration hard-code করা উচিত নয়। ❌:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> password <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;mySecretPassword&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Better:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Environment Variable
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">process</span>.env
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Application</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.14</span> <code>process.env</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.env.NODE_ENV);</code></pre>
+</div>
+      <p class="text-p">Environment variable access করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> port <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">process</span>.env.PORT;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.15</span> <code>.env</code></div>
+      <p class="text-p">সাধারণত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">PORT=5000
+DATABASE_URL=your_database_url
+JWT_SECRET=your_secret</pre>
+</div>
+      <p class="text-p">তারপর application-এ environment variables load করা হয়। Modern Node.js versions-এ অনেক ক্ষেত্রে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code>node --env-file=.env server.js</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা যায়। অথবা project-এ <code>dotenv</code> package ব্যবহার করা হয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> <span class="syn-str">&quot;dotenv/config&quot;</span>;
+
+<span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.env.PORT);</code></pre>
+</div>
+      <div class="section-subhead">🔹 🔥 গুরুত্বপূর্ণ</div>
+      <p class="text-p">Frontend-এর <code>.env</code>-এ রাখা value <strong>secret ধরে নেওয়া যাবে না</strong> যদি build process সেটি browser bundle-এ expose করে। Backend environment variables-এর ক্ষেত্রে secret রাখা যায়, তবে deployment platform-এর secret management ব্যবহার করাই ভালো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.16</span> <code>__dirname</code></div>
+      <p class="text-p">CommonJS-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(__dirname);</code></pre>
+</div>
+      <p class="text-p">বর্তমান file-এর directory path পাওয়া যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.17</span> <code>__filename</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(__filename);</code></pre>
+</div>
+      <p class="text-p">বর্তমান file-এর সম্পূর্ণ path পাওয়া যায়।</p>
+      <div class="section-subhead">🔹 কিন্তু ES Modules-এ?</div>
+      <p class="text-p"><code>__dirname</code> এবং <code>__filename</code> built-inভাবে থাকে না। ESM-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { fileURLToPath } <span class="syn-kw">from</span> <span class="syn-str">&quot;node:url&quot;</span>;
+<span class="syn-kw">import</span> path <span class="syn-kw">from</span> <span class="syn-str">&quot;node:path&quot;</span>;
+
+<span class="syn-kw">const</span> __filename <span style="color: #c084fc; font-weight: 700;">=</span> fileURLToPath(<span class="syn-kw">import</span>.meta.url);
+<span class="syn-kw">const</span> __dirname <span style="color: #c084fc; font-weight: 700;">=</span> path.<span style="color: #38bdf8; font-weight: 600;">dirname</span>(__filename);</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 03 — Module Systems: CommonJS vs ES Modules & Core Modules (39.18 – 39.23)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.18</span> Node.js Modules</div>
+      <p class="text-p">Node.js project-এ code আলাদা file/module-এ ভাগ করা হয়। দুটি প্রধান module system:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">CommonJS</span>
+<span style="color: #c084fc; font-weight: 700;">ES Modules</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.19</span> CommonJS</div>
+      <p class="text-p">পুরোনো/প্রচলিত Node.js module system। Export:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+}
+
+<span class="syn-kw">module</span>.<span class="syn-kw">exports</span> <span style="color: #c084fc; font-weight: 700;">=</span> add;</code></pre>
+</div>
+      <p class="text-p">Import:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> add <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">require</span>(&quot;./math&quot;);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.20</span> Named CommonJS Export</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+}
+
+<span class="syn-kw">function</span> subtract(a, b) {
+  <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">-</span> b;
+}
+
+<span class="syn-kw">module</span>.<span class="syn-kw">exports</span> <span style="color: #c084fc; font-weight: 700;">=</span> {
+  add,
+  subtract
+};</code></pre>
+</div>
+      <p class="text-p">Import:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> { add, subtract } <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">require</span>(&quot;./math&quot;);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.21</span> ES Modules</div>
+      <p class="text-p">Modern JavaScript style:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">export</span> <span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+}</code></pre>
+</div>
+      <p class="text-p">Import:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { add } <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Node.js-এ ESM ব্যবহার করতে <code>package.json</code>-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSON PAYLOAD</span><span>JSON</span></div>
+  <pre><code>{
+  <span class="syn-str">&quot;type&quot;</span>: <span class="syn-str">&quot;module&quot;</span>
+}</code></pre>
+</div>
+      <p class="text-p">দেওয়া যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.22</span> <code>require()</code> বনাম <code>import</code></div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>CommonJS</th><th>ES Modules</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>require()</code></td><td><code>import</code></td></tr><tr><td><code>module.exports</code></td><td><code>export</code></td></tr><tr><td>Node.js-এ traditional</td><td>Modern standard</td></tr><tr><td><code>__dirname</code> available</td><td><code>import.meta.url</code></td></tr><tr><td>synchronous loading semantics</td><td>static module syntax</td></tr>
+    </tbody>
+  </table>
+</div>
+      <p class="text-p">Modern full-stack projects-এ ESM অনেক বেশি দেখা যায়, তবে CommonJS এখনও গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.23</span> Node.js Built-in Modules</div>
+      <p class="text-p">Node.js অনেক built-in module দেয়। গুরুত্বপূর্ণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">fs</span>
+<span style="color: #c084fc; font-weight: 700;">path</span>
+<span style="color: #c084fc; font-weight: 700;">os</span>
+<span style="color: #c084fc; font-weight: 700;">url</span>
+<span style="color: #c084fc; font-weight: 700;">events</span>
+http
+crypto
+stream
+buffer
+util
+<span style="color: #c084fc; font-weight: 700;">process</span></pre>
+</div>
+      <p class="text-p">Import:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&quot;node:fs&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Modern Node.js-এ built-in modules-এর ক্ষেত্রে <code>node:</code> prefix ব্যবহার করা ভালো practice।</p>
+    </div>
+    <div class="part-banner">Part 04 — Built-in Modules: File System (fs), Path, OS & URL (39.24 – 39.35)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.24</span> <code>fs</code> — File System</div>
+      <p class="text-p"><code>fs</code> module file নিয়ে কাজ করতে ব্যবহার হয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&quot;node:fs&quot;</span>;
+
+<span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> fs.<span style="color: #38bdf8; font-weight: 600;">readFileSync</span>(&quot;hello.txt<span class="syn-str">&quot;, &quot;</span>utf8&quot;);
+
+<span class="syn-fn">console</span>.log(data);</code></pre>
+</div>
+      <p class="text-p">এটি synchronous।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.25</span> Async File Reading</div>
+      <p class="text-p">Better server-side pattern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&quot;node:fs/promises&quot;</span>;
+
+<span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">readFile</span>(
+  <span class="syn-str">&quot;hello.txt&quot;</span>,
+  <span class="syn-str">&quot;utf8&quot;</span>
+);
+
+<span class="syn-fn">console</span>.log(data);</code></pre>
+</div>
+      <p class="text-p">এটি asynchronous।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.26</span> File Write</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&quot;node:fs/promises&quot;</span>;
+
+<span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">writeFile</span>(
+  <span class="syn-str">&quot;hello.txt&quot;</span>,
+  <span class="syn-str">&quot;Hello Ripon!&quot;</span>
+);</code></pre>
+</div>
+      <p class="text-p">ফাইল তৈরি/overwrite হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.27</span> Append</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">appendFile</span>(
+  <span class="syn-str">&quot;hello.txt&quot;</span>,
+  <span class="syn-str">&quot;\nNew line&quot;</span>
+);</code></pre>
+</div>
+      <p class="text-p">আগের content রেখে নতুন content যোগ করবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.28</span> File Delete</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">unlink</span>(&quot;hello.txt&quot;);</code></pre>
+</div>
+      <p class="text-p">ফাইল delete করবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.29</span> Directory Create</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">mkdir</span>(&quot;uploads&quot;, {
+  recursive: <span class="syn-bool">true</span>
+});</code></pre>
+</div>
+      <p class="text-p">Folder তৈরি করবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.30</span> <code>path</code> Module</div>
+      <p class="text-p">File path handle করার জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> path <span class="syn-kw">from</span> <span class="syn-str">&quot;node:path&quot;</span>;</code></pre>
+</div>
+      <div class="section-subhead">🔹 Join</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> filePath <span style="color: #c084fc; font-weight: 700;">=</span> path.<span style="color: #38bdf8; font-weight: 600;">join</span>(
+  <span class="syn-str">&quot;uploads&quot;</span>,
+  <span class="syn-str">&quot;images&quot;</span>,
+  <span class="syn-str">&quot;photo.jpg&quot;</span>
+);
+
+<span class="syn-fn">console</span>.log(filePath);</code></pre>
+</div>
+      <p class="text-p">OS অনুযায়ী correct separator ব্যবহার করবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.31</span> <code>path.basename()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> file <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;/uploads/photo.jpg&quot;</span>;
+
+<span class="syn-fn">console</span>.log(path.<span style="color: #38bdf8; font-weight: 600;">basename</span>(file));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">photo.jpg</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.32</span> <code>path.extname()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(
+  path.<span style="color: #38bdf8; font-weight: 600;">extname</span>(&quot;photo.jpg&quot;)
+);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">.jpg</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.33</span> <code>path.dirname()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(
+  path.<span style="color: #38bdf8; font-weight: 600;">dirname</span>(&quot;/uploads<span style="color: #c084fc; font-weight: 700;">/</span>photo.jpg&quot;)
+);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">/uploads</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.34</span> <code>os</code> Module</div>
+      <p class="text-p">Operating system information:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> os <span class="syn-kw">from</span> <span class="syn-str">&quot;node:os&quot;</span>;
+
+<span class="syn-fn">console</span>.log(os.<span style="color: #38bdf8; font-weight: 600;">platform</span>());
+<span class="syn-fn">console</span>.log(os.<span style="color: #38bdf8; font-weight: 600;">arch</span>());
+<span class="syn-fn">console</span>.log(os.cpus().length);</code></pre>
+</div>
+      <p class="text-p">Real-life:</p>
+      <div class="def-box">💡 Server-এর CPU/core information জানতে।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.35</span> <code>url</code> Module</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { URL } <span class="syn-kw">from</span> <span class="syn-str">&quot;node:url&quot;</span>;
+
+<span class="syn-kw">const</span> url <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> URL(
+  <span class="syn-str">&quot;https://example.com/products?page=2&quot;</span>
+);
+
+<span class="syn-fn">console</span>.log(url.pathname);
+<span class="syn-fn">console</span>.log(url.searchParams.<span class="syn-kw">get</span>(&quot;page&quot;));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">/products
+2</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 05 — Events, Buffers & Streaming Architecture (Streams & Pipe) (39.36 – 39.45)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.36</span> EventEmitter</div>
+      <p class="text-p">Node.js-এর অন্যতম গুরুত্বপূর্ণ concept। Import:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { <span class="syn-fn">EventEmitter</span> } <span class="syn-kw">from</span> <span class="syn-str">&quot;node:events&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Create:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> emitter <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> <span class="syn-fn">EventEmitter</span>();</code></pre>
+</div>
+      <p class="text-p">Listener:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>emitter.<span style="color: #38bdf8; font-weight: 600;">on</span>(&quot;login&quot;, username <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-fn">console</span>.log(`${username} logged <span class="syn-kw">in</span>`);
+});</code></pre>
+</div>
+      <p class="text-p">Event trigger:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>emitter.<span style="color: #38bdf8; font-weight: 600;">emit</span>(&quot;login<span class="syn-str">&quot;, &quot;</span>Ripon&quot;);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">Ripon</span> logged in</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.37</span> Real-Life EventEmitter</div>
+      <p class="text-p">ধরো application-এ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">User</span> Registration
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+&quot;userRegistered&quot;
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+ <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">─────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────</span><span style="color: #475569;">┐</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>     <span style="color: #38bdf8; font-weight: 700;">↓</span>      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Email Log   Analytics</pre>
+</div>
+      <p class="text-p">একটি event-এর জন্য বিভিন্ন listener কাজ করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.38</span> <code>once()</code></div>
+      <p class="text-p">কোনো event একবারের বেশি handle করতে না চাইলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>emitter.<span style="color: #38bdf8; font-weight: 600;">once</span>(&quot;startup<span class="syn-str">&quot;, () =&gt; {
+  console.log(&quot;</span>Server started&quot;);
+});</code></pre>
+</div>
+      <p class="text-p">একবার execute হওয়ার পর listener remove হয়ে যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.39</span> <code>Buffer</code></div>
+      <p class="text-p">Node.js-এ binary data handle করার জন্য <code>Buffer</code> ব্যবহৃত হয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> buffer <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">Buffer</span>.<span class="syn-kw">from</span>(&quot;Hello&quot;);
+
+<span class="syn-fn">console</span>.log(buffer);</code></pre>
+</div>
+      <p class="text-p">এটি bytes representation তৈরি করবে। আবার:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(buffer.toString());</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Hello</pre>
+</div>
+      <div class="section-subhead">🔹 কোথায় ব্যবহার হয়?</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>File</li>
+        <li>Image</li>
+        <li>Audio</li>
+        <li>Video</li>
+        <li>TCP</li>
+        <li>Network data</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.40</span> Streams</div>
+      <p class="text-p">বড় data একবারে memory-তে না এনে <strong>ছোট ছোট chunk</strong> হিসেবে process করার জন্য Streams ব্যবহার করা হয়। ধরো 5GB video। ❌ পুরো file memory-তে load করা:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">5GB
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+RAM</pre>
+</div>
+      <p class="text-p">সমস্যা হতে পারে। Stream:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">5GB File
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chunk
+Chunk
+Chunk
+Chunk
+Chunk
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Output</pre>
+</div>
+      <p class="text-p">এটি অনেক efficient।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.41</span> Stream Types</div>
+      <p class="text-p">চারটি প্রধান ধরনের stream:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Readable</span>
+<span style="color: #c084fc; font-weight: 700;">Writable</span>
+<span style="color: #c084fc; font-weight: 700;">Duplex</span>
+<span style="color: #c084fc; font-weight: 700;">Transform</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.42</span> Readable Stream</div>
+      <p class="text-p">যেখান থেকে data পড়া যায়। উদাহরণ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&quot;node:fs&quot;</span>;
+
+<span class="syn-kw">const</span> stream <span style="color: #c084fc; font-weight: 700;">=</span> fs.<span style="color: #38bdf8; font-weight: 600;">createReadStream</span>(
+  <span class="syn-str">&quot;large.txt&quot;</span>,
+  <span class="syn-str">&quot;utf8&quot;</span>
+);
+
+stream.<span style="color: #38bdf8; font-weight: 600;">on</span>(&quot;data&quot;, chunk <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-fn">console</span>.log(chunk);
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.43</span> Writable Stream</div>
+      <p class="text-p">যেখানে data লেখা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> stream <span style="color: #c084fc; font-weight: 700;">=</span> fs.<span style="color: #38bdf8; font-weight: 600;">createWriteStream</span>(
+  <span class="syn-str">&quot;output.txt&quot;</span>
+);
+
+stream.write(&quot;Hello<span class="syn-str">&quot;);
+stream.write(&quot;</span>\nWorld&quot;);
+
+stream.end();</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.44</span> <code>pipe()</code></div>
+      <p class="text-p">Readable stream → Writable stream:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> readStream <span style="color: #c084fc; font-weight: 700;">=</span>
+  fs.<span style="color: #38bdf8; font-weight: 600;">createReadStream</span>(&quot;input.txt<span class="syn-str">&quot;);
+
+const writeStream =
+  fs.createWriteStream(&quot;</span>output.txt&quot;);
+
+readStream.<span style="color: #38bdf8; font-weight: 600;">pipe</span>(writeStream);</code></pre>
+</div>
+      <p class="text-p">Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ STREAM DATA FLOW PIPELINE</div>
+  <pre class="ascii-tree-content">input.txt
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Readable</span> <span style="color: #c084fc; font-weight: 700;">Stream</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">pipe</span>()
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Writable</span> <span style="color: #c084fc; font-weight: 700;">Stream</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+output.txt</pre>
+</div>
+      <p class="text-p">🔥 Node.js-এ Streams-এর core concept।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.45</span> Transform Stream</div>
+      <p class="text-p">Data read করার সময় transform করা যায়। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Input
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Transform</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Output</pre>
+</div>
+      <p class="text-p">Compression tools যেমন gzip-এর ক্ষেত্রে এই concept ব্যবহৃত হয়।</p>
+    </div>
+    <div class="part-banner">Part 06 — Non-blocking Async I/O & Robust Error Handling (39.46 – 39.51)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.46</span> Node.js Async I/O</div>
+      <p class="text-p">Node.js-এ asynchronous API খুব গুরুত্বপূর্ণ। ❌ Blocking:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> fs.<span style="color: #38bdf8; font-weight: 600;">readFileSync</span>(&quot;file.txt&quot;);</code></pre>
+</div>
+      <p class="text-p">এটি synchronous। Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">readFile</span>(&quot;file.txt&quot;);</code></pre>
+</div>
+      <p class="text-p">Server application-এ non-blocking operations সাধারণত preferred।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.47</span> Callback</div>
+      <p class="text-p">পুরোনো Node.js code-এ callback প্রচুর দেখা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>fs.<span style="color: #38bdf8; font-weight: 600;">readFile</span>(
+  <span class="syn-str">&quot;hello.txt&quot;</span>,
+  <span class="syn-str">&quot;utf8&quot;</span>,
+  (error, data) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    <span class="syn-kw">if</span> (error) {
+      <span class="syn-fn">console</span>.error(error);
+      <span class="syn-kw">return</span>;
+    }
+
+    <span class="syn-fn">console</span>.log(data);
+  }
+);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.48</span> Callback Hell</div>
+      <p class="text-p">অনেক nested callback:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>doSomething(() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  doSomethingElse(() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    anotherTask(() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+      finalTask(() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+        <span class="syn-fn">console</span>.log(&quot;Done&quot;);
+      });
+    });
+  });
+});</code></pre>
+</div>
+      <p class="text-p">এটি maintain করা কঠিন। Modern solution:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Promise</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">async/await</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.49</span> Async/Await</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> <span style="color: #38bdf8; font-weight: 600;">readFile</span>() {
+  <span class="syn-kw">try</span> {
+    <span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">readFile</span>(
+      <span class="syn-str">&quot;hello.txt&quot;</span>,
+      <span class="syn-str">&quot;utf8&quot;</span>
+    );
+
+    <span class="syn-fn">console</span>.log(data);
+  } <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.error(error);
+  }
+}</code></pre>
+</div>
+      <p class="text-p">Code দেখতে synchronous-এর মতো হলেও operation asynchronous।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.50</span> Error Handling</div>
+      <p class="text-p">Node.js application-এ error properly handle করা অত্যন্ত গুরুত্বপূর্ণ।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">try</span> {
+  <span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">readFile</span>(
+    <span class="syn-str">&quot;missing.txt&quot;</span>,
+    <span class="syn-str">&quot;utf8&quot;</span>
+  );
+} <span class="syn-kw">catch</span> (error) {
+  <span class="syn-fn">console</span>.error(
+    <span class="syn-str">&quot;File error:&quot;</span>,
+    error.message
+  );
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.51</span> Custom Error</div>
+      <p class="text-p">নিজের Error class তৈরি করা যায়:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> AppError <span class="syn-kw">extends</span> <span class="syn-fn">Error</span> {
+  constructor(message, statusCode) {
+    <span class="syn-kw">super</span>(message);
+    <span class="syn-kw">this</span>.statusCode <span style="color: #c084fc; font-weight: 700;">=</span> statusCode;
+  }
+}</code></pre>
+</div>
+      <p class="text-p">ব্যবহার:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">throw</span> <span class="syn-kw">new</span> AppError(
+  <span class="syn-str">&quot;User not found&quot;</span>,
+  <span class="syn-num">404</span>
+);</code></pre>
+</div>
+      <p class="text-p">Express backend-এ এই pattern খুব useful।</p>
+    </div>
+    <div class="part-banner">Part 07 — HTTP Server, REST APIs & Express Middleware Mechanics (39.52 – 39.59)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.52</span> HTTP Server</div>
+      <p class="text-p">Node.js দিয়ে directly HTTP server তৈরি করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> http <span class="syn-kw">from</span> <span class="syn-str">&quot;node:http&quot;</span>;
+
+<span class="syn-kw">const</span> server <span style="color: #c084fc; font-weight: 700;">=</span> http.<span style="color: #38bdf8; font-weight: 600;">createServer</span>(
+  (req, res) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    res.writeHead(<span class="syn-num">200</span>, {
+      <span class="syn-str">&quot;Content-Type&quot;</span>: <span class="syn-str">&quot;text/plain&quot;</span>
+    });
+
+    res.end(&quot;Hello World<span class="syn-str">&quot;);
+  }
+);
+
+server.listen(3000, () =&gt; {
+  console.log(
+    &quot;</span>Server running <span style="color: #38bdf8; font-weight: 600;">on</span> port <span class="syn-num">3000</span>&quot;
+  );
+});</code></pre>
+</div>
+      <p class="text-p">Browser:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">http://localhost:3000</pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Hello World</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.53</span> Request এবং Response</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>http.<span style="color: #38bdf8; font-weight: 600;">createServer</span>((req, res) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-fn">console</span>.log(req.method);
+  <span class="syn-fn">console</span>.log(req.url);
+
+  res.end(&quot;Hello&quot;);
+});</code></pre>
+</div>
+      <p class="text-p"><code>req</code>:</p>
+      <div class="def-box">💡 Client কী request করেছে।</div>
+      <p class="text-p"><code>res</code>:</p>
+      <div class="def-box">💡 Server client-কে কী response দেবে।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.54</span> HTTP Methods</div>
+      <p class="text-p">Backend development-এ:</p>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Method</th><th>কাজ</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>GET</td><td>Data নেওয়া</td></tr><tr><td>POST</td><td>নতুন data তৈরি</td></tr><tr><td>PUT</td><td>পুরো resource update</td></tr><tr><td>PATCH</td><td>আংশিক update</td></tr><tr><td>DELETE</td><td>Delete</td></tr>
+    </tbody>
+  </table>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">GET /users
+POST /users
+GET /users/10
+PATCH /users/10
+DELETE /users/10</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.55</span> HTTP Status Codes</div>
+      <div class="section-subhead">🔹 2xx</div>
+      <p class="text-p">Success:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">200 OK
+201 Created
+204 No Content</pre>
+</div>
+      <div class="section-subhead">🔹 4xx</div>
+      <p class="text-p">Client-side/request problem:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">400 Bad Request
+401 Unauthorized
+403 Forbidden
+404 Not Found
+409 Conflict
+422 Unprocessable Content</pre>
+</div>
+      <div class="section-subhead">🔹 5xx</div>
+      <p class="text-p">Server problem:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">500 Internal <span style="color: #fde047; font-weight: 700;">Server</span> Error
+502 Bad Gateway
+503 <span style="color: #c084fc; font-weight: 700;">Service</span> Unavailable</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.56</span> JSON API</div>
+      <p class="text-p">Server:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  age: <span class="syn-num">23</span>
+};
+
+res.setHeader(
+  <span class="syn-str">&quot;Content-Type&quot;</span>,
+  <span class="syn-str">&quot;application/json&quot;</span>
+);
+
+res.end(<span class="syn-fn">JSON</span>.stringify(data));</code></pre>
+</div>
+      <p class="text-p">Client পাবে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSON PAYLOAD</span><span>JSON</span></div>
+  <pre><code>{
+  <span class="syn-str">&quot;name&quot;</span>: <span class="syn-str">&quot;Ripon&quot;</span>,
+  <span class="syn-str">&quot;age&quot;</span>: <span class="syn-num">23</span>
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.57</span> Node.js + Express</div>
+      <p class="text-p">Real-world project-এ raw Node HTTP server-এর পরিবর্তে সাধারণত Express/Fastify/NestJS-এর মতো framework ব্যবহার করা হয়। Typical architecture:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK JAVASCRIPT SYSTEM TOPOLOGY</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">React</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">HTTP</span> Request
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">Express</span> / <span style="color: #fde047; font-weight: 700;">Node.js</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Router
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Middleware</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Controller
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Service</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Database</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.58</span> Middleware Concept</div>
+      <p class="text-p">Middleware হলো request-response lifecycle-এর মাঝখানে চলা function। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Request
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Middleware</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Authentication
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Controller
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Response</pre>
+</div>
+      <p class="text-p">Example Express:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>app.<span style="color: #38bdf8; font-weight: 600;">use</span>((req, res, next) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-fn">console</span>.log(req.method);
+  next();
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.59</span> Authentication Middleware</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> auth(req, res, next) {
+  <span class="syn-kw">const</span> token <span style="color: #c084fc; font-weight: 700;">=</span> req.headers.authorization;
+
+  <span class="syn-kw">if</span> (!token) {
+    <span class="syn-kw">return</span> res.<span style="color: #38bdf8; font-weight: 600;">status</span>(<span class="syn-num">401</span>).<span style="color: #38bdf8; font-weight: 600;">json</span>({
+      message: <span class="syn-str">&quot;Unauthorized&quot;</span>
+    });
+  }
+
+  next();
+}</code></pre>
+</div>
+      <p class="text-p">এখানে middleware protected route-এর আগে authentication check করতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 08 — Database Integration, Security, Performance & Login Architecture (39.60 – 39.71)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.60</span> Node.js + Database</div>
+      <p class="text-p">Node.js নিজে database নয়। এটি database-এর সাথে communicate করে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK JAVASCRIPT SYSTEM TOPOLOGY</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">React</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">Node.js</span> / <span style="color: #fde047; font-weight: 700;">Express</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Database</span> Driver / ORM
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Database</span></pre>
+</div>
+      <p class="text-p">Possible databases:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">MongoDB
+PostgreSQL
+MySQL
+MariaDB
+SQLite
+Redis</pre>
+</div>
+      <p class="text-p">তোমার stack-এর জন্য:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK JAVASCRIPT SYSTEM TOPOLOGY</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">React</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">Node.js</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">Express</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+MongoDB / PostgreSQL</pre>
+</div>
+      <p class="text-p">খুব practical combination।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.61</span> Database Connection Pool</div>
+      <p class="text-p">অনেক request এলে প্রত্যেক request-এর জন্য নতুন database connection তৈরি করা inefficient হতে পারে। Pool:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Connection Pool</span>
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Connection 1
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Connection 2
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Connection 3
+ <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Connection 4</pre>
+</div>
+      <p class="text-p">প্রয়োজনে connection নেওয়া হয় এবং পরে release করা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.62</span> Node.js Security</div>
+      <p class="text-p">Backend-এর জন্য গুরুত্বপূর্ণ:</p>
+      <div class="section-subhead">🔹 Secrets</div>
+      <p class="text-p">❌:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> jwtSecret <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;123456&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> jwtSecret <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">process</span>.env.JWT_SECRET;</code></pre>
+</div>
+      <div class="section-subhead">🔹 Input Validation</div>
+      <p class="text-p">Client-এর input blindly trust করবে না।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Client Input
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Validation
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Sanitization (যেখানে প্রয়োজন)
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Business Logic
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Database</span></pre>
+</div>
+      <div class="section-subhead">🔹 এছাড়াও:</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Authentication</li>
+        <li>Authorization</li>
+        <li>Rate limiting</li>
+        <li>HTTPS</li>
+        <li>Secure headers</li>
+        <li>CORS configuration</li>
+        <li>Password hashing</li>
+        <li>Dependency security</li>
+        <li>SQL/NoSQL injection prevention</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.63</span> Password কখনো Plain Text নয়</div>
+      <p class="text-p">❌:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>password: <span class="syn-str">&quot;mypassword123&quot;</span></code></pre>
+</div>
+      <p class="text-p">Database-এ plain password রাখা উচিত নয়। Password hashing-এর জন্য সাধারণত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Argon2
+bcrypt
+scrypt</pre>
+</div>
+      <p class="text-p">এর মতো password hashing algorithms ব্যবহৃত হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.64</span> Node.js Performance</div>
+      <p class="text-p">Node.js ভালো performance দিতে পারে, কিন্তু JavaScript thread-এ heavy CPU কাজ করলে সমস্যা হতে পারে। যেমন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">for</span> (;;) {
+  <span class="syn-com">// CPU heavy work</span>
+}</code></pre>
+</div>
+      <p class="text-p">এটি event loop block করতে পারে। ফলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Request A
+Request B
+Request C</pre>
+</div>
+      <p class="text-p">সব আটকে যেতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.65</span> CPU-heavy কাজের Solution</div>
+      <p class="text-p">প্রয়োজনে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">Worker Threads</span>
+Child Processes
+Separate <span style="color: #c084fc; font-weight: 700;">Service</span>
+Queue / Background Worker</pre>
+</div>
+      <p class="text-p">ব্যবহার করা যায়। Worker Threads:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Main Thread
+    <span style="color: #475569;">│</span>
+    <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Worker 1
+    <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Worker 2</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.66</span> Graceful Shutdown</div>
+      <p class="text-p">Production server বন্ধ করার সময় open resources properly close করা উচিত।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">process</span>.<span style="color: #38bdf8; font-weight: 600;">on</span>(&quot;SIGTERM<span class="syn-str">&quot;, async () =&gt; {
+  console.log(&quot;</span>Shutting down<span style="color: #c084fc; font-weight: 700;">...</span>&quot;);
+
+  <span class="syn-com">// close database</span>
+  <span class="syn-com">// close server</span>
+  <span class="syn-com">// cleanup resources</span>
+
+  <span class="syn-fn">process</span>.<span style="color: #38bdf8; font-weight: 600;">exit</span>(<span class="syn-num">0</span>);
+});</code></pre>
+</div>
+      <p class="text-p">এটি graceful shutdown-এর basic idea।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.67</span> Debugging</div>
+      <p class="text-p">Simple:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log()
+<span class="syn-fn">console</span>.error()
+<span class="syn-fn">console</span>.warn()</code></pre>
+</div>
+      <p class="text-p">Node debugging:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code>node inspect server.js</code></pre>
+</div>
+      <p class="text-p">VS Code debugger-ও ব্যবহার করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.68</span> Logging</div>
+      <p class="text-p">Production application-এ শুধু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log()</code></pre>
+</div>
+      <p class="text-p">এর উপর নির্ভর না করে structured logging ব্যবহার করা যায়। যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">timestamp
+level
+message
+requestId
+userId</pre>
+</div>
+      <p class="text-p">এর মাধ্যমে production issue trace করা সহজ হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.69</span> Node.js Project Structure</div>
+      <p class="text-p">একটি সাধারণ Express project:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">project/
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> src/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> config/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> controllers/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> middleware/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> models/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> routes/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> services/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> utils/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> server.js
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> .env
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> .env.example
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> .gitignore
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> package.json
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> package-lock.json</pre>
+</div>
+      <p class="text-p">এটি একমাত্র correct structure নয়; project অনুযায়ী structure পরিবর্তিত হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.70</span> Full Stack Architecture</div>
+      <p class="text-p">তুমি যেহেতু Full Stack Developer হতে চাচ্ছো, এই architecture ভালোভাবে বুঝবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK JAVASCRIPT SYSTEM TOPOLOGY</div>
+  <pre class="ascii-tree-content">USER
+                  <span style="color: #475569;">│</span>
+                  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+              <span style="color: #c084fc; font-weight: 700;">React</span> App
+                  <span style="color: #475569;">│</span>
+             <span style="color: #38bdf8; font-weight: 600;">HTTP</span> Request
+                  <span style="color: #475569;">│</span>
+                  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+        <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────────────</span><span style="color: #475569;">┐</span>
+        <span style="color: #475569;">│</span> <span style="color: #fde047; font-weight: 700;">Node</span> + <span style="color: #fde047; font-weight: 700;">Express</span>   <span style="color: #475569;">│</span>
+        <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──────────────────</span><span style="color: #475569;">┘</span>
+                  <span style="color: #475569;">│</span>
+              <span style="color: #c084fc; font-weight: 700;">Middleware</span>
+                  <span style="color: #475569;">│</span>
+              Controller
+                  <span style="color: #475569;">│</span>
+               <span style="color: #c084fc; font-weight: 700;">Service</span>
+                  <span style="color: #475569;">│</span>
+             Repository
+                  <span style="color: #475569;">│</span>
+                  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+              <span style="color: #c084fc; font-weight: 700;">Database</span></pre>
+</div>
+      <p class="text-p">Response:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK JAVASCRIPT SYSTEM TOPOLOGY</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Database</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Repository
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Service</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Controller
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">JSON</span> Response
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">React</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+UI</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.71</span> Real-Life Example — Login System</div>
+      <p class="text-p">User:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK JAVASCRIPT SYSTEM TOPOLOGY</div>
+  <pre class="ascii-tree-content">Email
+Password
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">React</span> Login Form</pre>
+</div>
+      <p class="text-p">Request:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">POST /api/auth/login</pre>
+</div>
+      <p class="text-p">Node:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Route
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Validation
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Find <span style="color: #38bdf8; font-weight: 600;">User</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Compare Password
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Generate Token/Session
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Response</pre>
+</div>
+      <p class="text-p">React:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Response
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Store appropriate auth state
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Dashboard</pre>
+</div>
+      <p class="text-p">এখানে Chapter 39-এর অনেক concept একসাথে কাজ করছে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">HTTP</span>
+Async/Await
+<span style="color: #c084fc; font-weight: 700;">JSON</span>
+Modules
+Environment Variables
+Error Handling
+<span style="color: #c084fc; font-weight: 700;">Database</span>
+Authentication</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 09 — Promise Concurrency (all/allSettled) & Node.js JS Foundations (39.72 – 39.75)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.72</span> Node.js-এ <code>Promise.all()</code></div>
+      <p class="text-p">একসাথে independent কাজ করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> [users, products] <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">all</span>([
+  getUsers(),
+  getProducts()
+]);</code></pre>
+</div>
+      <p class="text-p">Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">getUsers() <span style="color: #0ea5e9; font-weight: 600;">─────</span><span style="color: #475569;">┐</span>
+                <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #34d399; font-weight: 700;">Promise</span>.all()
+getProducts() <span style="color: #0ea5e9; font-weight: 600;">──</span><span style="color: #475569;">┘</span></pre>
+</div>
+      <p class="text-p">একটি কাজ আরেকটির result-এর উপর নির্ভর না করলে এটি useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.73</span> Sequential বনাম Parallel</div>
+      <p class="text-p">Sequential:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> getUsers();
+<span class="syn-kw">const</span> products <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> getProducts();</code></pre>
+</div>
+      <p class="text-p">এখানে দ্বিতীয় কাজ প্রথমটির পরে শুরু হয়। Parallel:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> [users, products] <span style="color: #c084fc; font-weight: 700;">=</span>
+  <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">all</span>([
+    getUsers(),
+    getProducts()
+  ]);</code></pre>
+</div>
+      <p class="text-p">Independent হলে parallel approach latency কমাতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.74</span> <code>Promise.allSettled()</code></div>
+      <p class="text-p">যদি সব result দেখতে চাও—even কিছু fail করলেও:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> results <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">allSettled</span>([
+  getUsers(),
+  getProducts(),
+  getOrders()
+]);</code></pre>
+</div>
+      <p class="text-p">এটি প্রতিটি operation-এর:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS RUNTIME ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">fulfilled
+rejected</pre>
+</div>
+      <p class="text-p">status দেয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.75</span> Node.js-এর জন্য Important JavaScript Concepts</div>
+      <p class="text-p">Node.js শেখার আগে এই JavaScript concepts শক্ত হওয়া উচিত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS EVENT LOOP PHASES</div>
+  <pre class="ascii-tree-content"><span style="color: #4ade80; font-weight: bold;">✔</span> Variables
+<span style="color: #4ade80; font-weight: bold;">✔</span> Objects
+<span style="color: #4ade80; font-weight: bold;">✔</span> Arrays
+<span style="color: #4ade80; font-weight: bold;">✔</span> Functions
+<span style="color: #4ade80; font-weight: bold;">✔</span> Closures
+<span style="color: #4ade80; font-weight: bold;">✔</span> Callbacks
+<span style="color: #4ade80; font-weight: bold;">✔</span> Promises
+<span style="color: #4ade80; font-weight: bold;">✔</span> Async/Await
+<span style="color: #4ade80; font-weight: bold;">✔</span> Error Handling
+<span style="color: #4ade80; font-weight: bold;">✔</span> Modules
+<span style="color: #4ade80; font-weight: bold;">✔</span> Destructuring
+<span style="color: #4ade80; font-weight: bold;">✔</span> Spread/Rest
+<span style="color: #4ade80; font-weight: bold;">✔</span> <span style="color: #fde047; font-weight: 700;">Event Loop</span>
+<span style="color: #4ade80; font-weight: bold;">✔</span> <span style="color: #c084fc; font-weight: 700;">JSON</span>
+<span style="color: #4ade80; font-weight: bold;">✔</span> <span style="color: #38bdf8; font-weight: 600;">HTTP</span></pre>
+</div>
+      <p class="text-p">তোমার আগের Chapter-গুলোতে এগুলো already covered হয়েছে।</p>
+    </div>
+    <div class="part-banner">Part 10 — Must Know Node Pillars, Quick Cheat Sheet, 10 Practice Labs & Final Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.76</span> 🔥 MUST KNOW — Node.js-এর জন্য অত্যন্ত গুরুত্বপূর্ণ JavaScript কনসেপ্ট</div>
+      <p class="text-p">Node.js Developer হিসেবে অন্তত এগুলো অবশ্যই বুঝবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS EVENT LOOP PHASES</div>
+  <pre class="ascii-tree-content">🔥 <span style="color: #fde047; font-weight: 700;">Node.js</span> <span style="color: #fde047; font-weight: 700;">Runtime</span>
+🔥 <span style="color: #fde047; font-weight: 700;">V8</span>
+🔥 <span style="color: #fde047; font-weight: 700;">Event Loop</span>
+🔥 <span style="color: #34d399; font-weight: 700;">Non-blocking</span> I/O
+🔥 <span style="color: #c084fc; font-weight: 700;">process</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">process</span>.env
+🔥 <span style="color: #c084fc; font-weight: 700;">CommonJS</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">ES Modules</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">fs</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">path</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">events</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">EventEmitter</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Buffer</span>
+🔥 Streams
+🔥 <span style="color: #38bdf8; font-weight: 600;">HTTP</span>
+🔥 Request / Response
+🔥 Async/Await
+🔥 Error Handling
+🔥 <span style="color: #c084fc; font-weight: 700;">Middleware</span>
+🔥 <span style="color: #fde047; font-weight: 700;">REST API</span>
+🔥 Authentication
+🔥 <span style="color: #c084fc; font-weight: 700;">Database</span> communication
+🔥 Environment Variables
+🔥 Security</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.77</span> 🧠 Quick Cheat Sheet — Node.js ব্যাকএন্ড সিনট্যাক্স সারসংক্ষেপ</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Process</span>
+<span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.version);
+
+<span class="syn-com">// Environment variable</span>
+<span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.env.PORT);
+
+<span class="syn-com">// Command line</span>
+<span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.argv);
+
+<span class="syn-com">// File</span>
+<span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&quot;node:fs/promises&quot;</span>;
+
+<span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">readFile</span>(
+  <span class="syn-str">&quot;file.txt&quot;</span>,
+  <span class="syn-str">&quot;utf8&quot;</span>
+);
+
+<span class="syn-com">// Path</span>
+<span class="syn-kw">import</span> path <span class="syn-kw">from</span> <span class="syn-str">&quot;node:path&quot;</span>;
+
+<span class="syn-kw">const</span> file <span style="color: #c084fc; font-weight: 700;">=</span> path.<span style="color: #38bdf8; font-weight: 600;">join</span>(
+  <span class="syn-str">&quot;uploads&quot;</span>,
+  <span class="syn-str">&quot;photo.jpg&quot;</span>
+);
+
+<span class="syn-com">// OS</span>
+<span class="syn-kw">import</span> os <span class="syn-kw">from</span> <span class="syn-str">&quot;node:os&quot;</span>;
+
+<span class="syn-fn">console</span>.log(os.cpus().length);
+
+<span class="syn-com">// EventEmitter</span>
+<span class="syn-kw">import</span> { <span class="syn-fn">EventEmitter</span> } <span class="syn-kw">from</span> <span class="syn-str">&quot;node:events&quot;</span>;
+
+<span class="syn-kw">const</span> emitter <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> <span class="syn-fn">EventEmitter</span>();
+
+emitter.<span style="color: #38bdf8; font-weight: 600;">on</span>(&quot;login<span class="syn-str">&quot;, name =&gt; {
+  console.log(`${name} logged in`);
+});
+
+emitter.emit(&quot;</span>login<span class="syn-str">&quot;, &quot;</span>Ripon<span class="syn-str">&quot;);
+
+// HTTP
+import http from &quot;</span>node:http<span class="syn-str">&quot;;
+
+const server = http.createServer(
+  (req, res) =&gt; {
+    res.end(&quot;</span>Hello&quot;);
+  }
+);
+
+server.<span style="color: #38bdf8; font-weight: 600;">listen</span>(<span class="syn-num">3000</span>);</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 10.1 — 10 Hands-On Practice Labs with Complete Production Solutions</div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 1: CLI Greeting via process.argv</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>node app.js Ripon</code> কমান্ডের মাধ্যমে টার্মিনাল আর্গুমেন্ট গ্রহণ করে &#x27;Hello Ripon&#x27; প্রিন্ট করুন। কোনো নাম না দিলে &#x27;Hello Guest&#x27; ফলব্যাক দিন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 1</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// app.js</span>
+<span class="syn-kw">const</span> args <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">process</span>.argv.slice(<span class="syn-num">2</span>);
+<span class="syn-kw">const</span> userName <span style="color: #c084fc; font-weight: 700;">=</span> args[<span class="syn-num">0</span>] <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-str">&#x27;Guest&#x27;</span>;
+
+<span class="syn-fn">console</span>.log(`Hello ${userName}`);
+
+<span class="syn-com">// Verification in terminal:</span>
+<span class="syn-com">// $ node app.js Ripon   -&gt; Output: Hello Ripon</span>
+<span class="syn-com">// $ node app.js         -&gt; Output: Hello Guest</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> process.argv হলো একটি অ্যারে যার ইনডেক্স ০-তে থাকে নোড পাথ, ১-এ স্ক্রিপ্ট পাথ এবং ২ থেকে ইউজার পাস করা কমান্ড লাইন আর্গুমেন্টস শুরু হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 2: Asynchronous File Reading via fs/promises</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>message.txt</code> ফাইলটি নন-ব্লকিং অ্যাসিনক্রোনাস পদ্ধতিতে পড়ে কনসোলে আউটপুট প্রদর্শন করুন এবং এরর হ্যান্ডেল করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 2</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&#x27;fs/promises&#x27;</span>;
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> readMessageFile() {
+  <span class="syn-kw">try</span> {
+    <span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">readFile</span>(&#x27;message.txt<span class="syn-str">&#x27;, &#x27;</span>utf<span style="color: #c084fc; font-weight: 700;">-</span><span class="syn-num">8</span><span class="syn-str">&#x27;);
+    console.log(&#x27;</span>File Content:
+<span class="syn-str">&#x27; + data);
+  } catch (err) {
+    if (err.code === &#x27;</span>ENOENT<span class="syn-str">&#x27;) {
+      console.error(&#x27;</span>❌ <span class="syn-fn">Error</span>: message.txt file does not exist<span style="color: #c084fc; font-weight: 700;">!</span><span class="syn-str">&#x27;);
+    } else {
+      console.error(&#x27;</span>❌ Read <span class="syn-fn">Error</span>:&#x27;, err.message);
+    }
+  }
+}
+
+readMessageFile();</code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> প্রোডাকশন ব্যাকএন্ডে কখনোই <code>readFileSync</code> ব্যবহার করা উচিত নয়। <code>fs/promises</code>-এর <code>readFile</code> ইভেন্ট লুপকে ফ্রি রেখে ব্যাকগ্রাউন্ড থ্রেডপুলে ফাইল রিড সম্পন্ন করে।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 3: Asynchronous File Writing via fs/promises</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>output.txt</code> ফাইলে &#x27;Hello from Node.js&#x27; টেক্সটটি অ্যাসিনক্রোনাসভাবে সেভ করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 3</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&#x27;fs/promises&#x27;</span>;
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> writeOutputFile() {
+  <span class="syn-kw">try</span> {
+    <span class="syn-kw">const</span> content <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&#x27;Hello from Node.js
+Created on: &#x27;</span> <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-kw">new</span> <span class="syn-fn">Date</span>().toISOString();
+    <span class="syn-kw">await</span> fs.<span style="color: #38bdf8; font-weight: 600;">writeFile</span>(&#x27;output.txt<span class="syn-str">&#x27;, content, &#x27;</span>utf<span style="color: #c084fc; font-weight: 700;">-</span><span class="syn-num">8</span><span class="syn-str">&#x27;);
+    console.log(&#x27;</span>✅ File successfully written to output.txt<span class="syn-str">&#x27;);
+  } catch (err) {
+    console.error(&#x27;</span>❌ Write Failed:&#x27;, err.message);
+  }
+}
+
+writeOutputFile();</code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> fs.writeFile ফাইল না থাকলে স্বয়ংক্রিয়ভাবে নতুন ফাইল তৈরি করে এবং থাকলে পূর্বের কন্টেন্ট ওভাররাইট করে। অ্যাপেন্ড করতে চাইলে <code>{ flag: &#x27;a&#x27; }</code> অপশন দেওয়া যায়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 4: High-Performance File Streaming via pipe()</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি বড় ফাইল (<code>source.txt</code>) থেকে অন্য ফাইলে (<code>destination.txt</code>) মেমোরি লোড না করে স্ট্রিম পাইপলাইনের মাধ্যমে কপি করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 4</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> fs <span class="syn-kw">from</span> <span class="syn-str">&#x27;fs&#x27;</span>;
+<span class="syn-kw">import</span> { pipeline } <span class="syn-kw">from</span> <span class="syn-str">&#x27;stream/promises&#x27;</span>;
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> copyFileViaStream() {
+  <span class="syn-kw">try</span> {
+    <span class="syn-kw">const</span> sourceStream <span style="color: #c084fc; font-weight: 700;">=</span> fs.<span style="color: #38bdf8; font-weight: 600;">createReadStream</span>(&#x27;source.txt<span class="syn-str">&#x27;);
+    const destStream = fs.createWriteStream(&#x27;</span>destination.txt<span class="syn-str">&#x27;);
+
+    // Modern pipeline with auto-cleanup &amp; backpressure management
+    await pipeline(sourceStream, destStream);
+    console.log(&#x27;</span>✅ File stream copied successfully without memory leak<span style="color: #c084fc; font-weight: 700;">!</span><span class="syn-str">&#x27;);
+  } catch (err) {
+    console.error(&#x27;</span>❌ Stream <span class="syn-fn">Error</span>:&#x27;, err.message);
+  }
+}
+
+copyFileViaStream();</code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> বড় সাইজের ফাইল (যেমন 1GB+) একবারেই মেমোরিতে না এনে চাংক আকারে (Chunk by chunk) স্ট্রিম পাইপ করলে সার্ভারে কখনো RAM ক্র্যাশ বা মেমোরি স্পাইক হয় না।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 5: Decoupled Event Architecture via EventEmitter</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি <code>userRegistered</code> কাস্টম ইভেন্ট তৈরি করুন এবং তাতে লিসেনার অ্যাটাচ করে ইউজার সাইন-আপের সাথে সাথে নোটিফিকেশন লগ প্রিন্ট করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 5</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { <span class="syn-fn">EventEmitter</span> } <span class="syn-kw">from</span> <span class="syn-str">&#x27;events&#x27;</span>;
+
+<span class="syn-kw">class</span> UserService <span class="syn-kw">extends</span> <span class="syn-fn">EventEmitter</span> {
+  register(name, email) {
+    <span class="syn-fn">console</span>.log(`Processing registration <span class="syn-kw">for</span> ${name}...`);
+    <span class="syn-com">// Emit event asynchronously or synchronously</span>
+    <span class="syn-kw">this</span>.<span style="color: #38bdf8; font-weight: 600;">emit</span>(&#x27;userRegistered<span class="syn-str">&#x27;, { name, email, time: Date.now() });
+  }
+}
+
+const userService = new UserService();
+
+// Listener 1: Welcome Email
+userService.on(&#x27;</span>userRegistered<span class="syn-str">&#x27;, user =&gt; {
+  console.log(`📧 [Email Service]: Sent welcome mail to ${user.email}`);
+});
+
+// Listener 2: Activity Logger
+userService.on(&#x27;</span>userRegistered<span class="syn-str">&#x27;, user =&gt; {
+  console.log(`📝 [Audit Log]: New user registered: ${user.name}`);
+});
+
+userService.register(&#x27;</span>Ripon<span class="syn-str">&#x27;, &#x27;</span>ripon@example.com&#x27;);</code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> EventEmitter নোড ব্যাকএন্ডে মডিউলগুলোর মধ্যে লুজ কাপলিং (Loose Coupling) নিশ্চিত করে। কোর রেজিস্ট্রেশন লজিক পরিবর্তন ছাড়াই নতুন লিসেনার যুক্ত করা যায়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 6: Pure Native Node.js HTTP Web Server</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> কোনো এক্সটার্নাল প্যাকেজ ছাড়া পিওর <code>http</code> মডিউল দিয়ে পোর্ট ৩০০০-এ একটি সার্ভার তৈরি করুন যা <code>/</code> এ &#x27;Home Page&#x27; এবং <code>/about</code> এ &#x27;About Page&#x27; রেসপন্স দেয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 6</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> http <span class="syn-kw">from</span> <span class="syn-str">&#x27;http&#x27;</span>;
+
+<span class="syn-kw">const</span> server <span style="color: #c084fc; font-weight: 700;">=</span> http.<span style="color: #38bdf8; font-weight: 600;">createServer</span>((req, res) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-kw">const</span> { url, method } <span style="color: #c084fc; font-weight: 700;">=</span> req;
+  res.setHeader(&#x27;Content<span style="color: #c084fc; font-weight: 700;">-</span>Type<span class="syn-str">&#x27;, &#x27;</span>text<span style="color: #c084fc; font-weight: 700;">/</span>plain; charset<span style="color: #c084fc; font-weight: 700;">=</span>utf<span style="color: #c084fc; font-weight: 700;">-</span><span class="syn-num">8</span><span class="syn-str">&#x27;);
+
+  if (url === &#x27;</span><span style="color: #c084fc; font-weight: 700;">/</span><span class="syn-str">&#x27; &amp;&amp; method === &#x27;</span>GET<span class="syn-str">&#x27;) {
+    res.statusCode = 200;
+    res.end(&#x27;</span>🏠 Welcome to Home Page<span class="syn-str">&#x27;);
+  } else if (url === &#x27;</span><span style="color: #c084fc; font-weight: 700;">/</span>about<span class="syn-str">&#x27; &amp;&amp; method === &#x27;</span>GET<span class="syn-str">&#x27;) {
+    res.statusCode = 200;
+    res.end(&#x27;</span>ℹ️ Welcome to About Page<span class="syn-str">&#x27;);
+  } else {
+    res.statusCode = 404;
+    res.end(&#x27;</span>❌ <span class="syn-num">404</span> Route Not Found&#x27;);
+  }
+});
+
+<span class="syn-kw">const</span> PORT <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">3000</span>;
+server.<span style="color: #38bdf8; font-weight: 600;">listen</span>(PORT, () <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-fn">console</span>.log(`🚀 Native HTTP Server listening at http://localhost:${PORT}`);
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> Express বা Fastify ফ্রেমওয়ার্কগুলো ইন্টারনালি এই নেটিভ <code>http.createServer</code> এর উপর ভিত্তি করেই তৈরি। নেটিভ রিকোয়েস্ট-রেসপন্স লাইফসাইকেল বোঝা অত্যন্ত গুরুত্বপূর্ণ।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 7: RESTful JSON API Endpoint</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>/api/user</code> রাউটে ক্লায়েন্টকে স্ট্যান্ডার্ড হেডারসহ JSON অবজেক্ট রেসপন্স পাঠান।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 7</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> http <span class="syn-kw">from</span> <span class="syn-str">&#x27;http&#x27;</span>;
+
+<span class="syn-kw">const</span> server <span style="color: #c084fc; font-weight: 700;">=</span> http.<span style="color: #38bdf8; font-weight: 600;">createServer</span>((req, res) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-kw">if</span> (req.url <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-str">&#x27;/api/user&#x27;</span> <span style="color: #c084fc; font-weight: 700;">&amp;&amp;</span> req.method <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-str">&#x27;GET&#x27;</span>) {
+    <span class="syn-kw">const</span> userPayload <span style="color: #c084fc; font-weight: 700;">=</span> {
+      id: <span class="syn-num">101</span>,
+      name: <span class="syn-str">&#x27;Ripon&#x27;</span>,
+      role: <span class="syn-str">&#x27;Full Stack Developer&#x27;</span>,
+      stack: [&#x27;JavaScript<span class="syn-str">&#x27;, &#x27;</span>Node.js<span class="syn-str">&#x27;, &#x27;</span>React<span class="syn-str">&#x27;],
+      verified: true
+    };
+
+    res.writeHead(200, { &#x27;</span>Content<span style="color: #c084fc; font-weight: 700;">-</span>Type<span class="syn-str">&#x27;: &#x27;</span>application<span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #38bdf8; font-weight: 600;">json</span><span class="syn-str">&#x27; });
+    res.end(JSON.stringify(userPayload));
+  } else {
+    res.writeHead(404, { &#x27;</span>Content<span style="color: #c084fc; font-weight: 700;">-</span>Type<span class="syn-str">&#x27;: &#x27;</span>application<span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #38bdf8; font-weight: 600;">json</span><span class="syn-str">&#x27; });
+    res.end(JSON.stringify({ error: &#x27;</span>Endpoint Not Found<span class="syn-str">&#x27; }));
+  }
+});
+
+server.listen(3001, () =&gt; {
+  console.log(&#x27;</span>📡 <span class="syn-fn">JSON</span> API Server running at http://localhost:<span class="syn-num">3001</span>/api/user&#x27;);
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> JSON রেসপন্স দেওয়ার সময় অবশ্যই <code>&#x27;Content-Type&#x27;: &#x27;application/json&#x27;</code> হেডার সেট করতে হয় এবং JavaScript অবজেক্টকে <code>JSON.stringify()</code> করে পাঠাতে হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 8: Async/Await Data Pipeline with Timeout &amp; Retry</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> ডাটাবেস বা এক্সটার্নাল API থেকে ডেটা আনার জন্য একটি অ্যাসিনক্রোনাস ফাংশন লিখুন যা এরর হ্যান্ডলিং ও টাইমাউট সাপোর্ট করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 8</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Simulated DB Call with Promise</span>
+<span class="syn-kw">function</span> fetchDatabaseRecord(id) {
+  <span class="syn-kw">return</span> <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((<span style="color: #38bdf8; font-weight: 600;">resolve</span>, reject) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    setTimeout(() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+      <span class="syn-kw">if</span> (id <span style="color: #c084fc; font-weight: 700;">&gt;</span> <span class="syn-num">0</span>) {
+        <span style="color: #38bdf8; font-weight: 600;">resolve</span>({ id, username: <span class="syn-str">`user_${id}`</span>, <span style="color: #38bdf8; font-weight: 600;">status</span>: <span class="syn-str">&#x27;ACTIVE&#x27;</span> });
+      } <span class="syn-kw">else</span> {
+        reject(<span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&#x27;Invalid record ID provided<span class="syn-str">&#x27;));
+      }
+    }, 150);
+  });
+}
+
+async function getUserData(id) {
+  try {
+    console.log(`Fetching record for ID ${id}...`);
+    const data = await fetchDatabaseRecord(id);
+    console.log(&#x27;</span>✅ Record Retrieved:&#x27;, data);
+    <span class="syn-kw">return</span> data;
+  } <span class="syn-kw">catch</span> (err) {
+    <span class="syn-fn">console</span>.error(&#x27;❌ Fetch Failure:&#x27;, err.message);
+    <span class="syn-kw">return</span> <span class="syn-bool">null</span>;
+  }
+}
+
+getUserData(<span class="syn-num">42</span>);
+getUserData(-<span class="syn-num">1</span>); <span class="syn-com">// Triggers safe catch block</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> নোড ব্যাকএন্ডে প্রতিটি অ্যাসিনক্রোনাস অপারেশনকে <code>try/catch</code> ব্লকের ভেতরে রাখা জরুরি, যাতে আনহ্যান্ডল্ড রিজেকশন ঘটে সার্ভার প্রসেস ক্র্যাশ না করে।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 9: Parallel API Aggregation via Promise.all()</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>getUsers()</code>, <code>getProducts()</code>, এবং <code>getOrders()</code> তিনটি স্বাধীন অপারেশনকে প্যারালালে এক্সিকিউট করে এক্সিকিউশন টাইম অপ্টিমাইজ করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 9</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> fakeFetch <span style="color: #c084fc; font-weight: 700;">=</span> (name, delay) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> 
+  <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>(res <span style="color: #c084fc; font-weight: 700;">=&gt;</span> setTimeout(() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> res(`${name} Data [OK]`), delay));
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> fetchDashboardData() {
+  <span class="syn-fn">console</span>.time(&#x27;Parallel Execution Time<span class="syn-str">&#x27;);
+  
+  try {
+    // Run all 3 asynchronous calls concurrently in parallel
+    const [users, products, orders] = await Promise.all([
+      fakeFetch(&#x27;</span>Users<span class="syn-str">&#x27;, 200),
+      fakeFetch(&#x27;</span>Products<span class="syn-str">&#x27;, 300),
+      fakeFetch(&#x27;</span>Orders<span class="syn-str">&#x27;, 150)
+    ]);
+
+    console.log(&#x27;</span>Aggregation Results:&#x27;);
+    <span class="syn-fn">console</span>.log({ users, products, orders });
+  } <span class="syn-kw">catch</span> (err) {
+    <span class="syn-fn">console</span>.error(&#x27;One or more operations failed:&#x27;, err);
+  } <span class="syn-kw">finally</span> {
+    <span class="syn-fn">console</span>.timeEnd(&#x27;Parallel Execution Time&#x27;); <span class="syn-com">// ~300ms total, NOT 650ms!</span>
+  }
+}
+
+fetchDashboardData();</code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> একটির পর একটি await করলে মোট সময় লাগত ২০০+৩০০+১৫০ = ৬৫০ms। <code>Promise.all()</code> ব্যবহার করায় সর্বোচ্চ সময় (~৩০০ms)-এ সবগুলো কল সম্পন্ন হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 10: Full Production REST API with Routing &amp; Validation</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Express/Node.js প্যাটার্ন মেনে ইন-মেমোরি ডেটাসহ একটি সম্পূর্ণ ইউজার ম্যানেজমেন্ট CRUD ব্যাকএন্ড সিস্টেম লিখুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 10</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> http <span class="syn-kw">from</span> <span class="syn-str">&#x27;http&#x27;</span>;
+
+<span class="syn-kw">let</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&#x27;Ripon&#x27;</span>, role: <span class="syn-str">&#x27;Admin&#x27;</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&#x27;Tanvir&#x27;</span>, role: <span class="syn-str">&#x27;Editor&#x27;</span> }
+];
+
+<span class="syn-kw">function</span> sendJson(res, <span style="color: #38bdf8; font-weight: 600;">status</span>, data) {
+  res.writeHead(<span style="color: #38bdf8; font-weight: 600;">status</span>, { <span class="syn-str">&#x27;Content-Type&#x27;</span>: <span class="syn-str">&#x27;application/json&#x27;</span> });
+  res.end(<span class="syn-fn">JSON</span>.stringify(data));
+}
+
+<span class="syn-kw">const</span> server <span style="color: #c084fc; font-weight: 700;">=</span> http.<span style="color: #38bdf8; font-weight: 600;">createServer</span>((req, res) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-kw">const</span> { method, url } <span style="color: #c084fc; font-weight: 700;">=</span> req;
+
+  <span class="syn-com">// 1. GET /users</span>
+  <span class="syn-kw">if</span> (method <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-str">&#x27;GET&#x27;</span> <span style="color: #c084fc; font-weight: 700;">&amp;&amp;</span> url <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-str">&#x27;/users&#x27;</span>) {
+    <span class="syn-kw">return</span> sendJson(res, <span class="syn-num">200</span>, users);
+  }
+
+  <span class="syn-com">// 2. GET /users/:id</span>
+  <span class="syn-kw">if</span> (method <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-str">&#x27;GET&#x27;</span> <span style="color: #c084fc; font-weight: 700;">&amp;&amp;</span> url.startsWith(&#x27;/users<span style="color: #c084fc; font-weight: 700;">/</span><span class="syn-str">&#x27;)) {
+    const id = parseInt(url.split(&#x27;</span><span style="color: #c084fc; font-weight: 700;">/</span><span class="syn-str">&#x27;)[2]);
+    const user = users.find(u =&gt; u.id === id);
+    if (!user) return sendJson(res, 404, { error: &#x27;</span>User not found<span class="syn-str">&#x27; });
+    return sendJson(res, 200, user);
+  }
+
+  // 3. POST /users
+  if (method === &#x27;</span>POST<span class="syn-str">&#x27; &amp;&amp; url === &#x27;</span><span style="color: #c084fc; font-weight: 700;">/</span>users<span class="syn-str">&#x27;) {
+    let body = &#x27;</span><span class="syn-str">&#x27;;
+    req.on(&#x27;</span>data<span class="syn-str">&#x27;, chunk =&gt; { body += chunk; });
+    req.on(&#x27;</span>end<span class="syn-str">&#x27;, () =&gt; {
+      try {
+        const { name, role } = JSON.parse(body);
+        if (!name) return sendJson(res, 400, { error: &#x27;</span>Name is required<span class="syn-str">&#x27; });
+        const newUser = { id: users.length + 1, name, role: role || &#x27;</span>User<span class="syn-str">&#x27; };
+        users.push(newUser);
+        return sendJson(res, 201, newUser);
+      } catch (err) {
+        return sendJson(res, 400, { error: &#x27;</span>Invalid <span class="syn-fn">JSON</span> payload<span class="syn-str">&#x27; });
+      }
+    });
+    return;
+  }
+
+  // 4. DELETE /users/:id
+  if (method === &#x27;</span>DELETE<span class="syn-str">&#x27; &amp;&amp; url.startsWith(&#x27;</span>/users/<span class="syn-str">&#x27;)) {
+    const id = parseInt(url.split(&#x27;</span><span style="color: #c084fc; font-weight: 700;">/</span><span class="syn-str">&#x27;)[2]);
+    const initialLen = users.length;
+    users = users.filter(u =&gt; u.id !== id);
+    if (users.length === initialLen) return sendJson(res, 404, { error: &#x27;</span>User not found<span class="syn-str">&#x27; });
+    return sendJson(res, 200, { message: `User ${id} deleted successfully` });
+  }
+
+  sendJson(res, 404, { error: &#x27;</span>Route not supported<span class="syn-str">&#x27; });
+});
+
+server.listen(4000, () =&gt; {
+  console.log(&#x27;</span>🚀 Complete User CRUD API running at http://localhost:<span class="syn-num">4000</span><span style="color: #c084fc; font-weight: 700;">/</span>users&#x27;);
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>নোড ব্যাকএন্ড আর্কিটেকচারাল ব্যাখ্যা:</strong> এটি একটি স্বয়ংসম্পূর্ণ RESTful API কন্ট্রোলার যা ইনকামিং রিকোয়েস্ট বডি পার্সিং, স্ট্যাটাস কোড হ্যান্ডলিং (200, 201, 400, 404) এবং CRUD অপারেশন সম্পন্ন করে।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.78</span> 🎯 Final Mental Map — Node.js ব্যাকএন্ড আর্কিটেকচার মানচিত্র</div>
+      <p class="text-p">পুরো Chapter 39-এর Node.js ব্যাকএন্ড ইকোসিস্টেম একনজরে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ NODE.JS ARCHITECTURAL TAXONOMY MAP</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">Node.js</span>
+                       <span style="color: #475569;">│</span>
+          <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────────</span><span style="color: #475569;">┐</span>
+          <span style="color: #38bdf8; font-weight: 700;">↓</span>            <span style="color: #38bdf8; font-weight: 700;">↓</span>            <span style="color: #38bdf8; font-weight: 700;">↓</span>
+         <span style="color: #fde047; font-weight: 700;">V8</span>         <span style="color: #fde047; font-weight: 700;">Node</span> APIs     <span style="color: #fde047; font-weight: 700;">libuv</span>
+          <span style="color: #475569;">│</span>            <span style="color: #475569;">│</span>            <span style="color: #475569;">│</span>
+          <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────────</span><span style="color: #475569;">┘</span>
+                       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                  <span style="color: #fde047; font-weight: 700;">Event Loop</span>
+                       <span style="color: #475569;">│</span>
+            <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┐</span>
+            <span style="color: #38bdf8; font-weight: 700;">↓</span>          <span style="color: #38bdf8; font-weight: 700;">↓</span>          <span style="color: #38bdf8; font-weight: 700;">↓</span>
+           <span style="color: #38bdf8; font-weight: 600;">HTTP</span>        FS        <span style="color: #38bdf8; font-weight: 600;">Network</span>
+            <span style="color: #475569;">│</span>          <span style="color: #475569;">│</span>          <span style="color: #475569;">│</span>
+            <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┘</span>
+                       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                  <span style="color: #34d399; font-weight: 700;">Async I/O</span>
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                 <span style="color: #fde047; font-weight: 700;">Express</span>.js
+                       <span style="color: #475569;">│</span>
+          <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────────</span><span style="color: #475569;">┐</span>
+          <span style="color: #38bdf8; font-weight: 700;">↓</span>            <span style="color: #38bdf8; font-weight: 700;">↓</span>            <span style="color: #38bdf8; font-weight: 700;">↓</span>
+       <span style="color: #c084fc; font-weight: 700;">Routes</span>      <span style="color: #c084fc; font-weight: 700;">Middleware</span>    <span style="color: #c084fc; font-weight: 700;">Controllers</span>
+                                    <span style="color: #475569;">│</span>
+                                    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                                 <span style="color: #c084fc; font-weight: 700;">Service</span>
+                                    <span style="color: #475569;">│</span>
+                                    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                                <span style="color: #c084fc; font-weight: 700;">Database</span>
+                                    <span style="color: #475569;">│</span>
+                                    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                                  <span style="color: #c084fc; font-weight: 700;">JSON</span>
+                                    <span style="color: #475569;">│</span>
+                                    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                                  <span style="color: #c084fc; font-weight: 700;">React</span></pre>
+</div>
+      <div class="def-box" style="margin-top: 6px; border-left: 3px solid #d97706; background: #fffbeb;">
+        🏆 <strong>এক লাইনে Chapter 39:</strong> Node.js হলো JavaScript-এর server-side runtime, যেখানে V8 + Event Loop + Asynchronous I/O + Node APIs ব্যবহার করে scalable backend, REST APIs, file/network processing এবং full-stack application তৈরি করা যায়।
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">39.79</span> 🔗 Curriculum Progression: Chapter 38 → 39 → 40</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ ROADMAP CONTINUITY PIPELINE</div>
+  <pre class="ascii-tree-content">Chapter 38: Advanced JavaScript for <span style="color: #c084fc; font-weight: 700;">React</span> (Frontend)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Destructuring, Spread, map/filter, Immutability, Closures, Synthetic Events
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 39: Advanced JavaScript for <span style="color: #fde047; font-weight: 700;">Node.js</span> (<span style="color: #fde047; font-weight: 700;">Backend</span> - THIS CHAPTER)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">V8</span>, Libuv, <span style="color: #fde047; font-weight: 700;">Event Loop</span>, <span style="color: #c084fc; font-weight: 700;">Buffer</span>, Streams, <span style="color: #c084fc; font-weight: 700;">fs</span>/<span style="color: #c084fc; font-weight: 700;">path</span>, <span style="color: #fde047; font-weight: 700;">REST API</span>, <span style="color: #fde047; font-weight: 700;">Express</span> <span style="color: #c084fc; font-weight: 700;">Middleware</span>
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 40: Real-World Projects, Best Practices &amp; Interview Preparation (Grand Finale)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Production Architecture, Git Workflow, Security Audits, Full-Stack Project &amp; Interview Mastery</pre>
+</div>
+    </div>
+
+  </div>
+</body>
+</html>

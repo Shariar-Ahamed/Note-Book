@@ -1,0 +1,2368 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 34 — NPM, Package Management & JavaScript Tooling | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid #64748b;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #334155;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0 5px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 2.5px 8px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+      text-transform: uppercase;
+    }
+    .code-box pre {
+      margin: 0;
+      padding: 6px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .code-box code {
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.35;
+      color: #f1f5f9;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .syn-kw { color: #f472b6; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #4ade80; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-34-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 34</span>
+        </div>
+      </div>
+      <div class="banner-sub">NPM, PACKAGE MANAGEMENT, DEPENDENCY ARCHITECTURE, MODERN BUNDLERS &amp; JAVASCRIPT TOOLING</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">65 Modules + 13 Practice Labs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 28 — NPM &amp; Tooling Ecosystem</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">SemVer, Lockfiles, Vite, ESLint, Prettier</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">Node.js LTS / NPM v10+ Living Standard 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>📦</span> NPM &amp; Modern JavaScript Tooling — প্রজেক্ট আর্কিটেকচার ও প্রোডাকশন পাইপলাইন
+      </div>
+      <p class="text-p">
+        বাস্তব দুনিয়ায় প্রফেশনাল জাভাস্ক্রিপ্ট অ্যাপ্লিকেশন কখনো শূন্য থেকে একা তৈরি করা হয় না। বিশ্বজুড়ে লক্ষ লক্ষ ডেভেলপারের তৈরি প্যাকেজ নিরাপদে ম্যানেজ করা, নির্ভুল ডিপেনডেন্সি লক রাখা এবং স্বয়ংক্রিয় বিল্ড ও লিন্টিং পাইপলাইন পরিচালনা করাই হলো আধুনিক সফটওয়্যার ইঞ্জিনিয়ারিংয়ের মূল ভিত্তি। এই চ্যাপ্টারে আমরা <strong>package.json, Semantic Versioning (SemVer), Lockfiles, npm vs npx, Vite, Bundlers, Tree Shaking, ESLint, Prettier, .env সিকিউরিটি</strong> এবং CI/CD প্রোডাকশন ডিপ্লয়মেন্ট শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. package.json &amp; Node</div>
+        <div class="roadmap-item"><span>📌</span> 2. SemVer Architecture</div>
+        <div class="roadmap-item"><span>📌</span> 3. Lockfile &amp; npm ci</div>
+        <div class="roadmap-item"><span>📌</span> 4. Dependencies vs Dev</div>
+        <div class="roadmap-item"><span>📌</span> 5. npm scripts &amp; npx</div>
+        <div class="roadmap-item"><span>📌</span> 6. Vite &amp; Bundling</div>
+        <div class="roadmap-item"><span>📌</span> 7. Tree Shaking &amp; Maps</div>
+        <div class="roadmap-item"><span>📌</span> 8. ESLint &amp; Prettier</div>
+        <div class="roadmap-item"><span>📌</span> 9. .env &amp; Security Audit</div>
+        <div class="roadmap-item"><span>📌</span> 10. CI/CD Deployment</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Package Concepts, Node Ecosystem & Project Initialization (34.1 – 34.5)</div>
+    <div class="study-card" id="sec-34-1">
+      <div class="card-title"><span class="badge-num">34.1</span> Package কী?</div>
+      <p class="text-p"><strong>Package</strong> হলো reusable code-এর একটি collection, যেটা অন্য developer নিজের project-এ ব্যবহার করতে পারে। ধরো তুমি নিজে একটা function লিখলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>
+      <p class="text-p">কিন্তু একজন developer এমন একটি library তৈরি করল যেখানে হাজার হাজার useful function আছে। তুমি সেই library install করে ব্যবহার করতে পারো।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Your Project
+     <span style="color: #475569;">│</span>
+     <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Your <span style="color: #34d399; font-weight: 700;">Code</span>
+     <span style="color: #475569;">│</span>
+     <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> External Packages
+            <span style="color: #475569;">│</span>
+            <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> React
+            <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Express
+            <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Axios
+            <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Lodash
+            <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> etc.</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.2</span> NPM কী?</div>
+      <p class="text-p"><strong>NPM = Node Package Manager</strong> এটি JavaScript ecosystem-এর সবচেয়ে পরিচিত package manager-গুলোর একটি। NPM দিয়ে আমরা:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>package install</li>
+        <li>package uninstall</li>
+        <li>package update</li>
+        <li>dependency manage</li>
+        <li>scripts run</li>
+        <li>project initialize</li>
+      </ul>
+      <p class="text-p">ইত্যাদি করতে পারি।</p>
+      <div class="section-subhead">🔹 Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash</code></pre>
+</div>
+      <p class="text-p">এখানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">npm
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+install
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+lodash</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.3</span> Node.js এবং NPM-এর সম্পর্ক</div>
+      <p class="text-p">Node.js install করলে সাধারণত npm-ও পাওয়া যায়। Check করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">node</span> <span style="color:#fde047; font-weight:600;">-v</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#fde047; font-weight:600;">-v</span></code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">v24.x.x
+11.x.x</pre>
+</div>
+      <p class="text-p">তোমার নিজের system-এ exact version আলাদা হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.4</span> Project Initialize করা</div>
+      <p class="text-p">একটি নতুন folder:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code>mkdir my<span style="color:#fde047; font-weight:600;">-p</span>roject
+cd my<span style="color:#fde047; font-weight:600;">-p</span>roject</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">init</span></code></pre>
+</div>
+      <p class="text-p">এটি কিছু প্রশ্ন করবে। আর দ্রুত default configuration চাইলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
+</div>
+      <p class="text-p">এতে তৈরি হবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">package.json</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.5</span> <code>package.json</code> কী?</div>
+      <p class="text-p"><code>package.json</code> হলো JavaScript/Node project-এর <strong>project configuration এবং dependency manifest file</strong>। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-project&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;description&quot;</span>: <span style="color:#4ade80;">&quot;My JavaScript project&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;main&quot;</span>: <span style="color:#4ade80;">&quot;index.js&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node index.js&quot;</span>
+  },
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {},
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;devDependencies&quot;</span>: {}
+}</code></pre>
+</div>
+      <p class="text-p">এটি project-এর গুরুত্বপূর্ণ information ধরে রাখে।</p>
+    </div>
+    <div class="part-banner">Part 02 — Anatomy of package.json, Core Fields & Semantic Versioning (34.6 – 34.11)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.6</span> <code>package.json</code>-এর গুরুত্বপূর্ণ fields</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Field</th><th>কাজ</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>name</code></td><td>Project/package name</td></tr><tr><td><code>version</code></td><td>Project version</td></tr><tr><td><code>description</code></td><td>Project description</td></tr><tr><td><code>main</code></td><td>Entry point</td></tr><tr><td><code>scripts</code></td><td>Commands</td></tr><tr><td><code>dependencies</code></td><td>Production dependencies</td></tr><tr><td><code>devDependencies</code></td><td>Development dependencies</td></tr><tr><td><code>type</code></td><td>Module system</td></tr><tr><td><code>engines</code></td><td>Runtime version requirements</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.7</span> <code>name</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-project&quot;</span>
+}</code></pre>
+</div>
+      <p class="text-p">এটি project/package-এর নাম। সাধারণত lowercase এবং npm naming rules অনুসরণ করা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.8</span> <code>version</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>
+}</code></pre>
+</div>
+      <p class="text-p">এটি project/package-এর current version। এখানেই আসে <strong>Semantic Versioning</strong>।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.9</span> Semantic Versioning — SemVer</div>
+      <p class="text-p">সাধারণ format:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 SEMANTIC VERSIONING (SEMVER) SPECIFICATION</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 700;">MAJOR</span>.<span style="color: #38bdf8; font-weight: 700;">MINOR</span>.<span style="color: #38bdf8; font-weight: 700;">PATCH</span></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">2.5.3</pre>
+</div>
+      <p class="text-p">মানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">2 <span style="color: #38bdf8; font-weight: 700;">→</span> Major
+5 <span style="color: #38bdf8; font-weight: 700;">→</span> Minor
+3 <span style="color: #38bdf8; font-weight: 700;">→</span> Patch</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">📦 Major</div>
+      <p class="text-p">Breaking changes:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">1.0.0
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+2.0.0</pre>
+</div>
+      <p class="text-p">আগের code compatibility নষ্ট হতে পারে।</p>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">📦 Minor</div>
+      <p class="text-p">নতুন backward-compatible feature:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">1.2.0
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+1.3.0</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">📦 Patch</div>
+      <p class="text-p">Bug fix:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">1.2.3
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+1.2.4</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.10</span> Dependency কী?</div>
+      <p class="text-p">Dependency হলো এমন package যার ওপর তোমার project নির্ভর করে। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> express</code></pre>
+</div>
+      <p class="text-p">তাহলে <code>express</code> project-এর dependency। <code>package.json</code>:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;express&quot;</span>: <span style="color:#4ade80;">&quot;^5.1.0&quot;</span>
+  }
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.11</span> Real-life Example</div>
+      <p class="text-p">ধরো তুমি restaurant বানাচ্ছো। তোমার restaurant:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Restaurant
+   <span style="color: #475569;">│</span>
+   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Chef
+   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Waiter
+   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Kitchen
+   <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Electricity</pre>
+</div>
+      <p class="text-p">Electricity ছাড়া restaurant চলবে না। ঠিক তেমনি:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Your App
+   <span style="color: #475569;">│</span>
+   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> React
+   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Express
+   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Database Driver
+   <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Other Packages</pre>
+</div>
+      <p class="text-p">এগুলো application-এর dependency হতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 03 — Package Installation, node_modules & Lockfiles (34.12 – 34.16)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.12</span> <code>npm install</code></div>
+      <p class="text-p">Package install:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash</code></pre>
+</div>
+      <p class="text-p">Short form:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> i lodash</code></pre>
+</div>
+      <p class="text-p">এটি সাধারণত: 1. package download করে 2. <code>node_modules</code> তৈরি/আপডেট করে 3. <code>package.json</code> update করে 4. lockfile update করে</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.13</span> <code>node_modules</code></div>
+      <p class="text-p">Package install করার পর:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content">my-project/
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">node_modules</span>/
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">package.json</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">package-lock.json</span>
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">index.js</span></pre>
+</div>
+      <p class="text-p"><code>node_modules</code>-এর মধ্যে installed packages থাকে। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">node_modules</span>/
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> lodash/
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> express/
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> ...</pre>
+</div>
+      <p class="text-p"># 🔥 <code>node_modules</code> GitHub-এ commit করা উচিত? সাধারণত: <strong>না।</strong> <code>.gitignore</code>:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIG FILE (GITIGNORE)</span><span>ENV</span></div>
+  <pre><code><span style="color:#f1f5f9;">node_modules/</span></code></pre>
+</div>
+      <p class="text-p">কারণ অন্য developer:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+</div>
+      <p class="text-p">দিয়ে dependencies install করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.14</span> <code>package-lock.json</code></div>
+      <p class="text-p">এটি dependency tree-এর <strong>exact resolved versions</strong> এবং related metadata lock করে রাখে। Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">package.json</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Version range
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">package-lock.json</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Exact dependency resolution</pre>
+</div>
+      <p class="text-p">এটি team এবং CI/CD environment-এ consistent installation-এর জন্য গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.15</span> <code>package.json</code> vs <code>package-lock.json</code></div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th><code>package.json</code></th><th><code>package-lock.json</code></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Project/dependency declaration</td><td>Resolved dependency tree lock</td></tr><tr><td>Version range থাকতে পারে</td><td>Exact resolved versions record করে</td></tr><tr><td>Human-edited</td><td>সাধারণত npm manage করে</td></tr><tr><td>Project configuration</td><td>Reproducible installation-এ সাহায্য করে</td></tr>
+    </tbody>
+  </table>
+</div>
+      <div class="section-subhead">🔹 GitHub-এ কোনটা রাখব?</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">package.json</span>       ✅
+<span style="color: #fde047; font-weight: 600;">package-lock.json</span>  ✅
+<span style="color: #fde047; font-weight: 600;">node_modules</span>       ❌</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.16</span> <code>npm install</code> বনাম <code>npm ci</code></div>
+      <div class="section-subhead">🔹 <code>npm install</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+</div>
+      <p class="text-p">সাধারণত dependency install/update resolution করতে পারে এবং lockfile update করতে পারে।</p>
+      <div class="section-subhead">🔹 <code>npm ci</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">ci</span></code></pre>
+</div>
+      <p class="text-p">Clean, reproducible installation-এর জন্য ব্যবহৃত হয়, বিশেষ করে CI/CD-তে। এটি lockfile-এর ওপর বেশি strict।</p>
+      <div class="section-subhead">🔹 Real-life</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Developer Machine
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">npm install</span>
+
+CI/CD Server
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">npm ci</span></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 04 — Dependencies vs DevDependencies & Package Lifecycle (34.17 – 34.22)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.17</span> Dependency vs DevDependency</div>
+      <p class="text-p">এটি খুব important।</p>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">📦 Dependency</div>
+      <p class="text-p">Application চালানোর সময় দরকার:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> express</code></pre>
+</div>
+      <p class="text-p"><code>package.json</code>:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;express&quot;</span>: <span style="color:#4ade80;">&quot;^5.1.0&quot;</span>
+  }
+}</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">📦 DevDependency</div>
+      <p class="text-p">Development-এর সময় দরকার:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+</div>
+      <p class="text-p">অথবা:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">--save-</span><span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+</div>
+      <p class="text-p">Result:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;devDependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;eslint&quot;</span>: <span style="color:#4ade80;">&quot;^9.x&quot;</span>
+  }
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.18</span> Example</div>
+      <p class="text-p">ধরো React project:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">dependencies
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> react
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> react-dom
+
+devDependencies
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> vite
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> eslint
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> prettier</pre>
+</div>
+      <p class="text-p">সহজভাবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Application Runtime
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+dependencies
+
+<span style="color: #c084fc; font-weight: 700;">Development</span> / Build / Testing
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+devDependencies</pre>
+</div>
+      <p class="text-p">⚠️ Exact production bundling behavior tool/platform অনুযায়ী ভিন্ন হতে পারে, তাই শুধু category দেখে package runtime-এ থাকবে/থাকবে না এমন universal assumption করা ঠিক নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.19</span> Package Install-এর বিভিন্ন form</div>
+      <div class="section-subhead">🔹 Normal</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> axios</code></pre>
+</div>
+      <div class="section-subhead">🔹 Dev dependency</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+</div>
+      <div class="section-subhead">🔹 Specific version</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash@4.17.21</code></pre>
+</div>
+      <div class="section-subhead">🔹 Latest</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash@latest</code></pre>
+</div>
+      <div class="section-subhead">🔹 Global</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-g</span> some<span style="color:#fde047; font-weight:600;">-p</span>ackage</code></pre>
+</div>
+      <p class="text-p">Global install প্রয়োজন অনুযায়ী ব্যবহার করা হয়; project dependencies-এর জন্য সাধারণত local install preferred।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.20</span> Package Uninstall</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">uninstall</span> lodash</code></pre>
+</div>
+      <p class="text-p">অথবা:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">remove</span> lodash</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.21</span> Package Update</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">update</span></code></pre>
+</div>
+      <p class="text-p">Specific package:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">update</span> lodash</code></pre>
+</div>
+      <p class="text-p">Installed packages দেখতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> list</code></pre>
+</div>
+      <p class="text-p">Top-level packages:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> list <span style="color:#fde047; font-weight:600;">--depth</span>=0</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.22</span> <code>npm outdated</code></div>
+      <p class="text-p">কোন package outdated তা দেখতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">outdated</span></code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Package</span>   Current   Wanted   Latest
+react     18.x      18.x     19.x</pre>
+</div>
+      <p class="text-p">Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content">Current <span style="color: #38bdf8; font-weight: 700;">→</span> এখন installed
+Wanted  <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #fde047; font-weight: 600;">package.json</span>-এর allowed range-এর মধ্যে update
+Latest  <span style="color: #38bdf8; font-weight: 700;">→</span> registry-এর latest version</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 05 — NPM Registry, Package Discovery & Metadata Search (34.23 – 34.26)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.23</span> NPM Registry</div>
+      <p class="text-p">NPM package সাধারণত registry থেকে পাওয়া যায়। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content">Developer
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">npm install</span> react
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">NPM</span> Registry
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Package</span> download
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">node_modules</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.24</span> <code>npm search</code></div>
+      <p class="text-p">Package খুঁজতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">search</span> express</code></pre>
+</div>
+      <p class="text-p">তবে modern development-এ official documentation, package repository এবং trusted sources দেখে package নির্বাচন করা ভালো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.25</span> <code>npm info</code></div>
+      <p class="text-p">Package সম্পর্কে information:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">info</span> express</code></pre>
+</div>
+      <p class="text-p">Specific version:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">info</span> express version</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.26</span> <code>npm view</code></div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">view</span> react version</code></pre>
+</div>
+      <p class="text-p">এটি registry থেকে package metadata দেখতে সাহায্য করে।</p>
+    </div>
+    <div class="part-banner">Part 06 — NPM Scripts Automation & Development Task Pipelines (34.27 – 34.30)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.27</span> NPM Scripts</div>
+      <p class="text-p"><code>package.json</code>:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;node test.js&quot;</span>
+  }
+}</code></pre>
+</div>
+      <p class="text-p">Run:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">start</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.28</span> <code>npm run</code> কী করে?</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <p class="text-p">মানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content">npm
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">package.json</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+scripts
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+dev
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+associated command</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.29</span> <code>npm start</code></div>
+      <p class="text-p">Special shorthand:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">start</span></code></pre>
+</div>
+      <p class="text-p">এটি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">start</span></code></pre>
+</div>
+      <p class="text-p">এর equivalent। একইভাবে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+</div>
+      <p class="text-p">special script হিসেবে ব্যবহার করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.30</span> Practical Example — Scripts</div>
+      <p class="text-p"><code>package.json</code>:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;vite&quot;</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;build&quot;</span>: <span style="color:#4ade80;">&quot;vite build&quot;</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;preview&quot;</span>: <span style="color:#4ade80;">&quot;vite preview&quot;</span>
+  }
+}</code></pre>
+</div>
+      <p class="text-p">Commands:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> preview</code></pre>
+</div>
+      <p class="text-p">React/Vite project-এ এ ধরনের scripts খুব common।</p>
+    </div>
+    <div class="part-banner">Part 07 — npx Runner, Modern Bundlers & Vite Architecture (34.31 – 34.35)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.31</span> <code>npx</code> কী?</div>
+      <p class="text-p"><code>npx</code> package-এর executable command run করতে ব্যবহৃত হয়। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span></code></pre>
+</div>
+      <p class="text-p">আরেকটি common pattern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">create</span>-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span></code></pre>
+</div>
+      <p class="text-p">এটি package command চালানোর জন্য ব্যবহৃত হয়।</p>
+      <div class="section-subhead">🔹 সহজ পার্থক্য</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">npm install</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Package</span> install/manage
+
+<span style="color: #34d399; font-weight: 700;">npx</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Package</span> executable run</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.32</span> <code>npx</code> কি package install করে?</div>
+      <p class="text-p"><code>npx</code> প্রয়োজন অনুযায়ী package executable resolve/download/cache করে run করতে পারে। তাই:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> some<span style="color:#fde047; font-weight:600;">-t</span>ool</code></pre>
+</div>
+      <p class="text-p">মানে সবসময় permanent local dependency হিসেবে project-এ install হয়ে গেছে—এমন নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.33</span> Vite কী?</div>
+      <p class="text-p"><strong>Vite</strong> হলো modern frontend development/build tool। React project তৈরি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">create</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span>@latest</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+</div>
+      <p class="text-p">Run:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.34</span> Vite কী করে?</div>
+      <p class="text-p">Development-এর সময়:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 MODERN BUILD & BUNDLING PIPELINE</div>
+  <pre class="ascii-tree-content">Your <span style="color: #34d399; font-weight: 700;">Code</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Vite</span> Dev Server
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Browser</pre>
+</div>
+      <p class="text-p">Production build:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 MODERN BUILD & BUNDLING PIPELINE</div>
+  <pre class="ascii-tree-content">Source <span style="color: #34d399; font-weight: 700;">Code</span>
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Vite</span> Build
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Optimized Assets
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+dist/</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.35</span> Build কী?</div>
+      <p class="text-p">Development source code production-এর জন্য optimize করে output তৈরি করাকে broadly build process বলা হয়। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span></code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 MODERN BUILD & BUNDLING PIPELINE</div>
+  <pre class="ascii-tree-content">dist/
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> index.html
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> assets/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> index-xxxx.js
+<span style="color: #475569;">│</span>   <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> index-xxxx.css</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 08 — Build Pipelines, Tree Shaking, Minification & Source Maps (34.36 – 34.40)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.36</span> Development vs Production</div>
+      <div class="section-subhead">🔹 Development</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <p class="text-p">সাধারণত:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>fast feedback</li>
+        <li>hot reload/HMR</li>
+        <li>debugging</li>
+        <li>source-oriented workflow</li>
+      </ul>
+      <div class="section-subhead">🔹 Production</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span></code></pre>
+</div>
+      <p class="text-p">সাধারণত:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>optimized assets</li>
+        <li>minification</li>
+        <li>bundling/chunking</li>
+        <li>deployment-ready output</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.37</span> Bundler কী?</div>
+      <p class="text-p">একটি modern frontend application-এ অনেক module থাকতে পারে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">main.js
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> utils.js
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> api.js
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> components.js
+ <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> styles.css</pre>
+</div>
+      <p class="text-p">Build tooling এগুলো process করে browser-এর জন্য optimized assets তৈরি করতে পারে। এখানে bundling/chunking/module transformation-এর মতো কাজ হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.38</span> Tree Shaking</div>
+      <p class="text-p">Unused code বাদ দেওয়ার optimization-কে tree shaking বলা হয়। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">export</span> <span class="syn-kw">function</span> add() {}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> subtract() {}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> multiply() {}</code></pre>
+</div>
+      <p class="text-p">তুমি শুধু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { add } <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করলে build tool বুঝতে পারে অন্য exports ব্যবহৃত হচ্ছে না এবং production output-এ সেগুলো বাদ দেওয়ার সুযোগ পেতে পারে। ⚠️ Tree shaking সবসময় perfect হয় না; static analyzability এবং package/module structure গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.39</span> Minification</div>
+      <p class="text-p">Code-এর unnecessary whitespace/comments ইত্যাদি কমিয়ে output ছোট করা হয়। Before:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>
+      <p class="text-p">Production output conceptually এমন হতে পারে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a,b){<span class="syn-kw">return</span> a+b}</code></pre>
+</div>
+      <p class="text-p">এতে download size কমতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.40</span> Source Map</div>
+      <p class="text-p">Production/minified code debug করতে source map সাহায্য করে। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Original <span style="color: #34d399; font-weight: 700;">Code</span>
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Build
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Minified <span style="color: #34d399; font-weight: 700;">Code</span>
+     +
+Source Map
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+DevTools
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Original source mapping</pre>
+</div>
+      <p class="text-p">সাধারণত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">.js
+.js.map</pre>
+</div>
+      <p class="text-p">দেখতে পাওয়া যেতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 09 — Code Quality Engineering: ESLint, Prettier & Linter Synergy (34.41 – 34.44)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.41</span> ESLint</div>
+      <p class="text-p"><strong>ESLint</strong> JavaScript/TypeScript code-এর সমস্যা, ভুল pattern এবং style-related issues detect করতে সাহায্য করে। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> x = <span class="syn-num">10</span></code></pre>
+</div>
+      <p class="text-p">তোমার ESLint configuration অনুযায়ী semicolon বা অন্যান্য rule নিয়ে warning/error দিতে পারে। Install:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+</div>
+      <p class="text-p">তারপর project অনুযায়ী configuration setup করা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.42</span> ESLint কেন?</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 CODE QUALITY & LINTER WORKFLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Code</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">ESLint</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Problems / Warnings
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Fix
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Better <span style="color: #34d399; font-weight: 700;">Code</span></pre>
+</div>
+      <p class="text-p">এটি:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>bugs detect করতে সাহায্য করে</li>
+        <li>consistent code style maintain করতে সাহায্য করে</li>
+        <li>team development সহজ করে</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.43</span> Prettier</div>
+      <p class="text-p"><strong>Prettier</strong> হলো code formatter। Example: Before:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user={name:&quot;Ripon&quot;,age:<span class="syn-num">24</span>};</code></pre>
+</div>
+      <p class="text-p">Prettier এটাকে format করতে পারে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  age: <span class="syn-num">24</span>,
+};</code></pre>
+</div>
+      <p class="text-p">Install:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">prettier</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.44</span> ESLint vs Prettier</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>ESLint</th><th>Prettier</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Code quality/linting</td><td>Formatting</td></tr><tr><td>Potential problems detect</td><td>Code format করে</td></tr><tr><td>Rules</td><td>Layout/style</td></tr><tr><td>Bug-prone patterns detect করতে পারে</td><td>Consistent appearance</td></tr>
+    </tbody>
+  </table>
+</div>
+      <p class="text-p">দুটো একসাথে ব্যবহার করা খুব common।</p>
+    </div>
+    <div class="part-banner">Part 10 — Environment Variables, .env, .gitignore & Supply Chain Security (34.45 – 34.48)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.45</span> Environment Variables</div>
+      <p class="text-p">Environment-specific configuration রাখার জন্য environment variables ব্যবহার করা হয়। Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">API_URL=https://api.example.com</pre>
+</div>
+      <p class="text-p">Node.js-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">process</span>.env.API_URL);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.46</span> <code>.env</code> File</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIG FILE (ENV)</span><span>ENV</span></div>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">PORT</span>=<span style="color:#4ade80;">5000</span>
+<span style="color:#38bdf8; font-weight:700;">DATABASE_URL</span>=<span style="color:#4ade80;">...</span>
+<span style="color:#38bdf8; font-weight:700;">API_URL</span>=<span style="color:#4ade80;">https://api.example.com</span></code></pre>
+</div>
+      <p class="text-p">Node.js application-এ environment variables load করার জন্য runtime/tool অনুযায়ী ব্যবস্থা লাগে। # ⚠️ খুব গুরুত্বপূর্ণ Security Rule Frontend application-এ environment variable লিখলেই সেটা secret হয় না। যেমন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIG FILE (ENV)</span><span>ENV</span></div>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">VITE_API_KEY</span>=<span style="color:#4ade80;">123456</span></code></pre>
+</div>
+      <p class="text-p">Vite-এর frontend build-এ expose করা variable browser-এর কাছে চলে যেতে পারে। তাই:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Frontend
+❌ Secret API key
+❌ Database password
+❌ Private credentials
+❌ Server secret</pre>
+</div>
+      <p class="text-p">Frontend-এ কখনো real secret রাখবে না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.47</span> <code>.gitignore</code></div>
+      <p class="text-p">Sensitive/local/generated files Git থেকে বাদ দিতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIG FILE (GITIGNORE)</span><span>ENV</span></div>
+  <pre><code><span style="color:#f1f5f9;">node_modules/</span>
+<span style="color:#f1f5f9;">.env</span>
+<span style="color:#f1f5f9;">dist/</span></code></pre>
+</div>
+      <p class="text-p">কিন্তু project-specific rules অনুযায়ী <code>.env.example</code> রাখা যেতে পারে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIG FILE (ENV)</span><span>ENV</span></div>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">PORT</span>=<span style="color:#4ade80;"></span>
+<span style="color:#38bdf8; font-weight:700;">DATABASE_URL</span>=<span style="color:#4ade80;"></span>
+<span style="color:#38bdf8; font-weight:700;">API_URL</span>=<span style="color:#4ade80;"></span></code></pre>
+</div>
+      <p class="text-p">এতে team বুঝতে পারে কোন variables প্রয়োজন।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.48</span> Package Security</div>
+      <p class="text-p">External package ব্যবহার মানেই security risk-এর possibility থাকে। Check:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span></code></pre>
+</div>
+      <p class="text-p">Fix attempt:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span></code></pre>
+</div>
+      <p class="text-p">Package update:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">update</span></code></pre>
+</div>
+      <p class="text-p">কিন্তু blindly:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span> <span style="color:#fde047; font-weight:600;">--force</span></code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা উচিত নয়। কারণ breaking changes আসতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 11 — Dependency Trees, SemVer Carets/Tildes & Global Packages (34.49 – 34.55)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.49</span> Dependency Tree</div>
+      <p class="text-p">একটি package-এর নিজের dependency থাকতে পারে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Your App
+   <span style="color: #475569;">│</span>
+   <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">Package</span> A
+        <span style="color: #475569;">│</span>
+        <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">Package</span> B
+        <span style="color: #475569;">│</span>
+        <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">Package</span> C
+              <span style="color: #475569;">│</span>
+              <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">Package</span> D</pre>
+</div>
+      <p class="text-p">এজন্য <code>node_modules</code> অনেক বড় হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.50</span> Direct vs Transitive Dependency</div>
+      <div class="section-subhead">🔹 Direct dependency</div>
+      <p class="text-p">তুমি নিজে install করেছো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> express</code></pre>
+</div>
+      <div class="section-subhead">🔹 Transitive dependency</div>
+      <p class="text-p">Express-এর dependency হিসেবে অন্য package এসেছে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Your App
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Express
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.51</span> Version Ranges</div>
+      <p class="text-p"><code>package.json</code>-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;^1.2.3&quot;</span>
+  }
+}</code></pre>
+</div>
+      <p class="text-p">এখানে <code>^</code> version range বোঝায়। আর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code><span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;~1.2.3&quot;</span></code></pre>
+</div>
+      <p class="text-p">এর behavior আলাদা।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.52</span> <code>^</code> এবং <code>~</code></div>
+      <p class="text-p">সাধারণ SemVer context-এ:</p>
+      <div class="section-subhead">🔹 Caret</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">^1.2.3</pre>
+</div>
+      <p class="text-p">সাধারণত compatible minor/patch updates allow করে, কিন্তু <code>2.0.0</code> নয়।</p>
+      <div class="section-subhead">🔹 Tilde</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">~1.2.3</pre>
+</div>
+      <p class="text-p">সাধারণত patch-level updates-এর মধ্যে থাকে। ⚠️ Exact behavior package versioning rules এবং major version (<code>0.x</code>) অনুযায়ী nuance থাকতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.53</span> Exact Version</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;1.2.3&quot;</span>
+  }
+}</code></pre>
+</div>
+      <p class="text-p">এতে range না রেখে exact version declare করা হয়। কিন্তু reproducible installation-এর জন্য lockfile-ও গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.54</span> Global vs Local Package</div>
+      <div class="section-subhead">🔹 Local</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+</div>
+      <p class="text-p">থাকে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content">project/<span style="color: #fde047; font-weight: 600;">node_modules</span>/</pre>
+</div>
+      <div class="section-subhead">🔹 Global</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-g</span> ...</code></pre>
+</div>
+      <p class="text-p">Machine-wide command-এর জন্য।</p>
+      <div class="section-subhead">🔹 Best practice</div>
+      <p class="text-p">Project-specific dependency:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Local install</pre>
+</div>
+      <p class="text-p">সাধারণত preferred।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.55</span> <code>npm exec</code></div>
+      <p class="text-p">Package executable run করার আরেকটি modern command:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">exec</span> -- <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span> .</code></pre>
+</div>
+      <p class="text-p">অনেক ক্ষেত্রে <code>npx</code>-এর alternative হিসেবে ব্যবহার করা যায়।</p>
+    </div>
+    <div class="part-banner">Part 12 — Real-World Scaffolding, Package Managers & CI/CD Deployment (34.56 – 34.65)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.56</span> Package Scripts + Arguments</div>
+      <p class="text-p">Script:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;lint&quot;</span>: <span style="color:#4ade80;">&quot;eslint .&quot;</span>
+  }
+}</code></pre>
+</div>
+      <p class="text-p">Run:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> lint</code></pre>
+</div>
+      <p class="text-p">Additional arguments pass করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> lint -- --<span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.57</span> Practical Node Project</div>
+      <p class="text-p">Structure:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content">my-node-app/
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> src/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">index.js</span>
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> .env
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> .gitignore
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">package.json</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">package-lock.json</span>
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> README.md</pre>
+</div>
+      <p class="text-p"><code>package.json</code>:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-node-app&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node src/index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch src/index.js&quot;</span>
+  }
+}</code></pre>
+</div>
+      <p class="text-p">Run:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.58</span> Practical React/Vite Project</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content">my-react-app/
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">node_modules</span>/
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> public/
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> src/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> components/
+<span style="color: #475569;">│</span>   <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> App.jsx
+<span style="color: #475569;">│</span>   <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> main.jsx
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> .gitignore
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> index.html
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">package.json</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 600;">package-lock.json</span>
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> vite.config.js</pre>
+</div>
+      <p class="text-p">Commands:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+</div>
+      <p class="text-p">Development:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <p class="text-p">Production build:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span></code></pre>
+</div>
+      <p class="text-p">Preview:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> preview</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.59</span> <code>npm create</code> vs <code>npx</code></div>
+      <p class="text-p">Modern tooling-এ তুমি এমন command দেখতে পারো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">create</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span>@latest</code></pre>
+</div>
+      <p class="text-p">এটি project scaffolding tool চালায়। অন্যদিকে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> some<span style="color:#fde047; font-weight:600;">-t</span>ool</code></pre>
+</div>
+      <p class="text-p">সাধারণভাবে package executable run করার pattern।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.60</span> Package Manager Alternatives</div>
+      <p class="text-p">NPM ছাড়াও আছে:</p>
+      <div class="section-subhead">🔹 Yarn</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">yarn</span></code></pre>
+</div>
+      <div class="section-subhead">🔹 pnpm</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">pnpm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+</div>
+      <div class="section-subhead">🔹 Bun</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">bun</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+</div>
+      <p class="text-p">এগুলো JavaScript ecosystem-এর package/runtime tooling ecosystem-এর অংশ। তবে একটি project-এ package manager consistent রাখা ভালো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.61</span> <code>packageManager</code> Field</div>
+      <p class="text-p">কখনও project-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;packageManager&quot;</span>: <span style="color:#4ade80;">&quot;npm@11.x&quot;</span>
+}</code></pre>
+</div>
+      <p class="text-p">এর মতো metadata থাকতে পারে। এটি team-কে কোন package manager/version ব্যবহার করার expectation জানাতে সাহায্য করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.62</span> NPM Cache</div>
+      <p class="text-p">NPM downloaded package metadata/content-এর cache ব্যবহার করতে পারে। Cache সম্পর্কে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> cache verify</code></pre>
+</div>
+      <p class="text-p">এটি cache integrity check করতে সাহায্য করে। সাধারণ সমস্যা হলেই সরাসরি cache delete করা সবসময় প্রথম solution নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.63</span> Package Installation Workflow</div>
+      <p class="text-p">একজন developer যখন GitHub থেকে project clone করে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">git</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">clone</span> &lt;repo&gt;</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code>cd project</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <p class="text-p">Flow:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 NPM DEPENDENCY & PROJECT ARCHITECTURE</div>
+  <pre class="ascii-tree-content">GitHub
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Clone
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">package.json</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">npm install</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">node_modules</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">npm run</span> dev
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Application</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.64</span> Production Deployment Workflow</div>
+      <p class="text-p">ধরো Vite application:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 MODERN BUILD & BUNDLING PIPELINE</div>
+  <pre class="ascii-tree-content">Source <span style="color: #34d399; font-weight: 700;">Code</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">npm install</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">npm run</span> build
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+dist/
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Hosting</pre>
+</div>
+      <p class="text-p">Node backend:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 PACKAGE MANAGEMENT & TOOLING ECOSYSTEM</div>
+  <pre class="ascii-tree-content">Source
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">npm ci</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Environment Variables
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Start command
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Server</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.65</span> Common Mistakes — প্যাকেজ ও টুলিংয়ের সাধারণ ভুলসমূহ</div>
+      <div class="section-subhead">🔹 ❌ <code>node_modules</code> GitHub-এ push করা</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIG FILE (GITIGNORE)</span><span>ENV</span></div>
+  <pre><code><span style="color:#f1f5f9;">node_modules/</span></code></pre>
+</div>
+      <div class="section-subhead">🔹 ❌ <code>.env</code> public repository-তে push করা</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIG FILE (GITIGNORE)</span><span>ENV</span></div>
+  <pre><code><span style="color:#f1f5f9;">.env</span></code></pre>
+</div>
+      <div class="section-subhead">🔹 ❌ package blindly update করা</div>
+      <p class="text-p">Update-এর আগে breaking changes/changelog/documentation দেখা উচিত।</p>
+      <div class="section-subhead">🔹 ❌ <code>npm audit fix --force</code> blindly চালানো</div>
+      <p class="text-p">এতে breaking upgrade হতে পারে।</p>
+      <div class="section-subhead">🔹 ❌ সব package global install করা</div>
+      <p class="text-p">Project dependency local রাখা সাধারণত ভালো।</p>
+      <div class="section-subhead">🔹 ❌ package-lock delete করে দেওয়া</div>
+      <p class="text-p">কারণ reproducible dependency installation-এর সুবিধা নষ্ট হতে পারে।</p>
+      <div class="section-subhead">🔹 ❌ Unknown package blindly install করা</div>
+      <p class="text-p">আগে package:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>downloads</li>
+        <li>repository</li>
+        <li>maintainer</li>
+        <li>documentation</li>
+        <li>recent activity</li>
+        <li>vulnerabilities</li>
+      </ul>
+      <p class="text-p">দেখা ভালো।</p>
+    </div>
+    <div class="part-banner">Part 13 — Must Know Tooling Pillars, Quick Cheat Sheet, 13 Practice Labs & Final Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.66</span> 🔥 MUST KNOW — জাভাস্ক্রিপ্ট টুলিংয়ের ১০টি প্রধান স্তম্ভ</div>
+      <p class="text-p">প্রফেশনাল ডেভেলপার হিসেবে প্রজেক্ট পরিচালনা ও ডিপ্লয়মেন্টে এই ১০টি মূল স্তম্ভ সর্বদা মেনে চলতে হবে:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #0284c7; font-size: 10px; margin-bottom: 3px;">📌 1. Manifest &amp; Dependencies</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>package.json:</strong> প্রজেক্টের মেটাডাটা ও ডিপেনডেন্সি ম্যানিফেস্ট</li>
+            <li><strong>package-lock.json:</strong> হুবহু আইডেন্টিক্যাল সাব-ডিপেনডেন্সি ট্রি লক</li>
+            <li><strong>node_modules:</strong> লোকাল ইনস্টল ফোল্ডার (কখনো গিটে কমিট করবেন না)</li>
+            <li><strong>dependencies vs dev:</strong> রানটাইম লাইব্রেরি বনাম ডেভেলপমেন্ট টুলস</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #059669; font-size: 10px; margin-bottom: 3px;">📌 2. Versioning &amp; Automation</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>SemVer (MAJOR.MINOR.PATCH):</strong> ব্রেকিং চেঞ্জ ও বাগফিক্স নিয়ম</li>
+            <li><strong>npm ci:</strong> সিআই/সিডি সার্ভারে ক্লিন ও অপরিবর্তনীয় ডিপেনডেন্সি ইনস্টলেশন</li>
+            <li><strong>npm scripts:</strong> dev, build, lint এবং test টাস্ক অটোমেশন</li>
+            <li><strong>npx Runner:</strong> গ্লোবাল ইনস্টল ছাড়া তাৎক্ষণিক প্যাকেজ এক্সিকিউট</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #7c3aed; font-size: 10px; margin-bottom: 3px;">📌 3. Build Tooling &amp; Quality</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Vite / Rollup:</strong> ইলেকট্রন-স্পিড নেটিভ ESM ডেভেলপমেন্ট সার্ভার</li>
+            <li><strong>Tree Shaking &amp; Minify:</strong> ডেড-কোড বাদ দিয়ে প্রোডাকশন বান্ডেল সংকোচন</li>
+            <li><strong>ESLint &amp; Prettier:</strong> কোড স্ট্যান্ডার্ড ও ফরম্যাটিং স্বয়ংক্রিয়করণ</li>
+            <li><strong>.env Security:</strong> সিক্রেট ও এপিআই কি গিট ট্র্যাকিং থেকে সুরক্ষিত রাখা</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.67</span> 🧠 Quick Cheat Sheet — কমান্ড ও কনফিগারেশন সারসংক্ষেপ</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Command / Concept</th><th>Syntax / Option</th><th>Main Purpose &amp; Mechanism</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>npm init -y</strong></td><td><code>npm init -y</code></td><td>ডিফল্ট কনফিগারেশনে তাৎক্ষণিক <code>package.json</code> তৈরি</td></tr><tr><td><strong>npm install</strong></td><td><code>npm i &lt;pkg&gt;</code></td><td>রানটাইম ডিপেনডেন্সি ইনস্টল ও <code>package.json</code>-এ যুক্ত</td></tr><tr><td><strong>npm install -D</strong></td><td><code>npm i -D &lt;pkg&gt;</code></td><td>শুধু ডেভেলপমেন্টে প্রয়োজনীয় প্যাকেজ ইনস্টল (<code>devDependencies</code>)</td></tr><tr><td><strong>npm install -g</strong></td><td><code>npm i -g &lt;pkg&gt;</code></td><td>সিস্টেম-ওয়াইড গ্লোবাল সিএলআই টুল ইনস্টল</td></tr><tr><td><strong>npm ci</strong></td><td><code>npm ci</code></td><td>লকফাইল অনুযায়ী কঠোর ও ক্লিন ইনস্টলেশন (CI/CD-তে বাধ্যতামূলক)</td></tr><tr><td><strong>npm run</strong></td><td><code>npm run &lt;script&gt;</code></td><td><code>package.json</code>-এ সংজ্ঞায়িত কাস্টম স্ক্রিপ্ট এক্সিকিউট</td></tr><tr><td><strong>npx</strong></td><td><code>npx &lt;package&gt;</code></td><td>প্যাকেজ লোকালি ইনস্টল না করে রিমোট থেকে সরাসরি রান</td></tr><tr><td><strong>npm outdated</strong></td><td><code>npm outdated</code></td><td>প্রজেক্টের কোন কোন প্যাকেজ পুরনো হয়েছে তা অডিট</td></tr><tr><td><strong>npm update</strong></td><td><code>npm update</code></td><td>SemVer রেঞ্জ মেনে অনুমোদিত মাইনর ও প্যাচ ভার্সন আপডেট</td></tr><tr><td><strong>npm uninstall</strong></td><td><code>npm un &lt;pkg&gt;</code></td><td>প্যাকেজ ও তার রেফারেন্স সম্পূর্ণ মুছে ফেলা</td></tr><tr><td><strong>npm audit</strong></td><td><code>npm audit</code></td><td>ডিপেনডেন্সি ট্রিতে পরিচিত সিকিউরিটি দুর্বলতা স্ক্যান</td></tr><tr><td><strong>npm audit fix</strong></td><td><code>npm audit fix</code></td><td>অটোমেটিক সিকিউরিটি প্যাচ ইনস্টল করে নিরাপত্তা নিশ্চিত</td></tr><tr><td><strong>Caret (^)</strong></td><td><code>&quot;^1.2.3&quot;</code></td><td>MAJOR অপরিবর্তিত রেখে MINOR ও PATCH অটো আপডেট</td></tr><tr><td><strong>Tilde (~)</strong></td><td><code>&quot;~1.2.3&quot;</code></td><td>MAJOR ও MINOR অপরিবর্তিত রেখে শুধু PATCH অটো আপডেট</td></tr><tr><td><strong>Exact</strong></td><td><code>&quot;1.2.3&quot;</code></td><td>কোনো অটো আপডেট হবে না, হুবহু এই ভার্সন থাকবে</td></tr><tr><td><strong>Vite Dev</strong></td><td><code>vite</code> / <code>npm run dev</code></td><td>নো-বান্ডলিং নেটিভ ESM দিয়ে ইন্সট্যান্ট ডেভ সার্ভার বুট</td></tr><tr><td><strong>Vite Build</strong></td><td><code>vite build</code></td><td>Rollup ও esbuild দিয়ে অপ্টিমাইজড প্রোডাকশন বান্ডলিং</td></tr><tr><td><strong>ESLint</strong></td><td><code>npx eslint .</code></td><td>জাভাস্ক্রিপ্ট সিনট্যাক্স ভুল ও অ্যান্টি-প্যাটার্ন শনাক্ত</td></tr><tr><td><strong>Prettier</strong></td><td><code>npx prettier --write .</code></td><td>কোড ফরম্যাটিং ও স্পেসিং স্বয়ংক্রিয়ভাবে সাজানো</td></tr><tr><td><strong>.gitignore</strong></td><td><code>node_modules/</code>, <code>.env</code></td><td>সংবেদনশীল ও হেভি ফাইল গিট ট্র্যাকিং থেকে বাদ দেওয়া</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="part-banner">Part 13.1 — 13 Hands-On Practice Labs with Complete Production Solutions</div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #1</span> [BEGINNER] — Project Initialization with npm init -y</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি নতুন NPM project তৈরি করুন (<code>npm init -y</code>) এবং স্বয়ংক্রিয়ভাবে তৈরি হওয়া <code>package.json</code>-এর স্ট্রাকচার বিশ্লেষণ করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># টার্মিনালে নতুন ফোল্ডার তৈরি করে প্রজেক্ট ইনিশিয়ালাইজেশন</span>
+mkdir my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:#fde047; font-weight:600;">-p</span>roject
+cd my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:#fde047; font-weight:600;">-p</span>roject
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #1)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-js-project&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;description&quot;</span>: <span style="color:#4ade80;">&quot;Enterprise JavaScript Package&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;main&quot;</span>: <span style="color:#4ade80;">&quot;src/index.js&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;echo \&quot;</span>Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  },
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;keywords&quot;</span>: [&quot;javascript&quot;, &quot;tooling&quot;, &quot;npm&quot;],
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;author&quot;</span>: <span style="color:#4ade80;">&quot;FullStack Engineer&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;license&quot;</span>: <span style="color:#4ade80;">&quot;MIT&quot;</span>
+}</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> npm init -y কোনো প্রশ্ন ছাড়াই তাৎক্ষণিক একটি স্ট্যান্ডার্ড package.json তৈরি করে। আধুনিক প্রজেক্টে ES Module ইমপোর্ট ব্যবহারের জন্য &quot;type&quot;: &quot;module&quot; যোগ করা অত্যন্ত গুরুত্বপূর্ণ।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #2</span> [BEGINNER] — Runtime Dependency Installation &amp; ESM Usage</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি থার্ড-পার্টি লাইব্রেরি (lodash-es) ইনস্টল করুন এবং মডার্ন জাভাস্ক্রিপ্ট ফাইলে ইমপোর্ট করে অ্যারে অপারেশন পরিচালনা করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># টার্মিনালে lodash-es ইনস্টল</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash<span style="color:#fde047; font-weight:600;">-e</span>s</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #2)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// src/index.js</span>
+<span class="syn-kw">import</span> { chunk, shuffle, uniq } <span class="syn-kw">from</span> <span class="syn-str">&#x27;lodash-es&#x27;</span>;
+
+<span class="syn-kw">const</span> rawScores = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">20</span>, <span class="syn-num">40</span>, <span class="syn-num">50</span>, <span class="syn-num">10</span>, <span class="syn-num">60</span>, <span class="syn-num">70</span>, <span class="syn-num">80</span>];
+
+<span class="syn-com">// ডুপ্লিকেট সরানো</span>
+<span class="syn-kw">const</span> uniqueScores = uniq(rawScores);
+<span class="syn-fn">console</span>.log(&#x27;Unique Scores:&#x27;, uniqueScores);
+
+<span class="syn-com">// ৩টি করে চাঙ্কে বিভক্ত করা</span>
+<span class="syn-kw">const</span> scoreChunks = chunk(uniqueScores, <span class="syn-num">3</span>);
+<span class="syn-fn">console</span>.log(&#x27;Score Chunks:&#x27;, scoreChunks);
+
+<span class="syn-com">// অ্যারে এলোমেলো করা</span>
+<span class="syn-fn">console</span>.log(&#x27;Shuffled:&#x27;, shuffle(uniqueScores));</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> npm install রানটাইম লাইব্রেরিগুলোকে dependencies ফিল্ডে যুক্ত করে যা ব্রাউজার বা প্রোডাকশন সার্ভারে একচুয়াল কোড রান করতে প্রয়োজন হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #3</span> [BEGINNER] — DevDependency Installation with -D Flag</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি ডেভেলপমেন্ট-অনলি প্যাকেজ (eslint) ইনস্টল করুন এবং devDependencies-এর তাৎপর্য বুঝুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># ডেভেলপমেন্ট টুল হিসেবে ESLint ইনস্টল</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #3)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-js-project&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;lodash-es&quot;</span>: <span style="color:#4ade80;">&quot;^4.17.21&quot;</span>
+  },
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;devDependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;eslint&quot;</span>: <span style="color:#4ade80;">&quot;^9.0.0&quot;</span>
+  }
+}</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> -D বা --save-dev ফ্ল্যাগ নির্দেশ করে যে এই টুলটি কেবল কোড লেখা, লিন্টিং বা টেস্টিংয়ের সময় প্রয়োজন; প্রোডাকশন বিল্ডে বা ক্লায়েন্টের কাছে এটি শিপ করার প্রয়োজন নেই।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #4</span> [BEGINNER] — Custom NPM Scripts Creation (dev, build, start)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> package.json-এ আধুনিক স্ক্রিপ্ট পাইপলাইন কনফিগার করুন এবং টার্মিনাল থেকে npm run দিয়ে এক্সিকিউট করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># স্ক্রিপ্ট রান করার কমান্ড</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span>     # ওয়াচ মোডে লাইভ রান
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span>   # প্রোডাকশন বিল্ড ও অ্যাসেট তৈরি
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">start</span>       # প্রোডাকশন সার্ভার স্টার্ট</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #4)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch src/index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;build&quot;</span>: <span style="color:#4ade80;">&quot;echo &#x27;Building production bundle...&#x27; &amp;&amp; mkdir -p dist &amp;&amp; cp -r src/* dist/&quot;</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node dist/index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;lint&quot;</span>: <span style="color:#4ade80;">&quot;eslint src/**/*.js&quot;</span>
+  }
+}</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> npm scripts টার্মিনালে দীর্ঘ ও জটিল কমান্ড বারবার টাইপ করার ঝামেলা দূর করে এবং দলের সকল ডেভেলপারের জন্য একীভূত ও স্ট্যান্ডার্ডাইজড কমান্ড ইন্টারফেস তৈরি করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #5</span> [BEGINNER] — Critical .gitignore Configuration for Node Projects</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> node_modules এবং .env ফাইল যেন কখনো গিট রিপোজিটরিতে পুশ না হয় তার জন্য প্রোডাকশন গ্রেড .gitignore ফাইল তৈরি করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># গিট স্ট্যাটাস চেক করে ইগনোর হওয়া নিশ্চিত করা</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">git</span> status</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #5)</span><span>ENV</span></div>
+  <pre><code><span class="syn-com"># Dependencies (কখনো গিটে পুশ করবেন না, হাজার হাজার ফাইল থাকে)</span>
+<span style="color:#f1f5f9;">node_modules/</span>
+<span style="color:#f1f5f9;">/.pnp</span>
+<span style="color:#f1f5f9;">.pnp.js</span>
+<span style="color:#f1f5f9;"></span>
+<span class="syn-com"># Environment Variables &amp; Secrets (সিকিউরিটি রিস্ক)</span>
+<span style="color:#f1f5f9;">.env</span>
+<span style="color:#f1f5f9;">.env.local</span>
+<span style="color:#f1f5f9;">.env.production</span>
+<span style="color:#f1f5f9;"></span>
+<span class="syn-com"># Build Outputs &amp; Cache</span>
+<span style="color:#f1f5f9;">dist/</span>
+<span style="color:#f1f5f9;">build/</span>
+<span style="color:#f1f5f9;">.npm/</span>
+<span style="color:#f1f5f9;">.eslintcache</span>
+<span style="color:#f1f5f9;"></span>
+<span class="syn-com"># Operating System Files</span>
+<span style="color:#f1f5f9;">.DS_Store</span>
+<span style="color:#f1f5f9;">Thumbs.db</span>
+<span style="color:#f1f5f9;">npm-debug.log*</span>
+<span style="color:#f1f5f9;">yarn-debug.log*</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> node_modules গিটে পুশ করলে রিপোজিটরি সাইজ শত শত মেগাবাইট হয়ে যায়। আর .env পুশ করলে পাসওয়ার্ড বা এপিআই কি ইন্টারনেটে লিক হয়ে মারাত্মক সিকিউরিটি ব্রিচ ঘটে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #6</span> [INTERMEDIATE] — Clean Node.js Application Architecture with Watch Mode</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি স্ট্যান্ডার্ড Node.js প্রজেক্ট ফোল্ডার স্ট্রাকচার তৈরি করুন এবং Node 20+ এর নেটিভ --watch ফ্ল্যাগ দিয়ে হট-রিলোড ডেভ সার্ভার চালান।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># প্রজেক্ট রান</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #6)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// src/index.js</span>
+<span class="syn-kw">import</span> http <span class="syn-kw">from</span> <span class="syn-str">&#x27;node:http&#x27;</span>;
+
+<span class="syn-kw">const</span> PORT = <span class="syn-fn">process</span>.env.PORT || <span class="syn-num">3000</span>;
+
+<span class="syn-kw">const</span> server = http.createServer((req, res) =&gt; {
+  res.writeHead(<span class="syn-num">200</span>, { <span class="syn-str">&#x27;Content-Type&#x27;</span>: <span class="syn-str">&#x27;application/json&#x27;</span> });
+  res.end(JSON.stringify({
+    status: <span class="syn-str">&#x27;online&#x27;</span>,
+    runtime: <span class="syn-str">&#x27;Node.js LTS&#x27;</span>,
+    timestamp: <span class="syn-kw">new</span> Date().toISOString()
+  }));
+});
+
+server.<span style="color: #38bdf8; font-weight: 600;">listen</span>(PORT, () =&gt; {
+  <span class="syn-fn">console</span>.log(`🚀 Server active at http://localhost:${PORT}`);
+  <span class="syn-fn">console</span>.log(&#x27;⚡ Watching src/ <span class="syn-kw">for</span> instant code changes...&#x27;);
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> নোডজেএস ভার্সন ১৮.১১+ থেকে নোডমনের (nodemon) কোনো প্রয়োজন নেই; নেটিভ --watch ফ্ল্যাগ দিয়ে কোড এডিট করার সাথে সাথে নোড স্বয়ংক্রিয়ভাবে রিস্টার্ট হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #7</span> [INTERMEDIATE] — Modern Frontend Scaffolding with Vite</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> npm create vite@latest দিয়ে একটি আধুনিক, হাই-পারফরম্যান্স ভ্যানিলা বা রিঅ্যাক্ট ফ্রন্টএন্ড প্রজেক্ট তৈরি করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># ১. Vite দিয়ে প্রজেক্ট স্ক্যাফোল্ড করা</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">create</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span>@latest enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend -- <span style="color:#fde047; font-weight:600;">--template</span> vanilla
+
+<span class="syn-com"># ২. ডিরেক্টরিতে প্রবেশ করে ডিপেনডেন্সি ইনস্টল</span>
+cd enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span>
+
+<span class="syn-com"># ৩. লাইভ ডেভ সার্ভার বুট</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #7)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// vite.config.js (Production Ready Configuration)</span>
+<span class="syn-kw">import</span> { defineConfig } <span class="syn-kw">from</span> <span class="syn-str">&#x27;vite&#x27;</span>;
+
+<span class="syn-kw">export</span> <span class="syn-kw">default</span> defineConfig({
+  server: {
+    port: <span class="syn-num">5173</span>,
+    open: <span class="syn-bool">true</span>
+  },
+  build: {
+    outDir: <span class="syn-str">&#x27;dist&#x27;</span>,
+    minify: <span class="syn-str">&#x27;esbuild&#x27;</span>,
+    sourcemap: <span class="syn-bool">false</span>
+  }
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> Vite ডেভেলপমেন্ট টাইমে কোনো বান্ডলিং করে না; ব্রাউজারের নেটিভ ES Modules ব্যবহার করে মিলিসেকেন্ডে ডেভ সার্ভার লোড করে, যা ওয়েপ্যাকের তুলনায় ৫০ গুণ দ্রুত।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #8</span> [INTERMEDIATE] — Production Build Pipeline &amp; Asset Inspection</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি প্রোডাকশন বিল্ড তৈরি করুন (<code>npm run build</code>) এবং dist/ ফোল্ডারের মিনিফাইড জাভাস্ক্রিপ্ট ও হ্যাশড অ্যাসেট পরীক্ষা করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># বিল্ড কমান্ড রান</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span>
+
+<span class="syn-com"># বিল্ড আউটপুট প্রিভিউ</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> preview</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #8)</span><span>HTML</span></div>
+  <pre><code>&lt;!-- dist/index.html (মিনিফাইড প্রোডাকশন আর্কিটেকচার) --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;link rel=&quot;stylesheet&quot; crossorigin href=&quot;/assets/index-D7h2k9La.css&quot;&gt;
+  &lt;script type=&quot;module&quot; crossorigin src=&quot;/assets/index-Bq1x90Lm.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> বিল্ডের সময় Rollup অপ্রয়োজনীয় কোড মুছে ফেলে (Tree Shaking), ভ্যারিয়েবলের নাম ছোট করে (Minification) এবং ক্যাশিংয়ের জন্য ফাইলের নামের সাথে হ্যাশ (যেমন: index-Bq1x90Lm.js) যোগ করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #9</span> [INTERMEDIATE] — Deep Comparative Matrix: npm install vs npm ci vs npm update</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> npm install, npm ci এবং npm update-এর প্রযুক্তিগত পার্থক্য, কাজের মেকানিজম এবং কখন কোনটি ব্যবহার করতে হবে তা তুলনামূলক চার্টে উপস্থাপন করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># প্রজেক্ট ও সিআই পাইপলাইনে সঠিক কমান্ড নির্বাচন</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span>    # নতুন প্যাকেজ যোগ বা লোকাল ডেভেলপমেন্ট শুরুর সময়
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">ci</span>         # GitHub Actions বা Jenkins সিআই/সিডি বিল্ডে ১০০% নির্ভরযোগ্য
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">update</span>     # প্যাকেজগুলোর অনুমোদিত লেটেস্ট মাইনর/প্যাচ আপগ্রেড করতে</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> npm install লকফাইল পরিবর্তন করতে পারে, কিন্তু npm ci কখনো লকফাইল স্পর্শ করে না; লকফাইলে কোনো অসঙ্গতি থাকলে npm ci সঙ্গে সঙ্গে এরর দিয়ে বিল্ড থামিয়ে দেয়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #10</span> [ADVANCED] — Full-Stack Multi-Package Monorepo Architecture</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> frontend/ (Vite) এবং backend/ (Express) আলাদা package.json ও লকফাইল দিয়ে ম্যানেজ করার একটি স্বয়ংসম্পূর্ণ প্রোডাকশন আর্কিটেকচার।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># রুট লেভেল থেকে সাব-প্রজেক্ট চালানোর কমান্ড</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span>:frontend   # ফ্রন্টএন্ড স্টার্ট
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span>:backend    # ব্যাকএন্ড স্টার্ট</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #10)</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;fullstack-platform-root&quot;</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;private&quot;</span>: <span style="color:#c084fc; font-weight: <span style="color:#fb923c;">600</span>;">true</span>,
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    &quot;install:all&quot;: <span style="color:#4ade80;">&quot;npm --prefix backend install &amp;&amp; npm --prefix frontend install&quot;</span>,
+    &quot;dev:backend&quot;: <span style="color:#4ade80;">&quot;npm --prefix backend run dev&quot;</span>,
+    &quot;dev:frontend&quot;: <span style="color:#4ade80;">&quot;npm --prefix frontend run dev&quot;</span>,
+    &quot;build:frontend&quot;: <span style="color:#4ade80;">&quot;npm --prefix frontend run build&quot;</span>
+  }
+}</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> মোনোরিপো স্ট্রাকচারে ক্লায়েন্ট ও সার্ভারের কোড একই রিপোজিটরিতে আলাদা মডিউলে থাকে, ফলে একই সাথে সম্পূর্ণ ফুলস্ট্যাক প্রজেক্ট গিটহাবে মেইনটেইন করা সহজ হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #11</span> [ADVANCED] — Automated Code Quality Pipeline: ESLint + Prettier Synergy</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> প্রজেক্টে ESLint ও Prettier কনফিগার করুন যাতে কোড সেভ করার সাথে সাথে এরর ধরা পড়ে এবং অটো-ফরম্যাটিং সম্পন্ন হয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># লিন্টার ও ফরম্যাটার ডিপেনডেন্সি ইনস্টল</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">prettier</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span><span style="color:#fde047; font-weight:600;">-c</span>onfig-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">prettier</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #11)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// .eslintrc.json</span>
+{
+  <span class="syn-str">&quot;env&quot;</span>: {
+    <span class="syn-str">&quot;browser&quot;</span>: <span class="syn-bool">true</span>,
+    <span class="syn-str">&quot;es2024&quot;</span>: <span class="syn-bool">true</span>,
+    <span class="syn-str">&quot;node&quot;</span>: <span class="syn-bool">true</span>
+  },
+  <span class="syn-str">&quot;extends&quot;</span>: [&quot;eslint:recommended<span class="syn-str">&quot;, &quot;</span>prettier<span class="syn-str">&quot;],
+  &quot;</span>parserOptions<span class="syn-str">&quot;: {
+    &quot;</span>ecmaVersion<span class="syn-str">&quot;: &quot;</span>latest<span class="syn-str">&quot;,
+    &quot;</span>sourceType<span class="syn-str">&quot;: &quot;</span><span class="syn-fn">module</span><span class="syn-str">&quot;
+  },
+  &quot;</span>rules<span class="syn-str">&quot;: {
+    &quot;</span>no-unused-vars<span class="syn-str">&quot;: &quot;</span>warn<span class="syn-str">&quot;,
+    &quot;</span>no-<span class="syn-fn">console</span><span class="syn-str">&quot;: &quot;</span>off<span class="syn-str">&quot;,
+    &quot;</span>prefer-<span class="syn-kw">const</span><span class="syn-str">&quot;: &quot;</span>error<span class="syn-str">&quot;
+  }
+}
+
+// .prettierrc
+{
+  &quot;</span>semi<span class="syn-str">&quot;: true,
+  &quot;</span>singleQuote<span class="syn-str">&quot;: true,
+  &quot;</span>tabWidth<span class="syn-str">&quot;: 2,
+  &quot;</span>trailingComma<span class="syn-str">&quot;: &quot;</span>es5&quot;
+}</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> ESLint মূলত কোডের কোয়ালিটি (বাগ, অব্যবহৃত ভ্যারিয়েবল) চেক করে আর Prettier কোডের স্টাইল ও বিউটিফিকেশন (ইন্ডেন্টেশন, কোটেশন) নিয়ন্ত্রণ করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #12</span> [ADVANCED] — Secure Environment Variables Management with dotenv</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> ডেভেলপমেন্ট ও প্রোডাকশনে পোর্ট, ডেটাবেস স্ট্রিং এবং এপিআই কি নিরাপদে হ্যান্ডেল করার প্রোডাকশন আর্কিটেকচার।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># dotenv লাইব্রেরি ইনস্টল</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> dotenv</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #12)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// .env (Secret Credentials - Git Ignored)</span>
+PORT=<span class="syn-num">5000</span>
+DATABASE_URL=&quot;postgresql://admin:superSecretPassword@localhost:<span class="syn-num">5432</span>/production_db<span class="syn-str">&quot;
+JWT_SECRET=&quot;</span>d83f98a21f7c8e9b4a123456789abcdef<span class="syn-str">&quot;
+
+// .env.example (Public Template - Committed to Git)
+PORT=5000
+DATABASE_URL=&quot;</span>postgresql://user:password@localhost:<span class="syn-num">5432</span>/dbname<span class="syn-str">&quot;
+JWT_SECRET=&quot;</span>your_jwt_secret_key_here&quot;
+
+<span class="syn-com">// src/config.js (ESM Environment Loader)</span>
+<span class="syn-kw">import</span> <span class="syn-str">&#x27;dotenv/config&#x27;</span>;
+
+<span class="syn-kw">export</span> <span class="syn-kw">const</span> <span style="color: #38bdf8; font-weight: 600;">config</span> = {
+  port: <span class="syn-fn">process</span>.env.PORT || <span class="syn-num">3000</span>,
+  dbUrl: <span class="syn-fn">process</span>.env.DATABASE_URL,
+  jwtSecret: <span class="syn-fn">process</span>.env.JWT_SECRET
+};
+
+<span class="syn-kw">if</span> (!<span style="color: #38bdf8; font-weight: 600;">config</span>.jwtSecret) {
+  <span class="syn-kw">throw</span> <span class="syn-kw">new</span> Error(&#x27;FATAL: JWT_SECRET environment variable is missing!&#x27;);
+}</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> .env ফাইল সবসময় গিট ইগনোর থাকবে এবং রিপোজিটরিতে কেবল .env.example কমিট করতে হবে যাতে অন্য ডেভেলপাররা প্রয়োজনীয় ভ্যারিয়েবলের তালিকা দেখতে পায়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #13</span> [ADVANCED] — Supply Chain Security Audit &amp; Vulnerability Remediation</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> npm audit চালিয়ে ডিপেনডেন্সির সিকিউরিটি ত্রুটি পরীক্ষা, সিভিই (CVE) স্কোর বিশ্লেষণ এবং নিরাপদে ফিক্স করার বাস্তব কমান্ড।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
+  <pre><code><span class="syn-com"># ১. ডিপেনডেন্সি সিকিউরিটি স্ক্যান</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span>
+
+<span class="syn-com"># ২. সেমিকম্প্যাটিবল অটো-ফিক্স</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span>
+
+<span class="syn-com"># ৩. ব্রেকিং চেঞ্জ রিভিউসহ ফোর্স ফিক্স (সতর্কতার সাথে)</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span> <span style="color:#fde047; font-weight:600;">--force</span>
+
+<span class="syn-com"># ৪. প্রোডাকশন অনলি অডিট (devDependencies বাদ দিয়ে)</span>
+<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#fde047; font-weight:600;">--omit</span>=<span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #13)</span><span>ENV</span></div>
+  <pre><code><span class="syn-com"># NPM Security Audit Summary</span>
+<span style="color:#f1f5f9;">found 0 vulnerabilities (Dependencies Verified Safe ✅)</span>
+<span class="syn-com"># যদি কোনো হাই/ক্রিটিক্যাল রিস্ক পাওয়া যায়:</span>
+<span class="syn-com"># 1 High Severity Vulnerability found in &#x27;cross-spawn&#x27;</span>
+<span class="syn-com"># Fixed by upgrading package to &gt;=7.0.5</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> সফটওয়্যার সাপ্লাই চেইন অ্যাটাক (যেমন ক্ষতিকর ম্যালওয়্যার লাইব্রেরি ইনজেকশন) থেকে সুরক্ষা নিশ্চিত করতে নিয়মিত npm audit চালানো বাধ্যতামূলক।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">34.68</span> 🎯 Final Mental Map — আধুনিক জাভাস্ক্রিপ্ট টুলিংয়ের পূর্ণাঙ্গ মানচিত্র</div>
+      <p class="text-p">পুরো Chapter 34-এর টুলিং, প্যাকেজ ও আর্কিটেকচারাল পাইপলাইন একসাথে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 FULL TOOLING & NPM ARCHITECTURE MAP</div>
+  <pre class="ascii-tree-content">JAVASCRIPT TOOLING ECOSYSTEM
+                                 <span style="color: #475569;">│</span>
+         <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┐</span>
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+      PROJECT                 PACKAGE                 MODERN
+     MANIFEST               DEPENDENCIES             BUILDING
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+    <span style="color: #fde047; font-weight: 600;">package.json</span>            <span style="color: #fde047; font-weight: 600;">node_modules</span>               <span style="color: #c084fc; font-weight: 700;">Vite</span>
+    <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> name &amp; version      <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Direct Deps            <span style="color: #c084fc; font-weight: 700;">Rollup</span>
+    <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> scripts (run/dev)   <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Transitive Deps        <span style="color: #c084fc; font-weight: 700;">esbuild</span>
+    <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> type: &quot;module&quot;           <span style="color: #475569;">│</span>                     <span style="color: #34d399; font-weight: 700;">Tree Shaking</span>
+         <span style="color: #475569;">│</span>                  <span style="color: #fde047; font-weight: 600;">package-lock.json</span>          <span style="color: #34d399; font-weight: 700;">Minification</span>
+         <span style="color: #475569;">│</span>                  (Deterministic Lock)       Source Maps
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+         <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┘</span>
+                                 <span style="color: #475569;">│</span>
+                                 <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                     DEVELOPER WORKFLOW &amp; PIPELINE
+                                 <span style="color: #475569;">│</span>
+       <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────────────</span><span style="color: #475569;">┐</span>
+       <span style="color: #475569;">│</span>                         <span style="color: #475569;">│</span>                         <span style="color: #475569;">│</span>
+   CODE QUALITY              SECURITY                 DEPLOYMENT
+       <span style="color: #475569;">│</span>                         <span style="color: #475569;">│</span>                         <span style="color: #475569;">│</span>
+   <span style="color: #c084fc; font-weight: 700;">ESLint</span> (Linter)          <span style="color: #34d399; font-weight: 700;">npm audit</span>                <span style="color: #34d399; font-weight: 700;">npm ci</span> (CI/CD)
+   <span style="color: #c084fc; font-weight: 700;">Prettier</span> (Formatter)     .env (Secrets)           dist/ Output
+   Git Hooks (Husky)        .gitignore (Ignored)     <span style="color: #c084fc; font-weight: 700;">Production</span> Ready</pre>
+</div>
+      <div class="def-box" style="margin-top: 6px;">
+        🏆 <strong>এক লাইনে Chapter 34:</strong> NPM হলো জাভাস্ক্রিপ্ট প্রজেক্টের প্যাকেজ ও ডিপেনডেন্সি ম্যানেজমেন্ট সিস্টেম; আর package.json, lockfile, scripts, Vite এবং কোয়ালিটি টুলস (ESLint/Prettier) মিলে একটি মডার্ন জাভাস্ক্রিপ্ট প্রজেক্টের সম্পূর্ণ লাইফসাইকেল ও প্রোডাকশন পাইপলাইন পরিচালনা করে।
+      </div>
+
+      <div class="section-subhead" style="margin-top: 8px;">🔗 Curriculum Progression: Chapter 33 → 34 → 35</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">📦 ROADMAP CONTINUITY PIPELINE</div>
+  <pre class="ascii-tree-content">Chapter 33: Web Performance &amp; Optimization
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+অ্যাপ্লিকেশনের লোড টাইম, রেন্ডারিং স্পিড ও কোর ওয়েব ভাইটালস অপ্টিমাইজেশন
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 34: <span style="color: #c084fc; font-weight: 700;">NPM</span> &amp; Modern JavaScript Tooling (THIS CHAPTER)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+প্যাকেজ ম্যানেজমেন্ট, প্রজেক্ট স্ক্যাফোল্ডিং, বান্ডলিং (<span style="color: #c084fc; font-weight: 700;">Vite</span>) ও ওয়ার্কফ্লো অটোমেশন
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 35: Testing JavaScript
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Unit Testing, Integration Testing, Assertions, Vitest/Jest, Mocking &amp; TDD</pre>
+</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 35 — Testing JavaScript | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid #64748b;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #334155;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0 5px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 2.5px 8px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+      text-transform: uppercase;
+    }
+    .code-box pre {
+      margin: 0;
+      padding: 6px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .code-box code {
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.35;
+      color: #f1f5f9;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .syn-kw { color: #f472b6; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #4ade80; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-35-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 35</span>
+        </div>
+      </div>
+      <div class="banner-sub">TESTING JAVASCRIPT, UNIT &amp; INTEGRATION TESTING, JEST, VITEST, MOCKING, TDD &amp; CI/CD AUTOMATION</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">72 Modules + 6 Practice Labs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 29 — Quality Assurance &amp; Testing</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Unit, Integration, E2E, Mocks &amp; TDD</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">Jest / Vitest / Playwright 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🧪</span> Testing JavaScript — নির্ভরযোগ্যতা, বাগ প্রতিরোধ ও আত্মবিশ্বাসী রিফ্যাক্টরিং
+      </div>
+      <p class="text-p">
+        প্রফেশনাল সফটওয়্যার ডেভেলপমেন্টে কোড শুধু কাজ করলেই যথেষ্ট নয়—ভবিষ্যতে নতুন ফিচার যুক্ত করার পর পূর্বের কোনো কার্যকারিতা ভেঙে পড়ল কিনা (Regression) তা স্বয়ংক্রিয়ভাবে নিশ্চিত করাই টেস্টিংয়ের লক্ষ্য। এই চ্যাপ্টারে আমরা <strong>Unit Testing, Integration Testing, E2E Testing, Testing Pyramid, Jest/Vitest Assertions, Setup &amp; Teardown Hooks, Async Testing, Mocking, Code Coverage, Test-Driven Development (TDD)</strong> এবং CI/CD টেস্ট অটোমেশন পাইপলাইন শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Testing Fundamentals</div>
+        <div class="roadmap-item"><span>📌</span> 2. Testing Pyramid</div>
+        <div class="roadmap-item"><span>📌</span> 3. Jest &amp; Assertions</div>
+        <div class="roadmap-item"><span>📌</span> 4. Matchers &amp; Suites</div>
+        <div class="roadmap-item"><span>📌</span> 5. Async Testing</div>
+        <div class="roadmap-item"><span>📌</span> 6. Mocking &amp; Spies</div>
+        <div class="roadmap-item"><span>📌</span> 7. Code Coverage</div>
+        <div class="roadmap-item"><span>📌</span> 8. TDD Red-Green-Refactor</div>
+        <div class="roadmap-item"><span>📌</span> 9. E2E with Playwright</div>
+        <div class="roadmap-item"><span>📌</span> 10. CI/CD Pipeline</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Testing Fundamentals, Motivations & Automated Testing (35.1 – 35.5)</div>
+    <div class="study-card" id="sec-35-1">
+      <div class="card-title"><span class="badge-num">35.1</span> Testing কী?</div>
+      <p class="text-p"><strong>Testing</strong> হলো code-এর expected behavior এবং actual behavior compare করে দেখা। সহজভাবে:</p>
+      <div class="def-box">💡 “আমি যে output আশা করছি, আমার program কি সত্যিই সেই output দিচ্ছে?”</div>
+      <div class="section-subhead">🔹 Real-Life Example</div>
+      <p class="text-p">ধরো তুমি একটা calculator বানিয়েছ। তুমি আশা করছ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">2 + 3 = 5</pre>
+</div>
+      <p class="text-p">Testing করে আমরা যাচাই করব:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>add(<span class="syn-num">2</span>, <span class="syn-num">3</span>) === <span class="syn-num">5</span>;</code></pre>
+</div>
+      <p class="text-p">যদি <code>5</code> আসে → Test Pass ✅ অন্য কিছু আসে → Test Fail ❌</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.2</span> কেন Testing দরকার?</div>
+      <p class="text-p">ধরো তোমার একটি বড় e-commerce website আছে। এখানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Login
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Product Search
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Add to Cart
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Checkout
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Payment
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Order Confirmation</pre>
+</div>
+      <p class="text-p">তুমি Login feature পরিবর্তন করলে ভুল করে Cart-এর code নষ্ট হয়ে যেতে পারে। Testing থাকলে automatically ধরা যেতে পারে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Login Test        ✅
+Search Test       ✅
+Cart Test         ❌
+Payment Test      ✅</pre>
+</div>
+      <p class="text-p">তখন developer বুঝতে পারবে কোথায় সমস্যা হয়েছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.3</span> Testing-এর প্রধান উদ্দেশ্য</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>উদ্দেশ্য</th><th>অর্থ</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Bug Detection</td><td>Bug খুঁজে বের করা</td></tr><tr><td>Reliability</td><td>Application reliable রাখা</td></tr><tr><td>Regression Prevention</td><td>পুরোনো feature নষ্ট হয়েছে কিনা দেখা</td></tr><tr><td>Refactoring Safety</td><td>Code পরিবর্তন করেও functionality ঠিক রাখা</td></tr><tr><td>Documentation</td><td>Code কীভাবে behave করার কথা তা বোঝানো</td></tr><tr><td>Quality</td><td>Overall software quality বৃদ্ধি</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.4</span> Manual Testing vs Automated Testing</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🧪 Manual Testing</div>
+      <p class="text-p">Developer/User নিজে application ব্যবহার করে পরীক্ষা করে। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Open website
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Enter email
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Enter password
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Click Login
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Check result</pre>
+</div>
+      <div class="section-subhead">🔹 সুবিধা</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>সহজ</li>
+        <li>UI/UX যাচাই করা যায়</li>
+        <li>Human behavior বোঝা যায়</li>
+      </ul>
+      <div class="section-subhead">🔹 অসুবিধা</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>সময় বেশি লাগে</li>
+        <li>বারবার করতে হয়</li>
+        <li>Human error হতে পারে</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.5</span> Automated Testing</div>
+      <p class="text-p">Code নিজেই অন্য code-এর behavior পরীক্ষা করে। উদাহরণ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(add(<span class="syn-num">2</span>, <span class="syn-num">3</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">5</span>);</code></pre>
+</div>
+      <p class="text-p">এখানে মানুষকে manually calculator চালাতে হচ্ছে না। Test framework automatically check করবে।</p>
+    </div>
+    <div class="part-banner">Part 02 — Testing Pyramid & Test Types (Unit, Integration, E2E, Regression) (35.6 – 35.12)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.6</span> Testing-এর Levels</div>
+      <p class="text-p">JavaScript application-এ সাধারণত কয়েক ধরনের testing দেখা যায়:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Testing
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 700;">Unit Testing</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 700;">Integration Testing</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 700;">End-to-End Testing</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 700;">Component Testing</span>
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #fde047; font-weight: 700;"><span style="color: #f43f5e; font-weight: 700;">Regression</span> Testing</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.7</span> Unit Testing</div>
+      <p class="text-p"><strong>Unit Test</strong> হলো application-এর সবচেয়ে ছোট testable অংশ পরীক্ষা করা। যেমন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>
+      <p class="text-p">এখন আমরা শুধু <code>add()</code> function-টি test করব।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Input <span style="color: #38bdf8; font-weight: 700;">→</span> add() <span style="color: #38bdf8; font-weight: 700;">→</span> Output</pre>
+</div>
+      <div class="section-subhead">🔹 Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(add(<span class="syn-num">2</span>, <span class="syn-num">3</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">5</span>);</code></pre>
+</div>
+      <p class="text-p">এখানে পুরো application test করা হচ্ছে না। শুধু:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">add()</pre>
+</div>
+      <p class="text-p">test করা হচ্ছে।</p>
+      <div class="section-subhead">🔹 Real-Life Example</div>
+      <p class="text-p">একটি restaurant-এর kitchen-এ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Rice cooking <span style="color: #38bdf8; font-weight: 700;">→</span> আলাদা <span style="color: #c084fc; font-weight: 700;">test</span>
+Chicken cooking <span style="color: #38bdf8; font-weight: 700;">→</span> আলাদা <span style="color: #c084fc; font-weight: 700;">test</span>
+Sauce <span style="color: #38bdf8; font-weight: 700;">→</span> আলাদা <span style="color: #c084fc; font-weight: 700;">test</span></pre>
+</div>
+      <p class="text-p">প্রতিটি ছোট অংশ আলাদাভাবে ঠিক আছে কিনা পরীক্ষা করা = Unit Testing-এর মতো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.8</span> Integration Testing</div>
+      <p class="text-p">Integration Testing-এ একাধিক component/module একসাথে কাজ করছে কিনা test করা হয়। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Login Function
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Authentication Service
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Database</pre>
+</div>
+      <p class="text-p">শুধু Login function নয়। পুরো interaction test করা হচ্ছে।</p>
+      <div class="section-subhead">🔹 Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>loginUser()
+    ↓
+API
+    ↓
+Database
+    ↓
+User Response</code></pre>
+</div>
+      <p class="text-p">এগুলো একসাথে ঠিকভাবে কাজ করছে কিনা পরীক্ষা করা হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.9</span> Unit vs Integration</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Unit Testing</th><th>Integration Testing</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ছোট অংশ test</td><td>একাধিক অংশ test</td></tr><tr><td>সাধারণত isolated</td><td>Components interact করে</td></tr><tr><td>দ্রুত</td><td>তুলনামূলক ধীর</td></tr><tr><td>Function test</td><td>API + DB ইত্যাদি test</td></tr><tr><td>সহজ debugging</td><td>Debugging তুলনামূলক কঠিন</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.10</span> End-to-End Testing</div>
+      <p class="text-p"><strong>E2E Testing</strong> পুরো application-এর user journey পরীক্ষা করে। ধরো একটি shopping website:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Open Website
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Login
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Search Product
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Open Product
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Add Cart
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Checkout
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Payment
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Order Complete</pre>
+</div>
+      <p class="text-p">পুরো flow test করা হচ্ছে। এটাই End-to-End Testing।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.11</span> Component Testing</div>
+      <p class="text-p">বিশেষ করে React application-এ Component Testing গুরুত্বপূর্ণ। ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">&lt;Button /&gt;</pre>
+</div>
+      <p class="text-p">Test করা হচ্ছে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Button render হচ্ছে?</li>
+        <li>Text ঠিক আছে?</li>
+        <li>Click করলে function call হচ্ছে?</li>
+        <li>Disabled হলে কাজ করছে না?</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.12</span> Regression Testing</div>
+      <p class="text-p">ধরো তোমার application আগে ঠিকভাবে কাজ করছিল। তুমি নতুন feature যোগ করলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">New Feature
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Old Feature
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Broken ❌</pre>
+</div>
+      <p class="text-p">নতুন change-এর কারণে পুরোনো functionality নষ্ট হয়েছে কিনা check করা হলো <strong>Regression Testing</strong>।</p>
+    </div>
+    <div class="part-banner">Part 03 — Test Cases, Scenarios, Assertions & Jest Setup (35.13 – 35.18)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.13</span> Test Case কী?</div>
+      <p class="text-p">একটি নির্দিষ্ট behavior পরীক্ষা করার জন্য যে condition এবং expected result তৈরি করা হয় সেটিই Test Case। উদাহরণ:</p>
+      <div class="section-subhead">🔹 Login Test Case</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Test:
+Valid email + valid password
+
+Expected:
+Login successful</pre>
+</div>
+      <p class="text-p">আরেকটি:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Test:
+Valid email + wrong password
+
+Expected:
+<span style="color: #f43f5e; font-weight: 700;">Error</span> message</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.14</span> Test Scenario vs Test Case</div>
+      <div class="section-subhead">🔹 Test Scenario</div>
+      <p class="text-p">High-level requirement।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Test Login functionality</pre>
+</div>
+      <div class="section-subhead">🔹 Test Case</div>
+      <p class="text-p">Specific condition।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Valid email + valid password
+Valid email + invalid password
+Empty email
+Empty password
+Invalid email format</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.15</span> Assertion কী?</div>
+      <p class="text-p">Testing-এর সবচেয়ে গুরুত্বপূর্ণ concept-এর একটি হলো <strong>Assertion</strong>। Assertion হলো:</p>
+      <div class="def-box">💡 “আমি যে result আশা করছি, actual result কি সেটার সাথে match করছে?”</div>
+      <p class="text-p">উদাহরণ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(<span class="syn-num">2</span> + <span class="syn-num">3</span>).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">5</span>);</code></pre>
+</div>
+      <p class="text-p">এখানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Expected <span style="color: #38bdf8; font-weight: 700;">→</span> 5
+Actual   <span style="color: #38bdf8; font-weight: 700;">→</span> 5</pre>
+</div>
+      <p class="text-p">তাই:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">PASS</span> ✅</pre>
+</div>
+      <p class="text-p">যদি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(<span class="syn-num">2</span> + <span class="syn-num">3</span>).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">6</span>);</code></pre>
+</div>
+      <p class="text-p">তাহলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Expected <span style="color: #38bdf8; font-weight: 700;">→</span> 6
+Actual   <span style="color: #38bdf8; font-weight: 700;">→</span> 5
+
+<span style="color: #f43f5e; font-weight: 700;">FAIL</span> ❌</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.16</span> Jest কী?</div>
+      <p class="text-p">JavaScript testing-এর জন্য বহুল ব্যবহৃত একটি testing framework হলো <strong>Jest</strong>। Jest দিয়ে আমরা:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Unit Testing</li>
+        <li>Integration Testing</li>
+        <li>Mocking</li>
+        <li>Assertions</li>
+        <li>Coverage</li>
+      </ul>
+      <p class="text-p">ইত্যাদি করতে পারি।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.17</span> Jest Install</div>
+      <p class="text-p">Project তৈরি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
+</div>
+      <p class="text-p">Jest install:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">--save-dev</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">jest</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.18</span> Simple Jest Test</div>
+      <p class="text-p">ধরো:</p>
+      <div class="section-subhead">🔹 <code>math.js</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-fn">module</span>.<span class="syn-fn">exports</span> = { add };</code></pre>
+</div>
+      <p class="text-p">Test file:</p>
+      <div class="section-subhead">🔹 <code>math.test.js</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> { add } = <span class="syn-fn">require</span>(&quot;./math<span class="syn-str">&quot;);
+
+test(&quot;</span><span class="syn-num">2</span> + <span class="syn-num">3</span> should equal <span class="syn-num">5</span>&quot;, () =&gt; {
+  <span class="syn-fn">expect</span>(add(<span class="syn-num">2</span>, <span class="syn-num">3</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">5</span>);
+});</code></pre>
+</div>
+      <p class="text-p">Run:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">jest</span></code></pre>
+</div>
+      <p class="text-p">Expected result:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">PASS</span> ./math.<span style="color: #c084fc; font-weight: 700;">test</span>.js
+<span style="color: #4ade80; font-weight: bold;">✓</span> 2 + 3 should equal 5</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 04 — Core Jest Matchers (toBe, toEqual, toContain, Truthy/Falsy) (35.19 – 35.28)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.19</span> <code>test()</code> কী?</div>
+      <p class="text-p">Jest-এর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>();</code></pre>
+</div>
+      <p class="text-p">একটি test define করে। Syntax:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;<span class="syn-fn">test</span> description&quot;, () =&gt; {
+  <span class="syn-com">// test code</span>
+});</code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;addition works&quot;, () =&gt; {
+  <span class="syn-fn">expect</span>(<span class="syn-num">2</span> + <span class="syn-num">2</span>).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">4</span>);
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.20</span> <code>expect()</code> কী?</div>
+      <p class="text-p"><code>expect()</code> actual value-এর ওপর assertion করার জন্য ব্যবহার করা হয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(value);</code></pre>
+</div>
+      <p class="text-p">তারপর matcher:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>.<span style="color: #38bdf8; font-weight: 600;">toBe</span>()
+.<span style="color: #38bdf8; font-weight: 600;">toEqual</span>()
+.<span style="color: #38bdf8; font-weight: 600;">toContain</span>()
+.toBeTruthy()
+.toBeFalsy()</code></pre>
+</div>
+      <p class="text-p">ইত্যাদি।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.21</span> <code>toBe()</code></div>
+      <p class="text-p">Primitive value comparison-এর জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(<span class="syn-num">5</span>).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">5</span>);</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(&quot;Hello<span class="syn-str">&quot;).toBe(&quot;</span>Hello&quot;);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.22</span> <code>toEqual()</code></div>
+      <p class="text-p">Objects বা Arrays-এর content compare করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>({ name: <span class="syn-str">&quot;Ripon&quot;</span> }).<span style="color: #38bdf8; font-weight: 600;">toEqual</span>({ name: <span class="syn-str">&quot;Ripon&quot;</span> });</code></pre>
+</div>
+      <p class="text-p">Array:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>([<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>]).<span style="color: #38bdf8; font-weight: 600;">toEqual</span>([<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>]);</code></pre>
+</div>
+      <div class="section-subhead">🔹 গুরুত্বপূর্ণ</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">toBe</span>();</code></pre>
+</div>
+      <p class="text-p">আর</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">toEqual</span>();</code></pre>
+</div>
+      <p class="text-p">এক জিনিস নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.23</span> Truthy / Falsy Testing</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(<span class="syn-bool">true</span>).toBeTruthy();</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(<span class="syn-bool">false</span>).toBeFalsy();</code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> isLoggedIn(user) {
+  <span class="syn-kw">return</span> Boolean(user);
+}</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(isLoggedIn({ name: <span class="syn-str">&quot;Ripon&quot;</span> })).toBeTruthy();</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.24</span> <code>toContain()</code></div>
+      <p class="text-p">Array বা string-এর মধ্যে কিছু আছে কিনা:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>([&quot;HTML<span class="syn-str">&quot;, &quot;</span>CSS<span class="syn-str">&quot;, &quot;</span>JavaScript<span class="syn-str">&quot;]).toContain(&quot;</span>JavaScript&quot;);</code></pre>
+</div>
+      <p class="text-p">String:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(&quot;Hello World<span class="syn-str">&quot;).toContain(&quot;</span>World&quot;);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.25</span> <code>toBeNull()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(<span class="syn-bool">null</span>).<span style="color: #38bdf8; font-weight: 600;">toBeNull</span>();</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.26</span> <code>toBeUndefined()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> value;
+
+<span class="syn-fn">expect</span>(value).<span style="color: #38bdf8; font-weight: 600;">toBeUndefined</span>();</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.27</span> <code>toBeDefined()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> name = <span class="syn-str">&quot;Ripon&quot;</span>;
+
+<span class="syn-fn">expect</span>(name).<span style="color: #38bdf8; font-weight: 600;">toBeDefined</span>();</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.28</span> Multiple Tests</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> multiply(a, b) {
+  <span class="syn-kw">return</span> a * b;
+}</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;<span class="syn-num">2</span> × <span class="syn-num">3</span> = <span class="syn-num">6</span><span class="syn-str">&quot;, () =&gt; {
+  expect(multiply(2, 3)).toBe(6);
+});
+
+test(&quot;</span><span class="syn-num">5</span> × <span class="syn-num">4</span> = <span class="syn-num">20</span><span class="syn-str">&quot;, () =&gt; {
+  expect(multiply(5, 4)).toBe(20);
+});
+
+test(&quot;</span><span class="syn-num">10</span> × <span class="syn-num">0</span> = <span class="syn-num">0</span>&quot;, () =&gt; {
+  <span class="syn-fn">expect</span>(multiply(<span class="syn-num">10</span>, <span class="syn-num">0</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">0</span>);
+});</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 05 — Test Suites (describe) & Lifecycle Hooks (Setup & Teardown) (35.29 – 35.34)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.29</span> <code>describe()</code></div>
+      <p class="text-p">Related tests group করার জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">describe</span>(&quot;Math Tests<span class="syn-str">&quot;, () =&gt; {
+  test(&quot;</span>addition<span class="syn-str">&quot;, () =&gt; {
+    expect(2 + 3).toBe(5);
+  });
+
+  test(&quot;</span>multiplication&quot;, () =&gt; {
+    <span class="syn-fn">expect</span>(<span class="syn-num">2</span> * <span class="syn-num">3</span>).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">6</span>);
+  });
+});</code></pre>
+</div>
+      <p class="text-p">Structure:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Math Tests
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> addition
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> multiplication</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.30</span> Setup &amp; Teardown</div>
+      <p class="text-p">কখনো test-এর আগে বা পরে কিছু কাজ করতে হয়। যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Connect database
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Run <span style="color: #c084fc; font-weight: 700;">test</span>
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Disconnect database</pre>
+</div>
+      <p class="text-p">Jest-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">beforeEach</span>();
+<span class="syn-fn">afterEach</span>();
+<span class="syn-fn">beforeAll</span>();
+<span class="syn-fn">afterAll</span>();</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.31</span> <code>beforeEach()</code></div>
+      <p class="text-p">প্রতিটি test-এর আগে চলে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">beforeEach</span>(() =&gt; {
+  <span class="syn-fn">console</span>.log(&quot;Before <span class="syn-fn">test</span>&quot;);
+});</code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">beforeEach</span>(() =&gt; {
+  <span class="syn-fn">console</span>.log(&quot;Preparing...&quot;);
+});
+
+<span class="syn-fn">test</span>(&quot;Test <span class="syn-num">1</span><span class="syn-str">&quot;, () =&gt; {
+  expect(1 + 1).toBe(2);
+});
+
+test(&quot;</span>Test <span class="syn-num">2</span>&quot;, () =&gt; {
+  <span class="syn-fn">expect</span>(<span class="syn-num">2</span> + <span class="syn-num">2</span>).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">4</span>);
+});</code></pre>
+</div>
+      <p class="text-p">Output conceptually:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Preparing...
+<span style="color: #4ade80; font-weight: bold;">✓</span> Test 1
+
+Preparing...
+<span style="color: #4ade80; font-weight: bold;">✓</span> Test 2</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.32</span> <code>afterEach()</code></div>
+      <p class="text-p">প্রতিটি test-এর পরে চলে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">afterEach</span>(() =&gt; {
+  <span class="syn-fn">console</span>.log(&quot;Cleaning...&quot;);
+});</code></pre>
+</div>
+      <p class="text-p">Useful for cleanup।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.33</span> <code>beforeAll()</code></div>
+      <p class="text-p">সব test শুরু হওয়ার আগে একবার চলে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">beforeAll</span>(() =&gt; {
+  <span class="syn-fn">console</span>.log(&quot;Setup database&quot;);
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.34</span> <code>afterAll()</code></div>
+      <p class="text-p">সব test শেষ হওয়ার পরে একবার চলে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">afterAll</span>(() =&gt; {
+  <span class="syn-fn">console</span>.log(&quot;Close database&quot;);
+});</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 06 — Asynchronous Testing: Promises, Async/Await & Errors (35.35 – 35.37)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.35</span> Async Testing</div>
+      <p class="text-p">JavaScript application-এ API, database ইত্যাদি asynchronous হতে পারে। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> getUser() {
+  <span class="syn-kw">return</span> {
+    id: <span class="syn-num">1</span>,
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  };
+}</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;getUser returns user<span class="syn-str">&quot;, async () =&gt; {
+  const user = await getUser();
+
+  expect(user.name).toBe(&quot;</span>Ripon&quot;);
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.36</span> Promise Testing</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> getData() {
+  <span class="syn-kw">return</span> Promise.<span style="color: #38bdf8; font-weight: 600;">resolve</span>(&quot;Hello&quot;);
+}</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;returns Hello<span class="syn-str">&quot;, async () =&gt; {
+  await expect(getData()).resolves.toBe(&quot;</span>Hello&quot;);
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.37</span> Rejected Promise Testing</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> getData() {
+  <span class="syn-kw">return</span> Promise.<span style="color: #38bdf8; font-weight: 600;">reject</span>(<span class="syn-kw">new</span> Error(&quot;Something went wrong&quot;));
+}</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;rejects with error<span class="syn-str">&quot;, async () =&gt; {
+  await expect(getData()).rejects.toThrow(&quot;</span>Something went wrong&quot;);
+});</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 07 — Mocking Architecture, Spy Functions & Test Doubles (35.38 – 35.42)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.38</span> Mocking কী?</div>
+      <p class="text-p">ধরো তোমার function external API call করে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Your Function
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+External API
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Internet</pre>
+</div>
+      <p class="text-p">Test করার সময় আমরা সবসময় real API call করতে চাই না। তখন fake/mock function ব্যবহার করা হয়। এটিই <strong>Mocking</strong>।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.39</span> Mock Function</div>
+      <p class="text-p">Jest:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> mockFn = <span class="syn-fn">jest</span>.<span style="color: #38bdf8; font-weight: 600;">fn</span>();</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>mockFn(&quot;Hello&quot;);</code></pre>
+</div>
+      <p class="text-p">Check:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(mockFn).<span style="color: #38bdf8; font-weight: 600;">toHaveBeenCalled</span>();</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.40</span> Function কতবার call হয়েছে?</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> mockFn = <span class="syn-fn">jest</span>.<span style="color: #38bdf8; font-weight: 600;">fn</span>();
+
+mockFn();
+mockFn();</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(mockFn).<span style="color: #38bdf8; font-weight: 600;">toHaveBeenCalledTimes</span>(<span class="syn-num">2</span>);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.41</span> Mock Function Arguments</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> mockFn = <span class="syn-fn">jest</span>.<span style="color: #38bdf8; font-weight: 600;">fn</span>();
+
+mockFn(&quot;Ripon&quot;, <span class="syn-num">25</span>);</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">expect</span>(mockFn).<span style="color: #38bdf8; font-weight: 600;">toHaveBeenCalledWith</span>(&quot;Ripon&quot;, <span class="syn-num">25</span>);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.42</span> কেন Mock ব্যবহার করব?</div>
+      <p class="text-p">ধরো Payment API:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Your App
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Payment Gateway
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Bank</pre>
+</div>
+      <p class="text-p">প্রতিটি test-এর সময় real payment করা ভয়ংকর হবে। 😄 তাই:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Real Payment ❌
+Mock Payment ✅</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 08 — Code Coverage Metrics & Testing Library Paradigm (35.43 – 35.47)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.43</span> Code Coverage</div>
+      <p class="text-p"><strong>Code Coverage</strong> বলে দেয় তোমার test কতটা code cover করছে। ধরো project-এ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">100 lines code</pre>
+</div>
+      <p class="text-p">এর মধ্যে test করেছে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">80 lines</pre>
+</div>
+      <p class="text-p">তাহলে roughly:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">80% coverage</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.44</span> Coverage-এর ধরন</div>
+      <p class="text-p">সাধারণভাবে coverage metrics:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Statements
+Branches
+Functions
+Lines</pre>
+</div>
+      <div class="section-subhead">🔹 Statements</div>
+      <p class="text-p">কতগুলো statement execute হয়েছে।</p>
+      <div class="section-subhead">🔹 Branches</div>
+      <p class="text-p"><code>if/else</code>, ternary ইত্যাদির কতগুলো path test হয়েছে।</p>
+      <div class="section-subhead">🔹 Functions</div>
+      <p class="text-p">কতগুলো function test হয়েছে।</p>
+      <div class="section-subhead">🔹 Lines</div>
+      <p class="text-p">কতগুলো code line execute হয়েছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.45</span> Coverage Run</div>
+      <p class="text-p">Jest:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">jest</span> --<span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">coverage</span></code></pre>
+</div>
+      <p class="text-p">Report-এ এমন কিছু দেখা যেতে পারে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Statements   90%
+Branches     80%
+Functions    100%
+Lines        92%</pre>
+</div>
+      <div class="section-subhead">🔹 গুরুত্বপূর্ণ</div>
+      <p class="text-p"><strong>100% coverage মানেই application bug-free নয়।</strong> কারণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Code execute হয়েছে</pre>
+</div>
+      <p class="text-p">মানে এই নয় যে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">সব possible behavior correctly tested হয়েছে</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.46</span> Testing Library</div>
+      <p class="text-p">Frontend/React application-এ জনপ্রিয় approach হলো <strong>Testing Library</strong>। বিশেষ করে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">React <span style="color: #c084fc; font-weight: 700;">Testing Library</span></pre>
+</div>
+      <p class="text-p">এর মূল ধারণা:</p>
+      <div class="def-box">💡 User যেভাবে application ব্যবহার করে, সেভাবে component test করা।</div>
+      <p class="text-p">ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">&lt;button&gt;Login&lt;/button&gt;</pre>
+</div>
+      <p class="text-p">Test করবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TEST ASSERTION & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Button আছে?
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+User click করতে পারে?
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Click করলে expected behavior হচ্ছে?</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.47</span> Implementation না, Behavior Test</div>
+      <p class="text-p">ধরো component:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">&lt;button onClick={handleLogin}&gt;Login&lt;/button&gt;</pre>
+</div>
+      <p class="text-p">Testing-এর focus হওয়া উচিত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">User clicks Login
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Expected behavior</pre>
+</div>
+      <p class="text-p">শুধু:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">handleLogin function exists</pre>
+</div>
+      <p class="text-p">এটা test করাই সবচেয়ে গুরুত্বপূর্ণ নয়।</p>
+    </div>
+    <div class="part-banner">Part 09 — End-to-End Testing with Playwright & Testing Pyramid (35.48 – 35.50)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.48</span> E2E Testing Tools</div>
+      <p class="text-p">E2E testing-এর জন্য জনপ্রিয় tools:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Playwright</li>
+        <li>Cypress</li>
+      </ul>
+      <p class="text-p">Example user flow:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Open website
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Click Login
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Enter email
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Enter password
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Submit
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Dashboard appears</pre>
+</div>
+      <p class="text-p">এটা browser automation দিয়ে test করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.49</span> Playwright Example</div>
+      <p class="text-p">Conceptual example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { <span class="syn-fn">test</span>, <span class="syn-fn">expect</span> } <span class="syn-kw">from</span> <span class="syn-str">&quot;@playwright/test&quot;</span>;
+
+<span class="syn-fn">test</span>(&quot;homepage loads<span class="syn-str">&quot;, async ({ page }) =&gt; {
+  await page.goto(&quot;</span>https://example.com<span class="syn-str">&quot;);
+
+  await expect(page.getByRole(&quot;</span>heading&quot;)).toBeVisible();
+});</code></pre>
+</div>
+      <p class="text-p">এখানে browser:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Open page
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Find heading
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+Check heading visible</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.50</span> Testing Pyramid</div>
+      <p class="text-p">Testing strategy বোঝার জন্য খুব গুরুত্বপূর্ণ concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING PYRAMID & LEVEL DISTRIBUTION</div>
+  <pre class="ascii-tree-content">/\
+          /  \
+         / <span style="color: #fde047; font-weight: 700;">E2E</span>\
+        /<span style="color: #334155;">------</span>\
+       /Integration\
+      /<span style="color: #334155;">--------------</span>\
+     /  Unit Tests    \
+    /<span style="color: #334155;">------------------</span>\</pre>
+</div>
+      <p class="text-p">সাধারণ ধারণা:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING PYRAMID & LEVEL DISTRIBUTION</div>
+  <pre class="ascii-tree-content">Many Unit Tests
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Some Integration Tests
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Fewer <span style="color: #fde047; font-weight: 700;">E2E</span> Tests</pre>
+</div>
+      <p class="text-p">কারণ Unit test সাধারণত দ্রুত এবং focused। E2E test তুলনামূলক বেশি setup/সময় নিতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 10 — Test-Driven Development (TDD), BDD & Test Strategies (35.51 – 35.59)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.51</span> TDD কী?</div>
+      <p class="text-p"><strong>TDD = Test-Driven Development</strong> এখানে আগে test লেখা হয়, তারপর implementation। Process:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Write Test
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Test Fails ❌
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Write Code
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Test Passes ✅
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Refactor</span></pre>
+</div>
+      <p class="text-p">এটাকে প্রায়ই বলা হয়:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TEST-DRIVEN DEVELOPMENT (TDD) CYCLE</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">Red</span> <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">Green</span> <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">Refactor</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.52</span> TDD Example</div>
+      <p class="text-p">প্রথমে test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;add should <span class="syn-kw">return</span> <span class="syn-num">5</span>&quot;, () =&gt; {
+  <span class="syn-fn">expect</span>(add(<span class="syn-num">2</span>, <span class="syn-num">3</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-num">5</span>);
+});</code></pre>
+</div>
+      <p class="text-p">এখন <code>add()</code> নেই। তাই:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">FAIL</span> ❌</pre>
+</div>
+      <p class="text-p">তারপর code:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>
+      <p class="text-p">এখন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">PASS</span> ✅</pre>
+</div>
+      <p class="text-p">তারপর code clean/refactor করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.53</span> BDD কী?</div>
+      <p class="text-p"><strong>BDD = Behavior-Driven Development</strong> এখানে application-এর behavior-এর ওপর বেশি focus করা হয়। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Given user is logged out
+When user enters valid credentials
+Then dashboard should appear</pre>
+</div>
+      <p class="text-p">এটি human-readable behavior description-এর মতো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.54</span> Test Doubles</div>
+      <p class="text-p">Testing-এর সময় real dependency-এর পরিবর্তে বিভিন্ন ধরনের substitute ব্যবহার করা হয়। Common types:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Dummy
+Stub
+Mock
+Spy
+Fake</pre>
+</div>
+      <div class="section-subhead">🔹 Dummy</div>
+      <p class="text-p">শুধু parameter পূরণ করার জন্য।</p>
+      <div class="section-subhead">🔹 Stub</div>
+      <p class="text-p">নির্দিষ্ট response দেয়।</p>
+      <div class="section-subhead">🔹 Mock</div>
+      <p class="text-p">Interaction verify করতে সাহায্য করে।</p>
+      <div class="section-subhead">🔹 Spy</div>
+      <p class="text-p">কোন function কীভাবে call হয়েছে observe করে।</p>
+      <div class="section-subhead">🔹 Fake</div>
+      <p class="text-p">Simplified working implementation।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.55</span> Spy Example</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+  login() {
+    <span class="syn-kw">return</span> <span class="syn-bool">true</span>;
+  },
+};</code></pre>
+</div>
+      <p class="text-p">Spy দিয়ে check করা যায়:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">login()
+কতবার call হলো?
+কী argument গেল?</pre>
+</div>
+      <p class="text-p">Jest-এ সাধারণভাবে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> spy = <span class="syn-fn">jest</span>.<span style="color: #38bdf8; font-weight: 600;">spyOn</span>(user, <span class="syn-str">&quot;login&quot;</span>);
+
+user.login();
+
+<span class="syn-fn">expect</span>(spy).<span style="color: #38bdf8; font-weight: 600;">toHaveBeenCalled</span>();</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.56</span> Snapshot Testing</div>
+      <p class="text-p">Snapshot Testing UI/component-এর rendered output-এর snapshot save করে রাখে। পরবর্তীতে output পরিবর্তিত হলে test সেটা detect করতে পারে। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Current UI
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Snapshot
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Future UI
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Compare</pre>
+</div>
+      <p class="text-p">তবে snapshot blindly accept করা উচিত নয়। কারণ snapshot বড় হয়ে গেলে meaningful review কঠিন হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.57</span> Negative Testing</div>
+      <p class="text-p">শুধু valid input test করলে হবে না। Invalid input-ও test করতে হবে। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> divide(a, b) {
+  <span class="syn-kw">if</span> (b === <span class="syn-num">0</span>) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> Error(&quot;Cannot divide by zero&quot;);
+  }
+
+  <span class="syn-kw">return</span> a / b;
+}</code></pre>
+</div>
+      <p class="text-p">Test:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;division by zero throws error<span class="syn-str">&quot;, () =&gt; {
+  expect(() =&gt; divide(10, 0)).toThrow(&quot;</span>Cannot divide by zero&quot;);
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.58</span> Edge Case Testing</div>
+      <p class="text-p">Normal case:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>add(<span class="syn-num">2</span>, <span class="syn-num">3</span>);</code></pre>
+</div>
+      <p class="text-p">Edge cases:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>add(<span class="syn-num">0</span>, <span class="syn-num">0</span>);
+add(-<span class="syn-num">5</span>, <span class="syn-num">10</span>);
+add(Number.MAX_SAFE_INTEGER, <span class="syn-num">1</span>);</code></pre>
+</div>
+      <p class="text-p">Real applications-এ edge cases খুব গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.59</span> Boundary Testing</div>
+      <p class="text-p">ধরো age:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">18–60</pre>
+</div>
+      <p class="text-p">তাহলে test করা উচিত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">17 ❌
+18 ✅
+19 ✅
+59 ✅
+60 ✅
+61 ❌</pre>
+</div>
+      <p class="text-p">Boundary-এর কাছাকাছি values test করা খুব useful।</p>
+    </div>
+    <div class="part-banner">Part 11 — Writing Clean Tests, Independence & Flaky Test Prevention (35.60 – 35.63)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.60</span> Test Naming</div>
+      <p class="text-p">খারাপ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;test1&quot;, ...)</code></pre>
+</div>
+      <p class="text-p">ভালো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;returns <span class="syn-bool">false</span> when password is incorrect&quot;, ...)</code></pre>
+</div>
+      <p class="text-p">আরও ভালো naming:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">test</span>(&quot;login fails when the password is incorrect&quot;, ...)</code></pre>
+</div>
+      <p class="text-p">Test name দেখে behavior বোঝা উচিত।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.61</span> ভালো Test-এর বৈশিষ্ট্য</div>
+      <p class="text-p">একটি ভালো test হওয়া উচিত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Fast</span>
+Independent
+Repeatable
+Clear
+Focused
+<span style="color: #34d399; font-weight: 700;">Reliable</span></pre>
+</div>
+      <p class="text-p">একটি জনপ্রিয় ধারণা:</p>
+      <div class="section-subhead">🔹 FIRST</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">F <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">Fast</span>
+I <span style="color: #38bdf8; font-weight: 700;">→</span> Independent
+R <span style="color: #38bdf8; font-weight: 700;">→</span> Repeatable
+S <span style="color: #38bdf8; font-weight: 700;">→</span> Self-validating
+T <span style="color: #38bdf8; font-weight: 700;">→</span> Timely</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.62</span> Test Independence</div>
+      <p class="text-p">একটি test অন্য test-এর ওপর depend করা উচিত নয়। খারাপ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Test 1 <span style="color: #38bdf8; font-weight: 700;">→</span> creates user
+Test 2 <span style="color: #38bdf8; font-weight: 700;">→</span> assumes user exists</pre>
+</div>
+      <p class="text-p">Test 1 fail করলে Test 2-ও fail করতে পারে। ভালো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Test 1 <span style="color: #38bdf8; font-weight: 700;">→</span> own setup
+Test 2 <span style="color: #38bdf8; font-weight: 700;">→</span> own setup</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.63</span> Flaky Test</div>
+      <p class="text-p">যে test কখনো pass করে, কখনো fail করে—তাকে <strong>Flaky Test</strong> বলা হয়। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Run 1 <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">PASS</span>
+Run 2 <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">PASS</span>
+Run 3 <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #f43f5e; font-weight: 700;">FAIL</span>
+Run 4 <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">PASS</span></pre>
+</div>
+      <p class="text-p">সম্ভাব্য কারণ:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Timing issue</li>
+        <li>Race condition</li>
+        <li>Network dependency</li>
+        <li>Shared state</li>
+        <li>Random data</li>
+        <li>External service</li>
+      </ul>
+      <p class="text-p">Flaky test dangerous কারণ developer test result-এর ওপর trust হারাতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 12 — Full-Stack Testing, CI/CD Pipeline & Complete Mini Project (35.64 – 35.72)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.64</span> Testing API</div>
+      <p class="text-p">ধরো তোমার Node.js backend:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">GET /api/users</pre>
+</div>
+      <p class="text-p">Expected:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE JSON TEST CONFIG</span><span>JSON</span></div>
+  <pre><code>[
+  {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;id&quot;</span>: <span style="color:#fb923c;">1</span>,
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;Ripon&quot;</span>
+  }
+]</code></pre>
+</div>
+      <p class="text-p">Test করা যায়:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Status <span style="color: #38bdf8; font-weight: 700;">→</span> 200
+Response <span style="color: #38bdf8; font-weight: 700;">→</span> JSON
+User exists <span style="color: #38bdf8; font-weight: 700;">→</span> true
+Required fields <span style="color: #38bdf8; font-weight: 700;">→</span> present</pre>
+</div>
+      <p class="text-p">Integration/E2E testing-এ এগুলো করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.65</span> Frontend + Backend Testing</div>
+      <p class="text-p">একটি Full Stack application:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">React
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+API
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Node/Express
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Database</pre>
+</div>
+      <p class="text-p">Testing:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING PYRAMID & LEVEL DISTRIBUTION</div>
+  <pre class="ascii-tree-content">React Component
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Component Test
+
+API
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Integration Test
+
+Database interaction
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Integration Test
+
+Full user journey
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">E2E</span> Test</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.66</span> Real Full-Stack Example</div>
+      <p class="text-p">ধরো তুমি একটি Login System বানালে।</p>
+      <div class="section-subhead">🔹 Unit Test</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">validateEmail()
+validatePassword()
+hashPassword()</pre>
+</div>
+      <div class="section-subhead">🔹 Integration Test</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Login API
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Database
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Authentication</pre>
+</div>
+      <div class="section-subhead">🔹 E2E Test</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Open Login Page
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Enter credentials
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Click Login
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Dashboard</pre>
+</div>
+      <p class="text-p">এটাই বাস্তব-world testing strategy-এর একটি example।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.67</span> Testing vs Debugging</div>
+      <p class="text-p">দুটো একই নয়।</p>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Testing</th><th>Debugging</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Bug আছে কিনা খোঁজে</td><td>Bug-এর কারণ খোঁজে</td></tr><tr><td>Expected vs actual</td><td>Problem কোথায়</td></tr><tr><td>Test automated হতে পারে</td><td>Developer investigation করে</td></tr><tr><td>আগে থেকেই করা যায়</td><td>সাধারণত failure-এর পর করা হয়</td></tr>
+    </tbody>
+  </table>
+</div>
+      <p class="text-p">উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Test <span style="color: #38bdf8; font-weight: 700;">→</span> Login failed ❌
+           <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Debugging
+           <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Wrong password comparison
+           <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Fix</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.68</span> Testing Workflow</div>
+      <p class="text-p">একজন professional developer-এর workflow হতে পারে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 AUTOMATED TESTING & CI/CD PIPELINE</div>
+  <pre class="ascii-tree-content">Write Feature
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Write Tests
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Run Tests
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Failure?
+   ↙   ↘
+ Yes    No
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Debug   Continue
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Fix
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Run Again
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Pass
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Commit
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">CI/CD</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.69</span> CI/CD-তে Testing</div>
+      <p class="text-p">GitHub Actions-এর মতো CI system-এ automatically test চালানো যায়। Flow:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Developer
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+git push
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+GitHub
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+CI Pipeline
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+npm install
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+npm <span style="color: #c084fc; font-weight: 700;">test</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">PASS</span> ✅ / <span style="color: #f43f5e; font-weight: 700;">FAIL</span> ❌</pre>
+</div>
+      <p class="text-p">এতে broken code merge হওয়ার আগে ধরা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.70</span> package.json Test Script</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE JSON TEST CONFIG</span><span>JSON</span></div>
+  <pre><code>{
+  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;jest&quot;</span>
+  }
+}</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+</div>
+      <p class="text-p">অথবা:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.71</span> Test File Naming</div>
+      <p class="text-p">Common patterns:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">math.<span style="color: #c084fc; font-weight: 700;">test</span>.js
+math.spec.js</pre>
+</div>
+      <p class="text-p">অথবা:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TESTING ARCHITECTURE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">__tests__/math.<span style="color: #c084fc; font-weight: 700;">test</span>.js</pre>
+</div>
+      <p class="text-p">Project অনুযায়ী convention পরিবর্তিত হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.72</span> একটি Complete Mini Project — সম্পূর্ণ টেস্ট স্যুট</div>
+      <div class="section-subhead">🔹 <code>calculator.js</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a + b;
+}
+
+<span class="syn-kw">function</span> subtract(a, b) {
+  <span class="syn-kw">return</span> a - b;
+}
+
+<span class="syn-kw">function</span> multiply(a, b) {
+  <span class="syn-kw">return</span> a * b;
+}
+
+<span class="syn-kw">function</span> divide(a, b) {
+  <span class="syn-kw">if</span> (b === <span class="syn-num">0</span>) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> Error(&quot;Cannot divide by zero&quot;);
+  }
+
+  <span class="syn-kw">return</span> a / b;
+}
+
+<span class="syn-fn">module</span>.<span class="syn-fn">exports</span> = {
+  add,
+  subtract,
+  multiply,
+  divide,
+};</code></pre>
+</div>
+      <div class="section-subhead">🔹 <code>calculator.test.js</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> { add, subtract, multiply, divide } = <span class="syn-fn">require</span>(&quot;./calculator<span class="syn-str">&quot;);
+
+describe(&quot;</span>Calculator<span class="syn-str">&quot;, () =&gt; {
+  test(&quot;</span>adds two numbers<span class="syn-str">&quot;, () =&gt; {
+    expect(add(2, 3)).toBe(5);
+  });
+
+  test(&quot;</span>subtracts two numbers<span class="syn-str">&quot;, () =&gt; {
+    expect(subtract(5, 3)).toBe(2);
+  });
+
+  test(&quot;</span>multiplies two numbers<span class="syn-str">&quot;, () =&gt; {
+    expect(multiply(4, 3)).toBe(12);
+  });
+
+  test(&quot;</span>divides two numbers<span class="syn-str">&quot;, () =&gt; {
+    expect(divide(10, 2)).toBe(5);
+  });
+
+  test(&quot;</span>throws error when dividing by zero<span class="syn-str">&quot;, () =&gt; {
+    expect(() =&gt; divide(10, 0)).toThrow(&quot;</span>Cannot divide by zero&quot;);
+  });
+});</code></pre>
+</div>
+      <p class="text-p">Run:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
+  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+</div>
+      <p class="text-p">এখানে আমরা একইসাথে শিখলাম:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 TEST ASSERTION & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">describe</span>()
+<span style="color: #c084fc; font-weight: 700;">test</span>()
+<span style="color: #c084fc; font-weight: 700;">expect</span>()
+<span style="color: #c084fc; font-weight: 700;">toBe</span>()
+<span style="color: #c084fc; font-weight: 700;">toThrow</span>()</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 13 — Must Know Testing Pillars, Quick Cheat Sheet, 6 Practice Labs & Final Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.73</span> 🔥 MUST KNOW — জাভাস্ক্রিপ্ট টেস্টিংয়ের ১০টি প্রধান স্তম্ভ</div>
+      <p class="text-p">প্রোডাকশন মানের নির্ভরযোগ্য অ্যাপ্লিকেশন তৈরিতে এই ১০টি টেস্ট আর্কিটেকচার নীতি অপরিহার্য:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #0284c7; font-size: 10px; margin-bottom: 3px;">📌 1. Test Pyramid &amp; Matchers</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Unit Testing (70%):</strong> স্বতন্ত্র পিওর ফাংশন টেস্ট</li>
+            <li><strong>Integration Testing (20%):</strong> একাধিক মডিউল ও এপিআই ইন্টারঅ্যাকশন</li>
+            <li><strong>toBe vs toEqual:</strong> প্রিমিটিভ ভ্যালু বনাম ডিপ অবজেক্ট তুলনা</li>
+            <li><strong>toThrow:</strong> এক্সেপশন ও এরর হ্যান্ডলিং নিখুঁতভাবে যাচাই</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #059669; font-size: 10px; margin-bottom: 3px;">📌 2. Async, Mocks &amp; Lifecycle</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Async/Await Testing:</strong> প্রমিজ রেজলভ ও রিজেক্ট হ্যান্ডলিং</li>
+            <li><strong>Setup &amp; Teardown:</strong> beforeEach/afterEach দিয়ে স্টেট রিসেট</li>
+            <li><strong>Mock Functions:</strong> নেটওয়ার্ক ও ডেটাবেস কল বিচ্ছিন্নকরণ</li>
+            <li><strong>Test Independence:</strong> একটি টেস্টের স্টেট যেন অন্যটিকে প্রভাবিত না করে</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #7c3aed; font-size: 10px; margin-bottom: 3px;">📌 3. TDD, Coverage &amp; CI/CD</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>TDD Cycle:</strong> Red (Fail) → Green (Pass) → Refactor</li>
+            <li><strong>Code Coverage:</strong> Statements, Branches, Functions কভারেজ</li>
+            <li><strong>Testing Library:</strong> ইমপ্লিমেন্টেশন ডিটেইল নয়, ইউজার আচরণ টেস্ট</li>
+            <li><strong>CI/CD Gate:</strong> গিটহাবে পুশ করার পর স্বয়ংক্রিয় টেস্ট রান</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.74</span> 🧠 Quick Cheat Sheet — টেস্টিং সিনট্যাক্স ও ম্যাচার সারসংক্ষেপ</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Matcher / Hook</th><th>Syntax Example</th><th>Primary Use Case</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>toBe</strong></td><td><code>expect(add(1, 2)).toBe(3)</code></td><td>প্রিমিটিভ ভ্যালু (Primitive equality <code>===</code>) পরীক্ষা</td></tr><tr><td><strong>toEqual</strong></td><td><code>expect(user).toEqual({ id: 1 })</code></td><td>অবজেক্ট বা অ্যারের গভীর সমতা (Deep equality)</td></tr><tr><td><strong>toBeTruthy</strong></td><td><code>expect(isValid).toBeTruthy()</code></td><td>ট্রুথি ভ্যালু নিশ্চিতকরণ (<code>Boolean(val) === true</code>)</td></tr><tr><td><strong>toBeFalsy</strong></td><td><code>expect(hasError).toBeFalsy()</code></td><td>ফলসি ভ্যালু নিশ্চিতকরণ (<code>null, undefined, 0, &quot;&quot;</code> ইত্যাদি)</td></tr><tr><td><strong>toContain</strong></td><td><code>expect(fruits).toContain(&#x27;apple&#x27;)</code></td><td>অ্যারে বা স্ট্রিংয়ে উপাদান বিদ্যমান থাকা যাচাই</td></tr><tr><td><strong>toBeNull</strong></td><td><code>expect(res).toBeNull()</code></td><td>ভ্যালু ঠিক <code>null</code> কিনা তা পরীক্ষা</td></tr><tr><td><strong>toBeDefined</strong></td><td><code>expect(val).toBeDefined()</code></td><td>ভ্যারিয়েবল ডিফাইন করা আছে কিনা (<code>!== undefined</code>)</td></tr><tr><td><strong>toThrow</strong></td><td><code>expect(() =&gt; fn()).toThrow(&quot;Error&quot;)</code></td><td>ফাংশন কাঙ্ক্ষিত এরর থ্রো করে কিনা যাচাই</td></tr><tr><td><strong>describe</strong></td><td><code>describe(&#x27;Auth Service&#x27;, () =&gt; {})</code></td><td>সম্পর্কিত টেস্টগুলোকে একটি সুসংগঠিত ব্লকে গ্রুপ করা</td></tr><tr><td><strong>test / it</strong></td><td><code>test(&#x27;should calculate tax&#x27;, () =&gt; {})</code></td><td>একটি স্বতন্ত্র টেস্ট কেস তৈরি করা</td></tr><tr><td><strong>beforeEach</strong></td><td><code>beforeEach(() =&gt; { resetDB(); })</code></td><td>প্রতিটি একক টেস্ট রানের পূর্বে স্টেট রিসেট করা</td></tr><tr><td><strong>afterEach</strong></td><td><code>afterEach(() =&gt; { jest.clearAllMocks(); })</code></td><td>প্রতিটি টেস্ট শেষে ক্লিনআপ ও মক ক্লিয়ার করা</td></tr><tr><td><strong>beforeAll</strong></td><td><code>beforeAll(async () =&gt; { await connect(); })</code></td><td>পুরো টেস্ট স্যুটের শুরুতে মাত্র একবার রান</td></tr><tr><td><strong>afterAll</strong></td><td><code>afterAll(async () =&gt; { await close(); })</code></td><td>সম্পূর্ণ টেস্ট স্যুট সমাপ্তির পর কানেকশন বন্ধ</td></tr><tr><td><strong>jest.fn()</strong></td><td><code>const mock = jest.fn()</code></td><td>ফেক ফাংশন তৈরি এবং কল কাউন্ট/আর্গুমেন্ট পর্যবেক্ষণ</td></tr><tr><td><strong>mockResolvedValue</strong></td><td><code>mockFetch.mockResolvedValue({ ok: true })</code></td><td>অ্যাসিনক্রোনাস প্রমিজ রিটার্ন সিমুলেশন</td></tr><tr><td><strong>npm test</strong></td><td><code>npm test</code> / <code>npm test -- --coverage</code></td><td>সম্পূর্ণ টেস্ট স্যুট ও কোড কভারেজ রিপোর্ট তৈরি</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="part-banner">Part 13.1 — 6 Hands-On Practice Labs with Complete Production Solutions</div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #1</span> [BEGINNER] — Unit Test Suite for add(a, b) Function (5 Test Cases)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>add(a, b)</code> ফাংশনের জন্য ৫টি বৈচিত্র্যময় ও নির্ভুল ইউনিট টেস্ট কেস লিখুন যা পজিটিভ, নেগেটিভ, ফ্লোটিং পয়েন্ট, জিরো এবং স্ট্রিং টাইপ এরর টেস্ট কভার করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOURCE MODULE / SPECIFICATION</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// src/math.js</span>
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">if</span> (<span class="syn-kw">typeof</span> a !== <span class="syn-str">&#x27;number&#x27;</span> || <span class="syn-kw">typeof</span> b !== <span class="syn-str">&#x27;number&#x27;</span>) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> TypeError(&#x27;Both arguments must be numbers&#x27;);
+  }
+  <span class="syn-kw">return</span> a + b;
+}</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TEST IMPLEMENTATION (LAB #1)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// tests/math.test.js</span>
+<span class="syn-kw">import</span> { <span class="syn-fn">describe</span>, <span class="syn-fn">test</span>, <span class="syn-fn">expect</span> } <span class="syn-kw">from</span> <span class="syn-str">&#x27;@jest/globals&#x27;</span>;
+<span class="syn-kw">import</span> { add } <span class="syn-kw">from</span> <span class="syn-str">&#x27;../src/math.js&#x27;</span>;
+
+<span class="syn-fn">describe</span>(&#x27;Math Module: add(a, b)&#x27;, () =&gt; {
+  <span class="syn-fn">test</span>(&#x27;Case <span class="syn-num">1</span>: adds two positive integers correctly<span class="syn-str">&#x27;, () =&gt; {
+    expect(add(5, 7)).toBe(12);
+  });
+
+  test(&#x27;</span>Case <span class="syn-num">2</span>: handles negative numbers properly<span class="syn-str">&#x27;, () =&gt; {
+    expect(add(-10, -5)).toBe(-15);
+    expect(add(-10, 20)).toBe(10);
+  });
+
+  test(&#x27;</span>Case <span class="syn-num">3</span>: adds floating point numbers with precision<span class="syn-str">&#x27;, () =&gt; {
+    expect(add(0.1, 0.2)).toBeCloseTo(0.3, 5); // ফ্লোটিং পয়েন্ট নির্ভুলতা
+  });
+
+  test(&#x27;</span>Case <span class="syn-num">4</span>: returns correct value when adding with zero<span class="syn-str">&#x27;, () =&gt; {
+    expect(add(42, 0)).toBe(42);
+    expect(add(0, 0)).toBe(0);
+  });
+
+  test(&#x27;</span>Case <span class="syn-num">5</span>: throws TypeError when invalid types are supplied<span class="syn-str">&#x27;, () =&gt; {
+    expect(() =&gt; add(&#x27;</span><span class="syn-num">5</span><span class="syn-str">&#x27;, 10)).toThrow(TypeError);
+    expect(() =&gt; add(null, 5)).toThrow(&#x27;</span>Both arguments must be numbers&#x27;);
+  });
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> ফ্লোটিং পয়েন্ট নাম্বারের ক্ষেত্রে toBe() এর বদলে toBeCloseTo() ব্যবহার করা উচিত, কারণ জাভাস্ক্রিপ্টে 0.1 + 0.2 = 0.30000000000000004 হয়ে থাকে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #2</span> [BEGINNER] — Exhaustive Parity Test Suite for isEven(number)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>isEven(number)</code> ফাংশনটির জন্য ২, ৪, ৭, ০, -২ ইনপুটের জন্য পূর্ণাঙ্গ টেস্ট কেস লিখুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOURCE MODULE / SPECIFICATION</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// src/utils.js</span>
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> isEven(number) {
+  <span class="syn-kw">if</span> (!Number.isInteger(number)) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> Error(&#x27;Input must be an integer&#x27;);
+  }
+  <span class="syn-kw">return</span> number % <span class="syn-num">2</span> === <span class="syn-num">0</span>;
+}</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TEST IMPLEMENTATION (LAB #2)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// tests/utils.test.js</span>
+<span class="syn-kw">import</span> { <span class="syn-fn">describe</span>, <span class="syn-fn">test</span>, <span class="syn-fn">expect</span> } <span class="syn-kw">from</span> <span class="syn-str">&#x27;@jest/globals&#x27;</span>;
+<span class="syn-kw">import</span> { isEven } <span class="syn-kw">from</span> <span class="syn-str">&#x27;../src/utils.js&#x27;</span>;
+
+<span class="syn-fn">describe</span>(&#x27;Parity Logic: isEven(number)&#x27;, () =&gt; {
+  <span class="syn-fn">test</span>(&#x27;returns <span class="syn-bool">true</span> <span class="syn-kw">for</span> positive even numbers (<span class="syn-num">2</span> and <span class="syn-num">4</span>)&#x27;, () =&gt; {
+    <span class="syn-fn">expect</span>(isEven(<span class="syn-num">2</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-bool">true</span>);
+    <span class="syn-fn">expect</span>(isEven(<span class="syn-num">4</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-bool">true</span>);
+  });
+
+  <span class="syn-fn">test</span>(&#x27;returns <span class="syn-bool">false</span> <span class="syn-kw">for</span> positive odd numbers (<span class="syn-num">7</span>)&#x27;, () =&gt; {
+    <span class="syn-fn">expect</span>(isEven(<span class="syn-num">7</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-bool">false</span>);
+  });
+
+  <span class="syn-fn">test</span>(&#x27;returns <span class="syn-bool">true</span> <span class="syn-kw">for</span> zero (<span class="syn-num">0</span> is an even number)&#x27;, () =&gt; {
+    <span class="syn-fn">expect</span>(isEven(<span class="syn-num">0</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-bool">true</span>);
+  });
+
+  <span class="syn-fn">test</span>(&#x27;returns <span class="syn-bool">true</span> <span class="syn-kw">for</span> negative even numbers (-<span class="syn-num">2</span>)&#x27;, () =&gt; {
+    <span class="syn-fn">expect</span>(isEven(-<span class="syn-num">2</span>)).<span style="color: #38bdf8; font-weight: 600;">toBe</span>(<span class="syn-bool">true</span>);
+  });
+
+  <span class="syn-fn">test</span>(&#x27;handles edge cases: throws error on non-integer input<span class="syn-str">&#x27;, () =&gt; {
+    expect(() =&gt; isEven(3.14)).toThrow(&#x27;</span>Input must be an integer&#x27;);
+  });
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> গাণিতিক নিয়মানুযায়ী ০ এবং ঋণাত্মক জোড় সংখ্যা (যেমন -২, -৪) সবই বৈধ জোড় সংখ্যা। টেস্টে এ ধরনের বাউন্ডারি ও নেগেটিভ কেস যাচাই করা জরুরি।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #3</span> [INTERMEDIATE] — Boundary &amp; Negative Value Testing for isAdult(age)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>isAdult(age)</code> ফাংশনটির বাউন্ডারি টেস্ট লিখুন: ১৭, ১৮, ১৯, ০ এবং ঋণাত্মক বয়সের জন্য।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOURCE MODULE / SPECIFICATION</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// src/auth.js</span>
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> isAdult(age) {
+  <span class="syn-kw">if</span> (<span class="syn-kw">typeof</span> age !== <span class="syn-str">&#x27;number&#x27;</span> || age &lt; <span class="syn-num">0</span>) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> RangeError(&#x27;Age must be a non-negative number&#x27;);
+  }
+  <span class="syn-kw">return</span> age &gt;= <span class="syn-num">18</span>;
+}</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TEST IMPLEMENTATION (LAB #3)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// tests/auth.test.js</span>
+<span class="syn-kw">import</span> { <span class="syn-fn">describe</span>, <span class="syn-fn">test</span>, <span class="syn-fn">expect</span> } <span class="syn-kw">from</span> <span class="syn-str">&#x27;@jest/globals&#x27;</span>;
+<span class="syn-kw">import</span> { isAdult } <span class="syn-kw">from</span> <span class="syn-str">&#x27;../src/auth.js&#x27;</span>;
+
+<span class="syn-fn">describe</span>(&#x27;Boundary Testing: isAdult(age)&#x27;, () =&gt; {
+  <span class="syn-fn">test</span>(&#x27;Boundary - <span class="syn-num">1</span> (age <span class="syn-num">17</span>): should <span class="syn-kw">return</span> <span class="syn-bool">false</span><span class="syn-str">&#x27;, () =&gt; {
+    expect(isAdult(17)).toBe(false);
+  });
+
+  test(&#x27;</span>Exact Boundary (age <span class="syn-num">18</span>): should <span class="syn-kw">return</span> <span class="syn-bool">true</span><span class="syn-str">&#x27;, () =&gt; {
+    expect(isAdult(18)).toBe(true);
+  });
+
+  test(&#x27;</span>Boundary + <span class="syn-num">1</span> (age <span class="syn-num">19</span>): should <span class="syn-kw">return</span> <span class="syn-bool">true</span><span class="syn-str">&#x27;, () =&gt; {
+    expect(isAdult(19)).toBe(true);
+  });
+
+  test(&#x27;</span>Lower Extreme (age <span class="syn-num">0</span>): should <span class="syn-kw">return</span> <span class="syn-bool">false</span><span class="syn-str">&#x27;, () =&gt; {
+    expect(isAdult(0)).toBe(false);
+  });
+
+  test(&#x27;</span>Negative Boundary: throws RangeError on negative age<span class="syn-str">&#x27;, () =&gt; {
+    expect(() =&gt; isAdult(-1)).toThrow(RangeError);
+    expect(() =&gt; isAdult(-25)).toThrow(&#x27;</span>Age must be a non-negative number&#x27;);
+  });
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> বাউন্ডারি ভ্যালু এনালাইসিস (BVA) হলো বাগ শনাক্ত করার অন্যতম কার্যকর পদ্ধতি। ১৮ বছর শর্ত হলে ১৭, ১৮ ও ১৯ এই তিনটি মান টেস্ট করা বাধ্যতামূলক।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #4</span> [INTERMEDIATE] — Exception Handling &amp; Balance Deduction Test for withdraw()</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> <code>withdraw(balance, amount)</code> ফাংশনে অপর্যাপ্ত ব্যালেন্স থাকলে এরর থ্রো করা এবং পর্যাপ্ত ব্যালেন্সে সঠিক অবশিষ্ট টাকা রিটার্ন করা টেস্ট করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOURCE MODULE / SPECIFICATION</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// src/bank.js</span>
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> withdraw(balance, amount) {
+  <span class="syn-kw">if</span> (amount &lt;= <span class="syn-num">0</span>) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> Error(&#x27;Withdrawal amount must be greater than zero<span class="syn-str">&#x27;);
+  }
+  if (amount &gt; balance) {
+    throw new Error(&#x27;</span>Insufficient balance&#x27;);
+  }
+  <span class="syn-kw">return</span> balance - amount;
+}</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TEST IMPLEMENTATION (LAB #4)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// tests/bank.test.js</span>
+<span class="syn-kw">import</span> { <span class="syn-fn">describe</span>, <span class="syn-fn">test</span>, <span class="syn-fn">expect</span> } <span class="syn-kw">from</span> <span class="syn-str">&#x27;@jest/globals&#x27;</span>;
+<span class="syn-kw">import</span> { withdraw } <span class="syn-kw">from</span> <span class="syn-str">&#x27;../src/bank.js&#x27;</span>;
+
+<span class="syn-fn">describe</span>(&#x27;Banking Service: withdraw(balance, amount)&#x27;, () =&gt; {
+  <span class="syn-fn">test</span>(&#x27;successfully deducts balance when funds are sufficient<span class="syn-str">&#x27;, () =&gt; {
+    const initialBalance = 1000;
+    const withdrawAmount = 400;
+    const remaining = withdraw(initialBalance, withdrawAmount);
+    expect(remaining).toBe(600);
+  });
+
+  test(&#x27;</span>allows full withdrawal to zero balance<span class="syn-str">&#x27;, () =&gt; {
+    expect(withdraw(500, 500)).toBe(0);
+  });
+
+  test(&#x27;</span>throws <span class="syn-str">&quot;Insufficient balance&quot;</span> error when withdrawal exceeds funds<span class="syn-str">&#x27;, () =&gt; {
+    expect(() =&gt; {
+      withdraw(100, 250);
+    }).toThrow(&#x27;</span>Insufficient balance<span class="syn-str">&#x27;);
+  });
+
+  test(&#x27;</span>throws error when withdrawing zero or negative amount<span class="syn-str">&#x27;, () =&gt; {
+    expect(() =&gt; withdraw(100, 0)).toThrow(&#x27;</span>Withdrawal amount must be greater than zero<span class="syn-str">&#x27;);
+    expect(() =&gt; withdraw(100, -50)).toThrow(&#x27;</span>Withdrawal amount must be greater than zero&#x27;);
+  });
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> toThrow() দিয়ে এরর টেস্ট করার সময় ফাংশনটিকে সরাসরি কল না করে একটি অ্যারো ফাংশনের মধ্যে র‍্যাপ করে পাস করতে হয়: <code>() =&gt; withdraw(...)</code>।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #5</span> [ADVANCED] — Asynchronous API Testing with Jest Mock Functions (fetchUser)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> বাস্তব নেটওয়ার্ক কল ছাড়াই <code>fetchUser(id)</code> ফাংশনের সাকসেস ও ফেইলিউর সিনারিও মক রেসপন্স দিয়ে টেস্ট করার সম্পূর্ণ প্রোডাকশন সলিউশন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOURCE MODULE / SPECIFICATION</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// src/userService.js</span>
+<span class="syn-kw">export</span> <span class="syn-kw">async</span> <span class="syn-kw">function</span> fetchUser(userId) {
+  <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span style="color: #38bdf8; font-weight: 600;">fetch</span>(`https://api.example.com/users/${userId}`);
+  <span class="syn-kw">if</span> (!response.ok) {
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> Error(`API Error: ${response.status}`);
+  }
+  <span class="syn-kw">return</span> <span class="syn-kw">await</span> response.<span style="color: #38bdf8; font-weight: 600;">json</span>();
+}</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TEST IMPLEMENTATION (LAB #5)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// tests/userService.test.js</span>
+<span class="syn-kw">import</span> { <span class="syn-fn">describe</span>, <span class="syn-fn">test</span>, <span class="syn-fn">expect</span>, <span class="syn-fn">beforeEach</span>, <span class="syn-fn">afterEach</span>, <span class="syn-fn">jest</span> } <span class="syn-kw">from</span> <span class="syn-str">&#x27;@jest/globals&#x27;</span>;
+<span class="syn-kw">import</span> { fetchUser } <span class="syn-kw">from</span> <span class="syn-str">&#x27;../src/userService.js&#x27;</span>;
+
+<span class="syn-com">// গ্লোবাল ফেচ মক করা</span>
+<span class="syn-kw">const</span> originalFetch = global.<span style="color: #38bdf8; font-weight: 600;">fetch</span>;
+
+<span class="syn-fn">describe</span>(&#x27;UserService: fetchUser(id) with API Mocking<span class="syn-str">&#x27;, () =&gt; {
+  beforeEach(() =&gt; {
+    global.fetch = jest.fn(); // ফেক ফেচ ফাংশন তৈরি
+  });
+
+  afterEach(() =&gt; {
+    global.fetch = originalFetch; // টেস্ট শেষে মূল ফেচ ফিরিয়ে দেওয়া
+  });
+
+  test(&#x27;</span>resolves user profile successfully on <span class="syn-num">200</span> OK<span class="syn-str">&#x27;, async () =&gt; {
+    const mockUserData = { id: 101, name: &#x27;</span>Tanvir Ahamed<span class="syn-str">&#x27;, role: &#x27;</span>Engineer<span class="syn-str">&#x27; };
+    
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () =&gt; mockUserData
+    });
+
+    const user = await fetchUser(101);
+
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+    expect(global.fetch).toHaveBeenCalledWith(&#x27;</span>https://api.example.com/users/<span class="syn-num">101</span><span class="syn-str">&#x27;);
+    expect(user).toEqual(mockUserData);
+  });
+
+  test(&#x27;</span>rejects with descriptive error when API returns <span class="syn-num">404</span><span class="syn-str">&#x27;, async () =&gt; {
+    global.fetch.mockResolvedValueOnce({
+      ok: false,
+      status: 404
+    });
+
+    await expect(fetchUser(999)).rejects.toThrow(&#x27;</span>API Error: <span class="syn-num">404</span>&#x27;);
+  });
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> টেস্টিংয়ে কখনোই বাস্তব প্রোডাকশন বা থার্ড-পার্টি এপিআই কল করা উচিত নয়; মকিংয়ের মাধ্যমে নেটওয়ার্কের বিলম্ব ও খরচ ছাড়াই টেস্ট অতি দ্রুত ও নির্ভরযোগ্য হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #6</span> [ADVANCED] — Full Component Test Plan &amp; Automated Testing Library Suite</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Login কম্পোনেন্টের ৮টি গুরুত্বপূর্ণ টেস্ট সিনারিও (Valid, Invalid Password, Empty Fields, Loading State, Error Banner, Redirect) বিশিষ্ট টেস্ট প্ল্যান ও কোড।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOURCE MODULE / SPECIFICATION</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">/*
+================================================================================
+  LOGIN COMPONENT PRODUCTION TEST PLAN SPECIFICATION
+================================================================================
+1. [Happy Path]: ইউজার সঠিক ইমেইল ও পাসওয়ার্ড দিলে লোডিং স্টেট দেখাবে এবং ড্যাশবোর্ডে রিডাইরেক্ট করবে।
+2. [Invalid Password]: ভুল পাসওয়ার্ডে &quot;Invalid credentials&quot; এরর ব্যানার প্রদর্শিত হবে।
+3. [Empty Email]: ইমেইল ফাঁকা রেখে সাবমিট করলে &quot;Email is required&quot; ভ্যালিডেশন টেক্সট আসবে।
+4. [Empty Password]: পাসওয়ার্ড ফাঁকা রেখে সাবমিট করলে &quot;Password is required&quot; সতর্কবার্তা আসবে।
+5. [Invalid Email Format]: &quot;@&quot; ছাড়া টেক্সট দিলে &quot;Invalid email address&quot; ভ্যালিডেশন দেখাবে।
+6. [Loading State]: রিকোয়েস্ট চলাকালীন সাবমিট বাটন ডিসেবল হবে এবং স্পিনার দেখাবে।
+7. [Network Failure]: সার্ভার ডাউন থাকলে &quot;Unable to connect to server&quot; এরর ব্যানার আসবে।
+8. [Post-Login Redirect]: সফল লগন শেষে রিঅ্যাক্ট রাউটার /dashboard পাথে নেভিগেট করবে।
+================================================================================
+*/</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TEST IMPLEMENTATION (LAB #6)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// tests/LoginComponent.test.js (Testing Library Paradigm)</span>
+<span class="syn-kw">import</span> { <span class="syn-fn">describe</span>, <span class="syn-fn">test</span>, <span class="syn-fn">expect</span>, <span class="syn-fn">jest</span> } <span class="syn-kw">from</span> <span class="syn-str">&#x27;@jest/globals&#x27;</span>;
+
+<span class="syn-fn">describe</span>(&#x27;Login Component Automated Suite<span class="syn-str">&#x27;, () =&gt; {
+  test(&#x27;</span>validates required fields on empty submit<span class="syn-str">&#x27;, () =&gt; {
+    // সিমুলেশন: ইমেইল ও পাসওয়ার্ড ছাড়া সাবমিট
+    const validateForm = (email, pass) =&gt; {
+      const errors = {};
+      if (!email) errors.email = &#x27;</span>Email is required<span class="syn-str">&#x27;;
+      if (!pass) errors.password = &#x27;</span>Password is required<span class="syn-str">&#x27;;
+      return errors;
+    };
+
+    const errors = validateForm(&#x27;</span><span class="syn-str">&#x27;, &#x27;</span><span class="syn-str">&#x27;);
+    expect(errors.email).toBe(&#x27;</span>Email is required<span class="syn-str">&#x27;);
+    expect(errors.password).toBe(&#x27;</span>Password is required<span class="syn-str">&#x27;);
+  });
+
+  test(&#x27;</span>authenticates valid credentials and triggers navigation<span class="syn-str">&#x27;, async () =&gt; {
+    const mockAuthService = jest.fn().mockResolvedValue({ token: &#x27;</span>jwt-xyz-<span class="syn-num">123</span><span class="syn-str">&#x27; });
+    const mockNavigate = jest.fn();
+
+    async function handleLogin(email, password) {
+      const res = await mockAuthService(email, password);
+      if (res.token) mockNavigate(&#x27;</span>/dashboard<span class="syn-str">&#x27;);
+    }
+
+    await handleLogin(&#x27;</span>dev@example.com<span class="syn-str">&#x27;, &#x27;</span>SecurePass123!&#x27;);
+
+    <span class="syn-fn">expect</span>(mockAuthService).<span style="color: #38bdf8; font-weight: 600;">toHaveBeenCalledWith</span>(&#x27;dev@example.com<span class="syn-str">&#x27;, &#x27;</span>SecurePass123!&#x27;);
+    <span class="syn-fn">expect</span>(mockNavigate).<span style="color: #38bdf8; font-weight: 600;">toHaveBeenCalledWith</span>(&#x27;/dashboard&#x27;);
+  });
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> কম্পোনেন্ট টেস্টিংয়ে ইন্টারনাল স্টেট টেস্ট না করে ইউজার যা স্ক্রিনে দেখে ও করে (ইউজার ইনপুট টাইপ, বাটন ক্লিক) তার ফলাফল টেস্ট করাই বেস্ট প্র্যাকটিস।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">35.75</span> 🎯 Final Mental Map — জাভাস্ক্রিপ্ট টেস্টিংয়ের পূর্ণাঙ্গ মানচিত্র</div>
+      <p class="text-p">পুরো Chapter 35-এর টেস্টিং আর্কিটেকচার ও ওয়ার্কফ্লো একসাথে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 FULL TESTING ARCHITECTURE MAP</div>
+  <pre class="ascii-tree-content">JAVASCRIPT TESTING ECOSYSTEM
+                                 <span style="color: #475569;">│</span>
+         <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┐</span>
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+     <span style="color: #fde047; font-weight: 700;">UNIT</span> TESTS          <span style="color: #fde047; font-weight: 700;">INTEGRATION</span> TESTS          <span style="color: #fde047; font-weight: 700;">E2E</span> TESTS
+   (70% - <span style="color: #34d399; font-weight: 700;">Fast</span>)            (20% - Medium)          (10% - <span style="color: #f43f5e; font-weight: 700;">Slow</span>)
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+  Pure Functions          API Endpoints &amp; DB       User Journey
+  Isolated Logic          Component + Hooks        Full Browser
+  <span style="color: #c084fc; font-weight: 700;">Jest</span> / <span style="color: #c084fc; font-weight: 700;">Vitest</span>           Supertest / RTL          <span style="color: #c084fc; font-weight: 700;">Playwright</span>
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+         <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┘</span>
+                                 <span style="color: #475569;">│</span>
+                                 <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                     CORE TESTING MECHANICS
+                                 <span style="color: #475569;">│</span>
+         <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┐</span>
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+    <span style="color: #fde047; font-weight: 700;">ASSERTIONS</span>                <span style="color: #fde047; font-weight: 700;">MOCKING</span>                <span style="color: #fde047; font-weight: 700;">COVERAGE</span>
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+   <span style="color: #c084fc; font-weight: 700;">toBe</span> / <span style="color: #c084fc; font-weight: 700;">toEqual</span>          jest.fn()               Statements
+   <span style="color: #c084fc; font-weight: 700;">toThrow</span> / toContain     mockResolvedValue       Branches
+   toBeCloseTo             Test Doubles &amp; Spies    Functions / Lines
+                                 <span style="color: #475569;">│</span>
+                                 <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                    <span style="color: #fde047; font-weight: 700;">TDD</span> &amp; PRODUCTION PIPELINE
+                                 <span style="color: #475569;">│</span>
+                   <span style="color: #f43f5e; font-weight: 700;">Red</span> <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">Green</span> <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">Refactor</span>
+                                 <span style="color: #475569;">│</span>
+                    Automated <span style="color: #fde047; font-weight: 700;">CI/CD</span> Gates
+                    (Zero Broken Production)</pre>
+</div>
+      <div class="def-box" style="margin-top: 6px;">
+        🏆 <strong>এক লাইনে Chapter 35:</strong> Testing হলো সফটওয়্যারের প্রতিটি লজিক্যাল ইউনিট, মডিউল ইন্টিগ্রেশন ও ইউজার জার্নিকে স্বয়ংক্রিয় অ্যাসার্শন ও মকিংয়ের মাধ্যমে এমনভাবে সুরক্ষিত করা যাতে নতুন কোড যোগ বা রিফ্যাক্টরিংয়ের পরেও সিস্টেম ১০০% বিশ্বস্ত ও বাগ-মুক্ত থাকে।
+      </div>
+
+      <div class="section-subhead" style="margin-top: 8px;">🔗 Curriculum Progression: Chapter 34 → 35 → 36</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🧪 ROADMAP CONTINUITY PIPELINE</div>
+  <pre class="ascii-tree-content">Chapter 34: NPM &amp; Modern JavaScript Tooling
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+প্যাকেজ ম্যানেজমেন্ট, প্রজেক্ট স্ক্যাফোল্ডিং, বান্ডলিং (Vite) ও ওয়ার্কফ্লো অটোমেশন
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 35: Testing JavaScript (THIS CHAPTER)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Unit Test, Integration Test, <span style="color: #c084fc; font-weight: 700;">Jest</span>/<span style="color: #c084fc; font-weight: 700;">Vitest</span>, Mocking, Coverage, <span style="color: #fde047; font-weight: 700;">TDD</span> &amp; <span style="color: #fde047; font-weight: 700;">CI/CD</span>
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 36: Modern ECMAScript / ES2020+ Features
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Optional Chaining, Nullish Coalescing, Top-level Await, WeakRef, Temporal API</pre>
+</div>
+    </div>
+  </div>
+</body>
+</html>

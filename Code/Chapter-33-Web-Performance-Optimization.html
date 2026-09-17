@@ -1,0 +1,2455 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 33 — Web Performance & Optimization | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid #64748b;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #334155;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0 5px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 2.5px 8px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+      text-transform: uppercase;
+    }
+    .code-box pre {
+      margin: 0;
+      padding: 6px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .code-box code {
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.35;
+      color: #f1f5f9;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .syn-kw { color: #f472b6; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #4ade80; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-33-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 33</span>
+        </div>
+      </div>
+      <div class="banner-sub">WEB PERFORMANCE &amp; OPTIMIZATION, CRITICAL RENDERING PATH, RUNTIME EFFICIENCY &amp; CORE WEB VITALS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">70 Modules + 12 Practice Labs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 27 — Web Performance</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Metrics</div>
+          <div class="meta-val">LCP, INP, CLS, TTFB &amp; 60 FPS</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">W3C / Chrome Web Vitals 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>⚡</span> Web Performance &amp; Optimization — গতি, স্কেলাবিলিটি ও ইউজার সন্তুষ্টির মূল ভিত্তি
+      </div>
+      <p class="text-p">
+        Web application শুধু কাজ করলেই আধুনিক ইঞ্জিনিয়ারিংয়ের দায়িত্ব শেষ হয় না—এটি যেন <strong>বিদ্যুৎ গতিতে লোড হয়, চোখের পলকে রেসপন্ড করে, ব্যাটারি ও মেমোরি সাশ্রয়ী হয় এবং মসৃণ ইউজার এক্সপেরিয়েন্স দেয়</strong>, সেটাই চূড়ান্ত লক্ষ্য। এই চ্যাপ্টারে আমরা <strong>Critical Rendering Path, Layout Thrashing, Debounce/Throttle, Lazy Loading, Code Splitting, Caching &amp; CDN, Web Workers, Core Web Vitals (LCP, INP, CLS)</strong> এবং প্রোডাকশন অপ্টিমাইজেশন পদ্ধতি শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. CRP &amp; DOM Flow</div>
+        <div class="roadmap-item"><span>📌</span> 2. Layout Thrashing</div>
+        <div class="roadmap-item"><span>📌</span> 3. Bundle &amp; Tree Shake</div>
+        <div class="roadmap-item"><span>📌</span> 4. Modern Image Formats</div>
+        <div class="roadmap-item"><span>📌</span> 5. Dynamic Code Split</div>
+        <div class="roadmap-item"><span>📌</span> 6. Debounce &amp; Throttle</div>
+        <div class="roadmap-item"><span>📌</span> 7. 60 FPS &amp; rAF</div>
+        <div class="roadmap-item"><span>📌</span> 8. HTTP Cache &amp; CDN</div>
+        <div class="roadmap-item"><span>📌</span> 9. Workers &amp; Memory</div>
+        <div class="roadmap-item"><span>📌</span> 10. Core Web Vitals</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Foundations of Web Performance & Page Load Lifecycle (33.1 – 33.5)</div>
+    <div class="study-card" id="sec-33-1">
+      <div class="card-title"><span class="badge-num">33.1</span> Web Performance কী?</div>
+      <p class="text-p"><strong>Web Performance</strong> হলো একটি website/web application কত দ্রুত এবং efficiently user-এর জন্য কাজ করে তার সামগ্রিক পরিমাপ। সহজভাবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">User
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Website Open
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">HTML Load</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">CSS Load</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">JavaScript Load</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Content Render</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">User Interaction</span></pre>
+</div>
+      <p class="text-p">এই পুরো process যত efficient হবে, website তত performant হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.2</span> কেন Performance গুরুত্বপূর্ণ?</div>
+      <p class="text-p">ধরো দুইটি website:</p>
+      <div class="section-subhead">🔹 Website A</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Click
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #f43f5e; font-weight: 700;">5 seconds wait</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #4ade80; font-weight: bold;">Result</span></pre>
+</div>
+      <div class="section-subhead">🔹 Website B</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Click
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #4ade80; font-weight: bold;">Fast</span> response
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #4ade80; font-weight: bold;">Result</span></pre>
+</div>
+      <p class="text-p">User সাধারণত দ্রুত feedback পাওয়া application-কে বেশি usable মনে করবে। Performance-এর প্রভাব পড়ে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>User Experience</li>
+        <li>Accessibility</li>
+        <li>Conversion</li>
+        <li>SEO</li>
+        <li>Mobile usability</li>
+        <li>Server cost</li>
+        <li>Battery usage</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.3</span> Performance-এর প্রধান তিনটি অংশ</div>
+      <p class="text-p">একটি website performance broadly তিন ভাগে ভাবতে পারো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ NETWORK WATERFALL & CACHING PIPELINE</div>
+  <pre class="ascii-tree-content">Web Performance
+                       <span style="color: #475569;">│</span>
+          <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────────</span><span style="color: #475569;">┐</span>
+          <span style="color: #475569;">│</span>            <span style="color: #475569;">│</span>            <span style="color: #475569;">│</span>
+       Network       Browser       Server
+          <span style="color: #475569;">│</span>            <span style="color: #475569;">│</span>            <span style="color: #475569;">│</span>
+       <span style="color: #fde047; font-weight: 600;">Download</span>      Render       API/DB
+       <span style="color: #fde047; font-weight: 600;">Assets</span>        JS/CSS       Response</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.4</span> Performance Bottleneck কী?</div>
+      <p class="text-p"><strong>Bottleneck</strong> হলো এমন অংশ যেটি পুরো system-এর performance আটকে দিচ্ছে। Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">HTML       <span style="color: #38bdf8; font-weight: 700;">→</span> 100ms
+CSS        <span style="color: #38bdf8; font-weight: 700;">→</span> 200ms
+JS         <span style="color: #38bdf8; font-weight: 700;">→</span> 5 seconds
+Image      <span style="color: #38bdf8; font-weight: 700;">→</span> 300ms</pre>
+</div>
+      <p class="text-p">এখানে JavaScript বড় bottleneck হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.5</span> Page Load-এর Basic Flow</div>
+      <p class="text-p">Browser সাধারণত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">URL
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">DNS</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Connection
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">HTTP</span> Request
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Server Response</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+HTML
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Parse HTML
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+CSS/JS/Images
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Render
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Interaction</pre>
+</div>
+      <p class="text-p">এখানে যেকোনো জায়গায় delay হতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 02 — Critical Rendering Path, Layout, Paint & Layout Thrashing (33.6 – 33.15)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.6</span> Critical Rendering Path</div>
+      <p class="text-p">Browser-এর page render করার গুরুত্বপূর্ণ process:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">HTML
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">DOM</span></pre>
+</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ CRITICAL RENDERING PATH & BROWSER PIPELINE</div>
+  <pre class="ascii-tree-content">CSS
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">CSSOM</span></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ CRITICAL RENDERING PATH & BROWSER PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">DOM</span> + <span style="color: #34d399; font-weight: 700;">CSSOM</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Render Tree</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Layout</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Paint</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Composite</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.7</span> DOM</div>
+      <p class="text-p">HTML থেকে browser তৈরি করে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">HTML
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">DOM</span></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;h1</span><span style="color:#f472b6; font-weight:600;">&gt;</span>Hello<span style="color:#f472b6; font-weight:600;">&lt;/h1</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+<span style="color:#f472b6; font-weight:600;">&lt;p</span><span style="color:#f472b6; font-weight:600;">&gt;</span>World<span style="color:#f472b6; font-weight:600;">&lt;/p</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">Conceptually:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Document
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> h1
+ <span style="color: #475569;">│</span>    <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> &quot;Hello&quot;
+ <span style="color: #475569;">│</span>
+ <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> p
+      <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> &quot;World&quot;</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.8</span> CSSOM</div>
+      <p class="text-p">CSS থেকে browser তৈরি করে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ CRITICAL RENDERING PATH & BROWSER PIPELINE</div>
+  <pre class="ascii-tree-content">CSS
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">CSSOM</span></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ CRITICAL RENDERING PATH & BROWSER PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">DOM</span> + <span style="color: #34d399; font-weight: 700;">CSSOM</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Render Tree</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.9</span> Layout</div>
+      <p class="text-p">Browser calculate করে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>width</li>
+        <li>height</li>
+        <li>position</li>
+        <li>spacing</li>
+      </ul>
+      <p class="text-p">এটি layout/reflow process-এর অংশ। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>element.style.width = <span class="syn-str">&quot;500px&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">এতে layout recalculation প্রয়োজন হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.10</span> Paint</div>
+      <p class="text-p">Browser pixels আঁকে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ LAYOUT THRASHING VS BATCHED EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Layout</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Paint</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Pixels</pre>
+</div>
+      <p class="text-p">যেমন:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>text</li>
+        <li>background</li>
+        <li>border</li>
+        <li>shadow</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.11</span> Composite</div>
+      <p class="text-p">Browser বিভিন্ন layer combine করে final screen তৈরি করতে পারে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ CRITICAL RENDERING PATH & BROWSER PIPELINE</div>
+  <pre class="ascii-tree-content">Painted Layers
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Composite</span>
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Screen</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.12</span> Reflow / Layout</div>
+      <p class="text-p">DOM বা CSS-এর কোনো change-এর কারণে layout আবার calculate করতে হলে তাকে সাধারণভাবে <strong>reflow/layout recalculation</strong> বলা হয়। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>box.style.width = <span class="syn-str">&quot;500px&quot;</span>;
+box.style.height = <span class="syn-str">&quot;300px&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">অনেক layout-affecting changes করলে browser-এর কাজ বাড়তে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.13</span> Repaint</div>
+      <p class="text-p">কোনো visual property change হলে repaint হতে পারে। যেমন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>box.style.backgroundColor = <span class="syn-str">&quot;red&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">সব property একইভাবে layout trigger করে না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.14</span> Layout Thrashing</div>
+      <p class="text-p">এটি একটি common performance problem। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> box = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;.box<span class="syn-str">&quot;);
+
+for (let i = 0; i &lt; 1000; i++) {
+    box.style.width = i + &quot;</span>px&quot;;
+
+    <span class="syn-fn">console</span>.log(box.offsetWidth);
+}</code></pre>
+</div>
+      <p class="text-p">এখানে বারবার:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Write
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Read layout
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Write
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Read layout</pre>
+</div>
+      <p class="text-p">করার ফলে browser-কে repeated layout calculation করতে হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.15</span> Better Approach</div>
+      <p class="text-p">আগে values calculate:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> widths = [];
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">1000</span>; i++) {
+    widths.<span style="color: #38bdf8; font-weight: 600;">push</span>(i);
+}
+
+<span class="syn-kw">for</span> (<span class="syn-kw">const</span> width <span class="syn-kw">of</span> widths) {
+    box.style.width = width + <span class="syn-str">&quot;px&quot;</span>;
+}</code></pre>
+</div>
+      <p class="text-p">আরও ভালো architecture/context অনুযায়ী batching বা CSS class ব্যবহার করা যায়।</p>
+    </div>
+    <div class="part-banner">Part 03 — DOM Batching, Bundle Size, Tree Shaking & Compression (33.16 – 33.22)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.16</span> DOM Manipulation Optimize করা</div>
+      <p class="text-p">❌ বারবার DOM change:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">1000</span>; i++) {
+    <span class="syn-kw">const</span> p = <span class="syn-fn">document</span>.createElement(&quot;p&quot;);
+    p.textContent = <span class="syn-str">`Item ${i}`</span>;
+
+    <span class="syn-fn">document</span>.body.<span style="color: #38bdf8; font-weight: 600;">appendChild</span>(p);
+}</code></pre>
+</div>
+      <p class="text-p">এটি সবসময় catastrophic নয়, কিন্তু বড় DOM-এর ক্ষেত্রে repeated mutation expensive হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.17</span> DocumentFragment</div>
+      <p class="text-p">একসাথে DOM তৈরি করে শেষে append করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> fragment = <span class="syn-fn">document</span>.createDocumentFragment();
+
+<span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; <span class="syn-num">1000</span>; i++) {
+
+    <span class="syn-kw">const</span> p = <span class="syn-fn">document</span>.createElement(&quot;p&quot;);
+
+    p.textContent = <span class="syn-str">`Item ${i}`</span>;
+
+    fragment.<span style="color: #38bdf8; font-weight: 600;">appendChild</span>(p);
+}
+
+<span class="syn-fn">document</span>.body.<span style="color: #38bdf8; font-weight: 600;">appendChild</span>(fragment);</code></pre>
+</div>
+      <p class="text-p">Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Create many elements
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Fragment
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+One <span style="color: #34d399; font-weight: 700;">DOM</span> insertion</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.18</span> JavaScript Bundle Size</div>
+      <p class="text-p">ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">app.js = 5 MB</pre>
+</div>
+      <p class="text-p">Browser-কে এটি download, parse এবং execute করতে হবে। অন্যদিকে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">app.js = 200 KB</pre>
+</div>
+      <p class="text-p">সাধারণত কম data transfer ও processing দরকার হবে। তাই:</p>
+      <div class="def-box">💡 <strong>Smaller JavaScript is generally better.</strong></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.19</span> Tree Shaking</div>
+      <p class="text-p">Unused code বাদ দেওয়ার build optimization। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">export</span> <span class="syn-kw">function</span> add() {}
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> subtract() {}
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> multiply() {}</code></pre>
+</div>
+      <p class="text-p">তুমি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { add } <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">শুধু <code>add()</code> ব্যবহার করলে build tool unused export বাদ দেওয়ার সুযোগ পেতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.20</span> Minification</div>
+      <p class="text-p">Source code ছোট করা। Before:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> calculateTotal(price, quantity) {
+    <span class="syn-kw">return</span> price * quantity;
+}</code></pre>
+</div>
+      <p class="text-p">Minified concept:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> calculateTotal(a,b){<span class="syn-kw">return</span> a*b}</code></pre>
+</div>
+      <p class="text-p">ফলে file size কমতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.21</span> Compression</div>
+      <p class="text-p">Server/client data transfer-এর সময় compression ব্যবহার করা যায়। Common compression:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Gzip</span>
+<span style="color: #c084fc; font-weight: 700;">Brotli</span></pre>
+</div>
+      <p class="text-p">Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Original File
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Compression</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Smaller Transfer
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Browser
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Decompression</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.22</span> Brotli</div>
+      <p class="text-p">Modern web delivery-তে Brotli (<code>br</code>) compression commonly ব্যবহৃত হয়। বিশেষ করে text assets-এর জন্য:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">HTML
+CSS
+JS
+JSON</pre>
+</div>
+      <p class="text-p">compression size কমাতে সাহায্য করতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 04 — Media & Image Optimization, Responsive & Lazy Loading (33.23 – 33.27)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.23</span> Image Optimization</div>
+      <p class="text-p">Website slow হওয়ার বড় কারণ image হতে পারে। ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">hero-image.png
+= 8 MB</pre>
+</div>
+      <p class="text-p">এটি unnecessary বড়। Optimize করা যায়:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>resize</li>
+        <li>compression</li>
+        <li>responsive images</li>
+        <li>modern formats</li>
+        <li>lazy loading</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.24</span> Modern Image Formats</div>
+      <p class="text-p">Common formats:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">JPEG
+PNG
+WebP
+AVIF
+SVG</pre>
+</div>
+      <p class="text-p">যেমন photographic image-এর ক্ষেত্রে WebP/AVIF অনেক ক্ষেত্রে ছোট হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.25</span> Responsive Images</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;img</span>
+    <span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;image-800.jpg&quot;</span>
+    <span style="color:#38bdf8;">srcset=</span>&quot;
+        image-400.jpg 400w,
+        image-800.jpg 800w,
+        image-1200.jpg 1200w
+    &quot;
+    <span style="color:#38bdf8;">sizes=</span><span style="color:#4ade80;">&quot;(max-width: 600px) 400px, 800px&quot;</span>
+    <span style="color:#38bdf8;">alt=</span><span style="color:#4ade80;">&quot;Example&quot;</span>
+<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">Browser প্রয়োজন অনুযায়ী appropriate image resource নির্বাচন করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.26</span> Lazy Loading</div>
+      <p class="text-p">যে resource এখনই দরকার নেই, সেটি পরে load করা। Image:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;img</span>
+    <span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;image.jpg&quot;</span>
+    <span style="color:#38bdf8;">loading=</span><span style="color:#4ade80;">&quot;lazy&quot;</span>
+    <span style="color:#38bdf8;">alt=</span><span style="color:#4ade80;">&quot;Example&quot;</span>
+<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">JavaScript-এর ক্ষেত্রেও code splitting/lazy import ব্যবহার করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.27</span> Eager vs Lazy</div>
+      <div class="section-subhead">🔹 Eager</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Page Load
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Everything load</pre>
+</div>
+      <div class="section-subhead">🔹 Lazy</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Page Load
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Only necessary content
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+User scroll/click
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Additional content load</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 05 — Code Splitting & Dynamic Imports (33.28 – 33.29)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.28</span> JavaScript Dynamic Import</div>
+      <p class="text-p">ES Modules-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> module = <span class="syn-kw">await</span> <span class="syn-kw">import</span>(&quot;./heavy-module.js&quot;);</code></pre>
+</div>
+      <p class="text-p">এটি code-এর একটি অংশ প্রয়োজন হলে load করতে সাহায্য করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.29</span> Code Splitting</div>
+      <p class="text-p">Large JavaScript application ভাগ করা:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">app.js
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+chunk-1.js
+chunk-2.js
+chunk-3.js</pre>
+</div>
+      <p class="text-p">User যে feature ব্যবহার করবে তার প্রয়োজনীয় chunk load করা যেতে পারে। React application-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> Dashboard = lazy(
+    () =&gt; <span class="syn-kw">import</span>(&quot;./Dashboard.jsx&quot;)
+);</code></pre>
+</div>
+      <p class="text-p">Conceptually:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ DYNAMIC CODE SPLITTING & ROUTE LAZY LOADING</div>
+  <pre class="ascii-tree-content">Initial Bundle
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Small
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+User opens Dashboard
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Dashboard chunk loads</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 06 — Event Optimization: Debounce, Throttle & Passive Listeners (33.30 – 33.34)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.30</span> Debouncing</div>
+      <p class="text-p">Rapid events-এর মধ্যে user থামার পর function execute করা। ধরো search input:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">User types:
+H
+He
+Hel
+Hell
+Hello</pre>
+</div>
+      <p class="text-p">প্রতিটি keystroke-এ API call করলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">5 keystrokes
+<span style="color: #38bdf8; font-weight: 700;">↓</span>
+5 API requests</pre>
+</div>
+      <p class="text-p">Debounce:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ DEBOUNCE VS THROTTLE EXECUTION TIMELINE</div>
+  <pre class="ascii-tree-content">User typing
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Wait
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+User stops
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+One API request</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">⚡ Debounce implementation</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> debounce(fn, delay) {
+
+    <span class="syn-kw">let</span> timer;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> (...args) {
+
+        <span class="syn-fn">clearTimeout</span>(timer);
+
+        timer = <span class="syn-fn">setTimeout</span>(() =&gt; {
+            fn.apply(<span class="syn-kw">this</span>, args);
+        }, delay);
+    };
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> search = debounce((value) =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Searching:&quot;, value);
+}, <span class="syn-num">500</span>);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.31</span> Throttling</div>
+      <p class="text-p">Throttle নির্দিষ্ট সময়ের মধ্যে function execution limit করে। ধরো scroll event:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Scroll
+Scroll
+Scroll
+Scroll
+Scroll
+Scroll</pre>
+</div>
+      <p class="text-p">Throttle করলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ DEBOUNCE VS THROTTLE EXECUTION TIMELINE</div>
+  <pre class="ascii-tree-content">Execute
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Wait
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Execute
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Wait
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Execute</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">⚡ Throttle example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> throttle(fn, delay) {
+
+    <span class="syn-kw">let</span> lastTime = <span class="syn-num">0</span>;
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> (...args) {
+
+        <span class="syn-kw">const</span> <span style="color: #38bdf8; font-weight: 600;">now</span> = Date.<span style="color: #38bdf8; font-weight: 600;">now</span>();
+
+        <span class="syn-kw">if</span> (<span style="color: #38bdf8; font-weight: 600;">now</span> - lastTime &gt;= delay) {
+
+            lastTime = <span style="color: #38bdf8; font-weight: 600;">now</span>;
+
+            fn.apply(<span class="syn-kw">this</span>, args);
+        }
+    };
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.32</span> Debounce vs Throttle</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Debounce</th><th>Throttle</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>User থামলে execute</td><td>নির্দিষ্ট interval-এ execute</td></tr><tr><td>Search</td><td>Scroll</td></tr><tr><td>Resize</td><td>Mouse move</td></tr><tr><td>Typing</td><td>Drag</td></tr>
+    </tbody>
+  </table>
+</div>
+      <p class="text-p">🧠 মনে রাখো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ DEBOUNCE VS THROTTLE EXECUTION TIMELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Debounce</span> <span style="color: #38bdf8; font-weight: 700;">→</span> &quot;Wait until quiet&quot;
+<span style="color: #c084fc; font-weight: 700;">Throttle</span> <span style="color: #38bdf8; font-weight: 700;">→</span> &quot;Limit frequency&quot;</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.33</span> Event Delegation</div>
+      <p class="text-p">অনেক child element-এ আলাদা listener না দিয়ে parent-এ listener দেওয়া যায়। HTML:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;ul</span> <span style="color:#38bdf8;">id=</span><span style="color:#4ade80;">&quot;list&quot;</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+    <span style="color:#f472b6; font-weight:600;">&lt;li</span><span style="color:#f472b6; font-weight:600;">&gt;</span>One<span style="color:#f472b6; font-weight:600;">&lt;/li</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+    <span style="color:#f472b6; font-weight:600;">&lt;li</span><span style="color:#f472b6; font-weight:600;">&gt;</span>Two<span style="color:#f472b6; font-weight:600;">&lt;/li</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+    <span style="color:#f472b6; font-weight:600;">&lt;li</span><span style="color:#f472b6; font-weight:600;">&gt;</span>Three<span style="color:#f472b6; font-weight:600;">&lt;/li</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+<span style="color:#f472b6; font-weight:600;">&lt;/ul</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">JavaScript:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">document</span>
+    .<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#list<span class="syn-str">&quot;)
+    .addEventListener(&quot;</span>click<span class="syn-str">&quot;, (event) =&gt; {
+
+        if (event.target.matches(&quot;</span>li&quot;)) {
+            <span class="syn-fn">console</span>.log(event.target.textContent);
+        }
+    });</code></pre>
+</div>
+      <p class="text-p">এতে অনেক listener না দিয়েও কাজ করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.34</span> Passive Event Listener</div>
+      <p class="text-p">Touch/scroll event-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">window</span>.<span style="color: #38bdf8; font-weight: 600;">addEventListener</span>(
+    <span class="syn-str">&quot;scroll&quot;</span>,
+    handleScroll,
+    { passive: <span class="syn-bool">true</span> }
+);</code></pre>
+</div>
+      <p class="text-p"><code>passive: true</code> browser-কে জানায় listener <code>preventDefault()</code> ব্যবহার করবে না। কিছু scrolling scenario-তে এটি performance/scroll responsiveness-এর জন্য সাহায্য করতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 07 — Rendering Performance, rAF & GPU Acceleration (33.35 – 33.39)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.35</span> <code>requestAnimationFrame()</code></div>
+      <p class="text-p">Animation বা visual update-এর জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">requestAnimationFrame</span>(() =&gt; {
+    box.style.transform = <span class="syn-str">&quot;translateX(100px)&quot;</span>;
+});</code></pre>
+</div>
+      <p class="text-p">Browser-এর rendering cycle-এর সাথে visual updates synchronize করতে এটি useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.36</span> কেন <code>setInterval()</code> সব animation-এর জন্য ideal নয়?</div>
+      <p class="text-p">এভাবে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">setInterval</span>(() =&gt; {
+    box.style.left = <span class="syn-str">&quot;...&quot;</span>;
+}, <span class="syn-num">16</span>);</code></pre>
+</div>
+      <p class="text-p">করার বদলে animation-এর জন্য সাধারণত:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">requestAnimationFrame</span>()</code></pre>
+</div>
+      <p class="text-p">better choice হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.37</span> Animation Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> position = <span class="syn-num">0</span>;
+
+<span class="syn-kw">function</span> animate() {
+
+    position += <span class="syn-num">2</span>;
+
+    box.style.transform =
+        <span class="syn-str">`translateX(${position}px)`</span>;
+
+    <span class="syn-kw">if</span> (position &lt; <span class="syn-num">500</span>) {
+        <span class="syn-fn">requestAnimationFrame</span>(animate);
+    }
+}
+
+<span class="syn-fn">requestAnimationFrame</span>(animate);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.38</span> CSS Transform Performance</div>
+      <p class="text-p">Animation-এর ক্ষেত্রে অনেক সময়:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">transform: translate<span style="color: #f43f5e; font-weight: bold;">X</span>(...);</pre>
+</div>
+      <p class="text-p">এবং:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">opacity: ...</pre>
+</div>
+      <p class="text-p">এর মতো properties browser rendering pipeline-এর জন্য ভালোভাবে optimize করা যায়। অন্যদিকে frequent:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">top
+left
+width
+height</pre>
+</div>
+      <p class="text-p">change করলে layout work হতে পারে। এটি absolute rule নয়—browser implementation এবং surrounding layout-এর ওপরও নির্ভর করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.39</span> <code>will-change</code></div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">.box {
+    <span style="color: #c084fc; font-weight: 700;">will-change</span>: transform;
+}</pre>
+</div>
+      <p class="text-p">Browser-কে future change সম্পর্কে hint দিতে পারে। ⚠️ সব element-এ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">will-change</span>: transform;</pre>
+</div>
+      <p class="text-p">দেওয়া উচিত নয়। কারণ excessive layer/resource usage হতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 08 — Browser Caching, CDN & Network Waterfall (33.40 – 33.45)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.40</span> Browser Caching</div>
+      <p class="text-p">Browser static resource cache করতে পারে। যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">logo.png
+style.css
+app.js</pre>
+</div>
+      <p class="text-p">প্রথমবার download:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ NETWORK WATERFALL & CACHING PIPELINE</div>
+  <pre class="ascii-tree-content">Server
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Browser
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Cache</span></pre>
+</div>
+      <p class="text-p">পরেরবার cache policy অনুযায়ী network request কমতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.41</span> HTTP Cache Headers</div>
+      <p class="text-p">Important concepts:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ NETWORK WATERFALL & CACHING PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Cache</span>-Control
+<span style="color: #fde047; font-weight: 600;">ETag</span>
+Last-Modified
+Expires</pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTTP CACHE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">Cache-Control:</span> <span style="color:#4ade80; font-weight:600;">public</span>, <span style="color:#4ade80; font-weight:600;">max-age=31536000</span></code></pre>
+</div>
+      <p class="text-p">মানে resource cache করার policy নির্দেশ করা হচ্ছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.42</span> Cache-Control</div>
+      <p class="text-p">Common concepts:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">max-age
+no-cache
+no-store
+public
+private</pre>
+</div>
+      <div class="section-subhead">🔹 <code>no-store</code></div>
+      <p class="text-p">Response store না করার নির্দেশ দেয়। Sensitive data-এর ক্ষেত্রে গুরুত্বপূর্ণ হতে পারে।</p>
+      <div class="section-subhead">🔹 <code>max-age</code></div>
+      <p class="text-p">কত সময় fresh হিসেবে treat করা হবে তার নির্দেশ দিতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.43</span> ETag</div>
+      <p class="text-p">Server resource-এর একটি identifier দিতে পারে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTTP CACHE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">ETag:</span> <span style="color:#fde047;">&quot;abc123&quot;</span></code></pre>
+</div>
+      <p class="text-p">পরবর্তী request-এ browser পাঠাতে পারে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTTP CACHE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">If-None-Match:</span> <span style="color:#fde047;">&quot;abc123&quot;</span></code></pre>
+</div>
+      <p class="text-p">Resource পরিবর্তন না হলে server:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTTP CACHE HEADERS</span><span>HTTP</span></div>
+  <pre><code>304 Not Modified</code></pre>
+</div>
+      <p class="text-p">দিতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.44</span> CDN</div>
+      <p class="text-p"><strong>CDN = Content Delivery Network</strong> Static assets user-এর কাছাকাছি edge location থেকে serve করতে পারে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ NETWORK WATERFALL & CACHING PIPELINE</div>
+  <pre class="ascii-tree-content">Origin Server
+                   <span style="color: #475569;">│</span>
+             <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">─────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">─────</span><span style="color: #475569;">┐</span>
+             <span style="color: #38bdf8; font-weight: 700;">↓</span>     <span style="color: #38bdf8; font-weight: 700;">↓</span>     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+           <span style="color: #fde047; font-weight: 600;">CDN</span>   <span style="color: #fde047; font-weight: 600;">CDN</span>   <span style="color: #fde047; font-weight: 600;">CDN</span>
+            <span style="color: #475569;">│</span>     <span style="color: #475569;">│</span>     <span style="color: #475569;">│</span>
+          User  User  User</pre>
+</div>
+      <p class="text-p">Benefits:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>lower latency</li>
+        <li>distributed delivery</li>
+        <li>caching</li>
+        <li>reduced origin load</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.45</span> Network Waterfall</div>
+      <p class="text-p">Browser DevTools-এর Network tab-এ দেখতে পারো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">HTML
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> CSS
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> JS
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Image
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Font
+ <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> API</pre>
+</div>
+      <p class="text-p">প্রতিটির:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>request time</li>
+        <li>response time</li>
+        <li>size</li>
+        <li>status</li>
+        <li>initiator</li>
+      </ul>
+      <p class="text-p">দেখা যায়।</p>
+    </div>
+    <div class="part-banner">Part 09 — Profiling, Long Tasks, Web Workers & Memory Leaks (33.46 – 33.51)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.46</span> Chrome DevTools Performance</div>
+      <p class="text-p">Browser DevTools → <strong>Performance</strong> এখানে recording করে দেখতে পারো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ LAYOUT THRASHING VS BATCHED EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">JavaScript execution
+Rendering
+Painting
+<span style="color: #34d399; font-weight: 700;">Layout</span>
+Long Tasks
+Frames</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.47</span> Long Task</div>
+      <p class="text-p">Main thread-এ খুব দীর্ঘ JavaScript task হলে UI responsiveness কমে যেতে পারে। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">User Click
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Heavy JS
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Main Thread Busy
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+UI delayed</pre>
+</div>
+      <p class="text-p">এজন্য heavy work:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>break into smaller chunks</li>
+        <li>Web Worker</li>
+        <li>lazy loading</li>
+        <li>optimized algorithms</li>
+      </ul>
+      <p class="text-p">ইত্যাদি দিয়ে handle করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.48</span> Main Thread</div>
+      <p class="text-p">Browser-এর main thread সাধারণত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ LAYOUT THRASHING VS BATCHED EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">JavaScript
++
+<span style="color: #34d399; font-weight: 700;">DOM</span>
++
+Style/<span style="color: #34d399; font-weight: 700;">Layout</span> related work
++
+<span style="color: #fde047; font-weight: 600;">User Interaction</span></pre>
+</div>
+      <p class="text-p">এর বড় অংশ handle করে। যদি JavaScript:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">while</span> (<span class="syn-bool">true</span>) {
+    <span class="syn-com">// never ending</span>
+}</code></pre>
+</div>
+      <p class="text-p">চালাও, UI freeze হয়ে যেতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.49</span> Web Worker আবার কেন গুরুত্বপূর্ণ?</div>
+      <p class="text-p">Chapter 32-এ আমরা Web Worker দেখেছি। Heavy computation:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ MAIN THREAD VS WEB WORKER CONCURRENCY</div>
+  <pre class="ascii-tree-content">Main Thread
+     <span style="color: #475569;">│</span>
+     <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> UI
+     <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #34d399; font-weight: 700;">DOM</span>
+     <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Interaction
+     
+Worker
+     <span style="color: #475569;">│</span>
+     <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Heavy computation</pre>
+</div>
+      <p class="text-p">এতে main thread-এর ওপর চাপ কমানো যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.50</span> Memory Performance</div>
+      <p class="text-p">Performance শুধু speed নয়। Memory usage-ও গুরুত্বপূর্ণ। Potential সমস্যা:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ NETWORK WATERFALL & CACHING PIPELINE</div>
+  <pre class="ascii-tree-content">Huge Array
+Huge Object
+Unremoved Event Listener
+Detached <span style="color: #34d399; font-weight: 700;">DOM</span>
+Growing <span style="color: #fde047; font-weight: 600;">Cache</span></pre>
+</div>
+      <p class="text-p">এগুলো memory usage বাড়াতে পারে। Chapter 30-এর Garbage Collection knowledge এখানে কাজে লাগে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.51</span> Memory Leak Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> cache = [];
+
+<span class="syn-kw">function</span> addData(data) {
+    cache.<span style="color: #38bdf8; font-weight: 600;">push</span>(data);
+}</code></pre>
+</div>
+      <p class="text-p">যদি <code>cache</code> কখনো clean না হয়:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">cache
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+More Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+More Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+More Data</pre>
+</div>
+      <p class="text-p">Memory usage ক্রমেই বাড়তে পারে।</p>
+    </div>
+    <div class="part-banner">Part 10 — Resource Hints, Critical CSS, Fonts & API Abort (33.52 – 33.62)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.52</span> Image Lazy Loading + IntersectionObserver</div>
+      <p class="text-p">Chapter 32-এর knowledge combine করলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> images =
+    <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelectorAll</span>(&quot;img[data-src]&quot;);
+
+<span class="syn-kw">const</span> observer =
+    <span class="syn-kw">new</span> <span class="syn-fn">IntersectionObserver</span>(entries =&gt; {
+
+        entries.<span style="color: #38bdf8; font-weight: 600;">forEach</span>(entry =&gt; {
+
+            <span class="syn-kw">if</span> (!entry.isIntersecting) <span class="syn-kw">return</span>;
+
+            <span class="syn-kw">const</span> img = entry.target;
+
+            img.src = img.dataset.src;
+
+            observer.<span style="color: #38bdf8; font-weight: 600;">unobserve</span>(img);
+        });
+    });
+
+images.<span style="color: #38bdf8; font-weight: 600;">forEach</span>(img =&gt; observer.<span style="color: #38bdf8; font-weight: 600;">observe</span>(img));</code></pre>
+</div>
+      <p class="text-p">এটি একটি real performance technique।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.53</span> Code Splitting + Dynamic Import</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>button.<span style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&quot;click<span class="syn-str">&quot;, async () =&gt; {
+
+    const module =
+        await import(&quot;</span>./heavyFeature.js&quot;);
+
+    module.start();
+});</code></pre>
+</div>
+      <p class="text-p">User click না করা পর্যন্ত heavy feature-এর code load না করানো যেতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.54</span> Preload</div>
+      <p class="text-p">কিছু critical resource আগে load করার জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;link</span>
+    <span style="color:#38bdf8;">rel=</span><span style="color:#4ade80;">&quot;preload&quot;</span>
+    <span style="color:#38bdf8;">href=</span><span style="color:#4ade80;">&quot;/fonts/main.woff2&quot;</span>
+    <span style="color:#38bdf8;">as=</span><span style="color:#4ade80;">&quot;font&quot;</span>
+    <span style="color:#38bdf8;">type=</span><span style="color:#4ade80;">&quot;font/woff2&quot;</span>
+    crossorigin
+<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">⚠️ Preload শুধু genuinely critical resource-এর জন্য ব্যবহার করা ভালো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.55</span> Prefetch</div>
+      <p class="text-p">Future navigation-এর সম্ভাব্য resource আগে fetch করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;link</span>
+    <span style="color:#38bdf8;">rel=</span><span style="color:#4ade80;">&quot;prefetch&quot;</span>
+    <span style="color:#38bdf8;">href=</span><span style="color:#4ade80;">&quot;/next-page.js&quot;</span>
+<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">Browser support/priority behavior অনুযায়ী actual loading timing পরিবর্তিত হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.56</span> <code>defer</code> vs <code>async</code></div>
+      <p class="text-p">HTML:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;script</span> <span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;app.js&quot;</span> defer<span style="color:#f472b6; font-weight:600;">&gt;</span><span style="color:#f472b6; font-weight:600;">&lt;/script</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <div class="section-subhead">🔹 <code>defer</code></div>
+      <p class="text-p">HTML parsing block না করে script download করতে পারে এবং document parse শেষ হলে execution করে। Multiple deferred scripts সাধারণত document order অনুযায়ী execute হয়।</p>
+      <div class="section-subhead">🔹 <code>async</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;script</span> <span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;analytics.js&quot;</span> async<span style="color:#f472b6; font-weight:600;">&gt;</span><span style="color:#f472b6; font-weight:600;">&lt;/script</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">Download complete হলে execution শুরু হতে পারে, parsing-এর সাথে timing overlap করতে পারে। একাধিক <code>async</code> script-এর execution order guaranteed নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.57</span> Comparison</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th><code>defer</code></th><th><code>async</code></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Download parallel হতে পারে</td><td>Download parallel হতে পারে</td></tr><tr><td>HTML parsing block না করে</td><td>HTML parsing block না করে</td></tr><tr><td>Parse complete হওয়ার পরে execute</td><td>Download শেষ হলেই execute হতে পারে</td></tr><tr><td>Order maintained</td><td>Order guaranteed নয়</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.58</span> Critical CSS</div>
+      <p class="text-p">Above-the-fold content-এর জন্য প্রয়োজনীয় CSS দ্রুত দিতে critical CSS strategy ব্যবহার করা যায়। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Critical CSS
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Initial render
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Remaining CSS
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Later</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.59</span> Font Performance</div>
+      <p class="text-p">Web fonts performance affect করতে পারে। Strategies:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>WOFF2 ব্যবহার</li>
+        <li>প্রয়োজনীয় font weights কমানো</li>
+        <li>preload carefully</li>
+        <li><code>font-display</code> ব্যবহার</li>
+      </ul>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">@font-face {
+    font-family: &quot;MyFont&quot;;
+    src: url(&quot;/font.woff2&quot;) format(&quot;woff2&quot;);
+    font-display: swap;
+}</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.60</span> API Performance</div>
+      <p class="text-p">Frontend slow হওয়ার কারণ সবসময় frontend নয়। ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Button Click
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+API Request
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Server
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Database
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Server
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Response
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+UI</pre>
+</div>
+      <p class="text-p">Database slow হলে frontend-ও slow মনে হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.61</span> API Optimization</div>
+      <p class="text-p">Backend side:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>pagination</li>
+        <li>caching</li>
+        <li>database indexes</li>
+        <li>efficient queries</li>
+        <li>compression</li>
+        <li>response shaping</li>
+        <li>connection pooling</li>
+      </ul>
+      <p class="text-p">Frontend side:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>debounce search</li>
+        <li>cache responses where appropriate</li>
+        <li>avoid duplicate requests</li>
+        <li>pagination/infinite loading</li>
+        <li>abort stale requests</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.62</span> AbortController</div>
+      <p class="text-p">Unnecessary request cancel করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> controller = <span class="syn-kw">new</span> <span class="syn-fn">AbortController</span>();
+
+<span class="syn-fn">fetch</span>(&quot;/api/search&quot;, {
+    signal: controller.signal
+});</code></pre>
+</div>
+      <p class="text-p">Cancel:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>controller.<span style="color: #38bdf8; font-weight: 600;">abort</span>();</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <p class="text-p">Search:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">User types:
+Java
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Request 1
+
+User types:
+JavaScript
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Request 2</pre>
+</div>
+      <p class="text-p">আগের unnecessary request cancel করা যেতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 11 — Core Web Vitals, Performance Budget & Production Checklist (33.63 – 33.70)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.63</span> Performance Measurement</div>
+      <p class="text-p">Optimization করার আগে measure করতে হবে। Golden rule:</p>
+      <div class="def-box">💡 <strong>Measure → Identify → Optimize → Measure Again</strong></div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Measure
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Find <span style="color: #f43f5e; font-weight: 700;">Bottleneck</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Optimize
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Measure Again</pre>
+</div>
+      <p class="text-p">শুধু অনুমান করে optimization করা উচিত নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.64</span> Core Web Vitals</div>
+      <p class="text-p">Modern web performance-এর গুরুত্বপূর্ণ user-centric metrics:</p>
+      <div class="section-subhead">🔹 LCP</div>
+      <p class="text-p"><strong>Largest Contentful Paint</strong> Main content কত দ্রুত visible হয় তার একটি গুরুত্বপূর্ণ metric।</p>
+      <div class="section-subhead">🔹 INP</div>
+      <p class="text-p"><strong>Interaction to Next Paint</strong> User interaction-এর পরে page কত দ্রুত visual response দেয় তার metric।</p>
+      <div class="section-subhead">🔹 CLS</div>
+      <p class="text-p"><strong>Cumulative Layout Shift</strong> Page-এর content unexpected ভাবে কতটা নড়ে যায় তা measure করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.65</span> LCP</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Page open
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Hero heading/image
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Main content visible</pre>
+</div>
+      <p class="text-p">এই গুরুত্বপূর্ণ content দ্রুত render হওয়া ভালো। LCP improve করতে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>optimize images</li>
+        <li>reduce server delay</li>
+        <li>preload critical resources carefully</li>
+        <li>reduce render-blocking resources</li>
+        <li>optimize HTML/CSS/JS</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.66</span> INP</div>
+      <p class="text-p">ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">User clicks button
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Heavy JavaScript
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+UI responds late</pre>
+</div>
+      <p class="text-p">এটি poor interaction responsiveness-এর sign। Improve করতে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>long tasks break করা</li>
+        <li>unnecessary JS কমানো</li>
+        <li>event handlers optimize</li>
+        <li>Web Worker</li>
+        <li>code splitting</li>
+      </ul>
+      <p class="text-p">ব্যবহার করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.67</span> CLS</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ PERFORMANCE LIFECYCLE & EXECUTION FLOW</div>
+  <pre class="ascii-tree-content">Page load
+
+Text
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Image loads
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Image জায়গা নেয়
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Text নিচে নেমে গেল</pre>
+</div>
+      <p class="text-p">এটি layout shift।</p>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">⚡ CLS improve</div>
+      <p class="text-p">Image-এর dimensions define করুন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;img</span>
+    <span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;image.jpg&quot;</span>
+    <span style="color:#38bdf8;">width=</span><span style="color:#4ade80;">&quot;800&quot;</span>
+    <span style="color:#38bdf8;">height=</span><span style="color:#4ade80;">&quot;500&quot;</span>
+    <span style="color:#38bdf8;">alt=</span><span style="color:#4ade80;">&quot;Example&quot;</span>
+<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">অথবা CSS aspect ratio reserve করুন।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.68</span> <code>loading=&quot;lazy&quot;</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;img</span>
+    <span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;photo.jpg&quot;</span>
+    <span style="color:#38bdf8;">loading=</span><span style="color:#4ade80;">&quot;lazy&quot;</span>
+    <span style="color:#38bdf8;">alt=</span><span style="color:#4ade80;">&quot;Photo&quot;</span>
+<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">Browser-এর native lazy loading ব্যবহার করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.69</span> Performance Budget</div>
+      <p class="text-p">Project-এর জন্য performance target define করা যায়। Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ CORE WEB VITALS METRICS & TARGET BENCHMARKS</div>
+  <pre class="ascii-tree-content">JavaScript &lt; 300 KB
+Images &lt; 1 MB
+<span style="color: #fbbf24; font-weight: 700;">LCP</span> &lt; target
+API response &lt; target</pre>
+</div>
+      <p class="text-p">এটি team-কে performance-aware development করতে সাহায্য করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.70</span> Production Optimization Checklist</div>
+      <p class="text-p">Deployment-এর আগে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ NETWORK WATERFALL & CACHING PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: bold;">□</span> Images optimized
+<span style="color: #38bdf8; font-weight: bold;">□</span> Unnecessary JS removed
+<span style="color: #38bdf8; font-weight: bold;">□</span> Code splitting considered
+<span style="color: #38bdf8; font-weight: bold;">□</span> Lazy loading used where appropriate
+<span style="color: #38bdf8; font-weight: bold;">□</span> <span style="color: #c084fc; font-weight: 700;">Compression</span> enabled
+<span style="color: #38bdf8; font-weight: bold;">□</span> <span style="color: #fde047; font-weight: 600;">Cache</span> strategy configured
+<span style="color: #38bdf8; font-weight: bold;">□</span> API optimized
+<span style="color: #38bdf8; font-weight: bold;">□</span> No unnecessary API requests
+<span style="color: #38bdf8; font-weight: bold;">□</span> Console/debug code reviewed
+<span style="color: #38bdf8; font-weight: bold;">□</span> Source maps strategy reviewed
+<span style="color: #38bdf8; font-weight: bold;">□</span> Performance measured
+<span style="color: #38bdf8; font-weight: bold;">□</span> Mobile tested</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 12 — Must Know Architecture, Quick Cheat Sheet, 12 Practice Labs & Final Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.71</span> 🔥 MUST KNOW — পারফরম্যান্স অপ্টিমাইজেশনের ১০টি মূল স্তম্ভ</div>
+      <p class="text-p">প্রোডাকশন গ্রেড ওয়েব অ্যাপ্লিকেশনের গতি ও রেসপন্সিভনেস নিশ্চিত করার জন্য এই ১০টি আর্কিটেকচারাল প্যাটার্ন সর্বদা মনে রাখা প্রয়োজন:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #0284c7; font-size: 10px; margin-bottom: 3px;">📌 1. Rendering Pipeline &amp; DOM</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>DOM + CSSOM:</strong> Render Tree গঠন করে লেআউট তৈরি</li>
+            <li><strong>Layout &amp; Paint:</strong> রিফ্লো কমানো ও GPU কম্পোজিটিং ব্যবহার</li>
+            <li><strong>DocumentFragment:</strong> ১০০০টি নোড মাত্র ১টি রিফ্লোতে ইনসার্ট</li>
+            <li><strong>will-change &amp; CSS Transform:</strong> সিপিইউ থ্রেড বাদ দিয়ে জিপিইউতে এনিমেশন</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #059669; font-size: 10px; margin-bottom: 3px;">📌 2. Runtime Execution &amp; Events</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Debounce:</strong> সার্চ ইনপুটে টাইপিং থামা পর্যন্ত অপেক্ষা</li>
+            <li><strong>Throttle:</strong> স্ক্রল বা রিসাইজে নির্দিষ্ট ইন্টারভালে এক্সিকিউশন</li>
+            <li><strong>Passive Listeners:</strong> স্ক্রলিংয়ে preventDefault ব্লকিং রোধ</li>
+            <li><strong>Web Workers:</strong> মেইন থ্রেডকে ফ্রি রেখে ব্যাকগ্রাউন্ডে ক্যালকুলেশন</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #7c3aed; font-size: 10px; margin-bottom: 3px;">📌 3. Delivery &amp; Core Web Vitals</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Code Splitting:</strong> ডাইনামিক import() দিয়ে অন-ডিমান্ড মডিউল লোড</li>
+            <li><strong>Brotli &amp; Tree Shaking:</strong> অব্যবহৃত কোড বাদ দিয়ে সাইজ ৭০% হ্রাস</li>
+            <li><strong>Cache-Control &amp; CDN:</strong> ব্যবহারকারীর নিকটবর্তী নোড থেকে ক্যাশ ডেলিভারি</li>
+            <li><strong>Core Web Vitals:</strong> LCP (&lt;2.5s), INP (&lt;200ms), CLS (&lt;0.1) লক্ষ্য পূরণ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.72</span> 🧠 Quick Cheat Sheet — পারফরম্যান্স ধারণাসমূহের সারসংক্ষেপ</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Topic</th><th>Main Concept &amp; Mechanism</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>DOM</strong></td><td>HTML ডকুমেন্টের ইন-মেমোরি নোড ট্রি গঠন</td></tr><tr><td><strong>CSSOM</strong></td><td>CSS সিলেক্টর ও স্টাইল রুলসের ক্যাস্কেডিং অবজেক্ট ট্রি</td></tr><tr><td><strong>Layout (Reflow)</strong></td><td>উপাদানের জ্যামিতিক সাইজ ও স্ক্রিনে সঠিক পজিশন গণনা</td></tr><tr><td><strong>Paint (Repaint)</strong></td><td>পিক্সেল ড্রয়িং (রং, ব্যাকগ্রাউন্ড, শ্যাডো, বর্ডার রেন্ডারিং)</td></tr><tr><td><strong>Composite</strong></td><td>আলাদা জিপিইউ লেয়ারসমূহকে স্ক্রিনে একত্রিত করা</td></tr><tr><td><strong>Debounce</strong></td><td>ব্যবহারকারীর অ্যাকশন থামা পর্যন্ত ফাংশন এক্সিকিউশন স্থগিত রাখা</td></tr><tr><td><strong>Throttle</strong></td><td>নির্দিষ্ট সময় ব্যবধানে সর্বোচ্চ একবার ফাংশন এক্সিকিউট করা</td></tr><tr><td><strong>Lazy Loading</strong></td><td>উপাদান স্ক্রিনে আসার ঠিক আগ মুহূর্তে লোড করা (<code>loading=&quot;lazy&quot;</code>)</td></tr><tr><td><strong>Code Splitting</strong></td><td>বিশাল বান্ডেল ভেঙে ছোট ছোট অন-ডিমান্ড চাঙ্ক তৈরি করা</td></tr><tr><td><strong>Tree Shaking</strong></td><td>বিল্ড টাইমে অব্যবহৃত ডেড-কোড স্বয়ংক্রিয়ভাবে মুছে ফেলা</td></tr><tr><td><strong>Minification</strong></td><td>হোয়াইটস্পেস ও ভ্যারিয়েবল নাম ছোট করে সাইজ সংকুচিত করা</td></tr><tr><td><strong>Compression</strong></td><td>ট্রান্সফারের সময় Brotli/Gzip দিয়ে ফাইল সাইজ কমানো</td></tr><tr><td><strong>CDN</strong></td><td>ভৌগোলিকভাবে ব্যবহারকারীর নিকটবর্তী এজ-সার্ভার থেকে ফাইল পরিবেশন</td></tr><tr><td><strong>HTTP Cache</strong></td><td><code>Cache-Control: max-age</code> দিয়ে ব্রাউজারে রিসোর্স পুনব্যবহার</td></tr><tr><td><strong>Web Worker</strong></td><td>মেইন থ্রেডকে ফ্রি রেখে ব্যাকগ্রাউন্ড থ্রেডে হেভি প্রসেসিং</td></tr><tr><td><strong>requestAnimationFrame</strong></td><td>ব্রাউজারের রিফ্রেশ রেটের (60FPS/16.6ms) সাথে সিঙ্ক করে স্মুথ অ্যানিমেশন</td></tr><tr><td><strong>AbortController</strong></td><td>অপ্রয়োজনীয় বা পুরাতন ফেচ রিকোয়েস্ট তৎক্ষণাৎ বাতিল করা</td></tr><tr><td><strong>LCP (Largest Contentful Paint)</strong></td><td>পেজের সবচেয়ে বড় কন্টেন্ট রেন্ডার হওয়ার সময় (লক্ষ্য: &amp;lt; 2.5s)</td></tr><tr><td><strong>INP (Interaction to Next Paint)</strong></td><td>ইউজার ক্লিকের পর ভিজ্যুয়াল রেসপন্স পেতে দেরি (লক্ষ্য: &amp;lt; 200ms)</td></tr><tr><td><strong>CLS (Cumulative Layout Shift)</strong></td><td>পেজ লোড হওয়ার সময় কন্টেন্টের অনাকাঙ্ক্ষিত নড়াচড়া (লক্ষ্য: &amp;lt; 0.1)</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="part-banner">Part 12.1 — 12 Hands-On Practice Labs with Complete Production Solutions</div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #1</span> [BEGINNER] — Debounced Search Input with Live Console Logging</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি search input তৈরি করুন এবং debounce ব্যবহার করে console-এ search value print করুন। টাইপিং থামার ৫০০ms পর রিকোয়েস্ট কার্যকর হবে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM STRUCTURE</span><span>HTML</span></div>
+  <pre><code>&lt;!-- HTML Search Input Markup --<span style="color:#f472b6; font-weight:600;">&gt;</span>
+<span style="color:#f472b6; font-weight:600;">&lt;div</span> <span style="color:#38bdf8;">class=</span><span style="color:#4ade80;">&quot;search-box&quot;</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+  <span style="color:#f472b6; font-weight:600;">&lt;input</span> <span style="color:#38bdf8;">type=</span><span style="color:#4ade80;">&quot;text&quot;</span> <span style="color:#38bdf8;">id=</span><span style="color:#4ade80;">&quot;search-input&quot;</span> <span style="color:#38bdf8;">placeholder=</span><span style="color:#4ade80;">&quot;Search products, documentation...&quot;</span> autocomplete=<span style="color:#4ade80;">&quot;off&quot;</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+  <span style="color:#f472b6; font-weight:600;">&lt;div</span> <span style="color:#38bdf8;">id=</span><span style="color:#4ade80;">&quot;search-status&quot;</span><span style="color:#f472b6; font-weight:600;">&gt;</span>Typing triggers debounced API call after 500ms idle<span style="color:#f472b6; font-weight:600;">&lt;/div</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+<span style="color:#f472b6; font-weight:600;">&lt;/div</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #1)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// 1. Debounce Utility Function</span>
+<span class="syn-kw">function</span> debounce(func, delay = <span class="syn-num">500</span>) {
+  <span class="syn-kw">let</span> timerId = <span class="syn-bool">null</span>;
+  <span class="syn-kw">return</span> <span class="syn-kw">function</span>(...args) {
+    <span class="syn-fn">clearTimeout</span>(timerId); <span class="syn-com">// পূর্বের টাইমার বাতিল</span>
+    timerId = <span class="syn-fn">setTimeout</span>(() =&gt; {
+      func.apply(<span class="syn-kw">this</span>, args); <span class="syn-com">// বিলম্ব শেষে মূল ফাংশন কল</span>
+    }, delay);
+  };
+}
+
+<span class="syn-com">// 2. Search Handler Function</span>
+<span class="syn-kw">function</span> handleSearch(query) {
+  <span class="syn-fn">console</span>.log(`[API Search Triggered]: <span class="syn-str">&quot;${query}&quot;</span> at ${<span class="syn-kw">new</span> Date().toLocaleTimeString()}`);
+}
+
+<span class="syn-com">// 3. Debounced Wrapper &amp; Event Listener</span>
+<span class="syn-kw">const</span> debouncedSearch = debounce((event) =&gt; {
+  handleSearch(event.target.value.trim());
+}, <span class="syn-num">500</span>);
+
+<span class="syn-kw">const</span> searchInput = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">getElementById</span>(&#x27;search-input<span class="syn-str">&#x27;);
+searchInput.addEventListener(&#x27;</span>input&#x27;, debouncedSearch);</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> ব্যবহারকারী প্রতি ক্লিকে কিপ্রেস করলেও অপ্রয়োজনীয় ২০টি রিকোয়েস্ট না পাঠিয়ে টাইপিং থামার পর মাত্র ১টি নেটওয়ার্ক কল করবে, যা ব্যান্ডউইথ ও সার্ভার লোড বাঁচায়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #2</span> [BEGINNER] — Throttled Window Scroll Event Listener</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি scroll event-এ throttle ব্যবহার করুন যাতে প্রতি ৩০০ms-এ সর্বোচ্চ একবার স্ক্রল পজিশন গণনা ও কনসোলে লগ হয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #2)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// 1. Timestamp-based Throttle Utility</span>
+<span class="syn-kw">function</span> throttle(func, interval = <span class="syn-num">300</span>) {
+  <span class="syn-kw">let</span> lastTime = <span class="syn-num">0</span>;
+  <span class="syn-kw">return</span> <span class="syn-kw">function</span>(...args) {
+    <span class="syn-kw">const</span> <span style="color: #38bdf8; font-weight: 600;">now</span> = Date.<span style="color: #38bdf8; font-weight: 600;">now</span>();
+    <span class="syn-kw">if</span> (<span style="color: #38bdf8; font-weight: 600;">now</span> - lastTime &gt;= interval) {
+      lastTime = <span style="color: #38bdf8; font-weight: 600;">now</span>;
+      func.apply(<span class="syn-kw">this</span>, args);
+    }
+  };
+}
+
+<span class="syn-com">// 2. Scroll Progress Tracker</span>
+<span class="syn-kw">function</span> logScrollPosition() {
+  <span class="syn-kw">const</span> scrollTop = <span class="syn-fn">window</span>.scrollY || <span class="syn-fn">document</span>.documentElement.scrollTop;
+  <span class="syn-kw">const</span> docHeight = <span class="syn-fn">document</span>.documentElement.scrollHeight - <span class="syn-fn">window</span>.innerHeight;
+  <span class="syn-kw">const</span> progress = <span class="syn-fn">Math</span>.round((scrollTop / docHeight) * <span class="syn-num">100</span>);
+  <span class="syn-fn">console</span>.log(`[Throttled Scroll] Position: ${scrollTop}px | Read: ${progress}%`);
+}
+
+<span class="syn-com">// 3. Throttled Listener Attachment with Passive Flag</span>
+<span class="syn-fn">window</span>.<span style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&#x27;scroll&#x27;, throttle(logScrollPosition, <span class="syn-num">300</span>), { passive: <span class="syn-bool">true</span> });</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> ইউজার দ্রুত স্ক্রল করলে প্রতি সেকেন্ডে ৬০টির বেশি ইভেন্ট ফায়ার হয়। থ্রটলিংয়ের মাধ্যমে একে প্রতি সেকেন্ডে মাত্র ৩ বারে সীমাবদ্ধ রাখা হয়, যা লেআউট থ্র্যাশিং দূর করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #3</span> [BEGINNER] — Native Responsive Image Lazy Loading</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি image-এ loading=&quot;lazy&quot; ও srcset ব্যবহার করে আধুনিক নেটিভ লেজি লোডিং টেস্ট ও পরিমাপ করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM STRUCTURE</span><span>HTML</span></div>
+  <pre><code>&lt;!-- High-Performance Native Responsive Lazy Image --<span style="color:#f472b6; font-weight:600;">&gt;</span>
+<span style="color:#f472b6; font-weight:600;">&lt;picture</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+  <span style="color:#f472b6; font-weight:600;">&lt;source</span> <span style="color:#38bdf8;">srcset=</span><span style="color:#4ade80;">&quot;hero-large.avif 1200w, hero-medium.avif 800w&quot;</span> <span style="color:#38bdf8;">type=</span><span style="color:#4ade80;">&quot;image/avif&quot;</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+  <span style="color:#f472b6; font-weight:600;">&lt;source</span> <span style="color:#38bdf8;">srcset=</span><span style="color:#4ade80;">&quot;hero-large.webp 1200w, hero-medium.webp 800w&quot;</span> <span style="color:#38bdf8;">type=</span><span style="color:#4ade80;">&quot;image/webp&quot;</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+  <span style="color:#f472b6; font-weight:600;">&lt;img</span> 
+    <span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;hero-fallback.jpg&quot;</span> 
+    <span style="color:#38bdf8;">loading=</span><span style="color:#4ade80;">&quot;lazy&quot;</span> 
+    decoding=<span style="color:#4ade80;">&quot;async&quot;</span>
+    <span style="color:#38bdf8;">width=</span><span style="color:#4ade80;">&quot;800&quot;</span> 
+    <span style="color:#38bdf8;">height=</span><span style="color:#4ade80;">&quot;450&quot;</span> 
+    <span style="color:#38bdf8;">alt=</span><span style="color:#4ade80;">&quot;Performance Dashboard Mockup&quot;</span>
+    <span style="color:#38bdf8;">class=</span><span style="color:#4ade80;">&quot;perf-lazy&quot;</span>
+  <span style="color:#f472b6; font-weight:600;">&gt;</span>
+<span style="color:#f472b6; font-weight:600;">&lt;/picture</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #3)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Image Load Event Listener &amp; Metrics</span>
+<span class="syn-kw">const</span> lazyImg = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&#x27;img.perf-lazy<span class="syn-str">&#x27;);
+
+lazyImg.addEventListener(&#x27;</span>load<span class="syn-str">&#x27;, () =&gt; {
+  console.log(&#x27;</span>✅ <span class="syn-fn">Image</span> loaded successfully on viewport entry!&#x27;);
+  lazyImg.classList.add(&#x27;loaded<span class="syn-str">&#x27;); // CSS ফেইড-ইন ট্রানজিশন
+});
+
+lazyImg.addEventListener(&#x27;</span>error<span class="syn-str">&#x27;, () =&gt; {
+  console.error(&#x27;</span>❌ Failed to load high-res image. Fallback triggered.&#x27;);
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> decoding=&quot;async&quot; ব্রাউজারের ডিকোডিং মেইন থ্রেড থেকে সরিয়ে নেয় এবং স্পষ্ট width/height থাকায় কোনো Layout Shift (CLS = 0) হয় না।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #4</span> [BEGINNER] — Smooth 60FPS Animation with requestAnimationFrame</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> requestAnimationFrame() ব্যবহার করে একটি box-কে স্ক্রিনে মসৃণভাবে মুভ করান এবং ডেল্টা টাইম অনুযায়ী ফ্রেম ড্রপ পরিহার করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #4)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> box = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">getElementById</span>(&#x27;animated-box<span class="syn-str">&#x27;);
+let startTimestamp = null;
+const duration = 2000; // ২ সেকেন্ডে এনিমেশন শেষ হবে
+const targetDistance = 400; // ৪০০ পিক্সেল ডানে সরবে
+
+function animateBox(timestamp) {
+  if (!startTimestamp) startTimestamp = timestamp;
+  const elapsed = timestamp - startTimestamp;
+  const progress = Math.min(elapsed / duration, 1); // ০ থেকে ১ পর্যন্ত প্রগ্রেস
+
+  // Easing function (easeOutQuad)
+  const easeProgress = 1 - (1 - progress) * (1 - progress);
+  const currentX = easeProgress * targetDistance;
+
+  // GPU-accelerated 3D Transform ব্যবহার (Reflow ও Repaint শূন্য)
+  box.style.transform = `translate3d(${currentX}px, 0, 0)`;
+
+  if (progress &lt; 1) {
+    requestAnimationFrame(animateBox); // পরবর্তী ফ্রেমের জন্য রিকোয়েস্ট
+  } else {
+    console.log(&#x27;</span>🏁 60FPS Smooth Animation Complete!&#x27;);
+  }
+}
+
+<span class="syn-com">// এনিমেশন শুরু</span>
+<span class="syn-fn">requestAnimationFrame</span>(animateBox);</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> setInterval এর বদলে rAF ব্রাউজারের 60Hz রিফ্রেশ হারের সাথে নিখুঁতভাবে টাইমিং মেলায় এবং ট্যাব ব্যাকগ্রাউন্ডে গেলে ব্যাটারি বাঁচিয়ে পজ করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #5</span> [INTERMEDIATE] — High-Performance DOM Batching with DocumentFragment</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> ১০০০টি DOM element তৈরি করুন এবং সাধারণ লুপের বদলে DocumentFragment ব্যবহার করে মাত্র ১টি Reflow ও Repaint-এ অ্যাপেন্ড করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #5)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> container = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">getElementById</span>(&#x27;user-list<span class="syn-str">&#x27;);
+
+// ❌ Bad Approach: প্রতি লুপে অ্যাপেন্ড (১০০০ বার রিফ্লো ও রিপেইন্ট)
+// for (let i = 0; i &lt; 1000; i++) container.appendChild(createNode(i));
+
+// ✅ Master Production Approach: DocumentFragment ব্যবহার
+console.time(&#x27;</span><span class="syn-fn">DocumentFragment</span> Insertion<span class="syn-str">&#x27;);
+
+const fragment = document.createDocumentFragment(); // ভার্চুয়াল মেমোরি কন্টেইনার
+
+for (let i = 1; i &lt;= 1000; i++) {
+  const item = document.createElement(&#x27;</span>li<span class="syn-str">&#x27;);
+  item.className = &#x27;</span>list-item<span class="syn-str">&#x27;;
+  item.textContent = `Customer Record #${i} — Verified Active`;
+  fragment.appendChild(item); // মেমোরিতে নোড যুক্ত (কোনো DOM রিফ্লো নেই)
+}
+
+// মূল DOM-এ মাত্র ১টি ট্রানজেকশনে ১০০০টি নোড অ্যাপেন্ড
+container.appendChild(fragment);
+
+console.timeEnd(&#x27;</span><span class="syn-fn">DocumentFragment</span> Insertion<span class="syn-str">&#x27;);
+console.log(&#x27;</span>✅ <span class="syn-num">1</span>,<span class="syn-num">000</span> DOM Nodes rendered <span class="syn-kw">in</span> a single Composite tick!&#x27;);</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> DocumentFragment কোনো মূল DOM নোড নয়, এটি ইন-মেমোরি র‍্যাপার। এটি DOM ট্রি-তে যুক্ত হওয়ার পর নিজেই অদৃশ্য হয়ে যায় এবং শুধু চাইল্ড নোডগুলো সংযুক্ত থাকে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #6</span> [INTERMEDIATE] — IntersectionObserver Image Lazy Loader with Skeleton Placeholder</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> IntersectionObserver দিয়ে &#x27;Loading...&#x27; স্কেলেটন থেকে একচুয়াল ইমেজ ভিউপোর্টে প্রবেশ করার পর লোড করুন ও আন-অবজার্ভ করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM STRUCTURE</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;img</span> data-<span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;https://images.unsplash.com/photo-perf.jpg&quot;</span> <span style="color:#38bdf8;">src=</span><span style="color:#4ade80;">&quot;data:image/svg+xml,...placeholder...&quot;</span> <span style="color:#38bdf8;">class=</span><span style="color:#4ade80;">&quot;skeleton-loading&quot;</span> <span style="color:#38bdf8;">width=</span><span style="color:#4ade80;">&quot;600&quot;</span> <span style="color:#38bdf8;">height=</span><span style="color:#4ade80;">&quot;400&quot;</span> <span style="color:#38bdf8;">alt=</span><span style="color:#4ade80;">&quot;Product Showcase&quot;</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #6)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// 1. Observer Configuration</span>
+<span class="syn-kw">const</span> observerOptions = {
+  root: <span class="syn-bool">null</span>, <span class="syn-com">// ভিউপোর্ট ডিটেকশন</span>
+  rootMargin: <span class="syn-str">&#x27;100px&#x27;</span>, <span class="syn-com">// স্ক্রিনে আসার ১০০ পিক্সেল আগেই প্রি-লোড শুরু হবে</span>
+  threshold: <span class="syn-num">0.01</span> <span class="syn-com">// ১% দৃশ্যমান হলেই ট্রিগার</span>
+};
+
+<span class="syn-com">// 2. IntersectionObserver Instance</span>
+<span class="syn-kw">const</span> lazyObserver = <span class="syn-kw">new</span> <span class="syn-fn">IntersectionObserver</span>((entries, observer) =&gt; {
+  entries.<span style="color: #38bdf8; font-weight: 600;">forEach</span>(entry =&gt; {
+    <span class="syn-kw">if</span> (entry.isIntersecting) {
+      <span class="syn-kw">const</span> img = entry.target;
+      <span class="syn-kw">const</span> actualSrc = img.getAttribute(&#x27;data-src<span class="syn-str">&#x27;);
+
+      // Placeholder থেকে আসল সোর্সে রূপান্তর
+      img.src = actualSrc;
+      img.onload = () =&gt; {
+        img.classList.remove(&#x27;</span>skeleton-loading<span class="syn-str">&#x27;);
+        img.classList.add(&#x27;</span>img-visible<span class="syn-str">&#x27;);
+      };
+
+      // মেমোরি লিক রোধে টাস্ক শেষে আন-অবজার্ভ
+      observer.unobserve(img);
+      console.log(`[LazyLoaded] ${actualSrc}`);
+    }
+  });
+}, observerOptions);
+
+// 3. Observe All Data-Src Images
+document.querySelectorAll(&#x27;</span>img[data-src]&#x27;).<span style="color: #38bdf8; font-weight: 600;">forEach</span>(img =&gt; lazyObserver.<span style="color: #38bdf8; font-weight: 600;">observe</span>(img));</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> স্ক্রল ইভেন্ট লিসেনারের তুলনায় IntersectionObserver সম্পূর্ণ অ্যাসিনক্রোনাস এবং ব্রাউজারের কম্পোজিটর থ্রেডে চলে, ফলে মেইন থ্রেড ল্যাগ হয় না।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #7</span> [INTERMEDIATE] — Dynamic import() for Module Lazy-Loading &amp; Code Splitting</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Dynamic import() ব্যবহার করে ইউজার বাটনে ক্লিক করলে তবেই একটি ভারী গ্রাফ চার্টিং মডিউল lazy-load করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #7)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> chartBtn = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">getElementById</span>(&#x27;load-chart-btn<span class="syn-str">&#x27;);
+const chartContainer = document.getElementById(&#x27;</span>chart-container<span class="syn-str">&#x27;);
+
+chartBtn.addEventListener(&#x27;</span>click<span class="syn-str">&#x27;, async () =&gt; {
+  try {
+    chartBtn.disabled = true;
+    chartBtn.textContent = &#x27;</span>Loading Chart Engine...&#x27;;
+
+    <span class="syn-com">// ডাইনামিক ইমপোর্টের মাধ্যমে মডিউল শুধু প্রয়োজনে নেটওয়ার্ক থেকে নামবে</span>
+    <span class="syn-kw">const</span> { renderSalesChart } = <span class="syn-kw">await</span> <span class="syn-kw">import</span>(&#x27;./modules/heavyChart.js<span class="syn-str">&#x27;);
+
+    const sampleData = [120, 190, 300, 500, 200, 350];
+    renderSalesChart(chartContainer, sampleData);
+
+    chartBtn.textContent = &#x27;</span>✅ Chart Rendered<span class="syn-str">&#x27;;
+  } catch (error) {
+    console.error(&#x27;</span>Failed to dynamically load chart module:&#x27;, error);
+    chartBtn.textContent = <span class="syn-str">&#x27;❌ Loading Failed&#x27;</span>;
+    chartBtn.disabled = <span class="syn-bool">false</span>;
+  }
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> অ্যাপ্লিকেশন বুট হওয়ার সময় পুরো চার্টিং লাইব্রেরির ৪০০KB লোড না করে ইনিশিয়াল JS বান্ডেল হালকা রাখা যায়, যা LCP এবং TBT স্কোর উল্লেখযোগ্যভাবে বাড়ায়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #8</span> [INTERMEDIATE] — Debounced Search API with AbortController Stale Request Cancellation</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Typing -&gt; Debounce -&gt; fetch() -&gt; AbortController আর্কিটেকচারে পুরাতন পেন্ডিং রিকোয়েস্ট বাতিল করার সম্পূর্ণ প্রোডাকশন সলিউশন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #8)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> currentAbortController = <span class="syn-bool">null</span>;
+
+<span class="syn-com">// Debounced Search with Abort Signal</span>
+<span class="syn-kw">const</span> searchProducts = debounce(<span class="syn-kw">async</span> (searchTerm) =&gt; {
+  <span class="syn-kw">if</span> (!searchTerm) <span class="syn-kw">return</span>;
+
+  <span class="syn-com">// ১. পূর্বের রিকোয়েস্ট যদি এখনো পেন্ডিং থাকে, তাকে বাতিল করুন</span>
+  <span class="syn-kw">if</span> (currentAbortController) {
+    currentAbortController.<span style="color: #38bdf8; font-weight: 600;">abort</span>();
+    <span class="syn-fn">console</span>.warn(&#x27;[<span class="syn-fn">Request</span> Aborted]: Canceled stale pending query<span class="syn-str">&#x27;);
+  }
+
+  // ২. নতুন রিকোয়েস্টের জন্য ফ্রেশ কন্ট্রোলার তৈরি
+  currentAbortController = new AbortController();
+  const { signal } = currentAbortController;
+
+  try {
+    const response = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}`, { signal });
+    const data = await response.json();
+    displayResults(data.results);
+    console.log(`[Search Results Loaded] Count: ${data.results.length}`);
+  } catch (err) {
+    if (err.name === &#x27;</span>AbortError<span class="syn-str">&#x27;) {
+      console.log(&#x27;</span>ℹ️ <span class="syn-fn">Request</span> successfully aborted as user typed <span class="syn-kw">new</span> characters.&#x27;);
+    } <span class="syn-kw">else</span> {
+      <span class="syn-fn">console</span>.error(&#x27;Network Error:&#x27;, err);
+    }
+  } <span class="syn-kw">finally</span> {
+    currentAbortController = <span class="syn-bool">null</span>;
+  }
+}, <span class="syn-num">400</span>);
+
+<span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">getElementById</span>(&#x27;api-search-input<span class="syn-str">&#x27;).addEventListener(&#x27;</span>input&#x27;, (e) =&gt; {
+  searchProducts(e.target.value.trim());
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> নেটওয়ার্কের রেস কন্ডিশন (stale response overwriting latest result) সম্পূর্ণ দূর করে এবং অপ্রয়োজনীয় ব্যান্ডউইথ খরচ বন্ধ করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #9</span> [ADVANCED] — Multi-Route SPA Dashboard Lazy-Loader with Component Caching</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Dashboard-এর Overview, Analytics, Reports, Settings ট্যাবসমূহ অন-ডিমান্ড lazy-load ও মডিউল ক্যাশ করার ক্লায়েন্ট-সাইড আর্কিটেকচার।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #9)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Route-to-Module Manifest</span>
+<span class="syn-kw">const</span> routeManifest = {
+  overview: () =&gt; <span class="syn-kw">import</span>(&#x27;./views/overview.js<span class="syn-str">&#x27;),
+  analytics: () =&gt; import(&#x27;</span>./views/analytics.js<span class="syn-str">&#x27;),
+  reports: () =&gt; import(&#x27;</span>./views/reports.js<span class="syn-str">&#x27;),
+  settings: () =&gt; import(&#x27;</span>./views/settings.js<span class="syn-str">&#x27;)
+};
+
+// In-Memory Component Cache (একবার লোড হলে আর নেটওয়ার্ক কল হবে না)
+const componentCache = new Map();
+const contentArea = document.getElementById(&#x27;</span>dashboard-view<span class="syn-str">&#x27;);
+
+async function navigateTab(routeKey) {
+  if (!routeManifest[routeKey]) return;
+
+  // ক্যাশ চেক
+  if (componentCache.has(routeKey)) {
+    console.log(`⚡ [Cache Hit] Rendering cached tab: ${routeKey}`);
+    const cachedRender = componentCache.get(routeKey);
+    cachedRender(contentArea);
+    return;
+  }
+
+  // ক্যাশ মিস: নেটওয়ার্ক থেকে চাঙ্ক লোড
+  contentArea.innerHTML = &#x27;</span>&lt;div <span class="syn-kw">class</span>=&quot;loader-spinner<span class="syn-str">&quot;&gt;Loading view module...&lt;/div&gt;&#x27;;
+  try {
+    const module = await routeManifest[routeKey]();
+    componentCache.set(routeKey, module.render); // ক্যাশে সেভ
+    module.render(contentArea);
+    console.log(`🌐 [Network Load] Module loaded &amp; cached: ${routeKey}`);
+  } catch (err) {
+    contentArea.innerHTML = &#x27;&lt;div class=&quot;</span>error-msg&quot;&gt;Failed to load view. Check connection.&lt;/div&gt;&#x27;;
+  }
+}
+
+<span class="syn-com">// Event Delegation on Tab Buttons</span>
+<span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">getElementById</span>(&#x27;tab-nav<span class="syn-str">&#x27;).addEventListener(&#x27;</span>click<span class="syn-str">&#x27;, (e) =&gt; {
+  if (e.target.matches(&#x27;</span>button[data-route]&#x27;)) {
+    navigateTab(e.target.dataset.route);
+  }
+});</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> রুট-বেসড কোড স্প্লিটিং ইনিশিয়াল লোড সাইজ ৬০-৮০% কমিয়ে দেয় এবং ইন-মেমোরি ক্যাশিংয়ের কারণে একবার ভিজিট করা ট্যাবে ইন্সট্যান্ট সুইচিং ঘটে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #10</span> [ADVANCED] — Off-Main-Thread 100k JSON Data Processing with Web Worker</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> ১ লক্ষ আইটেমের বিশাল JSON ডেটাসেট ফিল্টারিং ও সর্টিং করার সময় মেইন থ্রেড যাতে ১ মিলিমিটারও ফ্রিজ না হয় তার জন্য Web Worker সলিউশন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #10)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// --- MAIN THREAD SCRIPT (app.js) ---</span>
+<span class="syn-kw">const</span> worker = <span class="syn-kw">new</span> <span class="syn-fn">Worker</span>(&#x27;./workers/dataProcessor.worker.js<span class="syn-str">&#x27;);
+const statusBadge = document.getElementById(&#x27;</span>status-badge<span class="syn-str">&#x27;);
+
+// ১. বিশাল ডেটাসেট প্রসেসিংয়ের জন্য ওয়ার্কারের কাছে পাঠানো
+function processDataset(heavyData, filterKeyword) {
+  statusBadge.textContent = &#x27;</span>Processing 100k items <span class="syn-kw">in</span> Background <span class="syn-fn">Worker</span>...&#x27;;
+  <span class="syn-fn">console</span>.time(&#x27;<span class="syn-fn">Worker</span> Processing Time<span class="syn-str">&#x27;);
+
+  worker.postMessage({
+    action: &#x27;</span>FILTER_AND_SORT<span class="syn-str">&#x27;,
+    payload: heavyData,
+    keyword: filterKeyword
+  });
+}
+
+// ২. ওয়ার্কার থেকে ফলাফল রিসিভ
+worker.onmessage = function(e) {
+  const { sortedData, executionMs } = e.data;
+  console.timeEnd(&#x27;</span><span class="syn-fn">Worker</span> Processing Time&#x27;);
+  statusBadge.textContent = <span class="syn-str">`✅ Processed ${sortedData.length} records in ${executionMs}ms (Main thread stayed 60FPS!)`</span>;
+  renderTopResults(sortedData.<span style="color: #38bdf8; font-weight: 600;">slice</span>(<span class="syn-num">0</span>, <span class="syn-num">50</span>));
+};
+
+<span class="syn-com">// --- WORKER SCRIPT (dataProcessor.worker.js) ---</span>
+<span class="syn-com">// self.onmessage = function(e) {</span>
+<span class="syn-com">//   const { payload, keyword } = e.data;</span>
+<span class="syn-com">//   const t0 = performance.now();</span>
+<span class="syn-com">//   const filtered = payload</span>
+<span class="syn-com">//     .filter(item =&gt; item.name.toLowerCase().includes(keyword.toLowerCase()))</span>
+<span class="syn-com">//     .sort((a, b) =&gt; b.score - a.score);</span>
+<span class="syn-com">//   self.postMessage({ sortedData: filtered, executionMs: Math.round(performance.now() - t0) });</span>
+<span class="syn-com">// };</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> মেইন থ্রেড মুক্ত থাকায় ইউজার ড্রপডাউন ওপেন করা, টাইপ করা বা স্ক্রল করার সময় কোনো লং-টাস্ক (&amp;gt;50ms) তৈরি হয় না এবং INP স্কোর চমৎকার থাকে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #11</span> [ADVANCED] — Programmatic Performance Profiling with User Timing API</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Chrome DevTools Performance প্যানেলে কাস্টম টাইমলাইন মেজারমেন্ট দেখতে performance.mark() ও performance.measure() দিয়ে কোড প্রোফাইলিং।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #11)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// ১. শুরু চিহ্নিত করা</span>
+<span class="syn-fn">performance</span>.<span style="color: #38bdf8; font-weight: 600;">mark</span>(&#x27;data-<span class="syn-fn">fetch</span>-start<span class="syn-str">&#x27;);
+
+async function benchmarkDataFetch() {
+  const res = await fetch(&#x27;</span>https://jsonplaceholder.typicode.com/posts<span class="syn-str">&#x27;);
+  const data = await res.json();
+  
+  performance.mark(&#x27;</span>data-<span class="syn-fn">fetch</span>-end<span class="syn-str">&#x27;);
+  
+  // ২. ফেচিংয়ের সময় পরিমাপ
+  performance.measure(&#x27;</span>Data Fetch Duration<span class="syn-str">&#x27;, &#x27;</span>data-<span class="syn-fn">fetch</span>-start<span class="syn-str">&#x27;, &#x27;</span>data-<span class="syn-fn">fetch</span>-end<span class="syn-str">&#x27;);
+
+  // ৩. DOM রেন্ডারিং পরিমাপ
+  performance.mark(&#x27;</span>dom-render-start<span class="syn-str">&#x27;);
+  const frag = document.createDocumentFragment();
+  data.slice(0, 100).forEach(post =&gt; {
+    const div = document.createElement(&#x27;</span>div<span class="syn-str">&#x27;);
+    div.textContent = post.title;
+    frag.appendChild(div);
+  });
+  document.getElementById(&#x27;</span>benchmark-container<span class="syn-str">&#x27;).appendChild(frag);
+  performance.mark(&#x27;</span>dom-render-end<span class="syn-str">&#x27;);
+
+  performance.measure(&#x27;</span>DOM Batch Rendering Duration<span class="syn-str">&#x27;, &#x27;</span>dom-render-start<span class="syn-str">&#x27;, &#x27;</span>dom-render-end<span class="syn-str">&#x27;);
+
+  // ৪. মেজারমেন্ট ফলাফল কনসোলে বিশ্লেষণ
+  const measures = performance.getEntriesByType(&#x27;</span><span style="color: #38bdf8; font-weight: 600;">measure</span>&#x27;);
+  measures.<span style="color: #38bdf8; font-weight: 600;">forEach</span>(m =&gt; <span class="syn-fn">console</span>.log(`⏱️ [Metric] ${m.name}: ${m.duration.toFixed(<span class="syn-num">2</span>)} ms`));
+  
+  <span class="syn-com">// মেমোরি পরিষ্কার</span>
+  <span class="syn-fn">performance</span>.clearMarks();
+  <span class="syn-fn">performance</span>.clearMeasures();
+}
+
+benchmarkDataFetch();</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> User Timing API এর মাধ্যমে মেজারগুলো সরাসরি Chrome DevTools Performance ট্যাব-এর &#x27;Timings&#x27; ট্র্যাকে দেখা যায়, যা বটleneck চিহ্নিত করতে অত্যন্ত কার্যকর।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #12</span> [ADVANCED] — End-to-End Production Performance Case Study &amp; Audit Scorecard</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি ধীরগতির ইকমার্স প্রোডাক্ট পেজ অপ্টিমাইজেশনের বাস্তব কেস স্টাডি: Before vs After মেজারমেন্ট এবং স্পষ্ট অডিট রিপোর্ট।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">SOLUTION IMPLEMENTATION (LAB #12)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">/*
+================================================================================
+  REAL-WORLD E-COMMERCE PERFORMANCE CASE STUDY (BEFORE VS AFTER AUDIT)
+================================================================================
+
+[PROBLEM AUDIT - BEFORE OPTIMIZATION]:
+  * Initial JS Bundle: 1.8 MB (Monolithic bundle, zero code splitting)
+  * Hero &amp; Product Images: Uncompressed PNGs (Total 4.5 MB, no lazy loading)
+  * Scroll Listener: Un-throttled scroll event recalculating layout on every tick
+  * HTTP Cache: Missing Cache-Control headers, re-downloading static files on reload
+  * Lighthouse Performance Score: 38 / 100
+  * LCP (Largest Contentful Paint): 5.4 seconds (POOR ❌)
+  * INP (Interaction to Next Paint): 480 ms (POOR ❌)
+  * CLS (Cumulative Layout Shift): 0.38 (POOR ❌)
+
+[OPTIMIZATION INTERVENTIONS APPLIED]:
+  1. Image Pipeline: Converted all PNGs to AVIF/WebP, added width/height &amp; loading=&quot;lazy&quot;.
+  2. Code Splitting: Split checkout &amp; heavy charts via dynamic import() (Bundle reduced to 280 KB).
+  3. Layout Thrashing Elimination: Replaced synchronous DOM reads with DocumentFragment &amp; rAF.
+  4. Network &amp; Cache: Configured Cloudflare CDN with Cache-Control: max-age=31536000, immutable.
+  5. Scroll Events: Added throttle(300ms) with { passive: true } on window scroll listeners.
+
+[VERIFICATION RESULTS - AFTER OPTIMIZATION]:
+  * Initial JS Bundle: 280 KB (84% Size Reduction ✅)
+  * Image Transfer Weight: 420 KB (90% Size Reduction ✅)
+  * Lighthouse Performance Score: 98 / 100 (FAST 🚀)
+  * LCP: 1.2 seconds (GOOD ✅ &lt; 2.5s)
+  * INP: 45 ms (GOOD ✅ &lt; 200ms)
+  * CLS: 0.02 (GOOD ✅ &lt; 0.1)
+================================================================================
+*/</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> প্রোডাকশনে পারফরম্যান্স অপ্টিমাইজেশন শুধু একটি টেকনিক নয়; এটি নেটওয়ার্ক, বান্ডলিং, ব্রাউজার রেন্ডারিং এবং ডেটাবেস ক্যাশিংয়ের একটি সামগ্রিক ইঞ্জিনিয়ারিং কালচার।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">33.73</span> 🎯 Final Mental Map — পারফরম্যান্স অপ্টিমাইজেশনের পূর্ণাঙ্গ মানচিত্র</div>
+      <p class="text-p">পুরো Chapter 33-এর সকল মেকানিজম ও আর্কিটেকচারাল কানেকশন একসাথে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ FULL PERFORMANCE ARCHITECTURE MAP</div>
+  <pre class="ascii-tree-content">WEB PERFORMANCE ECOSYSTEM
+                               <span style="color: #475569;">│</span>
+        <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────────────────────</span><span style="color: #475569;">┐</span>
+        <span style="color: #475569;">│</span>                      <span style="color: #475569;">│</span>                      <span style="color: #475569;">│</span>
+     NETWORK                BROWSER                JAVASCRIPT
+        <span style="color: #475569;">│</span>                      <span style="color: #475569;">│</span>                      <span style="color: #475569;">│</span>
+     <span style="color: #fde047; font-weight: 600;">HTTP</span>/2 &amp; <span style="color: #fde047; font-weight: 600;">HTTP</span>/3        <span style="color: #34d399; font-weight: 700;">DOM</span> + <span style="color: #34d399; font-weight: 700;">CSSOM</span>            <span style="color: #c084fc; font-weight: 700;">Code Splitting</span>
+     <span style="color: #fde047; font-weight: 600;">CDN</span> Edge Delivery      Critical Path          <span style="color: #c084fc; font-weight: 700;">Tree Shaking</span>
+     <span style="color: #c084fc; font-weight: 700;">Brotli</span> <span style="color: #c084fc; font-weight: 700;">Compression</span>     <span style="color: #34d399; font-weight: 700;">Layout</span> &amp; <span style="color: #34d399; font-weight: 700;">Reflow</span>        <span style="color: #c084fc; font-weight: 700;">Minification</span>
+     <span style="color: #fde047; font-weight: 600;">Cache</span>-Control Headers  <span style="color: #34d399; font-weight: 700;">Paint</span> &amp; GPU <span style="color: #34d399; font-weight: 700;">Composite</span>  <span style="color: #c084fc; font-weight: 700;">Debounce</span> &amp; <span style="color: #c084fc; font-weight: 700;">Throttle</span>
+     <span style="color: #c084fc; font-weight: 700;">Preload</span> &amp; <span style="color: #c084fc; font-weight: 700;">Prefetch</span>     <span style="color: #c084fc; font-weight: 700;">DocumentFragment</span>       Web Workers
+        <span style="color: #475569;">│</span>                      <span style="color: #475569;">│</span>                      <span style="color: #475569;">│</span>
+        <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────────────────────</span><span style="color: #475569;">┘</span>
+                               <span style="color: #475569;">│</span>
+                               <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                        USER E<span style="color: #f43f5e; font-weight: bold;">X</span>PERIENCE
+                               <span style="color: #475569;">│</span>
+            <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────────────────</span><span style="color: #475569;">┐</span>
+            <span style="color: #475569;">│</span>                  <span style="color: #475569;">│</span>                  <span style="color: #475569;">│</span>
+           <span style="color: #fbbf24; font-weight: 700;">LCP</span>                <span style="color: #fbbf24; font-weight: 700;">INP</span>                <span style="color: #fbbf24; font-weight: 700;">CLS</span>
+       (Loading Speed)    (Responsiveness)   (Visual Stability)
+          &lt; 2.5s              &lt; 200ms             &lt; 0.10
+        [GOOD <span style="color: #4ade80; font-weight: bold;">✓</span>]             [GOOD <span style="color: #4ade80; font-weight: bold;">✓</span>]            [GOOD <span style="color: #4ade80; font-weight: bold;">✓</span>]</pre>
+</div>
+      <div class="def-box" style="margin-top: 6px;">
+        🏆 <strong>এক লাইনে Chapter 33:</strong> Web Performance &amp; Optimization হলো ব্রাউজারের নেটওয়ার্ক, ক্রিটিক্যাল রেন্ডারিং পাথ, জাভাস্ক্রিপ্ট বান্ডেল, মেমোরি ও ইভেন্ট এক্সিকিউশনকে এমনভাবে অপ্টিমাইজ করা যাতে অ্যাপ্লিকেশন চোখের পলকে লোড হয়, ফ্রেম ড্রপ ছাড়া রেসপন্ড করে এবং কম রিসোর্সে সর্বোচ্চ ইউজার এক্সপেরিয়েন্স দেয়।
+      </div>
+
+      <div class="section-subhead" style="margin-top: 8px;">🔗 Curriculum Progression: Chapter 32 → 33 → 34</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">⚡ ROADMAP CONTINUITY PIPELINE</div>
+  <pre class="ascii-tree-content">Chapter 32: Advanced Browser APIs
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Browser-এর গভীর প্ল্যাটফর্ম সক্ষমতা (Workers, Observers, Sockets, IndexedDB)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 33: Web Performance &amp; Optimization (THIS CHAPTER)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+ব্রাউজারের সেই সক্ষমতা সর্বোচ্চ গতি, রিসোর্স সাশ্রয় ও <span style="color: #fbbf24; font-weight: 700;">60FPS</span>-এ পরিচালনা
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 34: NPM &amp; Modern JavaScript Tooling
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+প্যাকেজ ম্যানেজমেন্ট, বিল্ড টুলস (Vite/Webpack), ট্রান্সপাইলার ও অটোমেটেড ওয়ার্কফ্লো</pre>
+</div>
+    </div>
+  </div>
+</body>
+</html>

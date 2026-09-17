@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 36 — Modern ECMAScript / ES2020+ Features | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid #64748b;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #334155;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0 5px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 2.5px 8px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+      text-transform: uppercase;
+    }
+    .code-box pre {
+      margin: 0;
+      padding: 6px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .code-box code {
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.35;
+      color: #f1f5f9;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .syn-kw { color: #f472b6; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #4ade80; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-36-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 36</span>
+        </div>
+      </div>
+      <div class="banner-sub">MODERN ECMASCRIPT, ES2020–ES2026+ ADVANCED SYNTAX, IMMUTABLE APIS &amp; RUNTIME INNOVATIONS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">57 Modules + 8 Practice Labs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 30 — Modern ECMAScript Standards</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Innovations</div>
+          <div class="meta-val">Null Safety, Immutability, Private Fields</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">TC39 Living Standard ES2020–ES2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>✨</span> Modern ECMAScript (ES2020+) — আধুনিক জাভাস্ক্রিপ্ট সিনট্যাক্স, ইমিউটেবিলিটি ও পারফরম্যান্স
+      </div>
+      <p class="text-p">
+        জাভাস্ক্রিপ্ট একটি জীবন্ত ভাষা যা প্রতি বছর নতুন নতুন শক্তিশালী ফিচার ও সিনট্যাক্টিক সুবিধায় সমৃদ্ধ হচ্ছে। কোডকে নাল-পয়েন্টার এরর থেকে রক্ষা করা, স্টেট মিউটেশনের ঝুঁকিহীন ইমিউটেবল অ্যারে মেথড এবং ক্লাস এনক্যাপসুলেশন নিশ্চিত করাই আধুনিক ECMAScript-এর লক্ষ্য। এই চ্যাপ্টারে আমরা <strong>Optional Chaining (?.), Nullish Coalescing (??), Logical Assignments, Private Class Fields (#), Top-Level await, .at(), Immutable Arrays (toSorted, toSpliced, with), Object.groupBy, Promise.withResolvers</strong> এবং Temporal API শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Optional Chaining</div>
+        <div class="roadmap-item"><span>📌</span> 2. Nullish Coalescing</div>
+        <div class="roadmap-item"><span>📌</span> 3. Logical Assignments</div>
+        <div class="roadmap-item"><span>📌</span> 4. Private Class Fields</div>
+        <div class="roadmap-item"><span>📌</span> 5. Top-Level await</div>
+        <div class="roadmap-item"><span>📌</span> 6. Negative Index (.at)</div>
+        <div class="roadmap-item"><span>📌</span> 7. Immutable Arrays</div>
+        <div class="roadmap-item"><span>📌</span> 8. Object.groupBy()</div>
+        <div class="roadmap-item"><span>📌</span> 9. Promise.withResolvers</div>
+        <div class="roadmap-item"><span>📌</span> 10. Modern React Toolkit</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — ECMAScript Standards, Specification & Evolution (36.1 – 36.3)</div>
+    <div class="study-card" id="sec-36-1">
+      <div class="card-title"><span class="badge-num">36.1</span> ECMAScript কী?</div>
+      <p class="text-p"><strong>ECMAScript</strong> হলো JavaScript language-এর standard/specification। সহজভাবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK MODERN JAVASCRIPT TOOLKIT</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">ECMAScript</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+JavaScript language-এর specification
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Browser / <span style="color: #fde047; font-weight: 700;">Node.js</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+JavaScript চালায়</pre>
+</div>
+      <p class="text-p">তাই:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">JavaScript ≠ <span style="color: #fde047; font-weight: 700;">ECMAScript</span></pre>
+</div>
+      <p class="text-p">আরও সহজভাবে:</p>
+      <div class="def-box">💡 ECMAScript হলো rulebook, আর JavaScript সেই specification-এর একটি বাস্তব implementation।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.2</span> ES Version কী?</div>
+      <p class="text-p">JavaScript সময়ের সাথে নতুন feature পেয়েছে। যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN ECMASCRIPT TIMELINE & EVOLUTION</div>
+  <pre class="ascii-tree-content">ES2015 <span style="color: #38bdf8; font-weight: 700;">→</span> let, const, arrow function, class
+ES2016 <span style="color: #38bdf8; font-weight: 700;">→</span> Array.includes()
+ES2017 <span style="color: #38bdf8; font-weight: 700;">→</span> async/await
+ES2018 <span style="color: #38bdf8; font-weight: 700;">→</span> object rest/spread
+ES2019 <span style="color: #38bdf8; font-weight: 700;">→</span> flat(), flatMap()
+<span style="color: #fde047; font-weight: 700;">ES2020</span> <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #c084fc; font-weight: 700;">??</span>, <span style="color: #c084fc; font-weight: 700;">?.</span>, BigInt, Promise.<span style="color: #c084fc; font-weight: 700;">allSettled()</span>
+<span style="color: #fde047; font-weight: 700;">ES2021</span> <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #c084fc; font-weight: 700;">??</span>=, <span style="color: #c084fc; font-weight: 700;">||=</span>, &amp;&amp;=, <span style="color: #c084fc; font-weight: 700;">replaceAll()</span>
+<span style="color: #fde047; font-weight: 700;">ES2022</span> <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #c084fc; font-weight: 700;">class fields</span>, <span style="color: #c084fc; font-weight: 700;">#private</span>, <span style="color: #c084fc; font-weight: 700;">top-level await</span>
+<span style="color: #fde047; font-weight: 700;">ES2023</span> <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #c084fc; font-weight: 700;">findLast()</span>, <span style="color: #c084fc; font-weight: 700;">toSorted()</span>, <span style="color: #c084fc; font-weight: 700;">toReversed()</span>, <span style="color: #c084fc; font-weight: 700;">toSpliced()</span>
+<span style="color: #fde047; font-weight: 700;">ES2024</span> <span style="color: #38bdf8; font-weight: 700;">→</span> Promise.<span style="color: #c084fc; font-weight: 700;">withResolvers()</span>, Object.<span style="color: #c084fc; font-weight: 700;">groupBy()</span>, Map.<span style="color: #c084fc; font-weight: 700;">groupBy()</span>
+<span style="color: #fde047; font-weight: 700;">ES2025</span> <span style="color: #38bdf8; font-weight: 700;">→</span> নতুন standardized features</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.3</span> কেন Modern JavaScript Features শেখা দরকার?</div>
+      <p class="text-p">পুরোনো style:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">if</span> (user &amp;&amp; user.address &amp;&amp; user.address.city) {
+    <span class="syn-fn">console</span>.log(user.address.city);
+}</code></pre>
+</div>
+      <p class="text-p">Modern JavaScript:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(user<span style="color: #c084fc; font-weight: 700;">?.</span>address<span style="color: #c084fc; font-weight: 700;">?.</span>city);</code></pre>
+</div>
+      <p class="text-p">পুরোনো style:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> name = user.name || <span class="syn-str">&quot;Guest&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> name = user.name <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-str">&quot;Guest&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Modern syntax:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>code ছোট করে</li>
+        <li>readability বাড়ায়</li>
+        <li>bugs কমাতে সাহায্য করে</li>
+        <li>React/Node code cleaner করে</li>
+        <li>modern libraries বুঝতে সাহায্য করে</li>
+      </ul>
+    </div>
+    <div class="part-banner">Part 02 — Null Safety: Optional Chaining (?.) & Nullish Coalescing (??) (36.4 – 36.8)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.4</span> Optional Chaining <code>?.</code></div>
+      <p class="text-p">এটি ES2020-এর গুরুত্বপূর্ণ feature। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};</code></pre>
+</div>
+      <p class="text-p">তুমি লিখলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(user.address.city);</code></pre>
+</div>
+      <p class="text-p">তাহলে error হবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">Cannot read properties</span> of undefined</pre>
+</div>
+      <p class="text-p">কারণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">user.address <span style="color: #38bdf8; font-weight: 700;">→</span> undefined</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">✨ Optional Chaining</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(user.address<span style="color: #c084fc; font-weight: 700;">?.</span>city);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">undefined</pre>
+</div>
+      <p class="text-p">আরও:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(user<span style="color: #c084fc; font-weight: 700;">?.</span>address<span style="color: #c084fc; font-weight: 700;">?.</span>city);</code></pre>
+</div>
+      <p class="text-p">এখন property missing হলেও error হবে না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.5</span> Optional Chaining with Functions</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {};</code></pre>
+</div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">if</span> (user.login) {
+    user.login();
+}</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>user.login<span style="color: #c084fc; font-weight: 700;">?.</span>();</code></pre>
+</div>
+      <p class="text-p">যদি function থাকে → call হবে। না থাকলে → error না দিয়ে <code>undefined</code> return করবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.6</span> Optional Chaining with Arrays</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users = [];
+
+<span class="syn-fn">console</span>.log(users[<span class="syn-num">0</span>]?.name);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">undefined</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.7</span> Nullish Coalescing <code>??</code></div>
+      <p class="text-p"><code>??</code> ব্যবহার করা হয় যখন value শুধু <code>null</code> অথবা <code>undefined</code> কিনা check করতে চাই।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> username = <span class="syn-bool">null</span> <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-str">&quot;Guest&quot;</span>;
+
+<span class="syn-fn">console</span>.log(username);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Guest</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.8</span> <code>||</code> vs <code>??</code></div>
+      <p class="text-p">এটা খুব গুরুত্বপূর্ণ।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> value = <span class="syn-num">0</span> || <span class="syn-num">100</span>;
+
+<span class="syn-fn">console</span>.log(value);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">100</pre>
+</div>
+      <p class="text-p">কারণ <code>0</code> হলো falsy। কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> value = <span class="syn-num">0</span> <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-num">100</span>;
+
+<span class="syn-fn">console</span>.log(value);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">0</pre>
+</div>
+      <p class="text-p">কারণ <code>??</code> শুধু:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">null
+undefined</pre>
+</div>
+      <p class="text-p">কে missing হিসেবে ধরে।</p>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">✨ Comparison</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Value</th><th>`value</th><th></th><th>100`</th><th><code>value ?? 100</code></th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>null</code></td><td>100</td><td>100</td></tr><tr><td><code>undefined</code></td><td>100</td><td>100</td></tr><tr><td><code>0</code></td><td>100</td><td>0</td></tr><tr><td><code>false</code></td><td>100</td><td>false</td></tr><tr><td><code>&quot;&quot;</code></td><td>100</td><td><code>&quot;&quot;</code></td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="part-banner">Part 03 — Logical Assignments (??=, &&=, ||=) & String Tools (36.9 – 36.12)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.9</span> Logical Assignment Operators</div>
+      <p class="text-p">ES2021-এ এসেছে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #c084fc; font-weight: 700;">&amp;&amp;=</span>
+<span style="color: #c084fc; font-weight: 700;">||=</span>
+<span style="color: #c084fc; font-weight: 700;">??</span>=</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">✨ <code>||=</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> username;
+
+username <span style="color: #c084fc; font-weight: 700;">||=</span> <span class="syn-str">&quot;Guest&quot;</span>;
+
+<span class="syn-fn">console</span>.log(username);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Guest</pre>
+</div>
+      <p class="text-p">Equivalent concept:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>username = username || <span class="syn-str">&quot;Guest&quot;</span>;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.10</span> <code>??=</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> username = <span class="syn-bool">null</span>;
+
+username <span style="color: #c084fc; font-weight: 700;">??</span>= <span class="syn-str">&quot;Guest&quot;</span>;
+
+<span class="syn-fn">console</span>.log(username);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Guest</pre>
+</div>
+      <p class="text-p">কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> score = <span class="syn-num">0</span>;
+
+score <span style="color: #c084fc; font-weight: 700;">??</span>= <span class="syn-num">100</span>;
+
+<span class="syn-fn">console</span>.log(score);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">0</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.11</span> <code>&amp;&amp;=</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> user = {
+    loggedIn: <span class="syn-bool">true</span>
+};
+
+user.loggedIn <span style="color: #c084fc; font-weight: 700;">&amp;&amp;=</span> <span class="syn-bool">false</span>;
+
+<span class="syn-fn">console</span>.log(user.loggedIn);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">false</pre>
+</div>
+      <p class="text-p">এটি conceptually:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>user.loggedIn = user.loggedIn &amp;&amp; <span class="syn-bool">false</span>;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.12</span> <code>String.prototype.replaceAll()</code></div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-str">&quot;apple apple apple&quot;</span>.replace(/apple/g, <span class="syn-str">&quot;orange&quot;</span>);</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-str">&quot;apple apple apple&quot;</span>.<span style="color: #38bdf8; font-weight: 600;">replaceAll</span>(
+    <span class="syn-str">&quot;apple&quot;</span>,
+    <span class="syn-str">&quot;orange&quot;</span>
+);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">orange orange orange</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 04 — Modern Promise Concurrency: allSettled, any & withResolvers (36.13 – 36.15, 36.39)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.13</span> <code>Promise.allSettled()</code></div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">all</span>()</code></pre>
+</div>
+      <p class="text-p">একটি Promise reject করলে পুরো <code>Promise.all()</code> reject করে। কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">allSettled</span>()</code></pre>
+</div>
+      <p class="text-p">সব Promise-এর result জানায়। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> promises = [
+    <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">resolve</span>(&quot;Success<span class="syn-str">&quot;),
+    Promise.reject(&quot;</span>Failed<span class="syn-str">&quot;),
+    Promise.resolve(&quot;</span>Success <span class="syn-num">2</span>&quot;)
+];
+
+<span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">allSettled</span>(promises)
+    .<span style="color: #38bdf8; font-weight: 600;">then</span>(results =&gt; <span class="syn-fn">console</span>.log(results));</code></pre>
+</div>
+      <p class="text-p">Result conceptually:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>[
+    { status: <span class="syn-str">&quot;fulfilled&quot;</span>, value: <span class="syn-str">&quot;Success&quot;</span> },
+    { status: <span class="syn-str">&quot;rejected&quot;</span>, reason: <span class="syn-str">&quot;Failed&quot;</span> },
+    { status: <span class="syn-str">&quot;fulfilled&quot;</span>, value: <span class="syn-str">&quot;Success 2&quot;</span> }
+]</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-Life Example</div>
+      <p class="text-p">তুমি ৩টি API call করলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">API 1 <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">Success</span>
+API 2 <span style="color: #38bdf8; font-weight: 700;">→</span> Failed
+API 3 <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">Success</span></pre>
+</div>
+      <p class="text-p">তবুও তুমি তিনটির result-ই জানতে চাও। তখন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">allSettled</span>()</code></pre>
+</div>
+      <p class="text-p">খুব useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.14</span> <code>Promise.any()</code></div>
+      <p class="text-p">ES2021-এর আরেকটি গুরুত্বপূর্ণ feature।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">any</span>([
+    <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">reject</span>(&quot;Server <span class="syn-num">1</span> failed<span class="syn-str">&quot;),
+    Promise.resolve(&quot;</span>Server <span class="syn-num">2</span> success<span class="syn-str">&quot;),
+    Promise.resolve(&quot;</span>Server <span class="syn-num">3</span> success&quot;)
+])
+.<span style="color: #38bdf8; font-weight: 600;">then</span>(result =&gt; <span class="syn-fn">console</span>.log(result));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Server 2 success</pre>
+</div>
+      <p class="text-p">কারণ <code>Promise.any()</code> প্রথম <strong>fulfilled</strong> Promise-এর result দেয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.15</span> <code>AggregateError</code></div>
+      <p class="text-p">যদি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">any</span>([
+    <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">reject</span>(&quot;A<span class="syn-str">&quot;),
+    Promise.reject(&quot;</span>B<span class="syn-str">&quot;),
+    Promise.reject(&quot;</span>C&quot;)
+]);</code></pre>
+</div>
+      <p class="text-p">সব Promise reject করলে <code>Promise.any()</code> একটি <code>AggregateError</code> reject করে। এতে multiple errors পাওয়া যায়।</p>
+    </div>
+    <div class="part-banner">Part 05 — Code Readability: Numeric Separators & Logical Assignment Patterns (36.16 – 36.17)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.16</span> Numeric Separators <code>_</code></div>
+      <p class="text-p">বড় number পড়া সহজ করার জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> population = <span class="syn-num">170_000_000</span>;</code></pre>
+</div>
+      <p class="text-p">এটি equivalent:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> population = <span class="syn-num">170000000</span>;</code></pre>
+</div>
+      <p class="text-p">আর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> price = <span class="syn-num">1_299_999</span>;</code></pre>
+</div>
+      <p class="text-p">এটা শুধু readability-এর জন্য।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.17</span> Logical Assignment বাস্তব Example</div>
+      <p class="text-p">ধরো configuration:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> config = {
+    theme: <span class="syn-bool">null</span>,
+    debug: <span class="syn-bool">false</span>
+};</code></pre>
+</div>
+      <p class="text-p">Default theme:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>config.theme <span style="color: #c084fc; font-weight: 700;">??</span>= <span class="syn-str">&quot;light&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(config.theme);</code></pre>
+</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">light</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 06 — Modern Class Architecture: Private Fields (#), Statics & Blocks (36.18 – 36.22)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.18</span> Private Class Fields <code>#</code></div>
+      <p class="text-p">ES2022-এ JavaScript class-এ true private fields এসেছে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> BankAccount {
+
+    <span style="color: #c084fc; font-weight: 700;">#</span>balance = <span class="syn-num">0</span>;
+
+    <span style="color: #38bdf8; font-weight: 600;">deposit</span>(amount) {
+        <span class="syn-kw">this</span>.#balance += amount;
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">getBalance</span>() {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>.#balance;
+    }
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> account = <span class="syn-kw">new</span> BankAccount();
+
+account.<span style="color: #38bdf8; font-weight: 600;">deposit</span>(<span class="syn-num">100</span>);
+
+<span class="syn-fn">console</span>.log(account.<span style="color: #38bdf8; font-weight: 600;">getBalance</span>());</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">100</pre>
+</div>
+      <p class="text-p">কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(account.#balance);</code></pre>
+</div>
+      <p class="text-p">এটা বাইরে থেকে access করা যাবে না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.19</span> Public Class Fields</div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> User {
+
+    constructor(name) {
+        <span class="syn-kw">this</span>.name = name;
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> User {
+
+    name = <span class="syn-str">&quot;Guest&quot;</span>;
+
+    age = <span class="syn-num">0</span>;
+
+}</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user = <span class="syn-kw">new</span> User();
+
+<span class="syn-fn">console</span>.log(user.name);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Guest</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.20</span> Static Class Fields</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> Config {
+
+    <span class="syn-kw">static</span> appName = <span class="syn-str">&quot;My App&quot;</span>;
+
+}</code></pre>
+</div>
+      <p class="text-p">Access:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(Config.appName);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">My App</pre>
+</div>
+      <p class="text-p">Instance দিয়ে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> config = <span class="syn-kw">new</span> Config();
+
+<span class="syn-fn">console</span>.log(config.appName);</code></pre>
+</div>
+      <p class="text-p">এখানে <code>undefined</code> হবে। কারণ <code>appName</code> static।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.21</span> Static Methods</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> MathUtil {
+
+    <span class="syn-kw">static</span> square(n) {
+        <span class="syn-kw">return</span> n * n;
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Call:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(MathUtil.square(<span class="syn-num">5</span>));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">25</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.22</span> Static Initialization Block</div>
+      <p class="text-p">Modern JavaScript-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> App {
+
+    <span class="syn-kw">static</span> version;
+
+    <span class="syn-kw">static</span> {
+        App.version = <span class="syn-str">&quot;1.0.0&quot;</span>;
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(App.version);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">1.0.0</pre>
+</div>
+      <p class="text-p">Static block class initialization-এর সময় একবার execute হয়।</p>
+    </div>
+    <div class="part-banner">Part 07 — Top-Level Await, Negative Indexing (.at) & Error Causes (36.23 – 36.28)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.23</span> Top-Level <code>await</code></div>
+      <p class="text-p">ES2022-এর খুব গুরুত্বপূর্ণ feature। Module-এর top level-এ <code>await</code> ব্যবহার করা যায়। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> response = <span class="syn-kw">await</span> fetch(
+    <span class="syn-str">&quot;https://example.com/data&quot;</span>
+);
+
+<span class="syn-kw">const</span> data = <span class="syn-kw">await</span> response.json();
+
+<span class="syn-fn">console</span>.log(data);</code></pre>
+</div>
+      <p class="text-p">আগে <code>await</code> সাধারণত:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> load() {
+    ...
+}</code></pre>
+</div>
+      <p class="text-p">এর ভিতরে লাগত। ES Modules-এ top-level <code>await</code> ব্যবহার করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.24</span> Top-Level Await কোথায় Useful?</div>
+      <p class="text-p">বিশেষ করে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Module initialization
+Configuration loading
+Database setup
+Dynamic resource loading</pre>
+</div>
+      <p class="text-p">তবে module execution dependency-এর কারণে ব্যবহার করার সময় performance ও startup behavior বিবেচনা করতে হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.25</span> <code>.at()</code></div>
+      <p class="text-p">ES2022-এ <code>at()</code> এসেছে। আগে array-এর last element:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];
+
+<span class="syn-fn">console</span>.log(numbers[numbers.length - <span class="syn-num">1</span>]);</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(numbers.<span style="color: #38bdf8; font-weight: 600;">at</span>(-<span class="syn-num">1</span>));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">30</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.26</span> Negative Index</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];
+
+<span class="syn-fn">console</span>.log(numbers.<span style="color: #38bdf8; font-weight: 600;">at</span>(-<span class="syn-num">1</span>));
+<span class="syn-fn">console</span>.log(numbers.<span style="color: #38bdf8; font-weight: 600;">at</span>(-<span class="syn-num">2</span>));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">40
+30</pre>
+</div>
+      <p class="text-p">String-এর ক্ষেত্রেও:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(&quot;Hello&quot;.<span style="color: #38bdf8; font-weight: 600;">at</span>(-<span class="syn-num">1</span>));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">o</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.27</span> <code>Object.hasOwn()</code></div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Object</span>.prototype.hasOwnProperty.call(
+    user,
+    <span class="syn-str">&quot;name&quot;</span>
+);</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Object</span>.<span style="color: #38bdf8; font-weight: 600;">hasOwn</span>(user, <span class="syn-str">&quot;name&quot;</span>);</code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user = {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-fn">console</span>.log(
+    <span class="syn-fn">Object</span>.<span style="color: #38bdf8; font-weight: 600;">hasOwn</span>(user, <span class="syn-str">&quot;name&quot;</span>)
+);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">true</pre>
+</div>
+      <p class="text-p">এটি property <strong>নিজের property কিনা</strong> check করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.28</span> <code>Error.cause</code></div>
+      <p class="text-p">একটি error-এর original cause attach করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">try</span> {
+
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Database failed<span class="syn-str">&quot;);
+
+} catch (error) {
+
+    throw new Error(
+        &quot;</span>Could not load user&quot;,
+        { cause: error }
+    );
+
+}</code></pre>
+</div>
+      <p class="text-p">পরে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.log(error.message);
+    <span class="syn-fn">console</span>.log(error.cause);
+}</code></pre>
+</div>
+      <p class="text-p">এটি debugging এবং error chaining-এর জন্য useful।</p>
+    </div>
+    <div class="part-banner">Part 08 — Array Querying & Immutable Methods (toSorted, toSpliced, with) (36.29 – 36.36)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.29</span> <code>Array.findLast()</code></div>
+      <p class="text-p">ES2023-এর feature। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">20</span>];</code></pre>
+</div>
+      <p class="text-p">শেষ থেকে খুঁজতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> result = numbers.<span style="color: #38bdf8; font-weight: 600;">findLast</span>(
+    n =&gt; n === <span class="syn-num">20</span>
+);
+
+<span class="syn-fn">console</span>.log(result);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">20</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.30</span> <code>findLastIndex()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">20</span>];
+
+<span class="syn-fn">console</span>.log(
+    numbers.<span style="color: #38bdf8; font-weight: 600;">findLastIndex</span>(n =&gt; n === <span class="syn-num">20</span>)
+);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">3</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.31</span> Immutable Array Methods</div>
+      <p class="text-p">Modern JavaScript-এ একটি গুরুত্বপূর্ণ ধারণা হলো <strong>non-mutating array methods</strong>। ES2023-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">toSorted</span>()
+<span style="color: #38bdf8; font-weight: 600;">toReversed</span>()
+<span style="color: #38bdf8; font-weight: 600;">toSpliced</span>()</code></pre>
+</div>
+      <p class="text-p">এসেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.32</span> <code>toSorted()</code></div>
+      <p class="text-p">পুরোনো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">3</span>, <span class="syn-num">1</span>, <span class="syn-num">2</span>];
+
+numbers.sort();
+
+<span class="syn-fn">console</span>.log(numbers);</code></pre>
+</div>
+      <p class="text-p"><code>sort()</code> original array পরিবর্তন করে। Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">3</span>, <span class="syn-num">1</span>, <span class="syn-num">2</span>];
+
+<span class="syn-kw">const</span> sorted = numbers.<span style="color: #38bdf8; font-weight: 600;">toSorted</span>();
+
+<span class="syn-fn">console</span>.log(sorted);
+<span class="syn-fn">console</span>.log(numbers);</code></pre>
+</div>
+      <p class="text-p">Result:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">[1, 2, 3]
+[3, 1, 2]</pre>
+</div>
+      <p class="text-p">Original array unchanged।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.33</span> <code>toReversed()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">const</span> reversed = numbers.<span style="color: #38bdf8; font-weight: 600;">toReversed</span>();
+
+<span class="syn-fn">console</span>.log(reversed);
+<span class="syn-fn">console</span>.log(numbers);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">[3, 2, 1]
+[1, 2, 3]</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.34</span> <code>toSpliced()</code></div>
+      <p class="text-p"><code>splice()</code> original array modify করে। <code>toSpliced()</code> নতুন array return করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>];
+
+<span class="syn-kw">const</span> result = numbers.<span style="color: #38bdf8; font-weight: 600;">toSpliced</span>(<span class="syn-num">1</span>, <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(result);
+<span class="syn-fn">console</span>.log(numbers);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">[1, 4]
+[1, 2, 3, 4]</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.35</span> <code>with()</code></div>
+      <p class="text-p">ES2023-এর আরেকটি useful immutable array method। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];</code></pre>
+</div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>numbers[<span class="syn-num">1</span>] = <span class="syn-num">100</span>;</code></pre>
+</div>
+      <p class="text-p">Original array পরিবর্তিত হবে। Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> updated = numbers.<span style="color: #38bdf8; font-weight: 600;">with</span>(<span class="syn-num">1</span>, <span class="syn-num">100</span>);
+
+<span class="syn-fn">console</span>.log(updated);
+<span class="syn-fn">console</span>.log(numbers);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">[10, 100, 30]
+[10, 20, 30]</pre>
+</div>
+      <p class="text-p">React-এর মতো state-based development-এ immutable style খুব useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.36</span> <code>Array.prototype.toSorted()</code> কেন React-এ Useful?</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> [users, setUsers] = useState([...]);</code></pre>
+</div>
+      <p class="text-p">খারাপ approach:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>users.sort();
+setUsers(users);</code></pre>
+</div>
+      <p class="text-p">কারণ original array mutate হয়েছে। Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>setUsers(users.<span style="color: #38bdf8; font-weight: 600;">toSorted</span>());</code></pre>
+</div>
+      <p class="text-p">অথবা comparator সহ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>setUsers(
+    users.<span style="color: #38bdf8; font-weight: 600;">toSorted</span>(
+        (a, b) =&gt; a.name.localeCompare(b.name)
+    )
+);</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 09 — Data Grouping (Object.groupBy, Map.groupBy) & Unicode (36.37 – 36.41)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.37</span> <code>Object.groupBy()</code></div>
+      <p class="text-p">ES2024-এর একটি গুরুত্বপূর্ণ feature। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users = [
+    { name: <span class="syn-str">&quot;A&quot;</span>, role: <span class="syn-str">&quot;admin&quot;</span> },
+    { name: <span class="syn-str">&quot;B&quot;</span>, role: <span class="syn-str">&quot;user&quot;</span> },
+    { name: <span class="syn-str">&quot;C&quot;</span>, role: <span class="syn-str">&quot;admin&quot;</span> }
+];</code></pre>
+</div>
+      <p class="text-p">Group:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> grouped = <span class="syn-fn">Object</span>.<span style="color: #38bdf8; font-weight: 600;">groupBy</span>(
+    users,
+    user =&gt; user.role
+);
+
+<span class="syn-fn">console</span>.log(grouped);</code></pre>
+</div>
+      <p class="text-p">Conceptually:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>{
+    admin: [
+        { name: <span class="syn-str">&quot;A&quot;</span>, role: <span class="syn-str">&quot;admin&quot;</span> },
+        { name: <span class="syn-str">&quot;C&quot;</span>, role: <span class="syn-str">&quot;admin&quot;</span> }
+    ],
+    user: [
+        { name: <span class="syn-str">&quot;B&quot;</span>, role: <span class="syn-str">&quot;user&quot;</span> }
+    ]
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.38</span> <code>Map.groupBy()</code></div>
+      <p class="text-p">যদি grouping result হিসেবে <code>Map</code> দরকার হয়:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> grouped = <span class="syn-fn">Map</span>.<span style="color: #38bdf8; font-weight: 600;">groupBy</span>(
+    users,
+    user =&gt; user.role
+);</code></pre>
+</div>
+      <p class="text-p">Difference:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Object.<span style="color: #c084fc; font-weight: 700;">groupBy()</span>
+<span style="color: #38bdf8; font-weight: 700;">→</span> Object
+
+Map.<span style="color: #c084fc; font-weight: 700;">groupBy()</span>
+<span style="color: #38bdf8; font-weight: 700;">→</span> Map</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.39</span> <code>Promise.withResolvers()</code></div>
+      <p class="text-p">ES2024-এর useful Promise feature। আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> resolvePromise;
+
+<span class="syn-kw">const</span> promise = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>(<span style="color: #38bdf8; font-weight: 600;">resolve</span> =&gt; {
+    resolvePromise = <span style="color: #38bdf8; font-weight: 600;">resolve</span>;
+});</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> {
+    promise,
+    <span style="color: #38bdf8; font-weight: 600;">resolve</span>,
+    <span style="color: #38bdf8; font-weight: 600;">reject</span>
+} = <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">withResolvers</span>();</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">resolve</span>(&quot;Success&quot;);</code></pre>
+</div>
+      <p class="text-p">Promise:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>promise.<span style="color: #38bdf8; font-weight: 600;">then</span>(<span class="syn-fn">console</span>.log);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Success</span></pre>
+</div>
+      <p class="text-p">এটি বিশেষ করে custom async abstractions, event-based systems এবং Promise control-এর ক্ষেত্রে useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.40</span> <code>String.isWellFormed()</code></div>
+      <p class="text-p">Unicode string-এর malformed surrogate আছে কিনা check করতে ব্যবহার করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> text = <span class="syn-str">&quot;Hello&quot;</span>;
+
+<span class="syn-fn">console</span>.log(text.<span style="color: #38bdf8; font-weight: 600;">isWellFormed</span>());</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">true</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.41</span> <code>toWellFormed()</code></div>
+      <p class="text-p">Malformed Unicode থাকলে replacement character ব্যবহার করে well-formed string তৈরি করতে পারে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> text = <span class="syn-str">&quot;Hello&quot;</span>;
+
+<span class="syn-kw">const</span> safeText = text.<span style="color: #38bdf8; font-weight: 600;">toWellFormed</span>();
+
+<span class="syn-fn">console</span>.log(safeText);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Hello</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 10 — Emerging Standards: Temporal API & Explicit Resource Management (36.42 – 36.43)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.42</span> <code>Temporal</code> সম্পর্কে গুরুত্বপূর্ণ কথা</div>
+      <p class="text-p">অনেক JavaScript developer <code>Temporal</code> নিয়ে শুনেছেন। Temporal-এর উদ্দেশ্য:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Date-এর limitations কমানো</pre>
+</div>
+      <p class="text-p">যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Date
+Time
+Timezone
+Duration
+Calendar</pre>
+</div>
+      <p class="text-p">তবে গুরুত্বপূর্ণ বিষয়:</p>
+      <div class="def-box">💡 Temporal দীর্ঘ সময় proposal পর্যায়ে ছিল এবং standardization/runtime support-এর অবস্থা version অনুযায়ী পরিবর্তিত হতে পারে।</div>
+      <p class="text-p">তাই production project-এ ব্যবহার করার আগে target runtime/browser support যাচাই করা উচিত।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.43</span> <code>using</code> / Explicit Resource Management</div>
+      <p class="text-p">Modern ECMAScript-এর resource management feature হিসেবে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">using</span>
+<span class="syn-kw">await</span> <span class="syn-kw">using</span></code></pre>
+</div>
+      <p class="text-p">ধারণা এসেছে। উদাহরণস্বরূপ কোনো resource:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">File
+Connection
+Lock
+Stream</pre>
+</div>
+      <p class="text-p">ব্যবহার শেষে automatically cleanup করার উদ্দেশ্যে। Concept:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">using</span> resource = createResource();</code></pre>
+</div>
+      <p class="text-p">Scope শেষ হলে resource disposal-এর mechanism কাজ করতে পারে।</p>
+      <div class="def-box">💡 এটি advanced feature; সব environment-এ একইভাবে available কিনা target runtime অনুযায়ী verify করতে হবে।</div>
+    </div>
+    <div class="part-banner">Part 11 — Modern JavaScript Paradigms: Immutability, React & Node.js (36.44 – 36.49)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.44</span> Modern JavaScript-এ Immutability</div>
+      <p class="text-p">Modern frontend development-এ একটি বড় concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">Mutation</span> ❌
+<span style="color: #34d399; font-weight: 700;">Immutable</span> Update ✅</pre>
+</div>
+      <p class="text-p">পুরোনো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+numbers.reverse();</code></pre>
+</div>
+      <p class="text-p">Original array পরিবর্তন। Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">const</span> reversed = numbers.<span style="color: #38bdf8; font-weight: 600;">toReversed</span>();</code></pre>
+</div>
+      <p class="text-p">Original:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">[1, 2, 3]</pre>
+</div>
+      <p class="text-p">New:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">[3, 2, 1]</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.45</span> Modern Object Handling</div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> hasName =
+    <span class="syn-fn">Object</span>.prototype.hasOwnProperty.call(
+        user,
+        <span class="syn-str">&quot;name&quot;</span>
+    );</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> hasName =
+    <span class="syn-fn">Object</span>.<span style="color: #38bdf8; font-weight: 600;">hasOwn</span>(user, <span class="syn-str">&quot;name&quot;</span>);</code></pre>
+</div>
+      <p class="text-p">Code অনেক cleaner।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.46</span> Modern Promise Handling</div>
+      <p class="text-p">ধরো তিনটি API:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> requests = [
+    fetch(&quot;/users<span class="syn-str">&quot;),
+    fetch(&quot;</span>/products<span class="syn-str">&quot;),
+    fetch(&quot;</span>/orders&quot;)
+];</code></pre>
+</div>
+      <p class="text-p">সব সফল না হলেও result দরকার:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> results =
+    <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">allSettled</span>(requests);</code></pre>
+</div>
+      <p class="text-p">একটি সফল হলেই result দরকার:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> result =
+    <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">any</span>(requests);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.47</span> Modern Array Workflow</div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> copy = [...numbers];
+
+copy.sort();</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> sorted = numbers.<span style="color: #38bdf8; font-weight: 600;">toSorted</span>();</code></pre>
+</div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> copy = [...numbers];
+
+copy.reverse();</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> reversed = numbers.<span style="color: #38bdf8; font-weight: 600;">toReversed</span>();</code></pre>
+</div>
+      <p class="text-p">আগে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> copy = [...numbers];
+
+copy.<span style="color: #38bdf8; font-weight: 600;">splice</span>(<span class="syn-num">1</span>, <span class="syn-num">1</span>);</code></pre>
+</div>
+      <p class="text-p">Modern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> updated = numbers.<span style="color: #38bdf8; font-weight: 600;">toSpliced</span>(<span class="syn-num">1</span>, <span class="syn-num">1</span>);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.48</span> Modern JavaScript + React</div>
+      <p class="text-p">React development-এ তুমি অনেক জায়গায় এগুলো ব্যবহার করবে:</p>
+      <div class="section-subhead">🔹 Optional Chaining</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">&lt;p&gt;{user<span style="color: #c084fc; font-weight: 700;">?.</span>profile<span style="color: #c084fc; font-weight: 700;">?.</span>name}&lt;/p&gt;</pre>
+</div>
+      <div class="section-subhead">🔹 Nullish Coalescing</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> pageSize = settings<span style="color: #c084fc; font-weight: 700;">?.</span>pageSize <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-num">10</span>;</code></pre>
+</div>
+      <div class="section-subhead">🔹 Immutable Array</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> sortedUsers =
+    users.<span style="color: #38bdf8; font-weight: 600;">toSorted</span>(
+        (a, b) =&gt; a.name.localeCompare(b.name)
+    );</code></pre>
+</div>
+      <div class="section-subhead">🔹 <code>findLast()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> lastAdmin =
+    users.<span style="color: #38bdf8; font-weight: 600;">findLast</span>(user =&gt; user.role === <span class="syn-str">&quot;admin&quot;</span>);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.49</span> Modern JavaScript + Node.js</div>
+      <p class="text-p">Node.js application-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> result =
+    <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">allSettled</span>([
+        fetchUsers(),
+        fetchProducts(),
+        fetchOrders()
+    ]);</code></pre>
+</div>
+      <p class="text-p">Error handling:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">try</span> {
+
+    <span class="syn-kw">await</span> database.connect();
+
+} <span class="syn-kw">catch</span> (error) {
+
+    <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(
+        <span class="syn-str">&quot;Database connection failed&quot;</span>,
+        { cause: error }
+    );
+
+}</code></pre>
+</div>
+      <p class="text-p">Private class state:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> Database {
+
+    <span style="color: #c084fc; font-weight: 700;">#</span>connection;
+
+    connect() {
+        <span class="syn-kw">this</span>.#connection = <span class="syn-str">&quot;connected&quot;</span>;
+    }
+
+}</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 12 — Browser Compatibility, Transpilation, Polyfills & ES2020+ Map (36.50 – 36.57)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.50</span> Browser Compatibility</div>
+      <p class="text-p">সব browser সব modern feature একই সময়ে support নাও করতে পারে। তাই production-এর আগে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK MODERN JAVASCRIPT TOOLKIT</div>
+  <pre class="ascii-tree-content">Browser support
+<span style="color: #fde047; font-weight: 700;">Node.js</span> version
+Build tool
+Babel
+Transpiler
+Polyfill</pre>
+</div>
+      <p class="text-p">বিবেচনা করতে হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.51</span> Babel কী?</div>
+      <p class="text-p"><strong>Babel</strong> হলো JavaScript compiler/transpiler ecosystem-এর একটি গুরুত্বপূর্ণ tool। ধরো তুমি modern syntax লিখলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> result = user<span style="color: #c084fc; font-weight: 700;">?.</span>profile<span style="color: #c084fc; font-weight: 700;">?.</span>name;</code></pre>
+</div>
+      <p class="text-p">পুরোনো environment-এর জন্য toolchain এটাকে compatible form-এ transform করতে পারে। তবে:</p>
+      <div class="def-box">💡 সব নতুন API syntax transformation দিয়ে solve করা যায় না। কিছু API-এর জন্য polyfill বা runtime support দরকার।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.52</span> Transpilation vs Polyfill</div>
+      <p class="text-p">খুব গুরুত্বপূর্ণ distinction।</p>
+      <div class="section-subhead">🔹 Transpilation</div>
+      <p class="text-p">Syntax পরিবর্তন করে। উদাহরণ conceptually:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">Modern JS</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Compiler
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Older-compatible JS</pre>
+</div>
+      <div class="section-subhead">🔹 Polyfill</div>
+      <p class="text-p">যে API নেই, তার implementation provide করে। যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Missing API
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Polyfill
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Available behavior</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.53</span> Feature Detection</div>
+      <p class="text-p">কোনো feature support করে কিনা check করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">if</span> (&quot;<span style="color: #38bdf8; font-weight: 600;">at</span><span class="syn-str">&quot; in Array.prototype) {
+    console.log(&quot;</span>Supported&quot;);
+}</code></pre>
+</div>
+      <p class="text-p">অথবা:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">if</span> (<span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">withResolvers</span>) {
+    <span class="syn-fn">console</span>.log(&quot;Supported&quot;);
+}</code></pre>
+</div>
+      <p class="text-p">এটি runtime compatibility handling-এর জন্য useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.54</span> Modern Syntax বনাম Modern API</div>
+      <p class="text-p">এ দুটো আলাদা।</p>
+      <div class="section-subhead">🔹 Syntax</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>user<span style="color: #c084fc; font-weight: 700;">?.</span>name</code></pre>
+</div>
+      <div class="section-subhead">🔹 API</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">allSettled</span>()</code></pre>
+</div>
+      <p class="text-p">Syntax-এর জন্য transpiler কাজ করতে পারে। API-এর জন্য runtime/polyfill support প্রয়োজন হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.55</span> ES2020+ Quick Version Map</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Version</th><th>গুরুত্বপূর্ণ Features</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ES2020</td><td><code>?.</code>, <code>??</code>, <code>BigInt</code>, <code>Promise.allSettled()</code>, <code>Promise.any()</code></td></tr><tr><td>ES2021</td><td><code>replaceAll()</code>, logical assignment, numeric separators</td></tr><tr><td>ES2022</td><td>class fields, private <code>#</code>, static blocks, <code>.at()</code>, <code>Object.hasOwn()</code>, top-level <code>await</code>, <code>Error.cause</code></td></tr><tr><td>ES2023</td><td><code>findLast()</code>, <code>findLastIndex()</code>, <code>toSorted()</code>, <code>toReversed()</code>, <code>toSpliced()</code>, <code>with()</code></td></tr><tr><td>ES2024</td><td><code>Object.groupBy()</code>, <code>Map.groupBy()</code>, <code>Promise.withResolvers()</code>, well-formed string methods</td></tr><tr><td>ES2025</td><td>নতুন standardized language features; runtime support অনুযায়ী ব্যবহার</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.56</span> সবচেয়ে বেশি ব্যবহৃত Modern Features</div>
+      <p class="text-p">বাস্তব project-এর জন্য priority:</p>
+      <div class="section-subhead">🔹 🔥 Tier 1 — অবশ্যই জানবে</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ IMMUTABLE ARRAY METHODS PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">?.</span>
+<span style="color: #c084fc; font-weight: 700;">??</span>
+async/await
+Promise.<span style="color: #c084fc; font-weight: 700;">allSettled()</span>
+Promise.<span style="color: #c084fc; font-weight: 700;">any()</span>
+<span style="color: #c084fc; font-weight: 700;">??</span>=
+<span style="color: #c084fc; font-weight: 700;">||=</span>
+&amp;&amp;=
+Array.at()
+<span style="color: #c084fc; font-weight: 700;">toSorted()</span>
+<span style="color: #c084fc; font-weight: 700;">toReversed()</span>
+<span style="color: #c084fc; font-weight: 700;">toSpliced()</span>
+Object.hasOwn()
+private <span style="color: #c084fc; font-weight: 700;">#field</span>s</pre>
+</div>
+      <div class="section-subhead">🔹 🔥 Tier 2 — ভালোভাবে জানা উচিত</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Object.<span style="color: #c084fc; font-weight: 700;">groupBy()</span>
+Map.<span style="color: #c084fc; font-weight: 700;">groupBy()</span>
+Promise.<span style="color: #c084fc; font-weight: 700;">withResolvers()</span>
+<span style="color: #f43f5e; font-weight: 700;">Error.cause</span>
+static fields
+static blocks
+<span style="color: #c084fc; font-weight: 700;">top-level await</span></pre>
+</div>
+      <div class="section-subhead">🔹 🔥 Tier 3 — Advanced</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">using
+await using
+Temporal concepts
+Unicode well-formed <span style="color: #fde047; font-weight: 700;">APIs</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.57</span> Modern JavaScript Interview Questions — ইন্টারভিউ প্রশ্নোত্তর</div>
+      <div class="section-subhead">🔹 Q1. <code>||</code> এবং <code>??</code>-এর difference কী?</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-num">0</span> || <span class="syn-num">10</span></code></pre>
+</div>
+      <p class="text-p">→ <code>10</code></p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-num">0</span> <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-num">10</span></code></pre>
+</div>
+      <p class="text-p">→ <code>0</code> কারণ <code>??</code> শুধু <code>null</code> এবং <code>undefined</code> handle করে।</p>
+      <div class="section-subhead">🔹 Q2. <code>sort()</code> এবং <code>toSorted()</code> difference?</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>sort()</code></pre>
+</div>
+      <p class="text-p">→ original array mutate করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">toSorted</span>()</code></pre>
+</div>
+      <p class="text-p">→ নতুন sorted array দেয়।</p>
+      <div class="section-subhead">🔹 Q3. <code>Promise.all()</code> এবং <code>Promise.allSettled()</code>?</div>
+      <p class="text-p"><code>Promise.all()</code>:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">একটি reject
+<span style="color: #38bdf8; font-weight: 700;">→</span> পুরো Promise reject</pre>
+</div>
+      <p class="text-p"><code>Promise.allSettled()</code>:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN JAVASCRIPT ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">সবগুলোর final result
+<span style="color: #38bdf8; font-weight: 700;">→</span> fulfilled/rejected দুটোই</pre>
+</div>
+      <div class="section-subhead">🔹 Q4. <code>Promise.any()</code> কী করে?</div>
+      <p class="text-p">প্রথম fulfilled Promise-এর result দেয়। সব reject হলে <code>AggregateError</code> দেয়।</p>
+      <div class="section-subhead">🔹 Q5. Optional chaining কেন ব্যবহার করি?</div>
+      <p class="text-p">Nested property missing হলেও error avoid করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>user<span style="color: #c084fc; font-weight: 700;">?.</span>profile<span style="color: #c084fc; font-weight: 700;">?.</span>name</code></pre>
+</div>
+      <div class="section-subhead">🔹 Q6. Private class field কী?</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> User {
+    <span style="color: #c084fc; font-weight: 700;">#</span>password;
+}</code></pre>
+</div>
+      <p class="text-p"><code>#password</code> class-এর বাইরে directly access করা যায় না।</p>
+      <div class="section-subhead">🔹 Q7. <code>.at(-1)</code> কী করে?</div>
+      <p class="text-p">Array/String-এর শেষ element দেয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>[<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>].<span style="color: #38bdf8; font-weight: 600;">at</span>(-<span class="syn-num">1</span>)</code></pre>
+</div>
+      <p class="text-p">→ <code>30</code></p>
+    </div>
+    <div class="part-banner">Part 13 — Must Know Modern Pillars, Quick Cheat Sheet, 8 Practice Labs & Final Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.58</span> 🔥 MUST KNOW — মডার্ন ECMAScript-এর ১০টি প্রধান স্তম্ভ</div>
+      <p class="text-p">আধুনিক ফুলস্ট্যাক প্রজেক্টে (React &amp; Node.js) প্রতিদিন কাজে লাগার মতো ১০টি সেরা উদ্ভাবন:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #0284c7; font-size: 10px; margin-bottom: 3px;">📌 1. Null Safety &amp; Operators</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Optional Chaining (?.):</strong> নাল বা আনডিফাইন্ডে ক্র্যাশ ছাড়া এক্সেস</li>
+            <li><strong>Nullish Coalescing (??):</strong> শুধুমাত্র null/undefined-এ ফলব্যাক (0 বা "" নিরাপদ)</li>
+            <li><strong>Logical Assignments:</strong> ??=, &&=, ||= দিয়ে ক্লিন কনফিগ ইনিশিয়ালাইজ</li>
+            <li><strong>Numeric Separators (_):</strong> 1_000_000 লিখে বড় সংখ্যার পঠনযোগ্যতা বৃদ্ধি</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #059669; font-size: 10px; margin-bottom: 3px;">📌 2. Modern Classes &amp; Async</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Private Fields (#):</strong> ট্রু ল্যাঙ্গুয়েজ-লেভেল এনক্যাপসুলেশন (#balance)</li>
+            <li><strong>Static Blocks:</strong> ক্লাসে কমপ্লেক্স স্ট্যাটিক মেম্বার ইনিশিয়ালাইজেশন</li>
+            <li><strong>Top-Level await:</strong> মডিউল লোডিংয়ের সময় অ্যাসিনক্রোনাস ডাটা ফেচ</li>
+            <li><strong>Promise.allSettled &amp; any:</strong> রেজলভ ও রিজেক্টেড প্রমিজের নির্ভরযোগ্য হ্যান্ডলিং</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #7c3aed; font-size: 10px; margin-bottom: 3px;">📌 3. Immutable Data &amp; Grouping</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>toSorted / toSpliced:</strong> মূল অ্যারে মিউটেট না করে নতুন অ্যারে রিটার্ন</li>
+            <li><strong>Array.prototype.at(-1):</strong> নেগেটিভ ইনডেক্স দিয়ে লাস্ট উপাদান বের করা</li>
+            <li><strong>Object.groupBy():</strong> ডাটাকে ক্যাটাগরি অনুযায়ী ডিক্ল্যারেটিভ গ্রুপিং</li>
+            <li><strong>Error.cause:</strong> এরর ট্র্যাজেক্টরি ও রুট কজ চেইনিং</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.59</span> 🧠 Quick Cheat Sheet — আধুনিক সিনট্যাক্স ও মেথড সারসংক্ষেপ</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Feature / Method</th><th>Introduction</th><th>Syntax / Code Snippet</th><th>Primary Benefit</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Optional Chaining</strong></td><td>ES2020</td><td><code>user?.address?.city</code></td><td><code>TypeError: Cannot read properties of undefined</code> চিরতরে রোধ</td></tr><tr><td><strong>Nullish Coalescing</strong></td><td>ES2020</td><td><code>const port = customPort ?? 3000</code></td><td>ফলসি ভ্যালু (<code>0</code>, <code>&quot;&quot;</code>) নষ্ট না করে শুধু <code>null/undefined</code> চেক</td></tr><tr><td><strong>Promise.allSettled</strong></td><td>ES2020</td><td><code>Promise.allSettled([p1, p2])</code></td><td>একটি ব্যর্থ হলেও সব প্রমিজের পূর্ণাঙ্গ ফলাফল পাওয়া যায়</td></tr><tr><td><strong>String.replaceAll</strong></td><td>ES2021</td><td><code>&#x27;a-b-c&#x27;.replaceAll(&#x27;-&#x27;, &#x27; &#x27;)</code></td><td>গ্লোবাল রেজেক্স (<code>/g</code>) ছাড়াই সকল ম্যাচ প্রতিস্থাপন</td></tr><tr><td><strong>Logical Assignment</strong></td><td>ES2021</td><td><code>options.timeout ??= 5000</code></td><td>ভ্যালু নাল হলে তবেই শর্ট-সার্কিট অ্যাসাইনমেন্ট</td></tr><tr><td><strong>Numeric Separator</strong></td><td>ES2021</td><td><code>const salary = 1_500_000</code></td><td>কোডের ভেতরে বড় সংখ্যার পঠনযোগ্যতা বৃদ্ধি</td></tr><tr><td><strong>Private Class Fields</strong></td><td>ES2022</td><td><code>class Bank { #pin = 1234; }</code></td><td>ক্লাসের বাইরে থেকে ফিল্ড এক্সেস সম্পূর্ণ ব্লক</td></tr><tr><td><strong>Array.prototype.at()</strong></td><td>ES2022</td><td><code>arr.at(-1)</code></td><td>নেগেটিভ ইনডেক্স দিয়ে পেছনের উপাদান এক্সেস</td></tr><tr><td><strong>Object.hasOwn()</strong></td><td>ES2022</td><td><code>Object.hasOwn(obj, &#x27;prop&#x27;)</code></td><td><code>hasOwnProperty</code> এর নিরাপদ ও সুরক্ষিত বিকল্প</td></tr><tr><td><strong>Error Cause</strong></td><td>ES2022</td><td><code>new Error(&#x27;Fail&#x27;, { cause: err })</code></td><td>অরিজিনাল এরর সংরক্ষণ করে রুট-কজ চেইনিং</td></tr><tr><td><strong>Array.toSorted()</strong></td><td>ES2023</td><td><code>const sorted = arr.toSorted()</code></td><td>মূল অ্যারে অক্ষত রেখে নতুন সর্টেড অ্যারে তৈরি (React-safe)</td></tr><tr><td><strong>Array.toSpliced()</strong></td><td>ES2023</td><td><code>const removed = arr.toSpliced(0, 1)</code></td><td>ইমিউটেবল স্লাইসিং ও উপাদান অপসারণ</td></tr><tr><td><strong>Array.with()</strong></td><td>ES2023</td><td><code>const updated = arr.with(2, 99)</code></td><td>নির্দিষ্ট ইনডেক্সের মান পরিবর্তন করে ফ্রেশ কপি রিটার্ন</td></tr><tr><td><strong>Array.findLast()</strong></td><td>ES2023</td><td><code>arr.findLast(n =&gt; n &gt; 10)</code></td><td>পেছনের দিক থেকে প্রথম ম্যাচিং উপাদান খুঁজে বের করা</td></tr><tr><td><strong>Object.groupBy()</strong></td><td>ES2024</td><td><code>Object.groupBy(users, u =&gt; u.role)</code></td><td>অ্যারের অবজেক্টগুলোকে শর্তানুযায়ী ক্যাটাগরিাইজড অবজেক্টে রূপান্তর</td></tr><tr><td><strong>Promise.withResolvers</strong></td><td>ES2024</td><td><code>const { promise, resolve } = Promise.withResolvers()</code></td><td>প্রমিজ ও রিজলভ/রিজেক্ট ফাংশন সরাসরি ডিকনস্ট্রাক্ট</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="part-banner">Part 13.1 — 8 Hands-On Practice Labs with Complete Production Solutions</div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #1</span> [BEGINNER] — Falsy vs Nullish Evaluation Matrix (|| vs ??)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> নিচের তিনটি স্টেটমেন্টের এক্সিকিউশন আউটপুট কী হবে এবং 0 এর ক্ষেত্রে || এবং ?? কীভাবে ভিন্ন আচরণ করে তা ব্যাখ্যা করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">MODERN IMPLEMENTATION (LAB #1)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Input Evaluation Code</span>
+<span class="syn-fn">console</span>.log(<span class="syn-num">0</span> || <span class="syn-num">50</span>);   <span class="syn-com">// আউটপুট: 50</span>
+<span class="syn-fn">console</span>.log(<span class="syn-num">0</span> <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-num">50</span>);   <span class="syn-com">// আউটপুট: 0</span>
+<span class="syn-fn">console</span>.log(<span class="syn-bool">null</span> <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-num">50</span>);// আউটপুট: <span class="syn-num">50</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> || (Logical OR) অপারেটর 0-কে falsy মনে করে ডান পাশের মান (50) নেয়। কিন্তু ?? (Nullish Coalescing) শুধুমাত্র null ও undefined-কে অগ্রাহ্য করে; 0 একটি সম্পূর্ণ বৈধ সংখ্যা হওয়ায় 0-ই রিটার্ন করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #2</span> [BEGINNER] — Defensive Data Access with Optional Chaining (?.)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> nested অবজেক্ট থেকে ক্র্যাশ ছাড়া নিরাপদে ডাটা পড়তে Optional Chaining ও Nullish Coalescing ব্যবহার করে প্রোডাকশন ফাংশন লিখুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">MODERN IMPLEMENTATION (LAB #2)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> userA = {
+  profile: {
+    address: { city: <span class="syn-str">&#x27;Dhaka&#x27;</span>, zip: <span class="syn-num">1205</span> }
+  }
+};
+
+<span class="syn-kw">const</span> userB = { profile: <span class="syn-bool">null</span> };
+
+<span class="syn-com">// ❌ Risky: userB-তে TypeError ক্র্যাশ করবে</span>
+<span class="syn-com">// const city = userB.profile.address.city; </span>
+
+<span class="syn-com">// ✅ Modern Safe Navigation</span>
+<span class="syn-kw">function</span> getCity(user) {
+  <span class="syn-kw">return</span> user<span style="color: #c084fc; font-weight: 700;">?.</span>profile<span style="color: #c084fc; font-weight: 700;">?.</span>address<span style="color: #c084fc; font-weight: 700;">?.</span>city <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-str">&#x27;Unknown City&#x27;</span>;
+}
+
+<span class="syn-fn">console</span>.log(&#x27;User A City:&#x27;, getCity(userA)); <span class="syn-com">// Dhaka</span>
+<span class="syn-fn">console</span>.log(&#x27;User B City:&#x27;, getCity(userB)); <span class="syn-com">// Unknown City (No crash!)</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> ?. অপারেটর চেইনের কোনো ধাপে null বা undefined পেলে সাথে সাথে এক্সিকিউশন থামিয়ে undefined রিটার্ন করে, ফলে TypeError চিরতরে দূর হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #3</span> [BEGINNER] — Array End Indexing with Modern .at() Method</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Array-এর শেষ উপাদান বের করার জন্য ট্র্যাডিশনাল arr[arr.length - 1] এর বদলে আধুনিক .at(-1) মেথড প্রয়োগ করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">MODERN IMPLEMENTATION (LAB #3)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>, <span class="syn-num">40</span>];
+
+<span class="syn-com">// Old Syntax</span>
+<span class="syn-kw">const</span> lastOld = numbers[numbers.length - <span class="syn-num">1</span>];
+
+<span class="syn-com">// Modern ES2022 Syntax</span>
+<span class="syn-kw">const</span> lastModern = numbers.<span style="color: #38bdf8; font-weight: 600;">at</span>(-<span class="syn-num">1</span>);     <span class="syn-com">// শেষ উপাদান: 40</span>
+<span class="syn-kw">const</span> secondLast = numbers.<span style="color: #38bdf8; font-weight: 600;">at</span>(-<span class="syn-num">2</span>);     <span class="syn-com">// শেষের আগের উপাদান: 30</span>
+
+<span class="syn-fn">console</span>.log(&#x27;Last Element:&#x27;, lastModern);
+<span class="syn-fn">console</span>.log(&#x27;Second Last:&#x27;, secondLast);</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> .at() মেথডটি শুধু অ্যারেতেই নয়, স্ট্রিং (string.at(-1)) এবং টাইপড অ্যারেতেও সমভাবে কাজ করে যা কোডকে আরও সংক্ষিপ্ত ও আধুনিক করে তোলে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #4</span> [INTERMEDIATE] — True Class Encapsulation with Private Field (#balance)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> এমন একটি BankAccount ক্লাস তৈরি করুন যেখানে name পাবলিক, #balance প্রাইভেট এবং ভ্যালিডেশনসহ deposit() ও getBalance() মেথড থাকবে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">MODERN IMPLEMENTATION (LAB #4)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> BankAccount {
+  name;           <span class="syn-com">// পাবলিক ফিল্ড</span>
+  <span style="color: #c084fc; font-weight: 700;">#</span>balance = <span class="syn-num">0</span>;   <span class="syn-com">// ট্রু প্রাইভেট ফিল্ড (ক্লাসের বাইরে সম্পূর্ণ অদৃশ্য)</span>
+
+  constructor(accountHolder, initialDeposit = <span class="syn-num">0</span>) {
+    <span class="syn-kw">this</span>.name = accountHolder;
+    <span class="syn-kw">if</span> (initialDeposit &gt; <span class="syn-num">0</span>) <span class="syn-kw">this</span>.#balance = initialDeposit;
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">deposit</span>(amount) {
+    <span class="syn-kw">if</span> (amount &lt;= <span class="syn-num">0</span>) {
+      <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&#x27;Deposit amount must be strictly positive<span class="syn-str">&#x27;);
+    }
+    this.#balance += amount;
+    return this.#balance;
+  }
+
+  getBalance() {
+    return this.#balance;
+  }
+}
+
+const account = new BankAccount(&#x27;</span>Tanvir<span class="syn-str">&#x27;, 500);
+account.deposit(250);
+console.log(`${account.name} Balance: $${account.getBalance()}`); // $750
+
+// ❌ SyntaxError: Private field &#x27;</span><span style="color: #c084fc; font-weight: 700;">#</span>balance&#x27; must be declared <span class="syn-kw">in</span> an enclosing <span class="syn-kw">class</span>
+<span class="syn-com">// console.log(account.#balance);</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> জাভাস্ক্রিপ্টে পূর্বে ব্যবহৃত আন্ডারস্কোর (_balance) কেবল একটি কনভেনশন ছিল যা বাইরে থেকে মডিফাই করা যেত। #balance হলো হার্ডওয়্যার/ল্যাঙ্গুয়েজ-লেভেল প্রাইভেট মেম্বার।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #5</span> [INTERMEDIATE] — Immutable Array Sorting with toSorted() (React Safe)</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> মূল অ্যারে অপরিবর্তিত রেখে [10, 5, 30, 20, 15] অ্যারেকে descending অর্ডারে সাজানোর জন্য toSorted() মেথড ব্যবহার করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">MODERN IMPLEMENTATION (LAB #5)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers = [<span class="syn-num">10</span>, <span class="syn-num">5</span>, <span class="syn-num">30</span>, <span class="syn-num">20</span>, <span class="syn-num">15</span>];
+
+<span class="syn-com">// ❌ Mutating sort(): মূল numbers অ্যারেকে স্থায়ীভাবে বদলে ফেলে</span>
+<span class="syn-com">// numbers.sort((a, b) =&gt; b - a);</span>
+
+<span class="syn-com">// ✅ Modern ES2023 Immutable toSorted()</span>
+<span class="syn-kw">const</span> descending = numbers.<span style="color: #38bdf8; font-weight: 600;">toSorted</span>((a, b) =&gt; b - a);
+
+<span class="syn-fn">console</span>.log(&#x27;Original <span class="syn-fn">Array</span>:&#x27;, numbers);     <span class="syn-com">// [10, 5, 30, 20, 15] (অক্ষত!)</span>
+<span class="syn-fn">console</span>.log(&#x27;Descending Sorted:&#x27;, descending); <span class="syn-com">// [30, 20, 15, 10, 5]</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> React অ্যাপ্লিকেশনে মূল স্টেট মিউটেট করলে UI রি-রেন্ডারিং সংক্রান্ত গুরুতর বাগ তৈরি হয়। toSorted() কোনো ক্লোনিং ছাড়াই ইমিউটেবল নতুন অ্যারে প্রদান করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #6</span> [INTERMEDIATE] — Fault-Tolerant Concurrent Requests with Promise.allSettled()</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> তিনটি কনকারেন্ট এপিআই কলের মধ্যে কিছু প্রমিজ ফেইল করলেও যাতে পুরো প্রসেস ক্র্যাশ না করে প্রতিটি কলের স্টেট পরীক্ষা করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">MODERN IMPLEMENTATION (LAB #6)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> fetchA = <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">resolve</span>({ source: <span class="syn-str">&#x27;Payment Gateway&#x27;</span>, status: <span class="syn-str">&#x27;OK&#x27;</span> });
+<span class="syn-kw">const</span> fetchB = <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">reject</span>(<span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&#x27;Auth Service Timeout (<span class="syn-num">504</span>)&#x27;));
+<span class="syn-kw">const</span> fetchC = <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">resolve</span>({ source: <span class="syn-str">&#x27;Notification Service&#x27;</span>, status: <span class="syn-str">&#x27;Delivered&#x27;</span> });
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> loadSystemStatus() {
+  <span class="syn-kw">const</span> results = <span class="syn-kw">await</span> <span class="syn-fn">Promise</span>.<span style="color: #38bdf8; font-weight: 600;">allSettled</span>([fetchA, fetchB, fetchC]);
+
+  results.<span style="color: #38bdf8; font-weight: 600;">forEach</span>((res, index) =&gt; {
+    <span class="syn-kw">if</span> (res.status === <span class="syn-str">&#x27;fulfilled&#x27;</span>) {
+      <span class="syn-fn">console</span>.log(`Service <span style="color: #c084fc; font-weight: 700;">#</span>${index + <span class="syn-num">1</span>} [ACTIVE ✅]:`, res.value);
+    } <span class="syn-kw">else</span> {
+      <span class="syn-fn">console</span>.warn(`Service <span style="color: #c084fc; font-weight: 700;">#</span>${index + <span class="syn-num">1</span>} [FAILED ❌]:`, res.reason.message);
+    }
+  });
+}
+
+loadSystemStatus();</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> Promise.all() একটি রিজেক্ট হলেই পুরো পাইপলাইন থামিয়ে দেয়। Promise.allSettled() সব প্রমিজ শেষ হওয়া পর্যন্ত অপেক্ষা করে fulfilled বা rejected স্ট্যাটাস রিপোর্ট করে।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #7</span> [ADVANCED] — Declarative Data Categorization with Object.groupBy()</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> ব্যবহারকারীর রোল (admin/user) অনুযায়ী ইউজার তালিকাকে অবজেক্ট গ্রুপিং করার জন্য আধুনিক ES2024 Object.groupBy() মেথড প্রয়োগ করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">MODERN IMPLEMENTATION (LAB #7)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users = [
+  { name: <span class="syn-str">&#x27;Tanvir&#x27;</span>, role: <span class="syn-str">&#x27;admin&#x27;</span> },
+  { name: <span class="syn-str">&#x27;Sakib&#x27;</span>, role: <span class="syn-str">&#x27;user&#x27;</span> },
+  { name: <span class="syn-str">&#x27;Rahim&#x27;</span>, role: <span class="syn-str">&#x27;admin&#x27;</span> },
+  { name: <span class="syn-str">&#x27;Karim&#x27;</span>, role: <span class="syn-str">&#x27;user&#x27;</span> },
+  { name: <span class="syn-str">&#x27;Ayesha&#x27;</span>, role: <span class="syn-str">&#x27;editor&#x27;</span> }
+];
+
+<span class="syn-com">// Modern ES2024 Declarative Grouping</span>
+<span class="syn-kw">const</span> groupedByRole = <span class="syn-fn">Object</span>.<span style="color: #38bdf8; font-weight: 600;">groupBy</span>(users, (user) =&gt; user.role);
+
+<span class="syn-fn">console</span>.log(groupedByRole);
+<span class="syn-com">/*
+আউটপুট:
+{
+  admin: [ { name: &#x27;Tanvir&#x27;, role: &#x27;admin&#x27; }, { name: &#x27;Rahim&#x27;, role: &#x27;admin&#x27; } ],
+  user: [ { name: &#x27;Sakib&#x27;, role: &#x27;user&#x27; }, { name: &#x27;Karim&#x27;, role: &#x27;user&#x27; } ],
+  editor: [ { name: &#x27;Ayesha&#x27;, role: &#x27;editor&#x27; } ]
+}
+*/</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> পূর্বে অ্যারের উপাদান গ্রুপ করতে জটিল Array.reduce() লজিক বা Lodash লাইব্রেরি ব্যবহার করতে হতো। Object.groupBy() এখন জাভাস্ক্রিপ্টের নেটিভ বিল্ট-ইন মেথড।</div>
+    </div>
+    <div class="practice-item">
+      <div class="card-title"><span class="badge-num">Lab #8</span> [ADVANCED] — Fastest Responsive API Race with Promise.any()</div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একাধিক ব্যাকআপ এপিআইয়ের মধ্যে যেটি প্রথম সফল রেসপন্স দেবে সেটি গ্রহণ করুন এবং সবগুলো ফেইল করলে AggregateError হ্যান্ডেল করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">MODERN IMPLEMENTATION (LAB #8)</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> mirrorCDN1 = <span class="syn-kw">new</span> <span class="syn-fn">Promise</span>((_, <span style="color: #38bdf8; font-weight: 600;">reject</span>) =&gt; setTimeout(() =&gt; <span style="color: #38bdf8; font-weight: 600;">reject</span>(&#x27;CDN <span class="syn-num">1</span> Offline<span class="syn-str">&#x27;), 100));
+const mirrorCDN2 = new Promise((resolve) =&gt; setTimeout(() =&gt; resolve(&#x27;</span>CDN <span class="syn-num">2</span> High-Speed Data Payload<span class="syn-str">&#x27;), 200));
+const mirrorCDN3 = new Promise((resolve) =&gt; setTimeout(() =&gt; resolve(&#x27;</span>CDN <span class="syn-num">3</span> Data Payload<span class="syn-str">&#x27;), 500));
+
+async function fetchFastestAsset() {
+  try {
+    // যেটি প্রথম সফল হবে সেটিই ফলাফল দেবে (ব্যর্থতাগুলো ইগনোর করবে)
+    const fastestResponse = await Promise.any([mirrorCDN1, mirrorCDN2, mirrorCDN3]);
+    console.log(&#x27;</span>⚡ Connected via Fastest Mirror:&#x27;, fastestResponse);
+  } <span class="syn-kw">catch</span> (error) {
+    <span class="syn-kw">if</span> (error <span class="syn-kw">instanceof</span> <span class="syn-fn">AggregateError</span>) {
+      <span class="syn-fn">console</span>.error(&#x27;All mirror servers failed:&#x27;, error.errors);
+    }
+  }
+}
+
+fetchFastestAsset();</code></pre>
+</div>
+      <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> Promise.race() প্রথম প্রমিজটি ফেইল করলে নিজেও ফেইল করে। কিন্তু Promise.any() প্রথম <em>সফল</em> প্রমিজটি গ্রহণ করে এবং সবগুলো ফেইল করলেই কেবল AggregateError থ্রো করে।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">36.60</span> 🎯 Final Mental Map — মডার্ন ECMAScript-এর পূর্ণাঙ্গ মানচিত্র</div>
+      <p class="text-p">পুরো Chapter 36-এর আধুনিক ফিচার ও ফুলস্ট্যাক অ্যাপ্লিকেশন একসাথে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ MODERN ECMASCRIPT ARCHITECTURE MAP</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">MODERN ECMASCRIPT</span> ECOSYSTEM
+                                 <span style="color: #475569;">│</span>
+         <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┐</span>
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+     NULL SAFETY             CLASS &amp; OOP             IMMUTABLE DATA
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+   <span style="color: #c084fc; font-weight: 700;">?.</span> (Optional Chain)     <span style="color: #c084fc; font-weight: 700;">#private</span> fields         Array.prototype
+   <span style="color: #c084fc; font-weight: 700;">??</span> (Nullish Coalesce)   static blocks           <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #c084fc; font-weight: 700;">toSorted()</span>
+   <span style="color: #c084fc; font-weight: 700;">??</span>= <span style="color: #c084fc; font-weight: 700;">||=</span> &amp;&amp;=             Top-Level await         <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #c084fc; font-weight: 700;">toReversed()</span>
+   Numeric Separators (_)  <span style="color: #f43f5e; font-weight: 700;">Error.cause</span>             <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #c084fc; font-weight: 700;">toSpliced()</span>
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                 <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #c084fc; font-weight: 700;">with()</span>
+         <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>                       <span style="color: #475569;">│</span>
+         <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┘</span>
+                                 <span style="color: #475569;">│</span>
+                                 <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                     CONCURRENCY &amp; GROUPING
+                                 <span style="color: #475569;">│</span>
+         <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┴</span><span style="color: #0ea5e9; font-weight: 600;">───────────────────────</span><span style="color: #475569;">┐</span>
+         <span style="color: #475569;">│</span>                                               <span style="color: #475569;">│</span>
+   Promise.<span style="color: #c084fc; font-weight: 700;">allSettled()</span>                            Object.<span style="color: #c084fc; font-weight: 700;">groupBy()</span>
+   Promise.<span style="color: #c084fc; font-weight: 700;">any()</span> (Fallback)                        Map.<span style="color: #c084fc; font-weight: 700;">groupBy()</span>
+   Promise.<span style="color: #c084fc; font-weight: 700;">withResolvers()</span>                         Temporal (Upcoming)
+                                 <span style="color: #475569;">│</span>
+                                 <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                     FULL-STACK JAVASCRIPT TOOLKIT
+                                 <span style="color: #475569;">│</span>
+            <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">────────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────────────────</span><span style="color: #475569;">┐</span>
+            <span style="color: #475569;">│</span>                    <span style="color: #475569;">│</span>                    <span style="color: #475569;">│</span>
+          REACT               NODE.JS                <span style="color: #fde047; font-weight: 700;">APIs</span>
+       State-<span style="color: #34d399; font-weight: 700;">Safe</span>         Secure Classes         Fault-Tolerant
+       Immutability       Encapsulation          Data Pipelines</pre>
+</div>
+      <div class="def-box" style="margin-top: 6px;">
+        🏆 <strong>এক লাইনে Chapter 36:</strong> Modern ECMAScript (ES2020+) হলো নাল-সেফটি, ইমিউটেবল ডাটা ম্যানিপুলেশন, ক্লাস এনক্যাপসুলেশন ও কনকারেন্ট প্রমিজ পরিচালনার এমন এক সমন্বিত রূপ যা রিঅ্যাক্ট ফ্রন্টএন্ড ও নোড ব্যাকএন্ড কোডকে করে তোলে আরও সংক্ষিপ্ত, ক্র্যাশ-প্রুফ ও পারফরম্যান্ট।
+      </div>
+
+      <div class="section-subhead" style="margin-top: 8px;">🔗 Curriculum Progression: Chapter 35 → 36 → 37</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ ROADMAP CONTINUITY PIPELINE</div>
+  <pre class="ascii-tree-content">Chapter 35: Testing JavaScript
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Unit Testing, Integration Testing, Assertions, Jest/Vitest, Mocking &amp; CI/CD
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 36: Modern <span style="color: #fde047; font-weight: 700;">ECMAScript</span> / <span style="color: #fde047; font-weight: 700;">ES2020</span>+ Features (THIS CHAPTER)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Optional Chaining, Nullish Coalescing, Top-level Await, toSorted, Object.groupBy
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 37: JavaScript Design Patterns
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Singleton, Factory, Observer, Module, Prototype, Proxy &amp; MVC/MVVM Architectural Patterns</pre>
+</div>
+    </div>
+  </div>
+</body>
+</html>

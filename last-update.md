@@ -29,23 +29,23 @@
 | 21      | Asynchronous JavaScript                                     | ✅      |
 | 22      | HTTP, API & Fetch                                           | ✅      |
 | 23      | Advanced Regular Expressions                                | ✅      |
-| 24      | OOP & JavaScript Classes                                    | ⏳      |
+| 24      | OOP & JavaScript Classes                                    | ✅      |
 | 25      | Functional JavaScript                                       | ✅      |
 | 26      | Closures, IIFE & Advanced Function Patterns                 | ✅      |
-| 27      | Iterators & Generators                                      | ⏳      |
-| 28      | Symbols, Proxy & Reflect                                    | ⏳      |
-| 29      | JavaScript Execution Model & Event Loop                     | ⏳      |
-| 30      | Memory Management & Garbage Collection                      | ⏳      |
-| 31      | JavaScript Security & Web Security                          | ⏳      |
-| 32      | Advanced Browser APIs                                       | ⏳      |
-| 33      | Web Performance & Optimization                              | ⏳      |
-| 34      | NPM, Package Management & JavaScript Tooling                | ⏳      |
-| 35      | Testing JavaScript                                          | ⏳      |
-| 36      | Modern ECMAScript / ES2020+ Features                        | ⏳      |
-| 37      | JavaScript Design Patterns                                  | ⏳      |
-| 38      | Advanced JavaScript for React                               | ⏳      |
-| 39      | Advanced JavaScript for Node.js                             | ⏳      |
-| 40      | Real-World Projects, Best Practices & Interview Preparation | ⏳      |
+| 27      | Iterators & Generators                                      | ✅      |
+| 28      | Symbols, Proxy & Reflect                                    | ✅      |
+| 29      | JavaScript Execution Model & Event Loop                     | ✅      |
+| 30      | Memory Management & Garbage Collection                      | ✅      |
+| 31      | JavaScript Security & Web Security                          | ✅      |
+| 32      | Advanced Browser APIs                                       | ✅      |
+| 33      | Web Performance & Optimization                              | ✅      |
+| 34      | NPM, Package Management & JavaScript Tooling                | ✅      |
+| 35      | Testing JavaScript                                          | ✅      |
+| 36      | Modern ECMAScript / ES2020+ Features                        | ✅      |
+| 37      | JavaScript Design Patterns                                  | ✅      |
+| 38      | Advanced JavaScript for React                               | ✅      |
+| 39      | Advanced JavaScript for Node.js                             | ✅      |
+| 40      | Real-World Projects, Best Practices & Interview Preparation | ✅      |
 
 ### ⚠️ একটা correction
 

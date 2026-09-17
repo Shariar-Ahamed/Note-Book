@@ -1,0 +1,2622 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 32 — Advanced Browser APIs | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid #64748b;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #334155;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0 5px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 2.5px 8px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+      text-transform: uppercase;
+    }
+    .code-box pre {
+      margin: 0;
+      padding: 6px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .code-box code {
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.35;
+      color: #f1f5f9;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .syn-kw { color: #f472b6; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #4ade80; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 5px;
+      padding: 6px 9px;
+      margin-bottom: 6px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-32-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 32</span>
+        </div>
+      </div>
+      <div class="banner-sub">ADVANCED BROWSER APIS, OBSERVERS, WORKERS &amp; REAL-TIME PLATFORM CAPABILITIES</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">36 Modules + Practice Lab</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 26 — Advanced Browser APIs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">Observers, Web Workers, IndexedDB, Sockets</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">W3C / WHATWG Living Standard 2026</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🌐</span> Advanced Browser APIs — ব্রাউজার ও ডিভাইস সক্ষমতা ব্যবহারের মূল উদ্দেশ্য
+      </div>
+      <p class="text-p">
+        JavaScript-এর কোর ল্যাঙ্গুয়েজের সীমানা ছাড়িয়ে ব্রাউজার রানটাইম ডেভেলপারদের যেসব শক্তিশালী প্ল্যাটফর্ম এপিআই প্রদান করে, আধুনিক ওয়েব অ্যাপ্লিকেশনের প্রাণশক্তি হলো সেগুলো। এই চ্যাপ্টারে আমরা <strong>Geolocation, IntersectionObserver, MutationObserver, ResizeObserver, File API &amp; Blob, Web Workers, BroadcastChannel, IndexedDB</strong> এবং <strong>WebSockets</strong> গভীরভাবে শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Geolocation API</div>
+        <div class="roadmap-item"><span>📌</span> 2. URL &amp; History</div>
+        <div class="roadmap-item"><span>📌</span> 3. Clipboard API</div>
+        <div class="roadmap-item"><span>📌</span> 4. 3 Observers Trio</div>
+        <div class="roadmap-item"><span>📌</span> 5. File API &amp; Blob</div>
+        <div class="roadmap-item"><span>📌</span> 6. Web Workers</div>
+        <div class="roadmap-item"><span>📌</span> 7. BroadcastChannel</div>
+        <div class="roadmap-item"><span>📌</span> 8. IndexedDB</div>
+        <div class="roadmap-item"><span>📌</span> 9. WebSockets</div>
+        <div class="roadmap-item"><span>📌</span> 10. Wake Lock &amp; Share</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Browser Web APIs Architecture & Geolocation Integration (32.1 – 32.2)</div>
+    <div class="study-card" id="sec-32-1">
+      <div class="card-title"><span class="badge-num">32.1</span> Browser API কী?</div>
+      <p class="text-p"><strong>Browser API</strong> হলো browser-এর দেওয়া JavaScript interface, যার মাধ্যমে JavaScript browser-এর বিভিন্ন capability ব্যবহার করতে পারে। যেমন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.geolocation;</code></pre>
+</div>
+      <p class="text-p">এর মাধ্যমে location access করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.clipboard;</code></pre>
+</div>
+      <p class="text-p">এর মাধ্যমে clipboard ব্যবহার করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">window</span>.<span class="syn-fn">history</span>;</code></pre>
+</div>
+      <p class="text-p">এর মাধ্যমে browser history পরিবর্তন করা যায়।</p>
+      <div class="section-subhead">🔹 সহজভাবে</div>
+      <p class="text-p">JavaScript নিজে জানে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> x = <span class="syn-num">10</span>;
+<span class="syn-fn">console</span>.log(x);</code></pre>
+</div>
+      <p class="text-p">কিন্তু browser JavaScript-কে extra ক্ষমতা দেয়:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.geolocation;
+<span class="syn-fn">navigator</span>.clipboard;
+<span class="syn-fn">window</span>.<span class="syn-fn">history</span>;
+<span class="syn-fn">window</span>.<span class="syn-fn">localStorage</span>;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.2</span> Geolocation API</div>
+      <p class="text-p">Website থেকে user&#x27;s geographic location নেওয়ার জন্য Geolocation API ব্যবহার করা হয়।</p>
+      <div class="section-subhead">🔹 Basic Syntax</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.geolocation.getCurrentPosition(success, error);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.geolocation.getCurrentPosition(
+  (position) =&gt; {
+    <span class="syn-fn">console</span>.log(position.coords.latitude);
+    <span class="syn-fn">console</span>.log(position.coords.longitude);
+  },
+  (error) =&gt; {
+    <span class="syn-fn">console</span>.log(error.message);
+  },
+);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Output</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">23.8103
+90.4125</pre>
+</div>
+      <p class="text-p">এগুলো latitude এবং longitude।</p>
+      <div class="section-subhead">🔹 Real-life Example</div>
+      <p class="text-p">Food delivery website:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 GEOLOCATION HARDWARE INTEGRATION FLOW</div>
+  <pre class="ascii-tree-content">Current <span style="color: #fde047; font-weight: 600;">Location</span>
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+GPS
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Latitude + Longitude
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Nearby Restaurants</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Position-এর গুরুত্বপূর্ণ properties</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>position.coords.latitude;
+position.coords.longitude;
+position.coords.accuracy;
+position.coords.altitude;
+position.coords.speed;</code></pre>
+</div>
+      <p class="text-p">সবসময় সব property পাওয়া যাবে এমন নয়।</p>
+      <div class="section-subhead">🔹 Better Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> getLocation() {
+  <span class="syn-fn">navigator</span>.geolocation.getCurrentPosition(
+    (position) =&gt; {
+      <span class="syn-kw">const</span> { latitude, longitude } = position.coords;
+
+      <span class="syn-fn">console</span>.log(`Latitude: ${latitude}`);
+      <span class="syn-fn">console</span>.log(`Longitude: ${longitude}`);
+    },
+    (error) =&gt; {
+      <span class="syn-fn">console</span>.error(&quot;Location error:&quot;, error.message);
+    },
+  );
+}
+
+getLocation();</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 <code>watchPosition()</code></div>
+      <p class="text-p">User-এর location continuously track করার জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> watchId = <span class="syn-fn">navigator</span>.geolocation.watchPosition((position) =&gt; {
+  <span class="syn-fn">console</span>.log(position.coords.latitude);
+});</code></pre>
+</div>
+      <p class="text-p">Stop করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.geolocation.clearWatch(watchId);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <p class="text-p">Ride-sharing app:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">Driver moves
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+GPS updates
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+watchPosition()
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Map updates</pre>
+</div>
+      <p class="text-p">⚠️ Location permission এবং privacy অত্যন্ত গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="part-banner">Part 02 — URL Processing, Query Strings & History Routing (32.3 – 32.6)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.3</span> URL API</div>
+      <p class="text-p">JavaScript-এর <code>URL</code> object দিয়ে URL parse এবং manipulate করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> url = <span class="syn-kw">new</span> <span class="syn-fn">URL</span>(&quot;https://example.com/products?id=<span class="syn-num">101</span>&amp;category=phone&quot;);
+
+<span class="syn-fn">console</span>.log(url.hostname);
+<span class="syn-fn">console</span>.log(url.pathname);
+<span class="syn-fn">console</span>.log(url.search);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Output</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">example.com
+/products
+?id=101&amp;category=phone</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 URL-এর গুরুত্বপূর্ণ properties</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>url.href;
+url.protocol;
+url.host;
+url.hostname;
+url.port;
+url.pathname;
+url.search;
+url.hash;</code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> url = <span class="syn-kw">new</span> <span class="syn-fn">URL</span>(&quot;https://example.com:<span class="syn-num">8080</span>/products?id=<span class="syn-num">10</span>#details&quot;);
+
+<span class="syn-fn">console</span>.log(url.protocol); <span class="syn-com">// https:</span>
+<span class="syn-fn">console</span>.log(url.hostname); <span class="syn-com">// example.com</span>
+<span class="syn-fn">console</span>.log(url.port); <span class="syn-com">// 8080</span>
+<span class="syn-fn">console</span>.log(url.pathname); <span class="syn-com">// /products</span>
+<span class="syn-fn">console</span>.log(url.search); <span class="syn-com">// ?id=10</span>
+<span class="syn-fn">console</span>.log(url.hash); <span class="syn-com">// #details</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.4</span> URLSearchParams</div>
+      <p class="text-p">Query parameters handle করার জন্য <code>URLSearchParams</code> খুব useful।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> params = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>(&quot;?name=Ripon&amp;age=<span class="syn-num">24</span><span class="syn-str">&quot;);
+
+console.log(params.get(&quot;</span>name<span class="syn-str">&quot;));
+console.log(params.get(&quot;</span>age&quot;));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">Ripon
+24</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Add</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>params.set(&quot;city<span class="syn-str">&quot;, &quot;</span>Dhaka&quot;);</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Delete</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>params.<span class="syn-kw">delete</span>(&quot;age&quot;);</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Check</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>params.has(&quot;name&quot;);</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Convert to string</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(params.toString());</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Real-life API example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> params = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>({
+  search: <span class="syn-str">&quot;laptop&quot;</span>,
+  page: <span class="syn-num">2</span>,
+  limit: <span class="syn-num">20</span>,
+});
+
+<span class="syn-kw">const</span> url = <span class="syn-str">`/products?${params}`</span>;
+
+<span class="syn-fn">console</span>.log(url);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">/products?search=laptop&amp;page=2&amp;limit=20</pre>
+</div>
+      <p class="text-p">🔥 React/Next.js/Node.js API development-এ এটি খুব common।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.5</span> History API</div>
+      <p class="text-p">Browser-এর history manipulate করার জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">window</span>.<span class="syn-fn">history</span>;</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা হয়। Important methods:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">history</span>.back();
+<span class="syn-fn">history</span>.forward();
+<span class="syn-fn">history</span>.go();
+<span class="syn-fn">history</span>.<span style="color: #38bdf8; font-weight: 600;">pushState</span>();
+<span class="syn-fn">history</span>.<span style="color: #38bdf8; font-weight: 600;">replaceState</span>();</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 <code>pushState()</code></div>
+      <p class="text-p">নতুন history entry তৈরি করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">history</span>.<span style="color: #38bdf8; font-weight: 600;">pushState</span>({ page: <span class="syn-num">2</span> }, <span class="syn-str">&quot;&quot;</span>, <span class="syn-str">&quot;/products?page=2&quot;</span>);</code></pre>
+</div>
+      <p class="text-p">Browser URL পরিবর্তন হবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">/products?page=2</pre>
+</div>
+      <p class="text-p">কিন্তু page reload হবে না।</p>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 <code>replaceState()</code></div>
+      <p class="text-p">বর্তমান history entry replace করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">history</span>.<span style="color: #38bdf8; font-weight: 600;">replaceState</span>({ page: <span class="syn-num">2</span> }, <span class="syn-str">&quot;&quot;</span>, <span class="syn-str">&quot;/products?page=2&quot;</span>);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.6</span> <code>popstate</code> Event</div>
+      <p class="text-p">Back/forward navigation detect করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">window</span>.<span style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&quot;popstate&quot;, (event) =&gt; {
+  <span class="syn-fn">console</span>.log(event.state);
+});</code></pre>
+</div>
+      <div class="section-subhead">🔹 SPA-তে ব্যবহার</div>
+      <p class="text-p">React Router-এর মতো routing system-এর concept বুঝতে History API জানা গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="part-banner">Part 03 — System Clipboard & Push Notification Services (32.7 – 32.8)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.7</span> Clipboard API</div>
+      <p class="text-p">Copy/paste functionality তৈরি করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.clipboard;</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা হয়।</p>
+      <div class="section-subhead">🔹 Copy</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.clipboard.<span style="color: #38bdf8; font-weight: 600;">writeText</span>(&quot;Hello World&quot;);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Read</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.clipboard.<span style="color: #38bdf8; font-weight: 600;">readText</span>().<span style="color: #38bdf8; font-weight: 600;">then</span>((text) =&gt; {
+  <span class="syn-fn">console</span>.log(text);
+});</code></pre>
+</div>
+      <div class="section-subhead">🔹 Better example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> copyText() {
+  <span class="syn-kw">try</span> {
+    <span class="syn-kw">await</span> <span class="syn-fn">navigator</span>.clipboard.<span style="color: #38bdf8; font-weight: 600;">writeText</span>(&quot;Hello Ripon<span class="syn-str">&quot;);
+    console.log(&quot;</span>Copied!&quot;);
+  } <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.error(&quot;Copy failed:&quot;, error);
+  }
+}
+
+copyText();</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">API Key
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+[ Copy ]
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Clipboard</span> API</pre>
+</div>
+      <p class="text-p">GitHub, password managers, developer tools ইত্যাদিতে এই concept দেখা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.8</span> Notifications API</div>
+      <p class="text-p">Browser notification দেখানোর জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Notification</span>;</code></pre>
+</div>
+      <div class="section-subhead">🔹 Permission</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">Notification</span>.<span style="color: #38bdf8; font-weight: 600;">requestPermission</span>();</code></pre>
+</div>
+      <div class="section-subhead">🔹 Notification</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">new</span> <span class="syn-fn">Notification</span>(&quot;Hello!&quot;);</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Complete example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> showNotification() {
+  <span class="syn-kw">const</span> permission = <span class="syn-kw">await</span> <span class="syn-fn">Notification</span>.<span style="color: #38bdf8; font-weight: 600;">requestPermission</span>();
+
+  <span class="syn-kw">if</span> (permission === <span class="syn-str">&quot;granted&quot;</span>) {
+    <span class="syn-kw">new</span> <span class="syn-fn">Notification</span>(&quot;New Message<span class="syn-str">&quot;, {
+      body: &quot;</span>You received a <span class="syn-kw">new</span> message.&quot;,
+    });
+  }
+}
+
+showNotification();</code></pre>
+</div>
+      <p class="text-p">Possible permission:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">granted
+denied
+default</pre>
+</div>
+      <p class="text-p">⚠️ Browser permission এবং user privacy rules গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="part-banner">Part 04 — The Modern Observer Trio (Intersection, Mutation & Resize) (32.9 – 32.12)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.9</span> IntersectionObserver</div>
+      <p class="text-p">এটি detect করতে পারে কোনো element viewport-এর মধ্যে এসেছে কিনা।</p>
+      <div class="section-subhead">🔹 Basic Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> observer = <span class="syn-kw">new</span> <span class="syn-fn">IntersectionObserver</span>((entries) =&gt; {
+  entries.forEach((entry) =&gt; {
+    <span class="syn-kw">if</span> (entry.isIntersecting) {
+      <span class="syn-fn">console</span>.log(&quot;Element visible!&quot;);
+    }
+  });
+});
+
+<span class="syn-kw">const</span> box = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;.box&quot;);
+
+observer.<span style="color: #38bdf8; font-weight: 600;">observe</span>(box);</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Real-life use</div>
+      <div class="section-subhead">🔹 Lazy loading</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 VIEWPORT INTERSECTION OBSERVER LIFECYCLE</div>
+  <pre class="ascii-tree-content">Page
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Image এখনো screen-এর বাইরে
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">User</span> scroll করে
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Image viewport-এ আসে
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">IntersectionObserver</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Image load</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Lazy image example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;img</span> <span style="color:#38bdf8;">class=</span>&quot;lazy&quot; <span style="color:#38bdf8;">data-src=</span>&quot;image.jpg&quot; alt=&quot;Example&quot; /<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> observer = <span class="syn-kw">new</span> <span class="syn-fn">IntersectionObserver</span>((entries) =&gt; {
+  entries.forEach((entry) =&gt; {
+    <span class="syn-kw">if</span> (entry.isIntersecting) {
+      <span class="syn-kw">const</span> img = entry.target;
+
+      img.src = img.dataset.src;
+
+      observer.<span style="color: #38bdf8; font-weight: 600;">unobserve</span>(img);
+    }
+  });
+});
+
+<span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelectorAll</span>(&quot;.lazy&quot;).forEach((img) =&gt; observer.<span style="color: #38bdf8; font-weight: 600;">observe</span>(img));</code></pre>
+</div>
+      <p class="text-p">🔥 Performance optimization-এ খুব important।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.10</span> MutationObserver</div>
+      <p class="text-p">DOM-এর মধ্যে কোনো পরিবর্তন হলে detect করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">MutationObserver</span>;</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা হয়।</p>
+      <div class="section-subhead">🔹 Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> observer = <span class="syn-kw">new</span> <span class="syn-fn">MutationObserver</span>((mutations) =&gt; {
+  <span class="syn-fn">console</span>.log(&quot;DOM changed!&quot;);
+});
+
+<span class="syn-kw">const</span> target = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#app&quot;);
+
+observer.<span style="color: #38bdf8; font-weight: 600;">observe</span>(target, {
+  childList: <span class="syn-bool">true</span>,
+  subtree: <span class="syn-bool">true</span>,
+});</code></pre>
+</div>
+      <div class="section-subhead">🔹 Example DOM change</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> div = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#app<span class="syn-str">&quot;);
+
+div.innerHTML += &quot;</span>&lt;p&gt;Hello&lt;/p&gt;&quot;;</code></pre>
+</div>
+      <p class="text-p">Observer detect করতে পারবে।</p>
+      <div class="section-subhead">🔹 Real-life</div>
+      <p class="text-p">Dynamic application:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">DOM changes
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">MutationObserver</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Detect changes
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Run logic</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.11</span> ResizeObserver</div>
+      <p class="text-p">কোনো element-এর size পরিবর্তন detect করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> observer = <span class="syn-kw">new</span> <span class="syn-fn">ResizeObserver</span>((entries) =&gt; {
+  <span class="syn-kw">for</span> (<span class="syn-kw">const</span> entry <span class="syn-kw">of</span> entries) {
+    <span class="syn-fn">console</span>.log(entry.contentRect.width);
+    <span class="syn-fn">console</span>.log(entry.contentRect.height);
+  }
+});
+
+observer.<span style="color: #38bdf8; font-weight: 600;">observe</span>(<span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;.box&quot;));</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <p class="text-p">Responsive dashboard:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">Sidebar resize
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Container size changes
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">ResizeObserver</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chart resize</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.12</span> IntersectionObserver vs MutationObserver vs ResizeObserver</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>API</th><th>কী observe করে?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>IntersectionObserver</code></td><td>Element viewport-এর সাথে intersect করছে কিনা</td></tr><tr><td><code>MutationObserver</code></td><td>DOM change</td></tr><tr><td><code>ResizeObserver</code></td><td>Element size change</td></tr>
+    </tbody>
+  </table>
+</div>
+      <p class="text-p">🧠 সহজে মনে রাখুন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 VIEWPORT INTERSECTION OBSERVER LIFECYCLE</div>
+  <pre class="ascii-tree-content">Intersection <span style="color: #38bdf8; font-weight: 700;">→</span> Screen visibility
+Mutation     <span style="color: #38bdf8; font-weight: 700;">→</span> DOM changes
+Resize       <span style="color: #38bdf8; font-weight: 700;">→</span> Size changes</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 05 — File API, FileReader, Binary Blob & Object URLs (32.13 – 32.18)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.13</span> File API</div>
+      <p class="text-p">Browser-এ user যখন file select করে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;input</span> <span style="color:#38bdf8;">type=</span>&quot;file&quot; <span style="color:#38bdf8;">id=</span>&quot;fileInput&quot; /<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">JavaScript:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> input = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#fileInput<span class="syn-str">&quot;);
+
+input.addEventListener(&quot;</span>change&quot;, () =&gt; {
+  <span class="syn-kw">const</span> file = input.files[<span class="syn-num">0</span>];
+
+  <span class="syn-fn">console</span>.log(file.name);
+  <span class="syn-fn">console</span>.log(file.size);
+  <span class="syn-fn">console</span>.log(file.type);
+});</code></pre>
+</div>
+      <p class="text-p">Possible output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">photo.jpg
+245678
+image/jpeg</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 File object</div>
+      <p class="text-p">Important properties:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>file.name;
+file.size;
+file.type;
+file.lastModified;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.14</span> FileReader</div>
+      <p class="text-p">File-এর content পড়তে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> reader = <span class="syn-kw">new</span> <span class="syn-fn">FileReader</span>();</code></pre>
+</div>
+      <div class="section-subhead">🔹 Text file</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>reader.<span style="color: #38bdf8; font-weight: 600;">readAsText</span>(file);</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>reader.onload = () =&gt; {
+  <span class="syn-fn">console</span>.log(reader.result);
+};</code></pre>
+</div>
+      <p class="text-p">Complete:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> input = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#fileInput<span class="syn-str">&quot;);
+
+input.addEventListener(&quot;</span>change&quot;, () =&gt; {
+  <span class="syn-kw">const</span> file = input.files[<span class="syn-num">0</span>];
+
+  <span class="syn-kw">const</span> reader = <span class="syn-kw">new</span> <span class="syn-fn">FileReader</span>();
+
+  reader.onload = () =&gt; {
+    <span class="syn-fn">console</span>.log(reader.result);
+  };
+
+  reader.<span style="color: #38bdf8; font-weight: 600;">readAsText</span>(file);
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.15</span> Reading Image</div>
+      <p class="text-p">Image preview তৈরি করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> reader = <span class="syn-kw">new</span> <span class="syn-fn">FileReader</span>();
+
+reader.onload = () =&gt; {
+  img.src = reader.result;
+};
+
+reader.<span style="color: #38bdf8; font-weight: 600;">readAsDataURL</span>(file);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <p class="text-p">Profile picture upload:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 FILE API & BLOB PROCESSING PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Select Image</span>
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">File</span> API
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">FileReader</span>
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Preview</span>
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Upload</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.16</span> Blob</div>
+      <p class="text-p"><code>Blob</code> হলো binary-like data-এর একটি container।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> blob = <span class="syn-kw">new</span> <span class="syn-fn">Blob</span>([&quot;Hello World<span class="syn-str">&quot;], { type: &quot;</span>text/plain&quot; });</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(blob.size);
+<span class="syn-fn">console</span>.log(blob.type);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <p class="text-p">Blob ব্যবহার হতে পারে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>image data</li>
+        <li>PDF data</li>
+        <li>generated text</li>
+        <li>downloaded files</li>
+        <li>binary data</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.17</span> Object URL</div>
+      <p class="text-p">Blob/File-এর জন্য temporary URL তৈরি করা যায়:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> url = <span class="syn-fn">URL</span>.<span style="color: #38bdf8; font-weight: 600;">createObjectURL</span>(blob);
+
+<span class="syn-fn">console</span>.log(url);</code></pre>
+</div>
+      <p class="text-p">এটি এমন URL দিতে পারে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">blob:https://example.com/...</pre>
+</div>
+      <div class="section-subhead">🔹 Image preview</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> imageURL = <span class="syn-fn">URL</span>.<span style="color: #38bdf8; font-weight: 600;">createObjectURL</span>(file);
+
+img.src = imageURL;</code></pre>
+</div>
+      <p class="text-p">কাজ শেষ হলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">URL</span>.<span style="color: #38bdf8; font-weight: 600;">revokeObjectURL</span>(imageURL);</code></pre>
+</div>
+      <p class="text-p">🔥 Object URL revoke করা memory management-এর জন্য important।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.18</span> Drag and Drop API</div>
+      <p class="text-p">HTML:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;div</span> <span style="color:#38bdf8;">id=</span>&quot;dropZone&quot;<span style="color:#f472b6; font-weight:600;">&gt;</span>Drop File Here<span style="color:#f472b6; font-weight:600;">&lt;/div</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">JavaScript:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> dropZone = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#dropZone<span class="syn-str">&quot;);
+
+dropZone.addEventListener(&quot;</span>dragover<span class="syn-str">&quot;, (event) =&gt; {
+  event.preventDefault();
+});
+
+dropZone.addEventListener(&quot;</span>drop&quot;, (event) =&gt; {
+  event.preventDefault();
+
+  <span class="syn-kw">const</span> files = event.dataTransfer.files;
+
+  <span class="syn-fn">console</span>.log(files);
+});</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">Computer
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Drag file
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Drop Zone
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+dataTransfer.files
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Upload</span></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 06 — Web Workers Concurrency & Cross-Tab BroadcastChannel (32.19 – 32.20)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.19</span> Web Workers</div>
+      <p class="text-p">JavaScript-এর heavy কাজ main thread block করতে পারে। Web Worker ব্যবহার করলে আলাদা worker context-এ JavaScript চালানো যায়।</p>
+      <div class="section-subhead">🔹 Main file</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> worker = <span class="syn-kw">new</span> <span class="syn-fn">Worker</span>(&quot;worker.js&quot;);
+
+worker.<span style="color: #38bdf8; font-weight: 600;">postMessage</span>(<span class="syn-num">1000000000</span>);
+
+worker.onmessage = (event) =&gt; {
+  <span class="syn-fn">console</span>.log(event.data);
+};</code></pre>
+</div>
+      <div class="section-subhead">🔹 worker.js</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>self.onmessage = (event) =&gt; {
+  <span class="syn-kw">const</span> number = event.data;
+
+  <span class="syn-kw">let</span> result = <span class="syn-num">0</span>;
+
+  <span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; number; i++) {
+    result += i;
+  }
+
+  self.<span style="color: #38bdf8; font-weight: 600;">postMessage</span>(result);
+};</code></pre>
+</div>
+      <div class="section-subhead">🔹 Communication</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 WEB WORKER MULTI-THREADING ARCHITECTURE</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Main Thread</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span> <span style="color: #c084fc; font-weight: 700;">postMessage</span>()
+<span style="color: #34d399; font-weight: 700;">Worker</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span> <span style="color: #c084fc; font-weight: 700;">postMessage</span>()
+<span style="color: #34d399; font-weight: 700;">Main Thread</span></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 কেন Worker?</div>
+      <p class="text-p">ধরুন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">for</span> (<span class="syn-kw">let</span> i = <span class="syn-num">0</span>; i &lt; 10_000_000_000; i++) {
+  <span class="syn-com">// heavy work</span>
+}</code></pre>
+</div>
+      <p class="text-p">Main thread-এ করলে UI freeze করতে পারে। Worker ব্যবহার করলে main UI responsive রাখা যায়।</p>
+      <div class="section-subhead">🔹 Real-life</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>image processing</li>
+        <li>large calculations</li>
+        <li>data processing</li>
+        <li>encryption-related computation</li>
+        <li>parsing large datasets</li>
+      </ul>
+      <p class="text-p">⚠️ Worker-এর DOM access সরাসরি করা যায় না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.20</span> BroadcastChannel</div>
+      <p class="text-p">একই origin-এর multiple browser contexts-এর মধ্যে message পাঠাতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> channel = <span class="syn-kw">new</span> <span class="syn-fn">BroadcastChannel</span>(&quot;app_channel&quot;);</code></pre>
+</div>
+      <p class="text-p">Message পাঠান:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>channel.<span style="color: #38bdf8; font-weight: 600;">postMessage</span>({
+  type: <span class="syn-str">&quot;logout&quot;</span>,
+});</code></pre>
+</div>
+      <p class="text-p">অন্য tab:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>channel.onmessage = (event) =&gt; {
+  <span class="syn-fn">console</span>.log(event.data);
+};</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <p class="text-p">ধরুন একই website দুইটি tab-এ খোলা:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 CROSS-TAB BROADCASTCHANNEL SYNC FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Tab 1</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span> logout
+<span style="color: #c084fc; font-weight: 700;">BroadcastChannel</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Tab 2</span>
+  <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">User</span> logged out</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 07 — Structured Client Database (IndexedDB) & WebSockets (32.21 – 32.23)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.21</span> IndexedDB</div>
+      <p class="text-p">Browser-এর ভিতরে structured data store করার জন্য IndexedDB ব্যবহার করা যায়। এটি:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 CLIENT STORAGE CAPACITY & ARCHITECTURE</div>
+  <pre class="ascii-tree-content">localStorage</pre>
+</div>
+      <p class="text-p">এর চেয়ে অনেক powerful। IndexedDB:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>large data store করতে পারে</li>
+        <li>structured objects রাখতে পারে</li>
+        <li>indexes support করে</li>
+        <li>asynchronous</li>
+        <li>transactions support করে</li>
+      </ul>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Basic idea</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> <span style="color: #38bdf8; font-weight: 600;">request</span> = <span class="syn-fn">indexedDB</span>.<span style="color: #38bdf8; font-weight: 600;">open</span>(&quot;MyDatabase&quot;, <span class="syn-num">1</span>);</code></pre>
+</div>
+      <p class="text-p">Database তৈরি হলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">request</span>.onupgradeneeded = (event) =&gt; {
+  <span class="syn-kw">const</span> db = event.target.result;
+
+  db.createObjectStore(&quot;users<span class="syn-str">&quot;, {
+    keyPath: &quot;</span>id&quot;,
+  });
+};</code></pre>
+</div>
+      <p class="text-p">তারপর database:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">request</span>.onsuccess = (event) =&gt; {
+  <span class="syn-kw">const</span> db = event.target.result;
+
+  <span class="syn-fn">console</span>.log(&quot;Database opened&quot;);
+};</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <p class="text-p">Offline-first application:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 CLIENT STORAGE CAPACITY & ARCHITECTURE</div>
+  <pre class="ascii-tree-content">Server
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">IndexedDB</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Browser</span> local database
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fb923c; font-weight: 700;">Offline</span> usage</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.22</span> localStorage vs IndexedDB</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Feature</th><th>localStorage</th><th>IndexedDB</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Data</td><td>String</td><td>Structured data</td></tr><tr><td>Size</td><td>Limited</td><td>Much larger</td></tr><tr><td>Async</td><td>❌</td><td>✅</td></tr><tr><td>Transactions</td><td>❌</td><td>✅</td></tr><tr><td>Complex data</td><td>Limited</td><td>✅</td></tr><tr><td>Large applications</td><td>❌</td><td>✅</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.23</span> WebSockets</div>
+      <p class="text-p">HTTP request-এর ক্ষেত্রে সাধারণ flow:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">Client <span style="color: #38bdf8; font-weight: 700;">→</span> Request
+Server <span style="color: #38bdf8; font-weight: 700;">→</span> Response</pre>
+</div>
+      <p class="text-p">WebSocket persistent connection তৈরি করতে পারে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">Client <span style="color: #38bdf8; font-weight: 700;">←</span><span style="color: #38bdf8; font-weight: 700;">→</span> Server</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Basic JavaScript</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> socket = <span class="syn-kw">new</span> <span class="syn-fn">WebSocket</span>(&quot;wss://example.com/socket&quot;);</code></pre>
+</div>
+      <p class="text-p">Connection:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>socket.onopen = () =&gt; {
+  <span class="syn-fn">console</span>.log(&quot;Connected&quot;);
+};</code></pre>
+</div>
+      <p class="text-p">Message:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>socket.onmessage = (event) =&gt; {
+  <span class="syn-fn">console</span>.log(event.data);
+};</code></pre>
+</div>
+      <p class="text-p">Send:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>socket.send(&quot;Hello Server&quot;);</code></pre>
+</div>
+      <p class="text-p">Close:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>socket.<span style="color: #38bdf8; font-weight: 600;">close</span>();</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Real-life</div>
+      <p class="text-p">Chat application:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 FULL-DUPLEX WEBSOCKET PROTOCOL PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span> A
+   ↕
+<span style="color: #34d399; font-weight: 700;">WebSocket</span> Server
+   ↕
+<span style="color: #fde047; font-weight: 600;">User</span> B</pre>
+</div>
+      <p class="text-p">Use cases:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>chat</li>
+        <li>live notifications</li>
+        <li>live dashboard</li>
+        <li>multiplayer games</li>
+        <li>real-time tracking</li>
+      </ul>
+    </div>
+    <div class="part-banner">Part 08 — Hardware Integration, Page Visibility, Wake Lock & Permissions (32.24 – 32.30)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.24</span> Web Share API</div>
+      <p class="text-p">Mobile/browser-supported environments-এ native share dialog ব্যবহার করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> sharePage() {
+  <span class="syn-kw">if</span> (<span class="syn-fn">navigator</span>.<span style="color: #38bdf8; font-weight: 600;">share</span>) {
+    <span class="syn-kw">await</span> <span class="syn-fn">navigator</span>.<span style="color: #38bdf8; font-weight: 600;">share</span>({
+      title: <span class="syn-str">&quot;My Website&quot;</span>,
+      text: <span class="syn-str">&quot;Check this website&quot;</span>,
+      url: <span class="syn-fn">location</span>.href,
+    });
+  }
+}</code></pre>
+</div>
+      <p class="text-p">Button:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;button</span> onclick=&quot;sharePage()&quot;<span style="color:#f472b6; font-weight:600;">&gt;</span>Share<span style="color:#f472b6; font-weight:600;">&lt;/button</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.25</span> Page Visibility API</div>
+      <p class="text-p">User browser tab দেখছে কিনা detect করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">document</span>.visibilityState;</code></pre>
+</div>
+      <p class="text-p">Possible values:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">visible
+hidden</pre>
+</div>
+      <p class="text-p">Event:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&quot;visibilitychange<span class="syn-str">&quot;, () =&gt; {
+  if (document.hidden) {
+    console.log(&quot;</span>Tab hidden<span class="syn-str">&quot;);
+  } else {
+    console.log(&quot;</span>Tab visible&quot;);
+  }
+});</code></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 Real-life</div>
+      <p class="text-p">Video:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span> watches video
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Switches tab
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+visibilitychange
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Pause video</pre>
+</div>
+      <p class="text-p">Music player-এও বিভিন্ন UI optimization করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.26</span> Screen Wake Lock API</div>
+      <p class="text-p">কিছু browser/device-এ screen যেন automatically sleep না করে তার জন্য Wake Lock API ব্যবহার করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> wakeLock;
+
+<span class="syn-kw">async</span> <span class="syn-kw">function</span> requestWakeLock() {
+  <span class="syn-kw">try</span> {
+    wakeLock = <span class="syn-kw">await</span> <span class="syn-fn">navigator</span>.wakeLock.<span style="color: #38bdf8; font-weight: 600;">request</span>(&quot;screen<span class="syn-str">&quot;);
+
+    console.log(&quot;</span>Screen wake lock active&quot;);
+  } <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.error(error);
+  }
+}</code></pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>navigation app</li>
+        <li>presentation</li>
+        <li>cooking recipe</li>
+        <li>workout timer</li>
+        <li>kiosk application</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.27</span> Navigator Object</div>
+      <p class="text-p">Browser environment-এর information/capability access করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>;</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা হয়। উদাহরণ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(<span class="syn-fn">navigator</span>.language);
+<span class="syn-fn">console</span>.log(<span class="syn-fn">navigator</span>.onLine);
+<span class="syn-fn">console</span>.log(<span class="syn-fn">navigator</span>.userAgent);</code></pre>
+</div>
+      <p class="text-p">আরও:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.geolocation;
+<span class="syn-fn">navigator</span>.clipboard;
+<span class="syn-fn">navigator</span>.mediaDevices;
+<span class="syn-fn">navigator</span>.permissions;
+<span class="syn-fn">navigator</span>.storage;
+<span class="syn-fn">navigator</span>.hardwareConcurrency;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.28</span> <code>navigator.onLine</code></div>
+      <p class="text-p">Browser online/offline state সম্পর্কে একটি hint পাওয়া যায়:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">if</span> (<span class="syn-fn">navigator</span>.onLine) {
+  <span class="syn-fn">console</span>.log(&quot;Online<span class="syn-str">&quot;);
+} else {
+  console.log(&quot;</span>Offline&quot;);
+}</code></pre>
+</div>
+      <p class="text-p">Events:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">window</span>.<span style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&quot;online<span class="syn-str">&quot;, () =&gt; {
+  console.log(&quot;</span>Back online<span class="syn-str">&quot;);
+});
+
+window.addEventListener(&quot;</span>offline<span class="syn-str">&quot;, () =&gt; {
+  console.log(&quot;</span>Offline&quot;);
+});</code></pre>
+</div>
+      <p class="text-p">⚠️ <code>navigator.onLine</code> internet-এর end-to-end connectivity-এর নিশ্চয়তা দেয় না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.29</span> Permissions API</div>
+      <p class="text-p">Browser permission state query করার জন্য:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.permissions.<span style="color: #38bdf8; font-weight: 600;">query</span>();</code></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">navigator</span>.permissions
+  .<span style="color: #38bdf8; font-weight: 600;">query</span>({
+    name: <span class="syn-str">&quot;geolocation&quot;</span>,
+  })
+  .<span style="color: #38bdf8; font-weight: 600;">then</span>((result) =&gt; {
+    <span class="syn-fn">console</span>.log(result.state);
+  });</code></pre>
+</div>
+      <p class="text-p">Possible:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">granted
+denied
+prompt</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.30</span> Browser API Security</div>
+      <p class="text-p">Advanced Browser API ব্যবহার করার সময় security গুরুত্বপূর্ণ।</p>
+      <div class="section-subhead">🔹 Example:</div>
+      <p class="text-p">Geolocation:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 GEOLOCATION HARDWARE INTEGRATION FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span> permission
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Location</span> access</pre>
+</div>
+      <p class="text-p">Clipboard:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span> interaction / browser security
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Clipboard</span> access</pre>
+</div>
+      <p class="text-p">Notification:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">Permission
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Notification</span></pre>
+</div>
+      <p class="text-p">তাই browser API মানেই unrestricted access নয়।</p>
+    </div>
+    <div class="part-banner">Part 09 — Hands-On Real-World Mini Projects (32.31 – 32.34)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.31</span> Practical Project — Image Preview</div>
+      <p class="text-p">HTML:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;input</span> <span style="color:#38bdf8;">type=</span>&quot;file&quot; <span style="color:#38bdf8;">id=</span>&quot;imageInput&quot; /<span style="color:#f472b6; font-weight:600;">&gt;</span>
+
+<span style="color:#f472b6; font-weight:600;">&lt;img</span> <span style="color:#38bdf8;">id=</span>&quot;preview&quot; width=&quot;300&quot; alt=&quot;Preview&quot; /<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">JavaScript:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> input = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#imageInput<span class="syn-str">&quot;);
+
+const preview = document.querySelector(&quot;</span>#preview<span class="syn-str">&quot;);
+
+input.addEventListener(&quot;</span>change&quot;, () =&gt; {
+  <span class="syn-kw">const</span> file = input.files[<span class="syn-num">0</span>];
+
+  <span class="syn-kw">if</span> (!file) <span class="syn-kw">return</span>;
+
+  <span class="syn-kw">const</span> url = <span class="syn-fn">URL</span>.<span style="color: #38bdf8; font-weight: 600;">createObjectURL</span>(file);
+
+  preview.src = url;
+
+  preview.onload = () =&gt; {
+    <span class="syn-fn">URL</span>.<span style="color: #38bdf8; font-weight: 600;">revokeObjectURL</span>(url);
+  };
+});</code></pre>
+</div>
+      <div class="section-subhead">🔹 এখানে কী শিখলাম?</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 FILE API & BLOB PROCESSING PIPELINE</div>
+  <pre class="ascii-tree-content">&lt;input type=file&gt;
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">File</span>
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Object URL
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Image <span style="color: #fde047; font-weight: 600;">Preview</span>
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+revokeObjectURL()</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.32</span> Practical Project — Copy Button</div>
+      <p class="text-p">HTML:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;p</span> <span style="color:#38bdf8;">id=</span>&quot;text&quot;<span style="color:#f472b6; font-weight:600;">&gt;</span>JavaScript is powerful.<span style="color:#f472b6; font-weight:600;">&lt;/p</span><span style="color:#f472b6; font-weight:600;">&gt;</span>
+
+<span style="color:#f472b6; font-weight:600;">&lt;button</span> <span style="color:#38bdf8;">id=</span>&quot;copyBtn&quot;<span style="color:#f472b6; font-weight:600;">&gt;</span>Copy<span style="color:#f472b6; font-weight:600;">&lt;/button</span><span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">JavaScript:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> text = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#text<span class="syn-str">&quot;);
+
+const button = document.querySelector(&quot;</span>#copyBtn<span class="syn-str">&quot;);
+
+button.addEventListener(&quot;</span>click<span class="syn-str">&quot;, async () =&gt; {
+  try {
+    await navigator.clipboard.writeText(text.textContent);
+
+    button.textContent = &quot;</span>Copied!&quot;;
+
+    setTimeout(() =&gt; {
+      button.textContent = <span class="syn-str">&quot;Copy&quot;</span>;
+    }, <span class="syn-num">1500</span>);
+  } <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.error(error);
+  }
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.33</span> Practical Project — Lazy Loading</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">HTML DOM MARKUP</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;img</span> <span style="color:#38bdf8;">class=</span>&quot;lazy&quot; <span style="color:#38bdf8;">data-src=</span>&quot;large-image.jpg&quot; width=&quot;500&quot; alt=&quot;Large image&quot; /<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> images = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelectorAll</span>(&quot;.lazy&quot;);
+
+<span class="syn-kw">const</span> observer = <span class="syn-kw">new</span> <span class="syn-fn">IntersectionObserver</span>((entries) =&gt; {
+  entries.forEach((entry) =&gt; {
+    <span class="syn-kw">if</span> (!entry.isIntersecting) <span class="syn-kw">return</span>;
+
+    <span class="syn-kw">const</span> img = entry.target;
+
+    img.src = img.dataset.src;
+
+    observer.<span style="color: #38bdf8; font-weight: 600;">unobserve</span>(img);
+  });
+});
+
+images.forEach((img) =&gt; {
+  observer.<span style="color: #38bdf8; font-weight: 600;">observe</span>(img);
+});</code></pre>
+</div>
+      <p class="text-p">এটি large website-এর performance improve করতে সাহায্য করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.34</span> Practical Project — Tab Communication</div>
+      <div class="section-subhead">🔹 Tab 1</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> channel = <span class="syn-kw">new</span> <span class="syn-fn">BroadcastChannel</span>(&quot;notifications<span class="syn-str">&quot;);
+
+channel.postMessage({
+  message: &quot;</span>New task added&quot;,
+});</code></pre>
+</div>
+      <div class="section-subhead">🔹 Tab 2</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> channel = <span class="syn-kw">new</span> <span class="syn-fn">BroadcastChannel</span>(&quot;notifications&quot;);
+
+channel.onmessage = (event) =&gt; {
+  <span class="syn-fn">console</span>.log(event.data.message);
+};</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 BROWSER API ARCHITECTURE & DATA FLOW</div>
+  <pre class="ascii-tree-content">New task added</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 10 — Browser APIs Decision Matrix & Core Pillars (32.35 – 32.36)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.35</span> Browser APIs — কোনটা কখন?</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Problem</th><th>API</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Location</td><td>Geolocation</td></tr><tr><td>URL parse</td><td>URL</td></tr><tr><td>Query parameters</td><td>URLSearchParams</td></tr><tr><td>Browser route</td><td>History API</td></tr><tr><td>Copy text</td><td>Clipboard</td></tr><tr><td>Notification</td><td>Notifications</td></tr><tr><td>Viewport visibility</td><td>IntersectionObserver</td></tr><tr><td>DOM changes</td><td>MutationObserver</td></tr><tr><td>Element resize</td><td>ResizeObserver</td></tr><tr><td>File upload</td><td>File API</td></tr><tr><td>Read file</td><td>FileReader</td></tr><tr><td>Binary data</td><td>Blob</td></tr><tr><td>Temporary file URL</td><td>Object URL</td></tr><tr><td>Drag file</td><td>Drag &amp; Drop</td></tr><tr><td>Heavy computation</td><td>Web Worker</td></tr><tr><td>Tab communication</td><td>BroadcastChannel</td></tr><tr><td>Large local database</td><td>IndexedDB</td></tr><tr><td>Real-time communication</td><td>WebSocket</td></tr><tr><td>Native sharing</td><td>Web Share</td></tr><tr><td>Tab visibility</td><td>Page Visibility</td></tr><tr><td>Prevent screen sleep</td><td>Wake Lock</td></tr><tr><td>Browser capabilities</td><td>Navigator</td></tr><tr><td>Permission state</td><td>Permissions API</td></tr>
+    </tbody>
+  </table>
+</div>
+      <p class="text-p"># 🔥 32.36 MUST KNOW এই Chapter থেকে এগুলো অবশ্যই ভালোভাবে জানতে হবে:</p>
+      <div class="section-subhead">🔹 ⭐ 1. URL</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">new</span> <span class="syn-fn">URL</span>();</code></pre>
+</div>
+      <div class="section-subhead">🔹 ⭐ 2. URLSearchParams</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>();</code></pre>
+</div>
+      <div class="section-subhead">🔹 ⭐ 3. History API</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">history</span>.<span style="color: #38bdf8; font-weight: 600;">pushState</span>();
+<span class="syn-fn">history</span>.<span style="color: #38bdf8; font-weight: 600;">replaceState</span>();</code></pre>
+</div>
+      <div class="section-subhead">🔹 ⭐ 4. IntersectionObserver</div>
+      <p class="text-p">Lazy loading এবং viewport detection-এর জন্য।</p>
+      <div class="section-subhead">🔹 ⭐ 5. MutationObserver</div>
+      <p class="text-p">DOM changes detect করার জন্য।</p>
+      <div class="section-subhead">🔹 ⭐ 6. ResizeObserver</div>
+      <p class="text-p">Element size change detect করার জন্য।</p>
+      <div class="section-subhead">🔹 ⭐ 7. File API</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>input.files;</code></pre>
+</div>
+      <div class="section-subhead">🔹 ⭐ 8. FileReader</div>
+      <p class="text-p">File content পড়তে।</p>
+      <div class="section-subhead">🔹 ⭐ 9. Blob</div>
+      <p class="text-p">Binary-like data handle করতে।</p>
+      <div class="section-subhead">🔹 ⭐ 10. Web Worker</div>
+      <p class="text-p">Heavy computation আলাদা worker context-এ চালাতে।</p>
+      <div class="section-subhead">🔹 ⭐ 11. IndexedDB</div>
+      <p class="text-p">Browser-side structured database।</p>
+      <div class="section-subhead">🔹 ⭐ 12. WebSocket</div>
+      <p class="text-p">Real-time two-way communication।</p>
+      <div class="section-subhead">🔹 ⭐ 13. Clipboard API</div>
+      <p class="text-p">Copy/paste।</p>
+      <div class="section-subhead">🔹 ⭐ 14. BroadcastChannel</div>
+      <p class="text-p">Multiple tabs communication। # 🧠 Quick Cheat Sheet</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Location</span>
+<span class="syn-fn">navigator</span>.geolocation.getCurrentPosition(...);
+
+<span class="syn-com">// URL</span>
+<span class="syn-kw">const</span> url = <span class="syn-kw">new</span> <span class="syn-fn">URL</span>(&quot;https://example.com<span class="syn-str">&quot;);
+
+// Query params
+const params = new URLSearchParams(&quot;</span>?id=<span class="syn-num">10</span><span class="syn-str">&quot;);
+
+// History
+history.pushState({}, &quot;</span><span class="syn-str">&quot;, &quot;</span>/home<span class="syn-str">&quot;);
+
+// Clipboard
+await navigator.clipboard.writeText(&quot;</span>Hello<span class="syn-str">&quot;);
+
+// Notification
+await Notification.requestPermission();
+
+// Intersection
+new IntersectionObserver(callback);
+
+// DOM mutation
+new MutationObserver(callback);
+
+// Resize
+new ResizeObserver(callback);
+
+// File
+input.files[0];
+
+// FileReader
+new FileReader();
+
+// Blob
+new Blob([&quot;</span>Hello<span class="syn-str">&quot;]);
+
+// Object URL
+URL.createObjectURL(file);
+
+// Worker
+new Worker(&quot;</span>worker.js<span class="syn-str">&quot;);
+
+// Broadcast
+new BroadcastChannel(&quot;</span>channel<span class="syn-str">&quot;);
+
+// IndexedDB
+indexedDB.open(&quot;</span>Database<span class="syn-str">&quot;);
+
+// WebSocket
+new WebSocket(&quot;</span>wss://example.com<span class="syn-str">&quot;);
+
+// Share
+navigator.share({...});
+
+// Visibility
+document.visibilityState;
+
+// Wake Lock
+navigator.wakeLock.request(&quot;</span>screen&quot;);
+
+<span class="syn-com">// Permissions</span>
+<span class="syn-fn">navigator</span>.permissions.<span style="color: #38bdf8; font-weight: 600;">query</span>({...});</code></pre>
+</div>
+      <p class="text-p"># 📝 Practice Set</p>
+      <div class="section-subhead">🔹 Beginner</div>
+      <p class="text-p"><strong>1.</strong> Current browser URL থেকে hostname বের করুন। <strong>2.</strong> URL থেকে <code>id</code> query parameter বের করুন। <strong>3.</strong> একটা Copy button তৈরি করুন। <strong>4.</strong> একটা image upload করে preview দেখান। <strong>5.</strong> একটা notification button তৈরি করুন।</p>
+      <div class="section-subhead">🔹 Intermediate</div>
+      <p class="text-p"><strong>6.</strong> IntersectionObserver দিয়ে lazy image loader তৈরি করুন। <strong>7.</strong> MutationObserver দিয়ে DOM change detect করুন। <strong>8.</strong> ResizeObserver দিয়ে box-এর width display করুন। <strong>9.</strong> Drag &amp; Drop image uploader তৈরি করুন। <strong>10.</strong> BroadcastChannel ব্যবহার করে দুই tab-এর মধ্যে message পাঠান।</p>
+      <div class="section-subhead">🔹 Advanced</div>
+      <p class="text-p"><strong>11.</strong> Web Worker ব্যবহার করে large calculation করুন। <strong>12.</strong> IndexedDB-তে user data save করুন। <strong>13.</strong> WebSocket দিয়ে real-time chat UI তৈরি করুন। <strong>14.</strong> History API দিয়ে simple SPA router তৈরি করুন। <strong>15.</strong> File API + Blob + Object URL ব্যবহার করে browser-based file preview/download system তৈরি করুন। # 🎯 Final Mental Map পুরো Chapter-টা এভাবে মনে রাখুন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 WEB WORKER MULTI-THREADING ARCHITECTURE</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Browser</span> APIs
+                      <span style="color: #475569;">│</span>
+       <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────────────</span><span style="color: #475569;">┐</span>
+       <span style="color: #475569;">│</span>              <span style="color: #475569;">│</span>              <span style="color: #475569;">│</span>
+    <span style="color: #34d399; font-weight: 700;">Browser</span>        DOM/View       Storage
+    Features        APIs            <span style="color: #475569;">│</span>
+       <span style="color: #475569;">│</span>              <span style="color: #475569;">│</span>              <span style="color: #475569;">│</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">Location</span>    <span style="color: #475569;">├</span>─ Intersection <span style="color: #475569;">├</span>─ <span style="color: #34d399; font-weight: 700;">IndexedDB</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">Clipboard</span>   <span style="color: #475569;">├</span>─ Mutation     <span style="color: #475569;">├</span>─ localStorage
+       <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">Notification</span><span style="color: #475569;">├</span>─ Resize       <span style="color: #475569;">└</span>─ Cookies
+       <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">Share</span>       <span style="color: #475569;">│</span>
+       <span style="color: #475569;">└</span>─ <span style="color: #c084fc; font-weight: 700;">History</span>     <span style="color: #475569;">│</span>
+                      <span style="color: #475569;">│</span>
+                 <span style="color: #fde047; font-weight: 600;">File</span> &amp; Data
+                      <span style="color: #475569;">│</span>
+              <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┐</span>
+              <span style="color: #475569;">│</span>       <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>
+           <span style="color: #34d399; font-weight: 700;">FileReader</span> <span style="color: #34d399; font-weight: 700;">Blob</span>   Object URL
+
+                 Communication
+                      <span style="color: #475569;">│</span>
+              <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┐</span>
+              <span style="color: #475569;">│</span>       <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>
+          <span style="color: #34d399; font-weight: 700;">WebSocket</span>  <span style="color: #34d399; font-weight: 700;">Worker</span>  Broadcast
+
+                 <span style="color: #34d399; font-weight: 700;">Browser</span> State
+                      <span style="color: #475569;">│</span>
+              <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┐</span>
+              <span style="color: #475569;">│</span>       <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>
+          <span style="color: #c084fc; font-weight: 700;">Visibility</span> Permissions <span style="color: #c084fc; font-weight: 700;">Wake Lock</span></pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">🌐 🚀 Chapter 32-এর মূল কথা</div>
+      <div class="def-box">💡 <strong>Browser API = JavaScript + Browser-এর extra capabilities</strong></div>
+      <p class="text-p">JavaScript দিয়ে শুধু calculation বা DOM manipulation করাই নয়—Browser APIs ব্যবহার করে তুমি:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 WEB WORKER MULTI-THREADING ARCHITECTURE</div>
+  <pre class="ascii-tree-content">📍 <span style="color: #fde047; font-weight: 600;">Location</span>
+📋 <span style="color: #fde047; font-weight: 600;">Clipboard</span>
+🔔 Notifications
+📁 Files
+🖼️ Image <span style="color: #fde047; font-weight: 600;">Preview</span>
+⚡ Performance
+🧵 Web Workers
+💾 <span style="color: #34d399; font-weight: 700;">Browser</span> Database
+💬 Real-time Communication
+📡 <span style="color: #34d399; font-weight: 700;">WebSocket</span>
+📑 <span style="color: #c084fc; font-weight: 700;">History</span>/Routing
+📤 Native Sharing
+👀 <span style="color: #c084fc; font-weight: 700;">Visibility</span> Detection</pre>
+</div>
+      <p class="text-p">এর মতো real-world functionality তৈরি করতে পারবে। <strong>পরবর্তী Chapter 33 → JavaScript Web Performance &amp; Optimization</strong> — এখানে আমরা দেখব কীভাবে JavaScript application দ্রুত, lightweight, responsive এবং production-ready করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.36</span> 🔥 MUST KNOW — ব্রাউজার প্ল্যাটফর্মের ১৪টি প্রধান স্তম্ভ</div>
+      <p class="text-p">মডার্ন ওয়েব অ্যাপ্লিকেশনের জন্য যেসব ব্রাউজার এপিআই প্রতিটি ইঞ্জিনিয়ারের নখদর্পণে থাকা প্রয়োজন:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #0284c7; font-size: 10px; margin-bottom: 3px;">📌 1. Navigation &amp; Hardware</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>URL &amp; URLSearchParams:</strong> Query string parsing</li>
+            <li><strong>History API:</strong> pushState/popstate SPA router</li>
+            <li><strong>Geolocation:</strong> GPS coordinate tracking</li>
+            <li><strong>Clipboard API:</strong> Async copy/paste text</li>
+            <li><strong>Notifications:</strong> Desktop push notifications</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #059669; font-size: 10px; margin-bottom: 3px;">📌 2. Observers &amp; File Pipeline</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>IntersectionObserver:</strong> Lazy loading &amp; infinite scroll</li>
+            <li><strong>MutationObserver:</strong> DOM tree mutation listening</li>
+            <li><strong>ResizeObserver:</strong> Container query size changes</li>
+            <li><strong>File API &amp; FileReader:</strong> Local file stream read</li>
+            <li><strong>Blob &amp; Object URL:</strong> In-memory binary URLs</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #7c3aed; font-size: 10px; margin-bottom: 3px;">📌 3. Concurrency &amp; Storage</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Web Workers:</strong> Heavy tasks on separate threads</li>
+            <li><strong>BroadcastChannel:</strong> Multi-tab real-time sync</li>
+            <li><strong>IndexedDB:</strong> High-capacity client NoSQL DB</li>
+            <li><strong>WebSockets:</strong> Full-duplex instant communication</li>
+            <li><strong>Page Visibility:</strong> Background tab power saving</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="part-banner">Part 11 — Quick Cheat Sheet & 15 Hands-On Practice Labs with Full Solutions</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.Cheat</span> 🧠 Quick Cheat Sheet — Browser APIs Rapid Reference</div>
+      <p class="text-p">দৈনন্দিন প্রোডাকশন ডেভেলপমেন্টে বহুল ব্যবহৃত ব্রাউজার এপিআই মেথডগুলোর দ্রুত সিনট্যাক্স গাইড:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">BROWSER APIS RAPID CHEAT SHEET</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Location</span>
+<span class="syn-fn">navigator</span>.geolocation.getCurrentPosition(...);
+
+<span class="syn-com">// URL</span>
+<span class="syn-kw">const</span> url = <span class="syn-kw">new</span> <span class="syn-fn">URL</span>(&quot;https://example.com<span class="syn-str">&quot;);
+
+// Query params
+const params = new URLSearchParams(&quot;</span>?id=<span class="syn-num">10</span><span class="syn-str">&quot;);
+
+// History
+history.pushState({}, &quot;</span><span class="syn-str">&quot;, &quot;</span>/home<span class="syn-str">&quot;);
+
+// Clipboard
+await navigator.clipboard.writeText(&quot;</span>Hello<span class="syn-str">&quot;);
+
+// Notification
+await Notification.requestPermission();
+
+// Intersection
+new IntersectionObserver(callback);
+
+// DOM mutation
+new MutationObserver(callback);
+
+// Resize
+new ResizeObserver(callback);
+
+// File
+input.files[0];
+
+// FileReader
+new FileReader();
+
+// Blob
+new Blob([&quot;</span>Hello<span class="syn-str">&quot;]);
+
+// Object URL
+URL.createObjectURL(file);
+
+// Worker
+new Worker(&quot;</span>worker.js<span class="syn-str">&quot;);
+
+// Broadcast
+new BroadcastChannel(&quot;</span>channel<span class="syn-str">&quot;);
+
+// IndexedDB
+indexedDB.open(&quot;</span>Database<span class="syn-str">&quot;);
+
+// WebSocket
+new WebSocket(&quot;</span>wss://example.com<span class="syn-str">&quot;);
+
+// Share
+navigator.share({...});
+
+// Visibility
+document.visibilityState;
+
+// Wake Lock
+navigator.wakeLock.request(&quot;</span>screen&quot;);
+
+<span class="syn-com">// Permissions</span>
+<span class="syn-fn">navigator</span>.permissions.<span style="color: #38bdf8; font-weight: 600;">query</span>({...});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.Lab</span> 📝 Hands-On Practice Lab — 15 Browser API Challenges &amp; Full Model Solutions</div>
+      <p class="text-p">রিয়েল-ওয়ার্ল্ড ব্রাউজার এপিআই দক্ষতায় পূর্ণাঙ্গ পারদর্শিতা অর্জন করতে ১৫টি ইন্টারভিউ প্রবলেমের সমাধান:</p>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 1: URL Hostname Extraction</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ বর্তমান ব্রাউজার URL থেকে hostname বের করার নিরাপদ উপায় কী?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 1 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Method 1: Using window.location directly</span>
+<span class="syn-kw">const</span> host1 = <span class="syn-fn">window</span>.<span class="syn-fn">location</span>.hostname; <span class="syn-com">// e.g. &quot;developer.mozilla.org&quot;</span>
+
+<span class="syn-com">// Method 2: Using the modern URL API for any string</span>
+<span class="syn-kw">const</span> parsedUrl = <span class="syn-kw">new</span> <span class="syn-fn">URL</span>(&quot;https://github.com/Shariar-Ahamed/Note-Book?tab=readme<span class="syn-str">&quot;);
+console.log(parsedUrl.hostname); // &quot;</span>github.com<span class="syn-str">&quot;
+console.log(parsedUrl.pathname); // &quot;</span>/Shariar-Ahamed/Note-Book&quot;</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>github.com</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'window.location.hostname' প্রোপার্টি দিয়ে বর্তমান পেজের ডোমেইন বা আইপি পাওয়া যায়।
+২. যেকোনো ডায়নামিক URL স্ট্রিং পার্স করার জন্য 'new URL(urlString)' সবচেয়ে নিরাপদ ও আদর্শ মেকানিজম।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 2: URL Query Parameter Parsing with URLSearchParams</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ URL থেকে 'id' কুয়েরি প্যারামিটার কীভাবে সহজে বের করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 2 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> searchParams = <span class="syn-kw">new</span> <span class="syn-fn">URLSearchParams</span>(<span class="syn-fn">window</span>.<span class="syn-fn">location</span>.search);
+<span class="syn-com">// Example URL: https://site.com/products?id=42&amp;category=laptops</span>
+
+<span class="syn-kw">if</span> (searchParams.has(&quot;id<span class="syn-str">&quot;)) {
+    const productId = searchParams.get(&quot;</span>id<span class="syn-str">&quot;);
+    console.log(&quot;</span>Found Product ID:&quot;, productId); <span class="syn-com">// &quot;42&quot;</span>
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Found Product ID: 42</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'new URLSearchParams(window.location.search)' দিয়ে ব্রাউজারের সার্চ স্ট্রিং তাৎক্ষণিকভাবে ম্যাপে কনভার্ট হয়।
+২. '.get("id")' দিয়ে সরাসরি ভ্যালু পাওয়া যায় এবং '.has("id")' দিয়ে উপস্থিতি চেক করা যায়।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 3: Async Clipboard API One-Click Copy Button</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ আধুনিক ব্রাউজারে একটি সুরক্ষিত ও অ্যাসিঙ্ক কপি বাটন কীভাবে তৈরি করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 3 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> copyToClipboard(textToCopy) {
+    <span class="syn-kw">try</span> {
+        <span class="syn-kw">await</span> <span class="syn-fn">navigator</span>.clipboard.<span style="color: #38bdf8; font-weight: 600;">writeText</span>(textToCopy);
+        <span class="syn-fn">console</span>.log(&quot;Copied to clipboard successfully!&quot;);
+    } <span class="syn-kw">catch</span> (err) {
+        <span class="syn-fn">console</span>.error(&quot;Clipboard permission denied or error:&quot;, err);
+    }
+}
+
+<span class="syn-com">// User trigger:</span>
+<span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#copyBtn<span class="syn-str">&quot;).addEventListener(&quot;</span>click<span class="syn-str">&quot;, () =&gt; {
+    copyToClipboard(&quot;</span>npm install antigravity-ide&quot;);
+});</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Copied to clipboard successfully!</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'navigator.clipboard.writeText()' একটি প্রমিজ রিটার্ন করে এবং ব্যাকগ্রাউন্ডে নন-ব্লকিংভাবে কাজ করে।
+২. সিকিউরিটি নোট: এটি কেবল HTTPS এবং ইউজার ইন্টারঅ্যাকশন (click gesture)-এর ভেতরেই কাজ করতে পারে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 4: Local Image File Preview with FileReader</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ ইউজার ইমেজ ফাইল আপলোড করলে তা সার্ভারে না পাঠিয়ে লোকাল প্রিভিউ কীভাবে দেখাবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 4 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> fileInput = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#imageInput<span class="syn-str">&quot;);
+const previewImg = document.querySelector(&quot;</span>#preview<span class="syn-str">&quot;);
+
+fileInput.addEventListener(&quot;</span>change<span class="syn-str">&quot;, (e) =&gt; {
+    const file = e.target.files[0];
+    if (file &amp;&amp; file.type.startsWith(&quot;</span>image/&quot;)) {
+        <span class="syn-kw">const</span> reader = <span class="syn-kw">new</span> <span class="syn-fn">FileReader</span>();
+        reader.onload = (event) =&gt; {
+            previewImg.src = event.target.result; <span class="syn-com">// Base64 DataURL</span>
+        };
+        reader.<span style="color: #38bdf8; font-weight: 600;">readAsDataURL</span>(file);
+    }
+});</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>data:image/png;base64,iVBORw0KGgo...</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'e.target.files[0]' দিয়ে File অবজেক্ট পাওয়া যায়।
+২. 'FileReader'-এর 'readAsDataURL()' মেথড ইমেজটিকে Base64 স্ট্রিংয়ে রূপান্তর করে ইমেজ ট্যাগের src-তে বসিয়ে দেয়।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 5: Web Notifications API Permission & Trigger</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ ইউজারের অনুমতি নিয়ে কীভাবে ব্রাউজার নোটিফিকেশন পাঠাবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 5 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> triggerDesktopNotification(title, message) {
+    <span class="syn-kw">if</span> (!(&quot;<span class="syn-fn">Notification</span><span class="syn-str">&quot; in window)) return;
+    
+    let perm = Notification.permission;
+    if (perm === &quot;</span><span class="syn-kw">default</span><span class="syn-str">&quot;) {
+        perm = await Notification.requestPermission();
+    }
+    
+    if (perm === &quot;</span>granted<span class="syn-str">&quot;) {
+        new Notification(title, {
+            body: message,
+            icon: &quot;</span>/assets/bell.png&quot;
+        });
+    }
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Desktop Push Notification Displayed</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'Notification.requestPermission()' ইউজারের কাছে প্রোম্পট দেখায় ('granted', 'denied', বা 'default')।
+২. অনুমতি থাকলে 'new Notification(title, options)' কল করে সিস্টেম নোটিফিকেশন প্রদর্শন করা যায়।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 6: High-Performance Lazy Image Loader with IntersectionObserver</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ স্ক্রল ইভেন্ট লিসেনার ছাড়া শুধুমাত্র IntersectionObserver দিয়ে ইমেজ লেজি লোড কীভাবে করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 6 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> observer = <span class="syn-kw">new</span> <span class="syn-fn">IntersectionObserver</span>((entries, obs) =&gt; {
+    entries.forEach(entry =&gt; {
+        <span class="syn-kw">if</span> (entry.isIntersecting) {
+            <span class="syn-kw">const</span> img = entry.target;
+            img.src = img.dataset.src; <span class="syn-com">// Swap placeholder with real image</span>
+            img.classList.add(&quot;loaded<span class="syn-str">&quot;);
+            obs.unobserve(img); // Disconnect after load to save resources
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll(&quot;</span>img.lazy&quot;).forEach(img =&gt; observer.<span style="color: #38bdf8; font-weight: 600;">observe</span>(img));</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Zero-Lag Lazy Loading Active (Images load as they enter viewport)</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. IntersectionObserver ব্রাউজারের ইন্টারনাল রেন্ডারিং থ্রেডে চলে, ফলে স্ক্রল ইভেন্টের মতো মেইন থ্রেড ব্লক করে না।
+২. ইমেজ ভিউপোর্টে আসামাত্র 'entry.isIntersecting' সত্য হয়; ডেটাসেট থেকে আসল URL বসিয়ে 'unobserve()' কল করে ক্লিনআপ করা হয়।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 7: DOM Tree Mutation Tracking with MutationObserver</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ কোনো এলিমেন্টে নতুন চাইল্ড নোড যুক্ত বা মুছে ফেলা হলে তা কীভাবে ট্র্যাক করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 7 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> targetContainer = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#chatBox<span class="syn-str">&quot;);
+
+const observer = new MutationObserver((mutations) =&gt; {
+    mutations.forEach(mutation =&gt; {
+        if (mutation.type === &quot;</span>childList<span class="syn-str">&quot;) {
+            console.log(&quot;</span>Nodes added:&quot;, mutation.addedNodes.length);
+            <span class="syn-fn">console</span>.log(&quot;Nodes removed:&quot;, mutation.removedNodes.length);
+        }
+    });
+});
+
+observer.<span style="color: #38bdf8; font-weight: 600;">observe</span>(targetContainer, { childList: <span class="syn-bool">true</span>, subtree: <span class="syn-bool">true</span> });</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Nodes added: 1 | Chat Auto-Scrolled</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. MutationObserver পুরানো ডিপ্রিকেটেড Mutation Events-এর তুলনায় হাজার গুণ দ্রুত ও পারফরম্যান্ট।
+২. 'childList: true' এবং 'subtree: true' অপশন দিয়ে যেকোনো নেস্টেড চাইল্ড পরিবর্তনের ব্যাচ রেসপন্স পাওয়া যায়।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 8: Responsive Container Sizing with ResizeObserver</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ উইন্ডো রিসাইজ ছাড়াই নির্দিষ্ট কোনো কার্ড বা ডিভাইসের সাইজ পরিবর্তন কীভাবে মনিটর করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 8 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> card = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;.resizable-card<span class="syn-str">&quot;);
+
+const resizeObserver = new ResizeObserver((entries) =&gt; {
+    for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        card.querySelector(&quot;</span>.size-label&quot;).textContent = <span class="syn-str">`${Math.round(width)}px × ${Math.round(height)}px`</span>;
+    }
+});
+
+resizeObserver.<span style="color: #38bdf8; font-weight: 600;">observe</span>(card);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Real-time dimensions: 320px × 180px</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. ResizeObserver সরাসরি এলিমেন্টের 'contentRect' প্রদান করে।
+২. এটি আধুনিক Container Queries এবং রেসপনসিভ কম্পোনেন্ট ডিজাইনের জন্য সর্বোত্তম।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 9: Drag and Drop File Dropzone Uploader</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ ব্রাউজারে একটি ড্র্যাগ অ্যান্ড ড্রপ ফাইল ড্রপজোন কীভাবে তৈরি করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 9 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> dropzone = <span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#dropzone<span class="syn-str">&quot;);
+
+dropzone.addEventListener(&quot;</span>dragover<span class="syn-str">&quot;, (e) =&gt; {
+    e.preventDefault(); // Required to allow drop!
+    dropzone.classList.add(&quot;</span>drag-active<span class="syn-str">&quot;);
+});
+
+dropzone.addEventListener(&quot;</span>dragleave<span class="syn-str">&quot;, () =&gt; {
+    dropzone.classList.remove(&quot;</span>drag-active<span class="syn-str">&quot;);
+});
+
+dropzone.addEventListener(&quot;</span>drop<span class="syn-str">&quot;, (e) =&gt; {
+    e.preventDefault();
+    dropzone.classList.remove(&quot;</span>drag-active<span class="syn-str">&quot;);
+    
+    const files = e.dataTransfer.files;
+    console.log(&quot;</span>Dropped files count:&quot;, files.length);
+    handleFileUpload(files[<span class="syn-num">0</span>]);
+});</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Dropped files count: 1 | Upload triggered</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'dragover' ইভেন্টে 'e.preventDefault()' কল করা বাধ্যতামূলক, নইলে ব্রাউজার ডিফল্টভাবে ফাইলটি ওপেন করে ফেলে।
+২. 'e.dataTransfer.files' দিয়ে সরাসরি ড্রপ করা ফাইলগুলোর লিস্ট অ্যাক্সেস করা যায়।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 10: Multi-Tab State Synchronization with BroadcastChannel</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ একই অ্যাপ্লিকেশনের দুটি ওপেন ট্যাবের মধ্যে কীভাবে লাইভ মেসেজ পাস করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 10 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Run this code in Tab 1 and Tab 2:</span>
+<span class="syn-kw">const</span> authChannel = <span class="syn-kw">new</span> <span class="syn-fn">BroadcastChannel</span>(&quot;auth_sync_channel<span class="syn-str">&quot;);
+
+// Tab 2 (Sender): When user logs out
+function logoutUser() {
+    authChannel.postMessage({ type: &quot;</span>LOGOUT<span class="syn-str">&quot;, timestamp: Date.now() });
+}
+
+// Tab 1 (Listener): Auto logout
+authChannel.onmessage = (event) =&gt; {
+    if (event.data.type === &quot;</span>LOGOUT<span class="syn-str">&quot;) {
+        console.log(&quot;</span>User logged out <span class="syn-kw">in</span> another tab! Redirecting to login...&quot;);
+        <span class="syn-fn">window</span>.<span class="syn-fn">location</span>.reload();
+    }
+};</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>User logged out in another tab! Redirecting to login...</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. BroadcastChannel একই অরিজিনের সব উইন্ডো, ট্যাব এবং আইফ্রেমের মধ্যে নন-ব্লকিং ব্রডকাস্ট মেসেজিং নিশ্চিত করে।
+২. সেশন সিঙ্ক, থিম চেঞ্জ বা শপিং কার্ট আপডেটের জন্য এটি localStorage ইভেন্টের চেয়ে শতভাগ ক্লিন।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 11: Heavy Computation Offloading with Web Workers</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ ভারী কোনো হিসাব মেইন থ্রেড ব্লক না করে কীভাবে Web Worker দিয়ে চালাবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 11 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// main.js:</span>
+<span class="syn-kw">const</span> worker = <span class="syn-kw">new</span> <span class="syn-fn">Worker</span>(&quot;heavy_worker.js<span class="syn-str">&quot;);
+
+worker.postMessage({ number: 45 }); // Offload heavy task
+console.log(&quot;</span>UI remains <span class="syn-num">100</span>% responsive and silky smooth!&quot;);
+
+worker.onmessage = (e) =&gt; {
+    <span class="syn-fn">console</span>.log(&quot;Calculation Result from <span class="syn-fn">Worker</span>:&quot;, e.data.result);
+};
+
+<span class="syn-com">// heavy_worker.js (Isolated background thread):</span>
+self.onmessage = (e) =&gt; {
+    <span class="syn-kw">function</span> fibonacci(n) {
+        <span class="syn-kw">return</span> n &lt;= <span class="syn-num">1</span> ? n : fibonacci(n - <span class="syn-num">1</span>) + fibonacci(n - <span class="syn-num">2</span>);
+    }
+    <span class="syn-kw">const</span> result = fibonacci(e.data.number);
+    self.<span style="color: #38bdf8; font-weight: 600;">postMessage</span>({ result });
+};</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>UI remains 100% responsive! | Result: 1134903170</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. Web Worker আলাদা OS থ্রেডে চলে, ফলে ভারী ম্যাথমেটিক্যাল ক্যালকুলেশন বা ইমেজ প্রসেসিং মেইন UI থ্রেডকে (60fps) কখনোই ফ্রিজ করে না।
+২. এটি মেসেজ পাসিং ('postMessage') দিয়ে মেইন থ্রেডের সাথে যোগাযোগ করে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 12: Structured Storage with IndexedDB</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ ব্রাউজারে বড় আকারের অবজেক্ট কীভাবে IndexedDB-তে স্টোর ও রিট্রিভ করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 12 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> req = <span class="syn-fn">indexedDB</span>.<span style="color: #38bdf8; font-weight: 600;">open</span>(&quot;OfflineStore<span class="syn-str">&quot;, 1);
+
+req.onupgradeneeded = (e) =&gt; {
+    const db = e.target.result;
+    db.createObjectStore(&quot;</span>notes<span class="syn-str">&quot;, { keyPath: &quot;</span>id<span class="syn-str">&quot;, autoIncrement: true });
+};
+
+req.onsuccess = (e) =&gt; {
+    const db = e.target.result;
+    const tx = db.transaction(&quot;</span>notes<span class="syn-str">&quot;, &quot;</span>readwrite<span class="syn-str">&quot;);
+    const store = tx.objectStore(&quot;</span>notes<span class="syn-str">&quot;);
+    
+    store.add({ title: &quot;</span>Master JS Notes<span class="syn-str">&quot;, date: new Date().toISOString() });
+    
+    tx.oncomplete = () =&gt; console.log(&quot;</span>Transaction saved to IndexedDB!&quot;);
+};</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Transaction saved to IndexedDB!</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. IndexedDB একটি সম্পূর্ণ ট্রানজ্যাকশনাল NoSQL অবজেক্ট ডেটাবেস যা গিগাবাইট সাইজের ডেটা অফলাইনে ধরে রাখতে পারে।
+২. এটি অ্যাসিনক্রোনাস হওয়ায় ব্রাউজার পারফরম্যান্স অক্ষুণ্ণ রাখে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 13: Real-Time Full-Duplex Chat Client with WebSockets</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ সার্ভারের সাথে ফুল-ডুপ্লেক্স WebSocket কানেকশন কীভাবে হ্যান্ডল করবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 13 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> socket = <span class="syn-kw">new</span> <span class="syn-fn">WebSocket</span>(&quot;wss://echo.websocket.events<span class="syn-str">&quot;);
+
+socket.onopen = () =&gt; {
+    console.log(&quot;</span>Connected to Real-time <span class="syn-fn">WebSocket</span> Server!&quot;);
+    socket.send(JSON.stringify({ text: <span class="syn-str">&quot;Hello from Client!&quot;</span> }));
+};
+
+socket.onmessage = (event) =&gt; {
+    <span class="syn-kw">const</span> msg = JSON.parse(event.data);
+    <span class="syn-fn">console</span>.log(&quot;Message received from Server:&quot;, msg.text);
+};
+
+socket.onerror = (err) =&gt; <span class="syn-fn">console</span>.error(&quot;Socket error:&quot;, err);
+socket.onclose = () =&gt; <span class="syn-fn">console</span>.log(&quot;Socket connection terminated cleanly.&quot;);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Connected to WebSocket! | Message received: Hello from Client!</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. WebSocket একটি স্থায়ী TCP কানেকশন তৈরি করে যাতে সার্ভার ও ক্লায়েন্ট উভয়ই যেকোনো সময় ডেটা পুশ করতে পারে।
+২. এটি সাধারণ HTTP লং-পোলিংয়ের বিশাল ওভারহেড দূর করে সাব-মিলিমিটারে ডেটা ট্রান্সমিট করে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 14: Client-Side SPA Routing Engine with History API</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ পেজ রিলোড ছাড়া History API দিয়ে সিঙ্গেল পেজ রাউটিং কীভাবে কাজ করে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 14 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> navigateTo(urlPath) {
+    <span class="syn-fn">history</span>.<span style="color: #38bdf8; font-weight: 600;">pushState</span>({ path: urlPath }, <span class="syn-str">&quot;&quot;</span>, urlPath);
+    renderPage(urlPath);
+}
+
+<span class="syn-fn">window</span>.<span style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&quot;popstate<span class="syn-str">&quot;, (event) =&gt; {
+    // Triggered when user presses Browser Back or Forward buttons!
+    renderPage(window.location.pathname);
+});
+
+function renderPage(path) {
+    console.log(&quot;</span>Rendered SPA view <span class="syn-kw">for</span> route:&quot;, path);
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>Rendered SPA view for route: /dashboard</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'history.pushState()' ব্রাউজারের অ্যাড্রেস বার ও হিস্ট্রি ট্র্যাকে নতুন URL যোগ করে কোনো সার্ভার রিলোড ছাড়াই।
+২. 'popstate' ইভেন্ট হ্যান্ডলার ব্রাউজারের Back/Forward বাটনের ন্যাভিগেশন নিখুঁতভাবে হ্যান্ডল করে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 15: Dynamic In-Memory File Generation & Download with Blob & Object URL</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ সার্ভার ছাড়া ব্রাউজার মেমরিতে টেক্সট/JSON ফাইল বানিয়ে স্বয়ংক্রিয়ভাবে কীভাবে ডাউনলোড করাবে?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">Practice 15 Implementation</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> downloadJsonFile(dataObj, filename = <span class="syn-str">&quot;export.json&quot;</span>) {
+    <span class="syn-kw">const</span> jsonStr = JSON.stringify(dataObj, <span class="syn-bool">null</span>, <span class="syn-num">2</span>);
+    <span class="syn-kw">const</span> blob = <span class="syn-kw">new</span> <span class="syn-fn">Blob</span>([jsonStr], { type: <span class="syn-str">&quot;application/json&quot;</span> });
+    
+    <span class="syn-kw">const</span> downloadUrl = <span class="syn-fn">URL</span>.<span style="color: #38bdf8; font-weight: 600;">createObjectURL</span>(blob);
+    <span class="syn-kw">const</span> tempLink = <span class="syn-fn">document</span>.createElement(&quot;a<span class="syn-str">&quot;);
+    tempLink.href = downloadUrl;
+    tempLink.download = filename;
+    
+    document.body.appendChild(tempLink);
+    tempLink.click();
+    
+    // Clean up memory
+    document.body.removeChild(tempLink);
+    URL.revokeObjectURL(downloadUrl);
+    console.log(&quot;</span><span class="syn-fn">File</span> downloaded &amp; memory revoked cleanly.&quot;);
+}</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ CONSOLE / EVENT OUTPUT</span><span>Output</span></div>
+  <pre>File downloaded &amp; memory revoked cleanly.</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Architecture &amp; Solution Breakdown:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'new Blob()' ক্লায়েন্ট-সাইড মেমরিতে বাইনারি ডেটা কন্টেইনার তৈরি করে।
+২. 'URL.createObjectURL(blob)' একটি অস্থায়ী 'blob:http...' URL তৈরি করে যা লিঙ্কের ডাউনলোড হিসেবে কাজ করে।
+৩. মেমরি লিক এড়াতে ডাউনলোড শেষে 'URL.revokeObjectURL()' কল করা প্রোডাকশন কোডের গোল্ডেন স্ট্যান্ডার্ড।</div>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">32.Map</span> 🎯 Final Mental Map — Advanced Browser APIs Global Ecosystem</div>
+      <p class="text-p">ব্রাউজার ফিচার, ভিউপোর্ট অবজারভার, ডেটা স্টোরেজ ও থ্রেডিং কমিউনিকেশনের সামগ্রিক মানচিত্র:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🌐 Browser APIs Global Architectural Coordination Tree</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Browser</span> APIs
+                      <span style="color: #475569;">│</span>
+       <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────────────</span><span style="color: #475569;">┐</span>
+       <span style="color: #475569;">│</span>              <span style="color: #475569;">│</span>              <span style="color: #475569;">│</span>
+    <span style="color: #34d399; font-weight: 700;">Browser</span>        DOM/View       Storage
+    Features        APIs            <span style="color: #475569;">│</span>
+       <span style="color: #475569;">│</span>              <span style="color: #475569;">│</span>              <span style="color: #475569;">│</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">Location</span>    <span style="color: #475569;">├</span>─ Intersection <span style="color: #475569;">├</span>─ <span style="color: #34d399; font-weight: 700;">IndexedDB</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">Clipboard</span>   <span style="color: #475569;">├</span>─ Mutation     <span style="color: #475569;">├</span>─ localStorage
+       <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">Notification</span><span style="color: #475569;">├</span>─ Resize       <span style="color: #475569;">└</span>─ Cookies
+       <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">Share</span>       <span style="color: #475569;">│</span>
+       <span style="color: #475569;">└</span>─ <span style="color: #c084fc; font-weight: 700;">History</span>     <span style="color: #475569;">│</span>
+                      <span style="color: #475569;">│</span>
+                 <span style="color: #fde047; font-weight: 600;">File</span> &amp; Data
+                      <span style="color: #475569;">│</span>
+              <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┐</span>
+              <span style="color: #475569;">│</span>       <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>
+           <span style="color: #34d399; font-weight: 700;">FileReader</span> <span style="color: #34d399; font-weight: 700;">Blob</span>   Object URL
+
+                 Communication
+                      <span style="color: #475569;">│</span>
+              <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┐</span>
+              <span style="color: #475569;">│</span>       <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>
+          <span style="color: #34d399; font-weight: 700;">WebSocket</span>  <span style="color: #34d399; font-weight: 700;">Worker</span>  Broadcast
+
+                 <span style="color: #34d399; font-weight: 700;">Browser</span> State
+                      <span style="color: #475569;">│</span>
+              <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┐</span>
+              <span style="color: #475569;">│</span>       <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>
+          <span style="color: #c084fc; font-weight: 700;">Visibility</span> Permissions <span style="color: #c084fc; font-weight: 700;">Wake Lock</span></pre>
+</div>
+      
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #f0fdf4; border-left: 3px solid #10b981;">
+        <div style="font-weight: 700; font-size: 10px; color: #065f46; margin-bottom: 2px;">🚀 Chapter 32-এর মূল দর্শন:</div>
+        <div style="font-size: 9.5px; color: #047857; line-height: 1.45;">
+          <strong>Browser API = JavaScript + Browser-এর extra capabilities।</strong> JavaScript কেবল সাধারণ ক্যালকুলেশন বা DOM ম্যানিপুলেশন নয়—লোকেশন ট্র্যাকিং, পুশ নোটিফিকেশন, ব্যাকগ্রাউন্ড মাল্টি-থ্রেডিং, জিগাবাইট স্টোরেজ ও রিয়েল-টাইম ফুল-ডুপ্লেক্স কমিউনিকেশনের মাধ্যমে পূর্ণাঙ্গ নেটিভ অ্যাপ সমতুল্য অভিজ্ঞতা দেয়।
+        </div>
+      </div>
+
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #eff6ff; border-left: 3px solid #2563eb;">
+        <div style="font-weight: 700; font-size: 10px; color: #1e40af; margin-bottom: 2px;">🚀 Next Chapter Preview:</div>
+        <div style="font-family: var(--font-heading); font-size: 10px; font-weight: 700; color: #0369a1;">
+          Chapter 33 — JavaScript Web Performance &amp; Optimization
+        </div>
+        <div style="font-size: 9px; color: #334155; margin-top: 2px;">পরবর্তী চ্যাপ্টারে আমরা শিখব Critical Rendering Path, Repaint &amp; Reflow, Debounce/Throttle, Code Splitting, Bundle Analysis, Memory Profiling এবং Web Vitals (LCP, FID/INP, CLS)।</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

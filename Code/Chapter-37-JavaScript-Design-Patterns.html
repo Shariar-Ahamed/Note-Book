@@ -1,0 +1,2724 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 37 — JavaScript Design Patterns | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      background-color: #cbd5e1;
+      font-family: var(--font-body);
+      font-size: 11px;
+      line-height: 1.55;
+      color: var(--text-main);
+    }
+
+    /* Screen Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* A4 Document Container */
+    .doc-page {
+      max-width: 210mm;
+      margin: 20px auto;
+      background: var(--bg-page);
+      padding: 12mm 14mm;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      border-radius: 4px;
+    }
+
+    /* Master Top Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-num {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid #bae6fd;
+    }
+
+    /* Section Subheadings */
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin: 6px 0 3px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Paragraphs and Text */
+    .text-p {
+      margin-bottom: 5px;
+      text-align: justify;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.5;
+    }
+    .text-p strong {
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    /* Definitions / Quotes / Tips */
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid var(--blue-accent);
+      padding: 5px 9px;
+      border-radius: 0 4px 4px 0;
+      margin: 4px 0 6px 0;
+      font-size: 10px;
+      color: #1e293b;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      color: #94a3b8;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      margin: 0;
+      padding: 7px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.4 !important;
+      color: #e2e8f0;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-37-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 37</span>
+        </div>
+      </div>
+      <div class="banner-sub">SOFTWARE DESIGN PATTERNS, ARCHITECTURAL PRINCIPLES, ENTERPRISE PATTERNS &amp; REACT/NODE.JS PRACTICES</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">66 Modules + 9 Practice Labs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 31 — Software Architecture &amp; Patterns</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Innovations</div>
+          <div class="meta-val">Creational, Structural &amp; Behavioral Patterns</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Target Architecture</div>
+          <div class="meta-val">Clean Code, SOLID, React &amp; Node.js</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>✨</span> JavaScript Design Patterns — মডার্ন আর্কিটেকচার, ক্লিন কোড ও স্কেলেবিলিটি
+      </div>
+      <p class="text-p">
+        সফটওয়্যার ডেভেলপমেন্টে রিয়ুজ্যাবল, টেস্টেবল ও মেইনটেইনেবল কোড লেখার জন্য ডিজাইন প্যাটার্ন অপরিহার্য। এটি কোনো কপি-পেস্ট কোড নয়, বরং বারবার ঘটা সফটওয়্যার সমস্যার একটি প্রমাণিত স্ট্রাকচারাল সমাধান। এই চ্যাপ্টারে আমরা <strong>Creational (Factory, Singleton, Builder), Structural (Adapter, Decorator, Facade, Proxy), Behavioral (Observer, Pub/Sub, Strategy, Command, State, Chain), Architectural (MVC, Repository, Service Layer, Dependency Injection)</strong> এবং React ও Node.js-এর বাস্তব প্যাটার্নসমূহ সম্পূর্ণ কোড সহ শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Creational Patterns</div>
+        <div class="roadmap-item"><span>📌</span> 2. Structural Patterns</div>
+        <div class="roadmap-item"><span>📌</span> 3. Behavioral Patterns</div>
+        <div class="roadmap-item"><span>📌</span> 4. Module &amp; Singleton</div>
+        <div class="roadmap-item"><span>📌</span> 5. Factory &amp; Builder</div>
+        <div class="roadmap-item"><span>📌</span> 6. Observer &amp; Pub/Sub</div>
+        <div class="roadmap-item"><span>📌</span> 7. Strategy &amp; Command</div>
+        <div class="roadmap-item"><span>📌</span> 8. Dependency Injection</div>
+        <div class="roadmap-item"><span>📌</span> 9. Repository &amp; Service</div>
+        <div class="roadmap-item"><span>📌</span> 10. React &amp; Enterprise</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Design Patterns Fundamentals & Categories (37.1 – 37.8)</div>
+    <div class="study-card" id="sec-37-1">
+      <div class="card-title"><span class="badge-num">37.1</span> Design Pattern কী?</div>
+      <p class="text-p">ধরো তুমি একটি বড় application বানাচ্ছো। তোমার code-এ আছে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ APPLICATION DOMAIN ENTITIES</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">User</span>
+<span style="color: #38bdf8; font-weight: 600;">Product</span>
+<span style="color: #38bdf8; font-weight: 600;">Cart</span>
+<span style="color: #38bdf8; font-weight: 600;">Payment</span>
+<span style="color: #38bdf8; font-weight: 600;">Database</span>
+<span style="color: #38bdf8; font-weight: 600;">API</span>
+<span style="color: #38bdf8; font-weight: 600;">Authentication</span>
+<span style="color: #38bdf8; font-weight: 600;">Notification</span></pre>
+</div>
+      <p class="text-p">সবকিছু যদি একসাথে লিখো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// 5000+ lines</span></code></pre>
+</div>
+      <p class="text-p">তাহলে project maintain করা কঠিন হয়ে যাবে। Design Pattern সাহায্য করে code-কে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE QUALITY GOALS & CODE HEALTH</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Organized</span>
+<span style="color: #34d399; font-weight: 700;">Reusable</span>
+<span style="color: #34d399; font-weight: 700;">Maintainable</span>
+<span style="color: #34d399; font-weight: 700;">Scalable</span>
+<span style="color: #34d399; font-weight: 700;">Testable</span></pre>
+</div>
+      <p class="text-p">রাখতে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.2</span> Real-Life Example</div>
+      <p class="text-p">ধরো একটি বাড়ি বানাবে। Architect প্রতিবার নতুন করে ভাববে না:</p>
+      <div class="def-box">💡 “দরজা কোথায় রাখব? সিঁড়ি কীভাবে বানাব?”</div>
+      <p class="text-p">বরং established architectural principles ব্যবহার করবে। Software Design Pattern-ও অনেকটা একই।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ PROBLEM-TO-SOLUTION PATTERN MAPPING</div>
+  <pre class="ascii-tree-content">Problem
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Known Pattern
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Structured Solution</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.3</span> Design Pattern মানে Ready-Made Code নয়</div>
+      <p class="text-p">এটি খুব গুরুত্বপূর্ণ। Design Pattern:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">❌ <span style="color: #f43f5e; font-weight: 700;">Copy-paste code</span></pre>
+</div>
+      <p class="text-p">নয়। বরং:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE QUALITY GOALS & CODE HEALTH</div>
+  <pre class="ascii-tree-content">✅ Design idea
+✅ Structure
+✅ Communication pattern
+✅ <span style="color: #34d399; font-weight: 700;">Reusable</span> approach</pre>
+</div>
+      <p class="text-p">একই pattern বিভিন্ন project-এ আলাদাভাবে implement করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.4</span> Design Patterns-এর প্রধান Categories</div>
+      <p class="text-p">সাধারণভাবে GoF (Gang of Four) অনুযায়ী:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Design Patterns
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Creational
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Structural
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Behavioral</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.5</span> Creational Patterns</div>
+      <p class="text-p">Object কীভাবে তৈরি হবে সেটি নিয়ে কাজ করে। Common:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Factory</span>
+Abstract <span style="color: #c084fc; font-weight: 700;">Factory</span>
+<span style="color: #c084fc; font-weight: 700;">Builder</span>
+<span style="color: #c084fc; font-weight: 700;">Singleton</span>
+<span style="color: #c084fc; font-weight: 700;">Prototype</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.6</span> Structural Patterns</div>
+      <p class="text-p">Objects/classes কীভাবে একে অপরের সাথে structure তৈরি করবে। Common:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Adapter</span>
+<span style="color: #c084fc; font-weight: 700;">Decorator</span>
+<span style="color: #c084fc; font-weight: 700;">Facade</span>
+<span style="color: #c084fc; font-weight: 700;">Proxy</span>
+Composite
+Bridge
+Flyweight</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.7</span> Behavioral Patterns</div>
+      <p class="text-p">Objects কীভাবে communicate করবে এবং behavior manage করবে। Common:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Observer</span>
+<span style="color: #c084fc; font-weight: 700;">Strategy</span>
+<span style="color: #c084fc; font-weight: 700;">Command</span>
+<span style="color: #c084fc; font-weight: 700;">State</span>
+Iterator
+Mediator
+<span style="color: #c084fc; font-weight: 700;">Chain of Responsibility</span>
+Template Method</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.8</span> JavaScript-এ সবচেয়ে গুরুত্বপূর্ণ Patterns</div>
+      <p class="text-p">তোমার Full Stack Development-এর জন্য আমরা বিশেষভাবে দেখব:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">🔥 Module
+🔥 <span style="color: #c084fc; font-weight: 700;">Singleton</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Factory</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Builder</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Observer</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Pub/Sub</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Strategy</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Adapter</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Decorator</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Facade</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Proxy</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Command</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Chain of Responsibility</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">State</span>
+🔥 <span style="color: #c084fc; font-weight: 700;">Dependency Injection</span></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 02 — Creational Patterns: Module, Singleton, Factory, Builder & Prototype (37.9 – 37.18)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.9</span> Module Pattern</div>
+      <p class="text-p">Module Pattern-এর মূল উদ্দেশ্য:</p>
+      <div class="def-box">💡 Related code এক জায়গায় রাখা এবং প্রয়োজনীয় অংশই বাইরে expose করা।</div>
+      <p class="text-p">আগে JavaScript-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> userModule <span style="color: #c084fc; font-weight: 700;">=</span> (() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+
+    <span class="syn-kw">let</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [];
+
+    <span class="syn-kw">function</span> addUser(user) {
+        users.push(user);
+    }
+
+    <span class="syn-kw">function</span> getUsers() {
+        <span class="syn-kw">return</span> users;
+    }
+
+    <span class="syn-kw">return</span> {
+        addUser,
+        getUsers
+    };
+
+})();</code></pre>
+</div>
+      <p class="text-p">এখানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">users</pre>
+</div>
+      <p class="text-p">private। কিন্তু:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">addUser()
+getUsers()</pre>
+</div>
+      <p class="text-p">public।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.10</span> Module Pattern কেন দরকার?</div>
+      <p class="text-p">ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">users
+products
+payments
+cart</pre>
+</div>
+      <p class="text-p">সব global scope-এ রাখলে conflict হতে পারে। Module:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ APPLICATION DOMAIN ENTITIES</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">User</span> Module
+<span style="color: #38bdf8; font-weight: 600;">Product</span> Module
+<span style="color: #38bdf8; font-weight: 600;">Payment</span> Module
+<span style="color: #38bdf8; font-weight: 600;">Cart</span> Module</pre>
+</div>
+      <p class="text-p">এভাবে code organize করতে সাহায্য করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.11</span> Modern ES Module</div>
+      <p class="text-p">Modern JavaScript-এ আলাদা Module Pattern লেখার প্রয়োজন অনেক কমেছে।</p>
+      <div class="section-subhead">🔹 <code>user.js</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">export</span> <span class="syn-kw">function</span> createUser(name) {
+    <span class="syn-kw">return</span> {
+        name
+    };
+}</code></pre>
+</div>
+      <div class="section-subhead">🔹 <code>app.js</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { createUser } <span class="syn-kw">from</span> <span class="syn-str">&quot;./user.js&quot;</span>;
+
+<span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> createUser(&quot;Ripon&quot;);
+
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(user);</code></pre>
+</div>
+      <p class="text-p">এটাই modern modular JavaScript।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.12</span> Singleton Pattern</div>
+      <p class="text-p">Singleton-এর উদ্দেশ্য:</p>
+      <div class="def-box">💡 একটি class/object-এর একটিমাত্র shared instance রাখা।</div>
+      <p class="text-p">Real-life:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Application
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Configuration
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+One shared instance</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">✨ Simple Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> Database {
+
+    <span class="syn-kw">static</span> instance;
+
+    constructor() {
+
+        <span class="syn-kw">if</span> (Database.instance) {
+            <span class="syn-kw">return</span> Database.instance;
+        }
+
+        Database.instance <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">this</span>;
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> db1 <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Database();
+<span class="syn-kw">const</span> db2 <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Database();
+
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(db1 <span style="color: #c084fc; font-weight: 700;">===</span> db2);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">true</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.13</span> Singleton কোথায় ব্যবহার হতে পারে?</div>
+      <p class="text-p">যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Configuration
+Logger
+Cache
+<span style="color: #38bdf8; font-weight: 600;">Database</span> connection manager
+Application state</pre>
+</div>
+      <p class="text-p">কিন্তু <strong>সবকিছুর জন্য Singleton ব্যবহার করা উচিত নয়</strong>। কারণ excessive global shared state testing এবং maintainability কঠিন করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.14</span> Factory Pattern</div>
+      <p class="text-p">Factory Pattern object creation-এর logic আলাদা করে। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> createUser(type) {
+
+    <span class="syn-kw">if</span> (type <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-str">&quot;admin&quot;</span>) {
+        <span class="syn-kw">return</span> {
+            role: <span class="syn-str">&quot;admin&quot;</span>,
+            permissions: [&quot;read<span class="syn-str">&quot;, &quot;</span>write<span class="syn-str">&quot;, &quot;</span><span class="syn-kw">delete</span><span class="syn-str">&quot;]
+        };
+    }
+
+    if (type === &quot;</span>user<span class="syn-str">&quot;) {
+        return {
+            role: &quot;</span>user<span class="syn-str">&quot;,
+            permissions: [&quot;</span>read&quot;]
+        };
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> admin <span style="color: #c084fc; font-weight: 700;">=</span> createUser(&quot;admin<span class="syn-str">&quot;);
+const user = createUser(&quot;</span>user&quot;);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.15</span> Factory-এর Real-Life Example</div>
+      <p class="text-p">ধরো payment system:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">createPayment(&quot;card&quot;)
+createPayment(&quot;paypal&quot;)
+createPayment(&quot;bank&quot;)</pre>
+</div>
+      <p class="text-p">Factory:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> createPayment(type) {
+
+    <span class="syn-kw">switch</span> (type) {
+
+        <span class="syn-kw">case</span> <span class="syn-str">&quot;card&quot;</span>:
+            <span class="syn-kw">return</span> <span class="syn-kw">new</span> CardPayment();
+
+        <span class="syn-kw">case</span> <span class="syn-str">&quot;paypal&quot;</span>:
+            <span class="syn-kw">return</span> <span class="syn-kw">new</span> PayPalPayment();
+
+        <span class="syn-kw">case</span> <span class="syn-str">&quot;bank&quot;</span>:
+            <span class="syn-kw">return</span> <span class="syn-kw">new</span> BankPayment();
+
+        <span class="syn-kw">default</span>:
+            <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&quot;Unknown payment type&quot;);
+    }
+}</code></pre>
+</div>
+      <p class="text-p">Client-কে জানতে হচ্ছে না object কীভাবে তৈরি হচ্ছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.16</span> Builder Pattern</div>
+      <p class="text-p">যখন object অনেক configuration/optional property নিয়ে তৈরি হয়, তখন Builder useful। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+    age: <span class="syn-num">25</span>,
+    email: <span class="syn-str">&quot;ripon@example.com&quot;</span>,
+    role: <span class="syn-str">&quot;admin&quot;</span>,
+    active: <span class="syn-bool">true</span>
+};</code></pre>
+</div>
+      <p class="text-p">অনেক field থাকলে Builder:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> UserBuilder {
+
+    constructor() {
+        <span class="syn-kw">this</span>.user <span style="color: #c084fc; font-weight: 700;">=</span> {};
+    }
+
+    setName(name) {
+        <span class="syn-kw">this</span>.user.name <span style="color: #c084fc; font-weight: 700;">=</span> name;
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>;
+    }
+
+    setEmail(email) {
+        <span class="syn-kw">this</span>.user.email <span style="color: #c084fc; font-weight: 700;">=</span> email;
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>;
+    }
+
+    setRole(role) {
+        <span class="syn-kw">this</span>.user.role <span style="color: #c084fc; font-weight: 700;">=</span> role;
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>;
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">build</span>() {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>.user;
+    }
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> UserBuilder()
+    .setName(&quot;Ripon<span class="syn-str">&quot;)
+    .setEmail(&quot;</span>ripon@example.com<span class="syn-str">&quot;)
+    .setRole(&quot;</span>admin&quot;)
+    .<span style="color: #38bdf8; font-weight: 600;">build</span>();</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.17</span> Builder-এর গুরুত্বপূর্ণ Feature</div>
+      <p class="text-p">এখানে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">return</span> <span class="syn-kw">this</span>;</code></pre>
+</div>
+      <p class="text-p">দেওয়ার কারণে chaining করা যায়।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">setName()
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+setEmail()
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+setRole()
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+build()</pre>
+</div>
+      <p class="text-p">এটাকে <strong>method chaining</strong> বলা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.18</span> Prototype Pattern</div>
+      <p class="text-p">JavaScript নিজেই prototype-based language। Prototype Pattern-এর idea হলো existing object থেকে নতুন object তৈরি করা।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> userPrototype <span style="color: #c084fc; font-weight: 700;">=</span> {
+    greet() {
+        <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(`Hello ${<span class="syn-kw">this</span>.name}`);
+    }
+};
+
+<span class="syn-kw">const</span> user1 <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">Object</span>.<span style="color: #38bdf8; font-weight: 600;">create</span>(userPrototype);
+
+user1.name <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;Ripon&quot;</span>;
+
+user1.greet();</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Hello Ripon</pre>
+</div>
+      <p class="text-p">এখানে <code>user1</code> prototype থেকে behavior পেয়েছে।</p>
+    </div>
+    <div class="part-banner">Part 03 — Structural Patterns: Adapter, Decorator, Facade & Proxy (37.19 – 37.27)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.19</span> Adapter Pattern</div>
+      <p class="text-p">Adapter incompatible interface-কে compatible interface-এ convert করে। Real-life:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">USB-C Laptop
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Adapter</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+HDMI Monitor</pre>
+</div>
+      <p class="text-p">Software-এও একই ধারণা। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> OldPaymentSystem {
+
+    makePayment(amount) {
+        <span class="syn-kw">return</span> <span class="syn-str">`Paid ${amount}`</span>;
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">কিন্তু নতুন system চায়:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">pay</span>(amount)</code></pre>
+</div>
+      <p class="text-p">Adapter:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> PaymentAdapter {
+
+    constructor(oldSystem) {
+        <span class="syn-kw">this</span>.oldSystem <span style="color: #c084fc; font-weight: 700;">=</span> oldSystem;
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>.oldSystem.makePayment(amount);
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> oldSystem <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> OldPaymentSystem();
+
+<span class="syn-kw">const</span> payment <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> PaymentAdapter(oldSystem);
+
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(payment.<span style="color: #38bdf8; font-weight: 600;">pay</span>(<span class="syn-num">1000</span>));</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.20</span> Adapter কোথায় Useful?</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Old <span style="color: #38bdf8; font-weight: 600;">API</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Adapter</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+New Application</pre>
+</div>
+      <p class="text-p">Useful যখন:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Legacy code আছে</li>
+        <li>Third-party API-এর interface আলাদা</li>
+        <li>Library replace করতে চাও</li>
+        <li>Multiple data source unify করতে চাও</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.21</span> Decorator Pattern</div>
+      <p class="text-p">Decorator existing object-এর behavior modify/extend করে। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> basicUser() {
+    <span class="syn-kw">return</span> {
+        name: <span class="syn-str">&quot;Ripon&quot;</span>
+    };
+}</code></pre>
+</div>
+      <p class="text-p">Decorator:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> addAdminPermission(user) {
+
+    <span class="syn-kw">return</span> {
+        ...user,
+        role: <span class="syn-str">&quot;admin&quot;</span>
+    };
+
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> basicUser();
+
+<span class="syn-kw">const</span> admin <span style="color: #c084fc; font-weight: 700;">=</span> addAdminPermission(user);
+
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(admin);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.22</span> Real-Life Decorator</div>
+      <p class="text-p">ধরো coffee:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Coffee
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
++ Milk
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
++ Sugar
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
++ Cream</pre>
+</div>
+      <p class="text-p">Software:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Base Function
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Decorator</span> 1
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Decorator</span> 2
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Decorator</span> 3</pre>
+</div>
+      <p class="text-p">একটি existing behavior-এর ওপর নতুন behavior layer করা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.23</span> Higher-Order Function as Decorator</div>
+      <p class="text-p">JavaScript-এ function দিয়েও decorator pattern করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> withLogging(fn) {
+
+    <span class="syn-kw">return</span> <span class="syn-kw">function</span> (...args) {
+
+        <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(&quot;Function called&quot;);
+
+        <span class="syn-kw">return</span> fn(...args);
+    };
+
+}</code></pre>
+</div>
+      <p class="text-p">Original:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+}</code></pre>
+</div>
+      <p class="text-p">Decorate:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> loggedAdd <span style="color: #c084fc; font-weight: 700;">=</span> withLogging(add);
+
+loggedAdd(<span class="syn-num">2</span>, <span class="syn-num">3</span>);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Function called</pre>
+</div>
+      <p class="text-p">Return:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">5</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.24</span> Facade Pattern</div>
+      <p class="text-p">Facade complex system-এর সামনে simple interface দেয়। ধরো online order system:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">Order</span>
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Inventory
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #38bdf8; font-weight: 600;">Payment</span>
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Shipping
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #38bdf8; font-weight: 600;">Notification</span>
+ <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #38bdf8; font-weight: 600;">Database</span></pre>
+</div>
+      <p class="text-p">Client-কে সব system আলাদাভাবে call করতে না দিয়ে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> OrderFacade {
+
+    constructor() {
+        <span class="syn-kw">this</span>.inventory <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Inventory();
+        <span class="syn-kw">this</span>.payment <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Payment();
+        <span class="syn-kw">this</span>.shipping <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Shipping();
+    }
+
+    placeOrder(order) {
+
+        <span class="syn-kw">this</span>.inventory.reserve(order);
+        <span class="syn-kw">this</span>.payment.charge(order);
+        <span class="syn-kw">this</span>.shipping.ship(order);
+
+    }
+}</code></pre>
+</div>
+      <p class="text-p">Client:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> orderSystem <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> OrderFacade();
+
+orderSystem.placeOrder(order);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.25</span> Facade-এর মূল ধারণা</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Complex System
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+    <span style="color: #c084fc; font-weight: 700;">Facade</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Simple <span style="color: #38bdf8; font-weight: 600;">API</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.26</span> Proxy Pattern</div>
+      <p class="text-p">JavaScript-এ <code>Proxy</code> built-in feature। Proxy দিয়ে object-এর operation intercept করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {
+    name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">const</span> proxy <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Proxy(user, {
+
+    <span class="syn-kw">get</span>(target, property) {
+
+        <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(`Reading: ${property}`);
+
+        <span class="syn-kw">return</span> target[property];
+    }
+
+});</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(proxy.name);</code></pre>
+</div>
+      <p class="text-p">Output conceptually:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Reading: name
+Ripon</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.27</span> Proxy-এর Real Use Cases</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Validation
+Logging
+Access control
+Reactive systems
+Caching
+Data transformation</pre>
+</div>
+      <p class="text-p">Vue-এর reactive system-এর মতো frameworks-এ Proxy-এর concepts গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="part-banner">Part 04 — Behavioral Patterns: Observer, Pub/Sub, Strategy, Command, State & Chain (37.28 – 37.41)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.28</span> Observer Pattern</div>
+      <p class="text-p">Observer Pattern-এর মূল idea:</p>
+      <div class="def-box">💡 একটি object-এর state পরিবর্তন হলে interested observers-কে notify করা।</div>
+      <p class="text-p">Real-life:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">YouTube Channel
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+New Video
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">Subscribers</span>
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">Notification</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.29</span> Observer Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> Subject {
+
+    constructor() {
+        <span class="syn-kw">this</span>.observers <span style="color: #c084fc; font-weight: 700;">=</span> [];
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">subscribe</span>(observer) {
+        <span class="syn-kw">this</span>.observers.push(observer);
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">notify</span>(data) {
+
+        <span class="syn-kw">this</span>.observers.forEach(observer <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+            observer(data);
+        });
+
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> news <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Subject();
+
+news.<span style="color: #38bdf8; font-weight: 600;">subscribe</span>(data <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(&quot;User <span class="syn-num">1</span>:&quot;, data);
+});
+
+news.<span style="color: #38bdf8; font-weight: 600;">subscribe</span>(data <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(&quot;User <span class="syn-num">2</span>:&quot;, data);
+});
+
+news.<span style="color: #38bdf8; font-weight: 600;">notify</span>(&quot;New article published&quot;);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">User</span> 1: New article published
+<span style="color: #38bdf8; font-weight: 600;">User</span> 2: New article published</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.30</span> Observer কোথায় ব্যবহার হয়?</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">DOM Events
+<span style="color: #c084fc; font-weight: 700;">State</span> Management
+UI Updates
+Notifications
+WebSocket Events
+Event Systems</pre>
+</div>
+      <p class="text-p">React-এর state-driven UI এবং event-driven systems বুঝতে Observer concept helpful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.31</span> Pub/Sub Pattern</div>
+      <p class="text-p">Observer-এর সাথে related হলেও Pub/Sub-এ publisher এবং subscriber সরাসরি একে অপরকে জানে না।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Publisher
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+ Event Bus
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Subscriber</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.32</span> Simple Pub/Sub</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> EventBus {
+
+    constructor() {
+        <span class="syn-kw">this</span>.events <span style="color: #c084fc; font-weight: 700;">=</span> {};
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">subscribe</span>(event, callback) {
+
+        <span class="syn-kw">if</span> (!<span class="syn-kw">this</span>.events[event]) {
+            <span class="syn-kw">this</span>.events[event] <span style="color: #c084fc; font-weight: 700;">=</span> [];
+        }
+
+        <span class="syn-kw">this</span>.events[event].push(callback);
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">publish</span>(event, data) {
+
+        <span class="syn-kw">const</span> callbacks <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">this</span>.events[event] <span style="color: #c084fc; font-weight: 700;">||</span> [];
+
+        callbacks.forEach(callback <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+            callback(data);
+        });
+
+    }
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> bus <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> EventBus();
+
+bus.<span style="color: #38bdf8; font-weight: 600;">subscribe</span>(&quot;login<span class="syn-str">&quot;, user =&gt; {
+    console.log(&quot;</span>Welcome<span class="syn-str">&quot;, user.name);
+});
+
+bus.publish(&quot;</span>login<span class="syn-str">&quot;, {
+    name: &quot;</span>Ripon&quot;
+});</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Welcome Ripon</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.33</span> Observer vs Pub/Sub</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Observer</th><th>Pub/Sub</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Subject knows observers</td><td>Publisher usually doesn&#x27;t know subscribers</td></tr><tr><td>Direct relationship</td><td>Event channel/message bus</td></tr><tr><td>Simpler</td><td>More decoupled</td></tr><tr><td>State changes useful</td><td>Event communication useful</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.34</span> Strategy Pattern</div>
+      <p class="text-p">Strategy Pattern:</p>
+      <div class="def-box">💡 একই কাজ করার multiple algorithm/strategy থাকলে runtime-এ প্রয়োজন অনুযায়ী strategy নির্বাচন করা।</div>
+      <p class="text-p">ধরো payment:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Card
+PayPal
+Bank
+Crypto</pre>
+</div>
+      <p class="text-p">একটি interface/contract-এর মাধ্যমে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> PaymentProcessor {
+
+    constructor(strategy) {
+        <span class="syn-kw">this</span>.strategy <span style="color: #c084fc; font-weight: 700;">=</span> strategy;
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>.strategy.<span style="color: #38bdf8; font-weight: 600;">pay</span>(amount);
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Strategies:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> cardPayment <span style="color: #c084fc; font-weight: 700;">=</span> {
+    <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+        <span class="syn-kw">return</span> <span class="syn-str">`Card payment: ${amount}`</span>;
+    }
+};
+
+<span class="syn-kw">const</span> bankPayment <span style="color: #c084fc; font-weight: 700;">=</span> {
+    <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+        <span class="syn-kw">return</span> <span class="syn-str">`Bank payment: ${amount}`</span>;
+    }
+};</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> processor <span style="color: #c084fc; font-weight: 700;">=</span>
+    <span class="syn-kw">new</span> PaymentProcessor(cardPayment);
+
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(processor.<span style="color: #38bdf8; font-weight: 600;">pay</span>(<span class="syn-num">1000</span>));</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.35</span> Strategy-এর Real-Life Example</div>
+      <p class="text-p">Delivery system:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Standard Delivery
+Express Delivery
+Same-Day Delivery</pre>
+</div>
+      <p class="text-p">Customer অনুযায়ী strategy change:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> delivery <span style="color: #c084fc; font-weight: 700;">=</span>
+    <span class="syn-kw">new</span> DeliveryService(expressDelivery);</code></pre>
+</div>
+      <p class="text-p">মূল business code বদলাতে হচ্ছে না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.36</span> Command Pattern</div>
+      <p class="text-p">Command Pattern:</p>
+      <div class="def-box">💡 কোনো operation-কে object হিসেবে represent করা।</div>
+      <p class="text-p">ধরো text editor:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Type
+Copy
+Paste
+Undo
+Redo</pre>
+</div>
+      <p class="text-p">Command:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> AddTextCommand {
+
+    constructor(editor, text) {
+        <span class="syn-kw">this</span>.editor <span style="color: #c084fc; font-weight: 700;">=</span> editor;
+        <span class="syn-kw">this</span>.text <span style="color: #c084fc; font-weight: 700;">=</span> text;
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">execute</span>() {
+        <span class="syn-kw">this</span>.editor.add(<span class="syn-kw">this</span>.text);
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">undo</span>() {
+        <span class="syn-kw">this</span>.editor.remove(<span class="syn-kw">this</span>.text);
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">এখানে action-টি object হয়ে গেল।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.37</span> Command কোথায় Useful?</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Undo/Redo
+Task Queue
+Transactions
+Menus
+Buttons
+Job Processing</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.38</span> State Pattern</div>
+      <p class="text-p">একটি object-এর behavior তার current state-এর ওপর নির্ভর করলে State Pattern useful। Real-life:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">Order</span>
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Pending
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Paid
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Shipped
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> Delivered</pre>
+</div>
+      <p class="text-p">State পরিবর্তনের সাথে behavior পরিবর্তিত হয়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> Order {
+
+    constructor() {
+        <span class="syn-kw">this</span>.state <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;pending&quot;</span>;
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">pay</span>() {
+
+        <span class="syn-kw">if</span> (<span class="syn-kw">this</span>.state <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-str">&quot;pending&quot;</span>) {
+            <span class="syn-kw">this</span>.state <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;paid&quot;</span>;
+        }
+
+    }
+
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.39</span> Chain of Responsibility</div>
+      <p class="text-p">একটি request একাধিক handler-এর chain-এর মধ্য দিয়ে যায়।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Request
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Handler 1
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Handler 2
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Handler 3
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Response</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.40</span> Real-Life Example: Authentication</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Request
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Check Token
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Check Permission
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Check Role
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Controller</span></pre>
+</div>
+      <p class="text-p">Node/Express middleware system এই ধারণার সাথে খুব closely related। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>app.use(authMiddleware);
+app.use(roleMiddleware);
+app.<span class="syn-kw">get</span>(&quot;/admin&quot;, controller);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.41</span> Middleware as Chain</div>
+      <p class="text-p">Express-এর conceptually:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Request
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Middleware 1
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Middleware 2
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Middleware 3
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Route Handler</pre>
+</div>
+      <p class="text-p">প্রতিটি middleware:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> middleware(req, res, next) {
+
+    <span class="syn-com">// work</span>
+
+    next();
+}</code></pre>
+</div>
+      <p class="text-p">এটি Chain of Responsibility concept বোঝার জন্য খুব useful।</p>
+    </div>
+    <div class="part-banner">Part 05 — Architectural Patterns & Clean Software Engineering (37.42 – 37.55)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.42</span> Dependency Injection</div>
+      <p class="text-p">Dependency Injection বা <strong>DI</strong> হলো:</p>
+      <div class="def-box">💡 কোনো object-এর প্রয়োজনীয় dependency নিজে তৈরি না করে বাইরে থেকে provide করা।</div>
+      <p class="text-p">খারাপ coupling:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> UserService {
+
+    constructor() {
+        <span class="syn-kw">this</span>.database <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> MySQLDatabase();
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">এখানে UserService নিজেই database তৈরি করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.43</span> Dependency Injection Example</div>
+      <p class="text-p">Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> UserService {
+
+    constructor(database) {
+        <span class="syn-kw">this</span>.database <span style="color: #c084fc; font-weight: 700;">=</span> database;
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> database <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> MySQLDatabase();
+
+<span class="syn-kw">const</span> userService <span style="color: #c084fc; font-weight: 700;">=</span>
+    <span class="syn-kw">new</span> UserService(database);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.44</span> DI কেন ভালো?</div>
+      <p class="text-p">Testing সহজ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> fakeDatabase <span style="color: #c084fc; font-weight: 700;">=</span> {
+    <span style="color: #38bdf8; font-weight: 600;">getUser</span>() {
+        <span class="syn-kw">return</span> {
+            id: <span class="syn-num">1</span>,
+            name: <span class="syn-str">&quot;Test User&quot;</span>
+        };
+    }
+};</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> service <span style="color: #c084fc; font-weight: 700;">=</span>
+    <span class="syn-kw">new</span> UserService(fakeDatabase);</code></pre>
+</div>
+      <p class="text-p">Real database দরকার নেই। এখানে Testing + Design Pattern একসাথে কাজ করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.45</span> Dependency Inversion-এর সাথে Relation</div>
+      <p class="text-p">Dependency Injection হলো implementation technique। Dependency Inversion Principle হলো architectural principle। সহজভাবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">High-level code
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Abstraction
+       <span style="color: #38bdf8; font-weight: 700;">↑</span>
+Low-level implementation</pre>
+</div>
+      <p class="text-p">এতে tight coupling কমে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.46</span> Repository Pattern</div>
+      <p class="text-p">Full Stack/Backend development-এ খুব useful। Database logic আলাদা layer-এ রাখা:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Controller</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Service
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Repository</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">Database</span></pre>
+</div>
+      <p class="text-p">Repository:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> UserRepository {
+
+    <span class="syn-kw">async</span> findById(id) {
+        <span class="syn-kw">return</span> db.users.findById(id);
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Service:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> UserService {
+
+    constructor(userRepository) {
+        <span class="syn-kw">this</span>.userRepository <span style="color: #c084fc; font-weight: 700;">=</span> userRepository;
+    }
+
+    <span class="syn-kw">async</span> <span style="color: #38bdf8; font-weight: 600;">getUser</span>(id) {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>.userRepository.findById(id);
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">এতে database implementation change করা সহজ হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.47</span> Service Layer Pattern</div>
+      <p class="text-p">Business logic controller-এ সব লিখে না রেখে Service layer-এ রাখা হয়। Bad:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Controller</span>
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> validation
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> business logic
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> payment
+ <span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> database
+ <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> email</pre>
+</div>
+      <p class="text-p">Better:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Controller</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Service
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Repository</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">Database</span></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.48</span> MVC Pattern</div>
+      <p class="text-p">Web development-এ খুব পরিচিত architecture:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">MVC</span>
+<span style="color: #475569;">│</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #c084fc; font-weight: 700;">Model</span>
+<span style="color: #475569;">├</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #c084fc; font-weight: 700;">View</span>
+<span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">──</span> <span style="color: #c084fc; font-weight: 700;">Controller</span></pre>
+</div>
+      <div class="section-subhead">🔹 Model</div>
+      <p class="text-p">Data/business model।</p>
+      <div class="section-subhead">🔹 View</div>
+      <p class="text-p">UI।</p>
+      <div class="section-subhead">🔹 Controller</div>
+      <p class="text-p">Request/interaction handle করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.49</span> MVC Example</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Browser
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Controller</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Model</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">Database</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Controller</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">View</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Browser</pre>
+</div>
+      <p class="text-p">Traditional server-rendered applications-এ এটি খুব common।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.50</span> Layered Architecture</div>
+      <p class="text-p">Full Stack project-এ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">Presentation Layer
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Controller</span> Layer
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Service Layer</span>
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Repository</span> Layer
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">Database</span></pre>
+</div>
+      <p class="text-p">এভাবে responsibility ভাগ করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.51</span> Separation of Concerns</div>
+      <p class="text-p">Design Pattern-এর বড় উদ্দেশ্যগুলোর একটি:</p>
+      <div class="def-box">💡 একটি অংশের কাজ যেন অন্য অংশের কাজের সাথে অপ্রয়োজনীয়ভাবে মিশে না যায়।</div>
+      <p class="text-p">উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">Authentication</span>
+<span style="color: #38bdf8; font-weight: 600;">Payment</span>
+Email
+<span style="color: #38bdf8; font-weight: 600;">Database</span>
+UI</pre>
+</div>
+      <p class="text-p">সব এক function-এ না রেখে আলাদা responsibility।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.52</span> DRY</div>
+      <p class="text-p"><strong>DRY = Don&#x27;t Repeat Yourself</strong> খারাপ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> adminLogin() {
+    <span class="syn-com">// same validation</span>
+}
+
+<span class="syn-kw">function</span> userLogin() {
+    <span class="syn-com">// same validation</span>
+}</code></pre>
+</div>
+      <p class="text-p">Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> validateLogin(data) {
+    <span class="syn-com">// shared validation</span>
+}</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>validateLogin(adminData);
+validateLogin(userData);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.53</span> KISS</div>
+      <p class="text-p"><strong>KISS = Keep It Simple</strong> অতিরিক্ত complex architecture সবসময় ভালো নয়। যদি problem:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+}</code></pre>
+</div>
+      <p class="text-p">হয়, তাহলে ৫টি design pattern দরকার নেই। 😄 Pattern complexity তৈরি করার জন্য নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.54</span> YAGNI</div>
+      <p class="text-p"><strong>YAGNI = You Aren&#x27;t Gonna Need It</strong> যে feature এখন দরকার নেই, শুধু ভবিষ্যতে লাগতে পারে ভেবে architecture over-engineer করো না।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Need today
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Build today</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.55</span> Composition Over Inheritance</div>
+      <p class="text-p">Modern JavaScript/React development-এ খুব গুরুত্বপূর্ণ। Inheritance:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> Admin <span class="syn-kw">extends</span> User {}</code></pre>
+</div>
+      <p class="text-p">Composition:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> admin <span style="color: #c084fc; font-weight: 700;">=</span> {
+    ...user,
+    permissions: [&quot;read<span class="syn-str">&quot;, &quot;</span>write&quot;]
+};</code></pre>
+</div>
+      <p class="text-p">অথবা behavior compose করা। React নিজেও composition-এর ওপর অনেক বেশি জোর দেয়।</p>
+    </div>
+    <div class="part-banner">Part 06 — Modern React & Full-Stack Application Patterns (37.56 – 37.66)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.56</span> React-এ Design Patterns</div>
+      <p class="text-p">React development-এ তুমি দেখতে পারো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Component <span style="color: #34d399; font-weight: 700;">Composition</span>
+Container/Presentational
+Custom Hooks
+Provider Pattern
+Compound Components
+Render Props
+Higher-<span style="color: #38bdf8; font-weight: 600;">Order</span> Components
+<span style="color: #c084fc; font-weight: 700;">Observer</span>-like state updates
+<span style="color: #c084fc; font-weight: 700;">Strategy</span>-like behavior selection</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.57</span> Custom Hook as Reusable Pattern</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> useFetch(url) {
+
+    <span class="syn-kw">const</span> [data, setData] <span style="color: #c084fc; font-weight: 700;">=</span> useState(<span class="syn-bool">null</span>);
+
+    <span class="syn-com">// fetch logic</span>
+
+    <span class="syn-kw">return</span> data;
+}</code></pre>
+</div>
+      <p class="text-p">Multiple components:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">const users = useFetch(&quot;/api/users&quot;);</pre>
+</div>
+      <p class="text-p">এতে fetching logic reuse করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.58</span> Provider Pattern</div>
+      <p class="text-p">React Context:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">&lt;AuthProvider&gt;
+    &lt;App /&gt;
+&lt;/AuthProvider&gt;</pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">const { user } = useAuth();</pre>
+</div>
+      <p class="text-p">একটি shared context provide করা হয়। এটি Provider Pattern বোঝার জন্য useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.59</span> Compound Component Pattern</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">&lt;Select&gt;
+    &lt;Select.Option /&gt;
+    &lt;Select.Option /&gt;
+&lt;/Select&gt;</pre>
+</div>
+      <p class="text-p">Parent component এবং child components একসাথে coordinated behavior দেয়। এটি reusable UI component library-তে খুব useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.60</span> Design Pattern নির্বাচন কীভাবে করবে?</div>
+      <p class="text-p">প্রথমে pattern খুঁজবে না। প্রথমে problem বুঝবে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Problem
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+What changes?
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+What is coupled?
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+What should be reusable?
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Which pattern fits?</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.61</span> Problem → Pattern Cheat Sheet</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Problem</th><th>সম্ভাব্য Pattern</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Object creation complex</td><td>Factory / Builder</td></tr><tr><td>One shared instance</td><td>Singleton</td></tr><tr><td>Incompatible API</td><td>Adapter</td></tr><tr><td>Add behavior dynamically</td><td>Decorator</td></tr><tr><td>Complex system simplify</td><td>Facade</td></tr><tr><td>Object access intercept</td><td>Proxy</td></tr><tr><td>State change notification</td><td>Observer</td></tr><tr><td>Event communication</td><td>Pub/Sub</td></tr><tr><td>Multiple algorithms</td><td>Strategy</td></tr><tr><td>Undo/redo/action queue</td><td>Command</td></tr><tr><td>State-based behavior</td><td>State</td></tr><tr><td>Request through handlers</td><td>Chain of Responsibility</td></tr><tr><td>External dependency control</td><td>Dependency Injection</td></tr><tr><td>Database abstraction</td><td>Repository</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.62</span> Pattern Overuse</div>
+      <p class="text-p">এটা খুব গুরুত্বপূর্ণ। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+    <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+}</code></pre>
+</div>
+      <p class="text-p">এখানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Factory</span>
+<span style="color: #c084fc; font-weight: 700;">Singleton</span>
+<span style="color: #c084fc; font-weight: 700;">Observer</span>
+<span style="color: #c084fc; font-weight: 700;">Strategy</span>
+<span style="color: #c084fc; font-weight: 700;">Facade</span></pre>
+</div>
+      <p class="text-p">সব লাগানো absurd। 😄 Design Pattern:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Problem solve করার tool</pre>
+</div>
+      <p class="text-p">Architecture decorate করার জন্য নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.63</span> Design Pattern-এর সুবিধা</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">✅ Reusability
+✅ Maintainability
+✅ Scalability
+✅ Testability
+✅ Loose Coupling
+✅ Better Organization
+✅ Team Communication</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.64</span> অসুবিধা</div>
+      <p class="text-p">Pattern ভুলভাবে ব্যবহার করলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">❌ <span style="color: #f43f5e; font-weight: 700;">Over-engineering</span>
+❌ More code
+❌ More abstraction
+❌ Harder debugging
+❌ Unnecessary complexity</pre>
+</div>
+      <p class="text-p">তাই:</p>
+      <div class="def-box">💡 Simple problem → Simple solution.</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.65</span> Real Full-Stack Architecture</div>
+      <p class="text-p">তোমার Full Stack project-এর জন্য একটি practical architecture:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content">React Frontend
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                  <span style="color: #38bdf8; font-weight: 600;">API</span> Request
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                 Express Router
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                  Middleware
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                  <span style="color: #c084fc; font-weight: 700;">Controller</span>
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                   Service
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                 <span style="color: #c084fc; font-weight: 700;">Repository</span>
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                   <span style="color: #38bdf8; font-weight: 600;">Database</span></pre>
+</div>
+      <p class="text-p">এখানে বিভিন্ন concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Middleware
+<span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #c084fc; font-weight: 700;">Chain of Responsibility</span>
+
+<span style="color: #c084fc; font-weight: 700;">Repository</span>
+<span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #c084fc; font-weight: 700;">Repository</span> Pattern
+
+Service
+<span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #34d399; font-weight: 700;">Separation of Concerns</span>
+
+<span style="color: #c084fc; font-weight: 700;">Dependency Injection</span>
+<span style="color: #38bdf8; font-weight: 700;">→</span> Loose Coupling
+
+React Context
+<span style="color: #38bdf8; font-weight: 700;">→</span> Provider Pattern
+
+<span style="color: #38bdf8; font-weight: 600;">API</span> events
+<span style="color: #38bdf8; font-weight: 700;">→</span> <span style="color: #c084fc; font-weight: 700;">Observer</span> / <span style="color: #c084fc; font-weight: 700;">Pub-Sub</span> concepts</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.66</span> Mini Real-World Example — E-Commerce Checkout Architecture</div>
+      <p class="text-p">ধরো তুমি একটি <strong>E-commerce Order System</strong> বানাচ্ছো। Architecture:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ TIERED ENTERPRISE ARCHITECTURE FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">User</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">OrderController</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">OrderService</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">PaymentStrategy</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">PaymentGateway</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Repository</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #38bdf8; font-weight: 600;">Database</span></pre>
+</div>
+      <div class="section-subhead">🔹 Payment Strategy</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> card <span style="color: #c084fc; font-weight: 700;">=</span> {
+    <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+        <span class="syn-kw">return</span> <span class="syn-str">`Card: ${amount}`</span>;
+    }
+};
+
+<span class="syn-kw">const</span> bank <span style="color: #c084fc; font-weight: 700;">=</span> {
+    <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+        <span class="syn-kw">return</span> <span class="syn-str">`Bank: ${amount}`</span>;
+    }
+};</code></pre>
+</div>
+      <div class="section-subhead">🔹 Service</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> OrderService {
+
+    constructor(paymentStrategy) {
+        <span class="syn-kw">this</span>.paymentStrategy <span style="color: #c084fc; font-weight: 700;">=</span> paymentStrategy;
+    }
+
+    <span style="color: #38bdf8; font-weight: 600;">checkout</span>(amount) {
+        <span class="syn-kw">return</span> <span class="syn-kw">this</span>.paymentStrategy.<span style="color: #38bdf8; font-weight: 600;">pay</span>(amount);
+    }
+
+}</code></pre>
+</div>
+      <p class="text-p">Use:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> service <span style="color: #c084fc; font-weight: 700;">=</span>
+    <span class="syn-kw">new</span> OrderService(card);
+
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(service.<span style="color: #38bdf8; font-weight: 600;">checkout</span>(<span class="syn-num">2000</span>));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ SOFTWARE ARCHITECTURE DIAGRAM</div>
+  <pre class="ascii-tree-content">Card: 2000</pre>
+</div>
+      <p class="text-p">Payment method change:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> service <span style="color: #c084fc; font-weight: 700;">=</span>
+    <span class="syn-kw">new</span> OrderService(bank);</code></pre>
+</div>
+      <p class="text-p">মূল <code>OrderService</code> code পরিবর্তন করতে হয়নি। এটাই Strategy + Dependency Injection-এর practical combination।</p>
+    </div>
+    <div class="part-banner">Part 07 — Must Know Architecture Pillars, Quick Cheat Sheet, 9 Practice Labs & Final Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.67</span> 🔥 MUST KNOW — ডিজাইন প্যাটার্নের ২৫টি মূল ভিত্তি ও নীতি</div>
+      <p class="text-p">সফটওয়্যার ইঞ্জিনিয়ারিং ও ফুলস্ট্যাক ডেভেলপমেন্টে সিনিয়র লেভেলে উত্তীর্ণ হতে এই ২৫টি কনসেপ্ট অত্যন্ত জরুরি:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #0284c7; font-size: 10px; margin-bottom: 3px;">📌 1. Creational &amp; Structural</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Factory:</strong> অবজেক্ট তৈরির লজিক সেন্ট্রালাইজড করা</li>
+            <li><strong>Singleton:</strong> পুরো অ্যাপ্লিকেশনে শেয়ার্ড একটিমাত্র ইনস্ট্যান্স</li>
+            <li><strong>Builder:</strong> ধাপে ধাপে জটিল অবজেক্ট কনস্ট্রাকশন</li>
+            <li><strong>Adapter:</strong> ইনকম্প্যাটিবল ইন্টারফেসকে রূপান্তর</li>
+            <li><strong>Decorator:</strong> অবজেক্ট পরিবর্তন ছাড়া ফিচার যুক্ত</li>
+            <li><strong>Facade:</strong> জটিল সাবসিস্টেমের সহজ এন্ট্রি পয়েন্ট</li>
+            <li><strong>Proxy:</strong> অবজেক্ট অপারেশন ইন্টারসেপ্ট ও ক্যাশিং</li>
+            <li><strong>Module:</strong> প্রাইভেট স্কোপ ও পাবলিক API এক্সপোজ</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #059669; font-size: 10px; margin-bottom: 3px;">📌 2. Behavioral Patterns</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Observer:</strong> ডিপেন্ডেন্ট অবজেক্টে স্টেট চেঞ্জ ব্রডকাস্ট</li>
+            <li><strong>Pub/Sub:</strong> ইভেন্ট বাস দিয়ে সম্পূর্ণ ডিকাপল্ড কমিউনিকেশন</li>
+            <li><strong>Strategy:</strong> রানটাইমে অ্যালগরিদম বা পেমেন্ট পরিবর্তন</li>
+            <li><strong>Command:</strong> অ্যাকশনকে অবজেক্ট বানিয়ে কিউ বা আনডু</li>
+            <li><strong>State:</strong> ইন্টারনাল স্টেট অনুযায়ী অবজেক্টের আচরণ বদল</li>
+            <li><strong>Chain of Resp.:</strong> হ্যান্ডলার চেইন দিয়ে রিকোয়েস্ট পাস (Middleware)</li>
+            <li><strong>Template Method:</strong> স্কেলিটন ক্লাস দিয়ে সাবক্লাসে স্টেপ নির্ধারণ</li>
+            <li><strong>Iterator:</strong> সিকোয়েন্সের ভেতরের ডেটা ট্রাভার্সাল</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #7c3aed; font-size: 10px; margin-bottom: 3px;">📌 3. Architecture &amp; Clean Code</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li><strong>Dependency Injection (DI):</strong> বাইরে থেকে ডিপেন্ডেন্সি পুশ</li>
+            <li><strong>Repository:</strong> ডাটাবেস এক্সেস বিজনেস লজিক থেকে পৃথক</li>
+            <li><strong>Service Layer:</strong> কোর বিজনেস রুলসের সেন্ট্রাল লেয়ার</li>
+            <li><strong>MVC:</strong> Model, View এবং Controller সেপারেশন</li>
+            <li><strong>Separation of Concerns:</strong> প্রতিটি লেয়ারের নির্দিষ্ট কাজ</li>
+            <li><strong>DRY, KISS, YAGNI:</strong> সিম্পল ও আননেসেসারি কোড মুক্ত রাখা</li>
+            <li><strong>Composition over Inheritance:</strong> নমনীয় অবজেক্ট কম্পোজিশন</li>
+            <li><strong>Pragmatism:</strong> প্রয়োজনের অতিরিক্ত প্যাটার্ন ব্যবহার পরিহার</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.68</span> 🧠 Quick Cheat Sheet — ডিজাইন প্যাটার্ন নির্বাচন নির্দেশিকা</div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Pattern Name</th><th>Category</th><th>Primary Intent</th><th>Production Real-World Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Factory Pattern</strong></td><td>Creational</td><td>অবজেক্ট তৈরির মেকানিজম এনক্যাপসুলেট করা</td><td><code>document.createElement()</code>, Auth User Factory</td></tr><tr><td><strong>Singleton Pattern</strong></td><td>Creational</td><td>একটিমাত্র ইনস্ট্যান্স নিশ্চিত ও শেয়ার করা</td><td>Database Connection Pool, Global State Manager</td></tr><tr><td><strong>Builder Pattern</strong></td><td>Creational</td><td>ধাপে ধাপে জটিল কনফিগারেশন তৈরি</td><td>Knex/Prisma Query Builder, Form Builder</td></tr><tr><td><strong>Adapter Pattern</strong></td><td>Structural</td><td>ভিন্ন ইন্টারফেসকে প্রত্যাশিত ফরম্যাটে মেলানো</td><td>Legacy Payment API to Modern Interface</td></tr><tr><td><strong>Decorator Pattern</strong></td><td>Structural</td><td>অবজেক্ট মডিফাই না করে ডায়নামিক আচরণ বৃদ্ধি</td><td>Express Middleware, HOC (Higher-Order Components)</td></tr><tr><td><strong>Facade Pattern</strong></td><td>Structural</td><td>জটিল সাবসিস্টেমের সামনে একটি সহজ API দেওয়া</td><td>Axios facade over <code>fetch</code>/<code>XMLHttpRequest</code></td></tr><tr><td><strong>Proxy Pattern</strong></td><td>Structural</td><td>অবজেক্টের অ্যাক্সেস নিয়ন্ত্রণ বা ক্যাশিং</td><td>Vue 3 Reactive System, Validation Proxy</td></tr><tr><td><strong>Observer Pattern</strong></td><td>Behavioral</td><td>১-টু-মেনি অবজেক্ট নোটিফিকেশন সিস্টেম</td><td>DOM <code>addEventListener</code>, MobX Observables</td></tr><tr><td><strong>Pub/Sub Pattern</strong></td><td>Behavioral</td><td>মধ্যবর্তী চ্যানেল দ্বারা সম্পূর্ণ ডিকাপল্ড ইভেন্ট</td><td>Node.js EventEmitter, Redux Actions, Redis Pub/Sub</td></tr><tr><td><strong>Strategy Pattern</strong></td><td>Behavioral</td><td>রানটাইমে অ্যালগরিদম অদলবদল করা</td><td>Multi-gateway Payment (Card/bKash/Bank)</td></tr><tr><td><strong>Command Pattern</strong></td><td>Behavioral</td><td>রিকোয়েস্টকে অবজেক্টে রূপান্তর (Undo/Redo)</td><td>Rich Text Editor actions, Task Queues</td></tr><tr><td><strong>State Pattern</strong></td><td>Behavioral</td><td>অবজেক্টের অভ্যন্তরীণ স্টেট অনুযায়ী আচরণ বদলানো</td><td>Order Status Machine (Pending -&gt; Paid -&gt; Shipped)</td></tr><tr><td><strong>Chain of Responsibility</strong></td><td>Behavioral</td><td>হ্যান্ডলার চেইনে রিকোয়েস্ট পাস করা</td><td>Express/Koa middleware pipeline</td></tr><tr><td><strong>Dependency Injection</strong></td><td>Architectural</td><td>ক্লাসের বাইরে থেকে ডিপেন্ডেন্সি পাস করা</td><td>NestJS DI Container, Unit Testing Mocking</td></tr><tr><td><strong>Repository Pattern</strong></td><td>Architectural</td><td>ডাটা অ্যাক্সেস লজিক বিজনেস লজিক থেকে পৃথক</td><td>ORM Repositories (Prisma, TypeORM)</td></tr><tr><td><strong>Service Layer</strong></td><td>Architectural</td><td>বিজনেস লজিক এক জায়গায় সেন্ট্রালাইজ করা</td><td>Enterprise Node.js / NestJS Backend</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="part-banner">Part 07.1 — 9 Hands-On Practice Labs with Complete Production Solutions</div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 1: Factory Pattern — Dynamic User Creation with Role Permissions</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি createUser(&quot;admin&quot; | &quot;user&quot; | &quot;guest&quot;) Factory তৈরি করুন যা ইউজারের রোল অনুযায়ী নির্দিষ্ট পারমিশন (canEdit, canDelete, canView) যুক্ত অবজেক্ট রিটার্ন করবে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 1</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> createUser(role, name) {
+  <span class="syn-kw">const</span> baseUser <span style="color: #c084fc; font-weight: 700;">=</span> { name, role, createdAt: <span class="syn-kw">new</span> <span class="syn-fn">Date</span>().toISOString() };
+  
+  <span class="syn-kw">switch</span> (role) {
+    <span class="syn-kw">case</span> <span class="syn-str">&#x27;admin&#x27;</span>:
+      <span class="syn-kw">return</span> {
+        ...baseUser,
+        permissions: { <span style="color: #38bdf8; font-weight: 600;">canView</span>: <span class="syn-bool">true</span>, <span style="color: #38bdf8; font-weight: 600;">canEdit</span>: <span class="syn-bool">true</span>, <span style="color: #38bdf8; font-weight: 600;">canDelete</span>: <span class="syn-bool">true</span> },
+        describe() { <span class="syn-kw">return</span> <span class="syn-str">`${this.name} [ADMIN] - Full Access`</span>; }
+      };
+    <span class="syn-kw">case</span> <span class="syn-str">&#x27;user&#x27;</span>:
+      <span class="syn-kw">return</span> {
+        ...baseUser,
+        permissions: { <span style="color: #38bdf8; font-weight: 600;">canView</span>: <span class="syn-bool">true</span>, <span style="color: #38bdf8; font-weight: 600;">canEdit</span>: <span class="syn-bool">true</span>, <span style="color: #38bdf8; font-weight: 600;">canDelete</span>: <span class="syn-bool">false</span> },
+        describe() { <span class="syn-kw">return</span> <span class="syn-str">`${this.name} [USER] - Edit Access`</span>; }
+      };
+    <span class="syn-kw">case</span> <span class="syn-str">&#x27;guest&#x27;</span>:
+    <span class="syn-kw">default</span>:
+      <span class="syn-kw">return</span> {
+        ...baseUser,
+        permissions: { <span style="color: #38bdf8; font-weight: 600;">canView</span>: <span class="syn-bool">true</span>, <span style="color: #38bdf8; font-weight: 600;">canEdit</span>: <span class="syn-bool">false</span>, <span style="color: #38bdf8; font-weight: 600;">canDelete</span>: <span class="syn-bool">false</span> },
+        describe() { <span class="syn-kw">return</span> <span class="syn-str">`${this.name} [GUEST] - Read-Only Access`</span>; }
+      };
+  }
+}
+
+<span class="syn-com">// Verification</span>
+<span class="syn-kw">const</span> admin <span style="color: #c084fc; font-weight: 700;">=</span> createUser(&#x27;admin<span class="syn-str">&#x27;, &#x27;</span>Tanvir<span class="syn-str">&#x27;);
+const guest = createUser(&#x27;</span>guest<span class="syn-str">&#x27;, &#x27;</span>Rahim<span class="syn-str">&#x27;);
+console.log(admin.describe()); // Tanvir [ADMIN] - Full Access
+console.log(&#x27;</span>Guest Delete Allowed:&#x27;, guest.permissions.<span style="color: #38bdf8; font-weight: 600;">canDelete</span>); <span class="syn-com">// false</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> Factory Pattern অবজেক্ট তৈরির কমপ্লেক্স লজিক ও রুলস একটি সাধারণ ফাংশনের ভেতরে এনক্যাপসুলেট করে দেয়, ফলে ক্লায়েন্ট কোডে বারবার <code>if/else</code> চেক করার দরকার হয় না।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 2: Singleton Pattern — Centralized Application Logger</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি Logger ক্লাস তৈরি করুন যেখানে যতবারই <code>new Logger()</code> করা হোক না কেন, সবসময় একই শেয়ার্ড ইনস্ট্যান্স রিটার্ন হবে (logger1 === logger2 হবে true)।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 2</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> Logger {
+  constructor() {
+    <span class="syn-kw">if</span> (Logger.instance) {
+      <span class="syn-kw">return</span> Logger.instance;
+    }
+    <span class="syn-kw">this</span>.logs <span style="color: #c084fc; font-weight: 700;">=</span> [];
+    Logger.instance <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">this</span>;
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">log</span>(message) {
+    <span class="syn-kw">const</span> timestamp <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> <span class="syn-fn">Date</span>().toLocaleTimeString();
+    <span class="syn-kw">const</span> entry <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">`[${timestamp}] ${message}`</span>;
+    <span class="syn-kw">this</span>.logs.push(entry);
+    <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(entry);
+  }
+
+  getLogCount() {
+    <span class="syn-kw">return</span> <span class="syn-kw">this</span>.logs.length;
+  }
+}
+
+<span class="syn-com">// Verification</span>
+<span class="syn-kw">const</span> logger1 <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Logger();
+<span class="syn-kw">const</span> logger2 <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> Logger();
+
+logger1.<span style="color: #38bdf8; font-weight: 600;">log</span>(&#x27;Application started successfully<span class="syn-str">&#x27;);
+logger2.log(&#x27;</span>Database connected<span class="syn-str">&#x27;);
+
+console.log(&#x27;</span>Is Identical Instance?&#x27;, logger1 <span style="color: #c084fc; font-weight: 700;">===</span> logger2); <span class="syn-com">// true</span>
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(&#x27;Total Logs Recorded:&#x27;, logger1.getLogCount());  <span class="syn-com">// 2</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> Singleton Pattern নিশ্চিত করে যে কোনো রিসোর্স-ইনটেনসিভ বা স্টেটফুল ক্লাসের পুরো অ্যাপ্লিকেশনে শুধুমাত্র একটিমাত্র ইনস্ট্যান্স বিদ্যমান থাকবে।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 3: Adapter Pattern — Bridging Legacy API to Modern Interface</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি পুরোনো সিস্টেমের API মেথড <code>oldAPI.getUserData()</code> রিটার্ন করে <code>{ first_name, last_name, user_email }</code>। এটিকে ক্লায়েন্টের প্রত্যাশিত আধুনিক ইন্টারফেস <code>userService.getUser()</code> অর্থাৎ <code>{ fullName, email }</code> ফরম্যাটে রূপান্তর করতে একটি Adapter লিখুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 3</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Legacy Service (Cannot modify directly)</span>
+<span class="syn-kw">class</span> LegacyUserAPI {
+  <span style="color: #38bdf8; font-weight: 600;">getUserData</span>() {
+    <span class="syn-kw">return</span> {
+      first_name: <span class="syn-str">&#x27;Shariar&#x27;</span>,
+      last_name: <span class="syn-str">&#x27;Ahamed&#x27;</span>,
+      user_email: <span class="syn-str">&#x27;shariar@example.com&#x27;</span>
+    };
+  }
+}
+
+<span class="syn-com">// Adapter implementing Modern Target Interface</span>
+<span class="syn-kw">class</span> UserAdapter {
+  constructor(legacyApi) {
+    <span class="syn-kw">this</span>.legacyApi <span style="color: #c084fc; font-weight: 700;">=</span> legacyApi;
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">getUser</span>() {
+    <span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">this</span>.legacyApi.<span style="color: #38bdf8; font-weight: 600;">getUserData</span>();
+    <span class="syn-kw">return</span> {
+      fullName: <span class="syn-str">`${data.first_name} ${data.last_name}`</span>,
+      email: data.user_email
+    };
+  }
+}
+
+<span class="syn-com">// Client Usage</span>
+<span class="syn-kw">const</span> legacyAPI <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> LegacyUserAPI();
+<span class="syn-kw">const</span> userService <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> UserAdapter(legacyAPI);
+
+<span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> userService.<span style="color: #38bdf8; font-weight: 600;">getUser</span>();
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(&#x27;Modern Format:&#x27;, user);
+<span class="syn-com">// Output: Modern Format: { fullName: &#x27;Shariar Ahamed&#x27;, email: &#x27;shariar@example.com&#x27; }</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> Adapter Pattern বিদ্যমান কোনো ক্লাসের কোড পরিবর্তন না করেই দুটি অসঙ্গতিপূর্ণ ইন্টারফেসের মধ্যে একটি সুসংগত সেতু তৈরি করে দেয়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 4: Strategy Pattern — Interchangeable Multi-Gateway Payment System</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি ই-কমার্স পেমেন্ট সিস্টেম তৈরি করুন যাতে Card, Bank Transfer এবং Mobile Banking (bKash/Nagad) স্ট্র্যাটেজি আলাদা অবজেক্ট হিসেবে থাকবে এবং পেমেন্ট সার্ভিস রানটাইমে কৌশল অদলবদল করতে পারবে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 4</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// 1. Concrete Strategies</span>
+<span class="syn-kw">const</span> CardPaymentStrategy <span style="color: #c084fc; font-weight: 700;">=</span> {
+  <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+    <span class="syn-kw">return</span> <span class="syn-str">`Paid ৳${amount} via Credit/Debit Card (Gateway Fee: 1.5%)`</span>;
+  }
+};
+
+<span class="syn-kw">const</span> BankTransferStrategy <span style="color: #c084fc; font-weight: 700;">=</span> {
+  <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+    <span class="syn-kw">return</span> <span class="syn-str">`Paid ৳${amount} via Direct Bank Wire (Routing: 092834)`</span>;
+  }
+};
+
+<span class="syn-kw">const</span> MobileBankingStrategy <span style="color: #c084fc; font-weight: 700;">=</span> {
+  <span style="color: #38bdf8; font-weight: 600;">pay</span>(amount) {
+    <span class="syn-kw">return</span> <span class="syn-str">`Paid ৳${amount} via bKash/Nagad Wallet (Instant SMS TrxID)`</span>;
+  }
+};
+
+<span class="syn-com">// 2. Context Service</span>
+<span class="syn-kw">class</span> CheckoutService {
+  constructor(strategy) {
+    <span class="syn-kw">this</span>.strategy <span style="color: #c084fc; font-weight: 700;">=</span> strategy;
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">setStrategy</span>(newStrategy) {
+    <span class="syn-kw">this</span>.strategy <span style="color: #c084fc; font-weight: 700;">=</span> newStrategy;
+  }
+
+  processPayment(amount) {
+    <span class="syn-kw">return</span> <span class="syn-kw">this</span>.strategy.<span style="color: #38bdf8; font-weight: 600;">pay</span>(amount);
+  }
+}
+
+<span class="syn-com">// Usage</span>
+<span class="syn-kw">const</span> <span style="color: #38bdf8; font-weight: 600;">checkout</span> <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> CheckoutService(CardPaymentStrategy);
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(<span style="color: #38bdf8; font-weight: 600;">checkout</span>.processPayment(<span class="syn-num">5000</span>));
+
+<span class="syn-com">// Switch strategy at runtime without breaking CheckoutService</span>
+<span style="color: #38bdf8; font-weight: 600;">checkout</span>.<span style="color: #38bdf8; font-weight: 600;">setStrategy</span>(MobileBankingStrategy);
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(<span style="color: #38bdf8; font-weight: 600;">checkout</span>.processPayment(<span class="syn-num">1200</span>));</code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> Strategy Pattern অ্যালগরিদম বা বিজনেস মেকানিজমকে আলাদা ক্লাসে বিভক্ত করে, যার ফলে মূল কনটেক্সট ক্লাস পরিবর্তন না করেই নতুন নতুন পেমেন্ট মেথড যুক্ত করা যায় (Open/Closed Principle)।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 5: Observer Pattern — Real-Time Notification Broadcast</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> এমন একটি Subject তৈরি করুন যা মেসেজ আসলে তার সকল রেজিস্টার্ড Observer (User 1, User 2, User 3)-কে স্বয়ংক্রিয়ভাবে নোটিফাই করবে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 5</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> NotificationSubject {
+  constructor() {
+    <span class="syn-kw">this</span>.observers <span style="color: #c084fc; font-weight: 700;">=</span> [];
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">subscribe</span>(observer) {
+    <span class="syn-kw">this</span>.observers.push(observer);
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">unsubscribe</span>(observer) {
+    <span class="syn-kw">this</span>.observers <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">this</span>.observers.filter(obs <span style="color: #c084fc; font-weight: 700;">=&gt;</span> obs <span style="color: #c084fc; font-weight: 700;">!==</span> observer);
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">notify</span>(message) {
+    <span class="syn-kw">this</span>.observers.forEach(observer <span style="color: #c084fc; font-weight: 700;">=&gt;</span> observer.update(message));
+  }
+}
+
+<span class="syn-kw">class</span> UserObserver {
+  constructor(username) {
+    <span class="syn-kw">this</span>.username <span style="color: #c084fc; font-weight: 700;">=</span> username;
+  }
+
+  update(message) {
+    <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(`[Notification to ${<span class="syn-kw">this</span>.username}]: ${message}`);
+  }
+}
+
+<span class="syn-com">// Execution</span>
+<span class="syn-kw">const</span> channel <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> NotificationSubject();
+<span class="syn-kw">const</span> user1 <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> UserObserver(&#x27;Abrar<span class="syn-str">&#x27;);
+const user2 = new UserObserver(&#x27;</span>Fatima<span class="syn-str">&#x27;);
+
+channel.subscribe(user1);
+channel.subscribe(user2);
+
+channel.notify(&#x27;</span>🎉 JavaScript Master Chapter <span class="syn-num">37</span> is now available<span style="color: #c084fc; font-weight: 700;">!</span>&#x27;);
+<span class="syn-com">// Both Abrar and Fatima receive notifications simultaneously</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> Observer Pattern-এ সাবজেক্টের স্টেটে কোনো পরিবর্তন ঘটলে সকল সাবস্ক্রাইবার অবজেক্ট তা তৎক্ষণাৎ জানতে পারে, যা রিয়েল-টাইম ডাটা সিঙ্ক্রোনাইজেশনে অপরিহার্য।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 6: Pub/Sub Pattern — Fully Decoupled Global Event Bus</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> একটি গ্লোবাল EventBus তৈরি করুন যাতে subscribe(event, callback) এবং publish(event, data) মেথড থাকবে, যেখানে পাবলিশার এবং সাবস্ক্রাইবার একে অপরকে সরাসরি চেনে না।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 6</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> EventBus {
+  constructor() {
+    <span class="syn-kw">this</span>.events <span style="color: #c084fc; font-weight: 700;">=</span> {};
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">subscribe</span>(event, callback) {
+    <span class="syn-kw">if</span> (!<span class="syn-kw">this</span>.events[event]) {
+      <span class="syn-kw">this</span>.events[event] <span style="color: #c084fc; font-weight: 700;">=</span> [];
+    }
+    <span class="syn-kw">this</span>.events[event].push(callback);
+    
+    <span class="syn-com">// Return unsubscribe function</span>
+    <span class="syn-kw">return</span> () <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+      <span class="syn-kw">this</span>.events[event] <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">this</span>.events[event].filter(cb <span style="color: #c084fc; font-weight: 700;">=&gt;</span> cb <span style="color: #c084fc; font-weight: 700;">!==</span> callback);
+    };
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">publish</span>(event, data) {
+    <span class="syn-kw">if</span> (<span class="syn-kw">this</span>.events[event]) {
+      <span class="syn-kw">this</span>.events[event].forEach(callback <span style="color: #c084fc; font-weight: 700;">=&gt;</span> callback(data));
+    }
+  }
+}
+
+<span class="syn-com">// Global Bus Usage</span>
+<span class="syn-kw">const</span> bus <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> EventBus();
+
+<span class="syn-kw">const</span> unsubAuth <span style="color: #c084fc; font-weight: 700;">=</span> bus.<span style="color: #38bdf8; font-weight: 600;">subscribe</span>(&#x27;user:login<span class="syn-str">&#x27;, user =&gt; {
+  console.log(`Auth System: Welcome back ${user.name}!`);
+});
+
+bus.subscribe(&#x27;</span>user:login<span class="syn-str">&#x27;, user =&gt; {
+  console.log(`Analytics System: Logged in event for ID ${user.id}`);
+});
+
+bus.publish(&#x27;</span>user:login<span class="syn-str">&#x27;, { id: 101, name: &#x27;</span>Tanvir&#x27; });
+unsubAuth(); <span class="syn-com">// Cleanly detach auth listener</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> Pub/Sub-এ একটি সেন্ট্রাল ব্রোকার (Event Bus) থাকে। ফলে সেন্ডার ও রিসিভার কেউ কাউকে চেনে না; তারা কেবল ইভেন্টের নামের ভিত্তিতে স্বাধীনভাবে যোগাযোগ করে।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 7: Dependency Injection — Decoupling Service from Concrete Database</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> এমন একটি <code>UserService</code> তৈরি করুন যা কনস্ট্রাক্টরের মাধ্যমে ডাটাবেস ইন্সট্যান্স ইনজেক্ট করে নেয়। এর মাধ্যমে প্রোডাকশন DB এবং টেস্ট মক DB উভয়েই যাতে একই সার্ভিস ব্যবহার করতে পারে তা দেখান।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 7</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Database Implementations</span>
+<span class="syn-kw">class</span> MongoDatabase {
+  find(id) {
+    <span class="syn-kw">return</span> { id, name: <span class="syn-str">&#x27;Prod User&#x27;</span>, source: <span class="syn-str">&#x27;MongoDB Atlas&#x27;</span> };
+  }
+}
+
+<span class="syn-kw">class</span> MockTestDatabase {
+  find(id) {
+    <span class="syn-kw">return</span> { id, name: <span class="syn-str">&#x27;Test Fixture User&#x27;</span>, source: <span class="syn-str">&#x27;In-Memory Mock&#x27;</span> };
+  }
+}
+
+<span class="syn-com">// Service with Injected Dependency</span>
+<span class="syn-kw">class</span> UserService {
+  constructor(database) {
+    <span class="syn-kw">this</span>.db <span style="color: #c084fc; font-weight: 700;">=</span> database; <span class="syn-com">// Injected externally</span>
+  }
+
+  getUserProfile(id) {
+    <span class="syn-kw">const</span> record <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">this</span>.db.find(id);
+    <span class="syn-kw">return</span> <span class="syn-str">`User: ${record.name} (Retrieved via ${record.source})`</span>;
+  }
+}
+
+<span class="syn-com">// In Production</span>
+<span class="syn-kw">const</span> prodService <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> UserService(<span class="syn-kw">new</span> MongoDatabase());
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(prodService.getUserProfile(<span class="syn-num">1</span>));
+
+<span class="syn-com">// In Unit Testing</span>
+<span class="syn-kw">const</span> testService <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> UserService(<span class="syn-kw">new</span> MockTestDatabase());
+<span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(testService.getUserProfile(<span class="syn-num">1</span>));</code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> Dependency Injection (DI) ক্লাসের ভেতরে সরাসরি <code>new Class()</code> কল বন্ধ করে বাইরে থেকে ইনস্ট্যান্স সাপ্লাই করে। এটি কোডকে 100% টেস্টেবল ও মডুলার বানায়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 8: Repository Pattern — Clean Architecture Data Access Layer</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Controller -&gt; Service -&gt; Repository -&gt; Database এই লেয়ারড আর্কিটেকচার মেনে একটি সম্পূর্ণ ইউজার রেজিস্ট্রেশন ও ফেচিং সিস্টেম লিখুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 8</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// 1. Repository Layer (Only talks to DB)</span>
+<span class="syn-kw">class</span> UserRepository {
+  constructor() {
+    <span class="syn-kw">this</span>.storage <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> <span class="syn-fn">Map</span>();
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">create</span>(user) {
+    <span class="syn-kw">this</span>.storage.<span class="syn-kw">set</span>(user.id, user);
+    <span class="syn-kw">return</span> user;
+  }
+
+  findById(id) {
+    <span class="syn-kw">return</span> <span class="syn-kw">this</span>.storage.<span class="syn-kw">get</span>(id) <span style="color: #c084fc; font-weight: 700;">||</span> <span class="syn-bool">null</span>;
+  }
+}
+
+<span class="syn-com">// 2. Service Layer (Pure Business Logic &amp; Validations)</span>
+<span class="syn-kw">class</span> UserService {
+  constructor(userRepo) {
+    <span class="syn-kw">this</span>.userRepo <span style="color: #c084fc; font-weight: 700;">=</span> userRepo;
+  }
+
+  register(id, name, email) {
+    <span class="syn-kw">if</span> (!email.includes(&#x27;@&#x27;)) <span class="syn-kw">throw</span> <span class="syn-kw">new</span> <span class="syn-fn">Error</span>(&#x27;Invalid email address<span class="syn-str">&#x27;);
+    return this.userRepo.create({ id, name, email });
+  }
+
+  getDetails(id) {
+    const user = this.userRepo.findById(id);
+    if (!user) throw new Error(&#x27;</span>User not found<span class="syn-str">&#x27;);
+    return user;
+  }
+}
+
+// 3. Controller Layer (HTTP / Client Interface)
+class UserController {
+  constructor(userService) {
+    this.userService = userService;
+  }
+
+  handleRegister(id, name, email) {
+    try {
+      const created = this.userService.register(id, name, email);
+      return { status: 201, data: created };
+    } catch (err) {
+      return { status: 400, error: err.message };
+    }
+  }
+}
+
+// Wire-up
+const repo = new UserRepository();
+const service = new UserService(repo);
+const controller = new UserController(service);
+
+console.log(controller.handleRegister(1, &#x27;</span>Kabir<span class="syn-str">&#x27;, &#x27;</span>kabir@code.bd&#x27;));</code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> Repository Pattern বিজনেস লজিককে ডাটা স্টোরেজ মেকানিজম থেকে সম্পূর্ণ আলাদা রাখে। কাল যদি SQL থেকে NoSQL-এ শিফট করা হয়, তবে শুধুমাত্র Repository ক্লাস পরিবর্তন করলেই চলে।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 9: Full Enterprise Mini-Project — E-Commerce Checkout System</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Factory, Strategy, Service, Repository এবং Observer প্যাটার্নগুলোর সমন্বয়ে একটি সম্পূর্ণ এন্ড-টু-এন্ড E-Commerce Checkout System তৈরি করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 9</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// 1. Strategy: Payment Methods</span>
+<span class="syn-kw">const</span> BkashStrategy <span style="color: #c084fc; font-weight: 700;">=</span> { <span style="color: #38bdf8; font-weight: 600;">pay</span>: amount <span style="color: #c084fc; font-weight: 700;">=&gt;</span> <span class="syn-str">`Bkash: ৳${amount} confirmed`</span> };
+<span class="syn-kw">const</span> CardStrategy <span style="color: #c084fc; font-weight: 700;">=</span> { <span style="color: #38bdf8; font-weight: 600;">pay</span>: amount <span style="color: #c084fc; font-weight: 700;">=&gt;</span> <span class="syn-str">`Visa/Mastercard: ৳${amount} settled`</span> };
+
+<span class="syn-com">// 2. Observer: Order Notification Event Bus</span>
+<span class="syn-kw">class</span> OrderNotifier {
+  constructor() { <span class="syn-kw">this</span>.listeners <span style="color: #c084fc; font-weight: 700;">=</span> []; }
+  onOrderSuccess(fn) { <span class="syn-kw">this</span>.listeners.push(fn); }
+  broadcast(order) { <span class="syn-kw">this</span>.listeners.forEach(fn <span style="color: #c084fc; font-weight: 700;">=&gt;</span> fn(order)); }
+}
+
+<span class="syn-com">// 3. Repository: Order Storage</span>
+<span class="syn-kw">class</span> OrderRepository {
+  constructor() { <span class="syn-kw">this</span>.orders <span style="color: #c084fc; font-weight: 700;">=</span> []; }
+  save(order) { <span class="syn-kw">this</span>.orders.push(order); <span class="syn-kw">return</span> order; }
+}
+
+<span class="syn-com">// 4. Service: Business Logic &amp; Orchestration</span>
+<span class="syn-kw">class</span> OrderService {
+  constructor(orderRepo, notifier) {
+    <span class="syn-kw">this</span>.orderRepo <span style="color: #c084fc; font-weight: 700;">=</span> orderRepo;
+    <span class="syn-kw">this</span>.notifier <span style="color: #c084fc; font-weight: 700;">=</span> notifier;
+  }
+
+  <span style="color: #38bdf8; font-weight: 600;">checkout</span>(orderId, items, amount, paymentStrategy) {
+    <span class="syn-com">// 1. Process payment via strategy</span>
+    <span class="syn-kw">const</span> paymentReceipt <span style="color: #c084fc; font-weight: 700;">=</span> paymentStrategy.<span style="color: #38bdf8; font-weight: 600;">pay</span>(amount);
+    
+    <span class="syn-com">// 2. Persist order via repository</span>
+    <span class="syn-kw">const</span> order <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">this</span>.orderRepo.save({
+      id: orderId,
+      items,
+      amount,
+      paymentReceipt,
+      status: <span class="syn-str">&#x27;PAID&#x27;</span>,
+      date: <span class="syn-kw">new</span> <span class="syn-fn">Date</span>().toISOString()
+    });
+
+    <span class="syn-com">// 3. Notify all listeners via observer</span>
+    <span class="syn-kw">this</span>.notifier.broadcast(order);
+    <span class="syn-kw">return</span> order;
+  }
+}
+
+<span class="syn-com">// --- Application Assembly &amp; Execution ---</span>
+<span class="syn-kw">const</span> notifier <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> OrderNotifier();
+notifier.onOrderSuccess(order <span style="color: #c084fc; font-weight: 700;">=&gt;</span> <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(`[SMS Gateway]: Order #${order.id} paid ৳${order.amount}`));
+notifier.onOrderSuccess(order <span style="color: #c084fc; font-weight: 700;">=&gt;</span> <span class="syn-fn">console</span>.<span style="color: #38bdf8; font-weight: 600;">log</span>(`[Warehouse]: Pack items <span class="syn-kw">for</span> Order #${order.id}`));
+
+<span class="syn-kw">const</span> repo <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> OrderRepository();
+<span class="syn-kw">const</span> orderService <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">new</span> OrderService(repo, notifier);
+
+<span class="syn-kw">const</span> completedOrder <span style="color: #c084fc; font-weight: 700;">=</span> orderService.<span style="color: #38bdf8; font-weight: 600;">checkout</span>(
+  <span class="syn-str">&#x27;ORD-9821&#x27;</span>, 
+  [&#x27;JavaScript Master Book<span class="syn-str">&#x27;, &#x27;</span>Coffee Mug<span class="syn-str">&#x27;], 
+  1450, 
+  BkashStrategy
+);
+
+console.log(&#x27;</span>Final Order Result:&#x27;, completedOrder.status);</code></pre>
+</div>
+      <div class="def-box">💡 <strong>আর্কিটেকচারাল ব্যাখ্যা:</strong> বাস্তব সফটওয়্যারে কোনো একক প্যাটার্ন একা চলে না। বিভিন্ন প্যাটার্নের সমন্বয়ে একটি আর্কিটেকচার তৈরি হয় যা অত্যন্ত স্কেলেবল, পরিবর্তনশীল এবং এন্টারপ্রাইজ-রেডি।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.70</span> 🎯 Final Mental Map — ডিজাইন প্যাটার্নের পূর্ণাঙ্গ মানচিত্র</div>
+      <p class="text-p">পুরো Chapter 37-এর ডিজাইন প্যাটার্ন ও সফটওয়্যার আর্কিটেকচার একনজরে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ DESIGN PATTERNS TAXONOMY & ARCHITECTURE MAP</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">DESIGN PATTERNS</span>
+                       <span style="color: #475569;">│</span>
+       <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────────────</span><span style="color: #475569;">┐</span>
+       <span style="color: #475569;">│</span>               <span style="color: #475569;">│</span>                <span style="color: #475569;">│</span>
+  <span style="color: #fde047; font-weight: 700;">CREATIONAL</span>       <span style="color: #fde047; font-weight: 700;">STRUCTURAL</span>       <span style="color: #fde047; font-weight: 700;">BEHAVIORAL</span>
+       <span style="color: #475569;">│</span>               <span style="color: #475569;">│</span>                <span style="color: #475569;">│</span>
+    <span style="color: #c084fc; font-weight: 700;">Factory</span>           <span style="color: #c084fc; font-weight: 700;">Adapter</span>          <span style="color: #c084fc; font-weight: 700;">Observer</span>
+    <span style="color: #c084fc; font-weight: 700;">Builder</span>           <span style="color: #c084fc; font-weight: 700;">Decorator</span>        <span style="color: #c084fc; font-weight: 700;">Pub/Sub</span>
+    <span style="color: #c084fc; font-weight: 700;">Singleton</span>         <span style="color: #c084fc; font-weight: 700;">Facade</span>            <span style="color: #c084fc; font-weight: 700;">Strategy</span>
+    <span style="color: #c084fc; font-weight: 700;">Prototype</span>         <span style="color: #c084fc; font-weight: 700;">Proxy</span>             <span style="color: #c084fc; font-weight: 700;">Command</span>
+                                       <span style="color: #c084fc; font-weight: 700;">State</span>
+                                       <span style="color: #c084fc; font-weight: 700;">Chain</span>
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                <span style="color: #fde047; font-weight: 700;">ARCHITECTURE</span>
+                       <span style="color: #475569;">│</span>
+              <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┐</span>
+              <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>
+          <span style="color: #c084fc; font-weight: 700;">Controller</span> Service <span style="color: #c084fc; font-weight: 700;">Repository</span>
+              <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>        <span style="color: #475569;">│</span>
+              <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">────────</span><span style="color: #475569;">┘</span>
+                       <span style="color: #475569;">│</span>
+                 Dependency
+                  Injection
+                       <span style="color: #475569;">│</span>
+                       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                  <span style="color: #38bdf8; font-weight: 600;">Database</span>/<span style="color: #38bdf8; font-weight: 600;">API</span></pre>
+</div>
+      <div class="def-box" style="margin-top: 6px; border-left: 3px solid #d97706; background: #fffbeb;">
+        🏆 <strong>এক লাইনে Chapter 37:</strong> Design Pattern কোনো মুখস্থ কোড নয়—এটি একটি প্রমাণিত আর্কিটেকচারাল সমাধান যা কোডকে সহজে পরিবর্তনযোগ্য, বাগ-মুক্ত এবং প্রোডাকশন স্কেলে বজায় রাখতে সাহায্য করে।
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">37.71</span> 🔗 Curriculum Progression: Chapter 36 → 37 → 38</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ ROADMAP CONTINUITY PIPELINE</div>
+  <pre class="ascii-tree-content">Chapter 36: Modern ECMAScript / ES2020+ Features
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Optional Chaining, Nullish Coalescing, Top-level Await, toSorted, Object.groupBy
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 37: JavaScript Design Patterns (THIS CHAPTER)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Creational, Structural, Behavioral, <span style="color: #c084fc; font-weight: 700;">MVC</span>, <span style="color: #c084fc; font-weight: 700;">Dependency Injection</span> &amp; <span style="color: #c084fc; font-weight: 700;">Repository</span>
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 38: Advanced JavaScript for React
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Reactivity Engine, Custom Hooks Architecture, <span style="color: #c084fc; font-weight: 700;">State</span> Machines &amp; Virtual DOM Deep Dive</pre>
+</div>
+    </div>
+
+  </div>
+</body>
+</html>

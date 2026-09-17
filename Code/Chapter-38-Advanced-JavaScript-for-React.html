@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 38 — Advanced JavaScript for React | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-code: 'Fira Code', monospace;
+      --font-body: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      background-color: #cbd5e1;
+      font-family: var(--font-body);
+      font-size: 11px;
+      line-height: 1.55;
+      color: var(--text-main);
+    }
+
+    /* Screen Action Bar */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 13px;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* A4 Document Container */
+    .doc-page {
+      max-width: 210mm;
+      margin: 20px auto;
+      background: var(--bg-page);
+      padding: 12mm 14mm;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      border-radius: 4px;
+    }
+
+    /* Master Top Banner */
+    .master-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0369a1 100%);
+      color: #ffffff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-num {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-family: var(--font-code);
+      font-weight: 700;
+      font-size: 9px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid #bae6fd;
+    }
+
+    /* Section Subheadings */
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin: 6px 0 3px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Paragraphs and Text */
+    .text-p {
+      margin-bottom: 5px;
+      text-align: justify;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.5;
+    }
+    .text-p strong {
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    /* Definitions / Quotes / Tips */
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid var(--blue-accent);
+      padding: 5px 9px;
+      border-radius: 0 4px 4px 0;
+      margin: 4px 0 6px 0;
+      font-size: 10px;
+      color: #1e293b;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-top {
+      background: #1e293b;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      color: #94a3b8;
+      border-bottom: 1px solid #334155;
+    }
+    pre {
+      margin: 0;
+      padding: 7px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.4 !important;
+      color: #e2e8f0;
+    }
+
+    /* Syntax Highlighting */
+    .syn-kw { color: #f43f5e; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #34d399; }
+    .syn-num { color: #fbbf24; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-38-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 38</span>
+        </div>
+      </div>
+      <div class="banner-sub">ADVANCED JAVASCRIPT FOR REACT: IMMUTABILITY, STATE MECHANICS, CLOSURES &amp; RENDERING PATTERNS</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">55 Modules + 8 Practice Labs</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 32 — React Engineering Foundations</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Innovations</div>
+          <div class="meta-val">Immutability, State Pipelines, Closures</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Target Architecture</div>
+          <div class="meta-val">React 18/19, Next.js &amp; Component Model</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>✨</span> Advanced JavaScript for React — আধুনিক ফ্রন্টএন্ডের মূল চালিকাশক্তি
+      </div>
+      <p class="text-p">
+        React শেখা মানে মূলত আধুনিক JavaScript-এর অ্যাডভান্সড ফিচার ও প্যাটার্নসমূহ আয়ত্ত করা। শুধু JSX বা <code>useState()</code> জানলেই চলে না—ইমিউটেবল স্টেট আপডেট, ক্লোজার, হাইয়ার-অর্ডার ফাংশন, রেফারেন্স বনাম ভ্যালু, অ্যারে ট্রান্সফর্মেশন (<code>map/filter/reduce</code>), অপশনাল চেইনিং, ইভেন্ট ডেলিগেশন এবং ডিবউন্সিং/থ্রটলিং জানা অপরিহার্য। এই চ্যাপ্টারে আমরা এই প্রতিটি বিষয় বাস্তব কোডসহ বিশদভাবে শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. Destructuring &amp; Spread</div>
+        <div class="roadmap-item"><span>📌</span> 2. map() &amp; filter()</div>
+        <div class="roadmap-item"><span>📌</span> 3. Immutability &amp; State</div>
+        <div class="roadmap-item"><span>📌</span> 4. Reference vs Value</div>
+        <div class="roadmap-item"><span>📌</span> 5. Closures in React</div>
+        <div class="roadmap-item"><span>📌</span> 6. Async/Await in React</div>
+        <div class="roadmap-item"><span>📌</span> 7. Synthetic Events</div>
+        <div class="roadmap-item"><span>📌</span> 8. Debounce &amp; Throttle</div>
+        <div class="roadmap-item"><span>📌</span> 9. Nested State Updates</div>
+        <div class="roadmap-item"><span>📌</span> 10. Common React Mistakes</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Modern Syntax in React: Destructuring, Spread & Rest (38.1 – 38.5)</div>
+    <div class="study-card" id="sec-38-1">
+      <div class="card-title"><span class="badge-num">38.1</span> React-এর জন্য Advanced JavaScript কেন?</div>
+      <p class="text-p">React মূলত JavaScript-এর উপর তৈরি। তাই React-এ এই ধরনের code খুব common:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { name: <span class="syn-str">&quot;Ripon&quot;</span>, age: <span class="syn-num">23</span> },
+  { name: <span class="syn-str">&quot;Rahim&quot;</span>, age: <span class="syn-num">22</span> }
+];
+
+<span class="syn-kw">const</span> names <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.name);</code></pre>
+</div>
+      <p class="text-p">এখানে React নেই, কিন্তু React application-এ এই ধরনের JavaScript প্রতিদিন ব্যবহার করতে হবে।</p>
+      <div class="section-subhead">🔹 সহজভাবে:</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ FULL-STACK JAVASCRIPT TO REACT PROGRESSION</div>
+  <pre class="ascii-tree-content">JavaScript
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">Modern JavaScript</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">React</span>
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 700;">Next.js</span> / <span style="color: #fde047; font-weight: 700;">Full Stack</span></pre>
+</div>
+      <p class="text-p">তাই Advanced JavaScript ভালোভাবে জানা = React অনেক সহজ হয়ে যাওয়া।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.2</span> Destructuring</div>
+      <p class="text-p">Destructuring হলো object বা array থেকে প্রয়োজনীয় value সরাসরি variable-এ বের করে নেওয়া।</p>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">✨ Object Destructuring</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  age: <span class="syn-num">23</span>,
+  city: <span class="syn-str">&quot;Dhaka&quot;</span>
+};
+
+<span class="syn-kw">const</span> { name, age } <span style="color: #c084fc; font-weight: 700;">=</span> user;
+
+<span class="syn-fn">console</span>.log(name);
+<span class="syn-fn">console</span>.log(age);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Output</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">Ripon</span>
+23</pre>
+</div>
+      <p class="text-p">আগে লিখতে হতো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> name <span style="color: #c084fc; font-weight: 700;">=</span> user.name;
+<span class="syn-kw">const</span> age <span style="color: #c084fc; font-weight: 700;">=</span> user.age;</code></pre>
+</div>
+      <p class="text-p">Destructuring:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> { name, age } <span style="color: #c084fc; font-weight: 700;">=</span> user;</code></pre>
+</div>
+      <div class="section-subhead">🔹 React Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">function</span> UserCard({ name, age }) {
+  <span class="syn-kw">return</span> (
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+      <span style="color: #c084fc; font-weight: 700;">&lt;</span>h2<span style="color: #c084fc; font-weight: 700;">&gt;</span>{name}&lt;/h2<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+      <span style="color: #c084fc; font-weight: 700;">&lt;</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>{age}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+  );
+}</code></pre>
+</div>
+      <p class="text-p">এখানে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>{name, age}</code></pre>
+</div>
+      <p class="text-p">হলো props destructuring।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.3</span> Array Destructuring</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> colors <span style="color: #c084fc; font-weight: 700;">=</span> [&quot;red<span class="syn-str">&quot;, &quot;</span>green<span class="syn-str">&quot;, &quot;</span>blue&quot;];
+
+<span class="syn-kw">const</span> [first, second, third] <span style="color: #c084fc; font-weight: 700;">=</span> colors;
+
+<span class="syn-fn">console</span>.log(first);
+<span class="syn-fn">console</span>.log(second);
+<span class="syn-fn">console</span>.log(third);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">red
+green
+blue</pre>
+</div>
+      <p class="text-p">React-এর সবচেয়ে famous example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> [count, <span style="color: #38bdf8; font-weight: 600;">setCount</span>] <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">useState</span>(<span class="syn-num">0</span>);</code></pre>
+</div>
+      <p class="text-p">এখানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">count</span>     <span style="color: #38bdf8; font-weight: 700;">→</span> প্রথম value
+<span style="color: #38bdf8; font-weight: 600;">setCount</span>  <span style="color: #38bdf8; font-weight: 700;">→</span> দ্বিতীয় value</pre>
+</div>
+      <p class="text-p">অর্থাৎ React-এর <code>useState()</code> বুঝতেও Array Destructuring জানা দরকার।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.4</span> Spread Operator <code>...</code></div>
+      <p class="text-p">Spread operator একটি array/object-এর elements বা properties ছড়িয়ে দেয়।</p>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">✨ Array</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers <span style="color: #c084fc; font-weight: 700;">=</span> [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">const</span> newNumbers <span style="color: #c084fc; font-weight: 700;">=</span> [...numbers, <span class="syn-num">4</span>, <span class="syn-num">5</span>];
+
+<span class="syn-fn">console</span>.log(newNumbers);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">[1, 2, 3, 4, 5]</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">✨ Object</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">const</span> updatedUser <span style="color: #c084fc; font-weight: 700;">=</span> {
+  <span style="color: #c084fc; font-weight: 700;">...</span>user,
+  age: <span class="syn-num">24</span>
+};
+
+<span class="syn-fn">console</span>.log(updatedUser);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">{
+  name: &quot;<span style="color: #38bdf8; font-weight: 600;">Ripon</span>&quot;,
+  age: 24
+}</pre>
+</div>
+      <div class="section-subhead">🔹 React-এ অত্যন্ত গুরুত্বপূর্ণ</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setUser</span>({
+  <span style="color: #c084fc; font-weight: 700;">...</span>user,
+  age: <span class="syn-num">24</span>
+});</code></pre>
+</div>
+      <p class="text-p">এর অর্থ:</p>
+      <div class="def-box">💡 আগের user-এর সব property রাখো, শুধু <code>age</code> পরিবর্তন করো।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.5</span> Rest Operator</div>
+      <p class="text-p">দেখতে একই:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #c084fc; font-weight: 700;">...</span></code></pre>
+</div>
+      <p class="text-p">কিন্তু কাজ আলাদা।</p>
+      <div class="section-subhead">🔹 Rest = বাকি value সংগ্রহ করা</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers <span style="color: #c084fc; font-weight: 700;">=</span> [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>];
+
+<span class="syn-kw">const</span> [first, second, <span style="color: #c084fc; font-weight: 700;">...</span>rest] <span style="color: #c084fc; font-weight: 700;">=</span> numbers;
+
+<span class="syn-fn">console</span>.log(first);
+<span class="syn-fn">console</span>.log(second);
+<span class="syn-fn">console</span>.log(rest);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">1
+2
+[3, 4, 5]</pre>
+</div>
+      <div class="section-subhead">🔹 Function</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> sum(...numbers) {
+  <span class="syn-kw">return</span> numbers.<span style="color: #38bdf8; font-weight: 600;">reduce</span>((total, num) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> total <span style="color: #c084fc; font-weight: 700;">+</span> num, <span class="syn-num">0</span>);
+}
+
+<span class="syn-fn">console</span>.log(sum(<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>));</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">60</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 02 — Array Transformations & Iteration in React (map, filter, find, reduce) (38.6 – 38.12)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.6</span> <code>map()</code> — React-এর সবচেয়ে গুরুত্বপূর্ণ Array Method</div>
+      <p class="text-p"><code>map()</code> array-এর প্রতিটি element নিয়ে নতুন array তৈরি করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers <span style="color: #c084fc; font-weight: 700;">=</span> [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>];
+
+<span class="syn-kw">const</span> doubled <span style="color: #c084fc; font-weight: 700;">=</span> numbers.<span style="color: #38bdf8; font-weight: 600;">map</span>(num <span style="color: #c084fc; font-weight: 700;">=&gt;</span> num <span style="color: #c084fc; font-weight: 700;">*</span> <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(doubled);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">[2, 4, 6]</pre>
+</div>
+      <div class="section-subhead" style="font-size: 11px; color: var(--navy-deep); border-left: 2px solid var(--blue-accent); padding-left: 5px;">✨ React-এ <code>map()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;Ripon&quot;</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;Rahim&quot;</span> },
+  { id: <span class="syn-num">3</span>, name: <span class="syn-str">&quot;Karim&quot;</span> }
+];
+
+<span class="syn-kw">function</span> Users() {
+  <span class="syn-kw">return</span> (
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+      {users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> (
+        <span style="color: #c084fc; font-weight: 700;">&lt;</span>p key<span style="color: #c084fc; font-weight: 700;">=</span>{user.id}&gt;
+          {user.name}
+        <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+      ))}
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+  );
+}</code></pre>
+</div>
+      <div class="section-subhead">🔹 Browser</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">Ripon</span>
+<span style="color: #38bdf8; font-weight: 600;">Rahim</span>
+<span style="color: #38bdf8; font-weight: 600;">Karim</span></pre>
+</div>
+      <div class="section-subhead">🔹 এখানে:</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>users.<span style="color: #38bdf8; font-weight: 600;">map</span>(...)</code></pre>
+</div>
+      <p class="text-p">মানে:</p>
+      <div class="def-box">💡 প্রত্যেক user-এর জন্য একটি UI element তৈরি করো।</div>
+      <div class="def-box" style="border-left: 3px solid #f59e0b; background: #fffbeb; font-weight: 700; color: #b45309;">⚡ 🔥 MUST KNOW</div>
+      <p class="text-p">React-এ array render করার সময় সাধারণত:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>array.<span style="color: #38bdf8; font-weight: 600;">map</span>(...)</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা হয়। এবং সাধারণত unique:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>key<span style="color: #c084fc; font-weight: 700;">=</span>{item.id}</code></pre>
+</div>
+      <p class="text-p">দেওয়া হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.7</span> <code>filter()</code></div>
+      <p class="text-p"><code>filter()</code> condition অনুযায়ী নতুন array তৈরি করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers <span style="color: #c084fc; font-weight: 700;">=</span> [<span class="syn-num">1</span>, <span class="syn-num">2</span>, <span class="syn-num">3</span>, <span class="syn-num">4</span>, <span class="syn-num">5</span>];
+
+<span class="syn-kw">const</span> evenNumbers <span style="color: #c084fc; font-weight: 700;">=</span> numbers.<span style="color: #38bdf8; font-weight: 600;">filter</span>(num <span style="color: #c084fc; font-weight: 700;">=&gt;</span> num <span style="color: #c084fc; font-weight: 700;">%</span> <span class="syn-num">2</span> <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(evenNumbers);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">[2, 4]</pre>
+</div>
+      <div class="section-subhead">🔹 React Example</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">const</span> products <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">80000</span> },
+  { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span> },
+  { name: <span class="syn-str">&quot;Keyboard&quot;</span>, price: <span class="syn-num">3000</span> }
+];
+
+<span class="syn-kw">const</span> expensiveProducts <span style="color: #c084fc; font-weight: 700;">=</span> products.<span style="color: #38bdf8; font-weight: 600;">filter</span>(
+  product <span style="color: #c084fc; font-weight: 700;">=&gt;</span> product.price <span style="color: #c084fc; font-weight: 700;">&gt;</span> <span class="syn-num">5000</span>
+);</code></pre>
+</div>
+      <p class="text-p">Result:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">Laptop</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.8</span> <code>find()</code></div>
+      <p class="text-p">প্রথম matching element return করে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;Ripon&quot;</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;Rahim&quot;</span> }
+];
+
+<span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">find</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.id <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-num">2</span>);
+
+<span class="syn-fn">console</span>.log(user);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">{ id: 2, name: &quot;<span style="color: #38bdf8; font-weight: 600;">Rahim</span>&quot; }</pre>
+</div>
+      <div class="section-subhead">🔹 <code>filter()</code> বনাম <code>find()</code></div>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Method</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>find()</code></td><td>প্রথম matching element</td></tr><tr><td><code>filter()</code></td><td>সব matching element</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.9</span> <code>findIndex()</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { id: <span class="syn-num">10</span>, name: <span class="syn-str">&quot;A&quot;</span> },
+  { id: <span class="syn-num">20</span>, name: <span class="syn-str">&quot;B&quot;</span> },
+  { id: <span class="syn-num">30</span>, name: <span class="syn-str">&quot;C&quot;</span> }
+];
+
+<span class="syn-kw">const</span> index <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">findIndex</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.id <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-num">20</span>);
+
+<span class="syn-fn">console</span>.log(index);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">1</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.10</span> <code>some()</code></div>
+      <p class="text-p">কমপক্ষে একজন condition satisfy করলে <code>true</code>।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> ages <span style="color: #c084fc; font-weight: 700;">=</span> [<span class="syn-num">15</span>, <span class="syn-num">17</span>, <span class="syn-num">22</span>];
+
+<span class="syn-kw">const</span> hasAdult <span style="color: #c084fc; font-weight: 700;">=</span> ages.<span style="color: #38bdf8; font-weight: 600;">some</span>(age <span style="color: #c084fc; font-weight: 700;">=&gt;</span> age <span style="color: #c084fc; font-weight: 700;">&gt;</span><span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">18</span>);
+
+<span class="syn-fn">console</span>.log(hasAdult);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">true</pre>
+</div>
+      <div class="section-subhead">🔹 Real-life</div>
+      <div class="def-box">💡 Class-এর মধ্যে অন্তত একজন student কি উপস্থিত?</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>students.<span style="color: #38bdf8; font-weight: 600;">some</span>(student <span style="color: #c084fc; font-weight: 700;">=&gt;</span> student.present)</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.11</span> <code>every()</code></div>
+      <p class="text-p">সবাই condition satisfy করলে <code>true</code>।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> ages <span style="color: #c084fc; font-weight: 700;">=</span> [<span class="syn-num">20</span>, <span class="syn-num">25</span>, <span class="syn-num">30</span>];
+
+<span class="syn-kw">const</span> allAdults <span style="color: #c084fc; font-weight: 700;">=</span> ages.<span style="color: #38bdf8; font-weight: 600;">every</span>(age <span style="color: #c084fc; font-weight: 700;">=&gt;</span> age <span style="color: #c084fc; font-weight: 700;">&gt;</span><span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">18</span>);
+
+<span class="syn-fn">console</span>.log(allAdults);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">true</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.12</span> <code>reduce()</code></div>
+      <p class="text-p"><code>reduce()</code> অনেকগুলো value থেকে একটি final result তৈরি করতে পারে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> numbers <span style="color: #c084fc; font-weight: 700;">=</span> [<span class="syn-num">10</span>, <span class="syn-num">20</span>, <span class="syn-num">30</span>];
+
+<span class="syn-kw">const</span> total <span style="color: #c084fc; font-weight: 700;">=</span> numbers.<span style="color: #38bdf8; font-weight: 600;">reduce</span>(
+  (sum, number) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> sum <span style="color: #c084fc; font-weight: 700;">+</span> number,
+  <span class="syn-num">0</span>
+);
+
+<span class="syn-fn">console</span>.log(total);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">60</pre>
+</div>
+      <div class="section-subhead">🔹 Shopping Cart</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> cart <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">80000</span> },
+  { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span> },
+  { name: <span class="syn-str">&quot;Keyboard&quot;</span>, price: <span class="syn-num">3000</span> }
+];
+
+<span class="syn-kw">const</span> total <span style="color: #c084fc; font-weight: 700;">=</span> cart.<span style="color: #38bdf8; font-weight: 600;">reduce</span>(
+  (sum, item) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> sum <span style="color: #c084fc; font-weight: 700;">+</span> item.price,
+  <span class="syn-num">0</span>
+);
+
+<span class="syn-fn">console</span>.log(total);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">84000</pre>
+</div>
+      <p class="text-p">React e-commerce app-এ এই ধরনের code খুব common।</p>
+    </div>
+    <div class="part-banner">Part 03 — Immutability, State Updates & Reference vs Value (38.13 – 38.20)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.13</span> Immutability</div>
+      <p class="text-p">React-এর সবচেয়ে গুরুত্বপূর্ণ conceptগুলোর একটি। <strong>Immutability = existing data সরাসরি পরিবর্তন না করা।</strong> ❌ Bad:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>user.name <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;Rahim&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setUser</span>({
+  <span style="color: #c084fc; font-weight: 700;">...</span>user,
+  name: <span class="syn-str">&quot;Rahim&quot;</span>
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.14</span> কেন React-এ Immutability গুরুত্বপূর্ণ?</div>
+      <p class="text-p">React state update detect করতে reference comparison ব্যবহার করে। ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>
+};</code></pre>
+</div>
+      <p class="text-p">সরাসরি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>user.name <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;Rahim&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">করলে একই object reference থাকে। কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> newUser <span style="color: #c084fc; font-weight: 700;">=</span> {
+  <span style="color: #c084fc; font-weight: 700;">...</span>user,
+  name: <span class="syn-str">&quot;Rahim&quot;</span>
+};</code></pre>
+</div>
+      <p class="text-p">এখানে নতুন object তৈরি হয়।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">Old Object
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+   copy
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+New Object</pre>
+</div>
+      <p class="text-p">React state management-এর জন্য এই pattern অত্যন্ত গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.15</span> Array State Update</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> [items, <span style="color: #38bdf8; font-weight: 600;">setItems</span>] <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">useState</span>([]);</code></pre>
+</div>
+      <p class="text-p">নতুন item যোগ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setItems</span>([
+  <span style="color: #c084fc; font-weight: 700;">...</span>items,
+  newItem
+]);</code></pre>
+</div>
+      <p class="text-p">❌ সরাসরি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>items.<span style="color: #38bdf8; font-weight: 600;">push</span>(newItem);</code></pre>
+</div>
+      <p class="text-p">এড়িয়ে চলা উচিত।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.16</span> Array Item Update</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;Ripon&quot;</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;Rahim&quot;</span> }
+];</code></pre>
+</div>
+      <p class="text-p"><code>id = 2</code> update করতে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> updatedUsers <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span>
+  user.id <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-num">2</span>
+    ? { <span style="color: #c084fc; font-weight: 700;">...</span>user, name: <span class="syn-str">&quot;Karim&quot;</span> }
+    : user
+);</code></pre>
+</div>
+      <p class="text-p">Result:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>[
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;Ripon&quot;</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;Karim&quot;</span> }
+]</code></pre>
+</div>
+      <p class="text-p">🔥 React-এ এটি খুব গুরুত্বপূর্ণ pattern।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.17</span> Array Item Delete</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setUsers</span>(
+  users.<span style="color: #38bdf8; font-weight: 600;">filter</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.id <span style="color: #c084fc; font-weight: 700;">!==</span> <span class="syn-num">2</span>)
+);</code></pre>
+</div>
+      <p class="text-p">অর্থ:</p>
+      <div class="def-box">💡 id 2 ছাড়া বাকি সবাই রাখো।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.18</span> Reference vs Value</div>
+      <p class="text-p">Primitive:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> a <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">10</span>;
+<span class="syn-kw">let</span> b <span style="color: #c084fc; font-weight: 700;">=</span> a;
+
+b <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">20</span>;
+
+<span class="syn-fn">console</span>.log(a);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">10</pre>
+</div>
+      <p class="text-p">Object:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user1 <span style="color: #c084fc; font-weight: 700;">=</span> {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>
+};
+
+<span class="syn-kw">const</span> user2 <span style="color: #c084fc; font-weight: 700;">=</span> user1;
+
+user2.name <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;Rahim&quot;</span>;
+
+<span class="syn-fn">console</span>.log(user1.name);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #38bdf8; font-weight: 600;">Rahim</span></pre>
+</div>
+      <p class="text-p">কারণ দুটো একই object reference ধরে রেখেছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.19</span> Shallow Copy</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  age: <span class="syn-num">23</span>
+};
+
+<span class="syn-kw">const</span> copy <span style="color: #c084fc; font-weight: 700;">=</span> {
+  <span style="color: #c084fc; font-weight: 700;">...</span>user
+};</code></pre>
+</div>
+      <p class="text-p">এখন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">user !== copy</pre>
+</div>
+      <p class="text-p">কিন্তু nested object থাকলে সমস্যা হতে পারে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  address: {
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+  }
+};
+
+<span class="syn-kw">const</span> copy <span style="color: #c084fc; font-weight: 700;">=</span> { <span style="color: #c084fc; font-weight: 700;">...</span>user };
+
+copy.address.city <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;Dinajpur&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">এতে original-এর nested object-ও পরিবর্তিত হতে পারে। কারণ spread <strong>deep copy নয়</strong>।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.20</span> Deep Copy</div>
+      <p class="text-p">Modern JavaScript-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> copy <span style="color: #c084fc; font-weight: 700;">=</span> structuredClone(user);</code></pre>
+</div>
+      <p class="text-p">এটি অনেক ক্ষেত্রে nested data-এর deep copy তৈরি করতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 04 — Safe Access, Short-Circuiting, Ternaries & Higher-Order Functions (38.21 – 38.27)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.21</span> Optional Chaining <code>?.</code></div>
+      <p class="text-p">ধরো API response:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {};</code></pre>
+</div>
+      <p class="text-p">এখন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(user.address.city);</code></pre>
+</div>
+      <p class="text-p">error হতে পারে। কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(user.address<span style="color: #c084fc; font-weight: 700;">?.</span>city);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">undefined</pre>
+</div>
+      <p class="text-p">আরও:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>user<span style="color: #c084fc; font-weight: 700;">?.</span>profile<span style="color: #c084fc; font-weight: 700;">?.</span>address<span style="color: #c084fc; font-weight: 700;">?.</span>city</code></pre>
+</div>
+      <p class="text-p">React-এ API data render করার সময় খুব useful।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.22</span> Nullish Coalescing <code>??</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> username <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-bool">null</span>;
+
+<span class="syn-kw">const</span> name <span style="color: #c084fc; font-weight: 700;">=</span> username <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-str">&quot;Guest&quot;</span>;
+
+<span class="syn-fn">console</span>.log(name);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">Guest</pre>
+</div>
+      <div class="section-subhead">🔹 <code>||</code> বনাম <code>??</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> count <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">0</span>;
+
+<span class="syn-fn">console</span>.log(count <span style="color: #c084fc; font-weight: 700;">||</span> <span class="syn-num">10</span>);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">10</pre>
+</div>
+      <p class="text-p">কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">console</span>.log(count <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-num">10</span>);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">0</pre>
+</div>
+      <p class="text-p">কারণ <code>??</code> শুধু <code>null</code> অথবা <code>undefined</code> check করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.23</span> Short-Circuit Rendering</div>
+      <p class="text-p">React:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>{isLoggedIn <span style="color: #c084fc; font-weight: 700;">&amp;&amp;</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>Dashboard <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>}</code></pre>
+</div>
+      <p class="text-p">মানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">isLoggedIn = true
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Dashboard দেখাও</pre>
+</div>
+      <p class="text-p">আর:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">false
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+কিছু render করো না</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.24</span> Ternary Operator</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> isLoggedIn <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-bool">true</span>;
+
+<span class="syn-kw">const</span> message <span style="color: #c084fc; font-weight: 700;">=</span> isLoggedIn
+  ? <span class="syn-str">&quot;Welcome&quot;</span>
+  : <span class="syn-str">&quot;Please login&quot;</span>;
+
+<span class="syn-fn">console</span>.log(message);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">Welcome</pre>
+</div>
+      <p class="text-p">React:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>{isLoggedIn ? (
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span>Dashboard <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>
+) : (
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span>Login <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>
+)}</code></pre>
+</div>
+      <p class="text-p">এটি React-এর খুব common pattern।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.25</span> Arrow Functions</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> add <span style="color: #c084fc; font-weight: 700;">=</span> (a, b) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+};</code></pre>
+</div>
+      <p class="text-p">Short form:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> add <span style="color: #c084fc; font-weight: 700;">=</span> (a, b) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;</code></pre>
+</div>
+      <p class="text-p">React:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> (
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>{user.name}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+))</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.26</span> Higher-Order Function</div>
+      <p class="text-p">যে function:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>অন্য function গ্রহণ করে অথবা</li>
+        <li>function return করে</li>
+      </ul>
+      <p class="text-p">তাকে Higher-Order Function বলা হয়। উদাহরণ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> calculate(a, b, operation) {
+  <span class="syn-kw">return</span> operation(a, b);
+}
+
+<span class="syn-kw">const</span> result <span style="color: #c084fc; font-weight: 700;">=</span> calculate(
+  <span class="syn-num">10</span>,
+  <span class="syn-num">20</span>,
+  (a, b) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b
+);
+
+<span class="syn-fn">console</span>.log(result);</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">30</pre>
+</div>
+      <p class="text-p">React-এর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">map</span>()
+<span style="color: #38bdf8; font-weight: 600;">filter</span>()
+<span style="color: #38bdf8; font-weight: 600;">reduce</span>()</code></pre>
+</div>
+      <p class="text-p">এগুলো callback গ্রহণ করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.27</span> Callback Function</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> greet(name, callback) {
+  <span class="syn-fn">console</span>.log(&quot;Hello<span class="syn-str">&quot;, name);
+  callback();
+}
+
+greet(&quot;</span>Ripon<span class="syn-str">&quot;, () =&gt; {
+  console.log(&quot;</span>Welcome<span style="color: #c084fc; font-weight: 700;">!</span>&quot;);
+});</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">Hello <span style="color: #38bdf8; font-weight: 600;">Ripon</span>
+Welcome!</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 05 — Closures, State Mechanics, Pure Functions & ES Modules (38.28 – 38.35)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.28</span> Closures in React</div>
+      <p class="text-p">Closure মানে inner function তার outer scope-এর variable মনে রাখতে পারে।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> counter() {
+  <span class="syn-kw">let</span> count <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">0</span>;
+
+  <span class="syn-kw">return</span> <span class="syn-kw">function</span> () {
+    count<span style="color: #c084fc; font-weight: 700;">+</span><span style="color: #c084fc; font-weight: 700;">+</span>;
+    <span class="syn-kw">return</span> count;
+  };
+}
+
+<span class="syn-kw">const</span> increase <span style="color: #c084fc; font-weight: 700;">=</span> counter();
+
+<span class="syn-fn">console</span>.log(increase());
+<span class="syn-fn">console</span>.log(increase());</code></pre>
+</div>
+      <p class="text-p">Output:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">1
+2</pre>
+</div>
+      <p class="text-p">React-এ event handler এবং hooks-এর behaviour বুঝতে closure অত্যন্ত গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.29</span> React State এবং Closure</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">function</span> Counter() {
+  <span class="syn-kw">const</span> [count, <span style="color: #38bdf8; font-weight: 600;">setCount</span>] <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">useState</span>(<span class="syn-num">0</span>);
+
+  <span class="syn-kw">function</span> handleClick() {
+    <span class="syn-fn">console</span>.log(count);
+  }
+
+  <span class="syn-kw">return</span> (
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span>button onClick<span style="color: #c084fc; font-weight: 700;">=</span>{handleClick}&gt;
+      {count}
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>button<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+  );
+}</code></pre>
+</div>
+      <p class="text-p"><code>handleClick</code> তার surrounding scope থেকে <code>count</code> access করছে। এটাই closure-এর practical impact।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.30</span> Functional Programming</div>
+      <p class="text-p">React development-এ functional programming style বেশি দেখা যায়। মূল concepts:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ IMMUTABLE REACT STATE LIFECYCLE</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">Pure Function</span>
+<span style="color: #34d399; font-weight: 700;">Immutability</span>
+Higher-Order Function
+Composition
+Declarative Programming</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.31</span> Pure Function</div>
+      <p class="text-p">Pure function: 1. একই input → একই output 2. বাইরে কোনো side effect করে না</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+}</code></pre>
+</div>
+      <p class="text-p">এটি pure। কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">let</span> total <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">0</span>;
+
+<span class="syn-kw">function</span> addToTotal(value) {
+  total <span style="color: #c084fc; font-weight: 700;">+</span><span style="color: #c084fc; font-weight: 700;">=</span> value;
+}</code></pre>
+</div>
+      <p class="text-p">এটি pure নয় কারণ external state পরিবর্তন করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.32</span> <code>this</code> in React</div>
+      <p class="text-p">Modern React functional components-এ সাধারণত class-এর মতো <code>this</code> লাগে না। পুরনো React:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">class</span> Counter <span class="syn-kw">extends</span> <span class="syn-fn">React</span>.Component {
+  handleClick() {
+    <span class="syn-kw">this</span>.setState({
+      count: <span class="syn-kw">this</span>.state.count <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>
+    });
+  }
+}</code></pre>
+</div>
+      <p class="text-p">Modern React:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">function</span> Counter() {
+  <span class="syn-kw">const</span> [count, <span style="color: #38bdf8; font-weight: 600;">setCount</span>] <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">useState</span>(<span class="syn-num">0</span>);
+
+  <span class="syn-kw">return</span> (
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span>button onClick<span style="color: #c084fc; font-weight: 700;">=</span>{() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> <span style="color: #38bdf8; font-weight: 600;">setCount</span>(count <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>)}&gt;
+      {count}
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>button<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+  );
+}</code></pre>
+</div>
+      <p class="text-p">তাই modern React শেখার জন্য <code>this</code> জানা দরকার হলেও এর ব্যবহার অনেক কম।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.33</span> Modules</div>
+      <p class="text-p">React project সাধারণত module-based।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// math.js</span>
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> add(a, b) {
+  <span class="syn-kw">return</span> a <span style="color: #c084fc; font-weight: 700;">+</span> b;
+}</code></pre>
+</div>
+      <p class="text-p">তারপর:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> { add } <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">React:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> <span class="syn-fn">React</span> <span class="syn-kw">from</span> <span class="syn-str">&quot;react&quot;</span>;
+<span class="syn-kw">import</span> UserCard <span class="syn-kw">from</span> <span class="syn-str">&quot;./UserCard&quot;</span>;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.34</span> Default Export</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">export</span> <span class="syn-kw">default</span> <span class="syn-kw">function</span> UserCard() {
+  <span class="syn-kw">return</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>h2<span style="color: #c084fc; font-weight: 700;">&gt;</span>User<span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>h2<span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+}</code></pre>
+</div>
+      <p class="text-p">Import:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> UserCard <span class="syn-kw">from</span> <span class="syn-str">&quot;./UserCard&quot;</span>;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.35</span> Named Export</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">export</span> <span class="syn-kw">function</span> add() {}
+
+<span class="syn-kw">export</span> <span class="syn-kw">function</span> subtract() {}</code></pre>
+</div>
+      <p class="text-p">Import:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">import</span> {
+  add,
+  subtract
+} <span class="syn-kw">from</span> <span class="syn-str">&quot;./math.js&quot;</span>;</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 06 — Async Data Fetching, Event System, Debounce & Throttle (38.36 – 38.44)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.36</span> Async/Await in React</div>
+      <p class="text-p">API call:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> getUsers() {
+  <span class="syn-kw">const</span> response <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> fetch(
+    <span class="syn-str">&quot;https://example.com/users&quot;</span>
+  );
+
+  <span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> response.json();
+
+  <span class="syn-fn">console</span>.log(data);
+}</code></pre>
+</div>
+      <p class="text-p">React-এ সাধারণত <code>useEffect()</code>-এর মাধ্যমে API call করা হয়। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ IMMUTABLE REACT STATE LIFECYCLE</div>
+  <pre class="ascii-tree-content">Component
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+useEffect
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+fetch()
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+await response
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+JSON
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+setState
+   <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Re-render</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.37</span> Promise Handling</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>fetch(&quot;/api<span style="color: #c084fc; font-weight: 700;">/</span>users&quot;)
+  .then(response <span style="color: #c084fc; font-weight: 700;">=&gt;</span> response.json())
+  .then(data <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    <span class="syn-fn">console</span>.log(data);
+  })
+  .<span class="syn-kw">catch</span>(error <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    <span class="syn-fn">console</span>.error(error);
+  });</code></pre>
+</div>
+      <p class="text-p">Modern style:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> loadUsers() {
+  <span class="syn-kw">try</span> {
+    <span class="syn-kw">const</span> response <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> fetch(&quot;/api<span style="color: #c084fc; font-weight: 700;">/</span>users&quot;);
+
+    <span class="syn-kw">const</span> data <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-kw">await</span> response.json();
+
+    <span class="syn-fn">console</span>.log(data);
+  } <span class="syn-kw">catch</span> (error) {
+    <span class="syn-fn">console</span>.error(error);
+  }
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.38</span> API Data Processing</div>
+      <p class="text-p">ধরো backend থেকে এসেছে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  {
+    id: <span class="syn-num">1</span>,
+    name: <span class="syn-str">&quot;Ripon&quot;</span>,
+    active: <span class="syn-bool">true</span>
+  },
+  {
+    id: <span class="syn-num">2</span>,
+    name: <span class="syn-str">&quot;Rahim&quot;</span>,
+    active: <span class="syn-bool">false</span>
+  }
+];</code></pre>
+</div>
+      <p class="text-p">শুধু active users:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> activeUsers <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">filter</span>(
+  user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.active
+);</code></pre>
+</div>
+      <p class="text-p">তারপর names:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> names <span style="color: #c084fc; font-weight: 700;">=</span> activeUsers.<span style="color: #38bdf8; font-weight: 600;">map</span>(
+  user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.name
+);</code></pre>
+</div>
+      <p class="text-p">Result:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">[&quot;<span style="color: #38bdf8; font-weight: 600;">Ripon</span>&quot;]</pre>
+</div>
+      <p class="text-p">React:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>{users
+  .<span style="color: #38bdf8; font-weight: 600;">filter</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.active)
+  .<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> (
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span>p key<span style="color: #c084fc; font-weight: 700;">=</span>{user.id}&gt;
+      {user.name}
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+  ))
+}</code></pre>
+</div>
+      <p class="text-p">🔥 Full-stack React development-এ এই pattern অত্যন্ত common।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.39</span> Event Object</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">function</span> handleClick(event) {
+  <span class="syn-fn">console</span>.log(event);
+}</code></pre>
+</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span style="color: #c084fc; font-weight: 700;">&lt;</span>button onClick<span style="color: #c084fc; font-weight: 700;">=</span>{handleClick}&gt;
+  Click
+<span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>button<span style="color: #c084fc; font-weight: 700;">&gt;</span></code></pre>
+</div>
+      <p class="text-p"><code>event</code> object-এর মধ্যে event সম্পর্কিত তথ্য থাকে। যেমন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>event.target
+event.currentTarget
+event.<span style="color: #38bdf8; font-weight: 600;">preventDefault</span>()</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.40</span> <code>preventDefault()</code></div>
+      <p class="text-p">Form:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">function</span> handleSubmit(event) {
+  event.<span style="color: #38bdf8; font-weight: 600;">preventDefault</span>();
+
+  <span class="syn-fn">console</span>.log(&quot;Form submitted&quot;);
+}</code></pre>
+</div>
+      <p class="text-p">Browser-এর default form submission বন্ধ করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.41</span> Event Bubbling</div>
+      <p class="text-p">HTML:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">&lt;div id=&quot;parent&quot;&gt;
+  &lt;button id=&quot;child&quot;&gt;
+    Click
+  &lt;/button&gt;
+&lt;/div&gt;</pre>
+</div>
+      <p class="text-p">Button click করলে event:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">button
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+parent
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+body
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+document</pre>
+</div>
+      <p class="text-p">উপরে উঠতে পারে। এটিই event bubbling।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.42</span> Event Delegation</div>
+      <p class="text-p">অনেকগুলো child element-এর জন্য আলাদা listener না দিয়ে parent-এ listener ব্যবহার করা যায়।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>parent.<span style="color: #38bdf8; font-weight: 600;">addEventListener</span>(&quot;click<span class="syn-str">&quot;, event =&gt; {
+  if (event.target.matches(&quot;</span>button<span class="syn-str">&quot;)) {
+    console.log(&quot;</span>Button clicked&quot;);
+  }
+});</code></pre>
+</div>
+      <p class="text-p">React-এ event system এই concept-এর সাথে সম্পর্কিত।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.43</span> Debounce</div>
+      <p class="text-p">User typing:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">R
+Ri
+Rip
+Ripo
+<span style="color: #38bdf8; font-weight: 600;">Ripon</span></pre>
+</div>
+      <p class="text-p">প্রতিবার API call করলে unnecessary request হবে। Debounce:</p>
+      <div class="def-box">💡 User typing বন্ধ করার কিছু সময় পর function চালাও।</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">function</span> <span style="color: #38bdf8; font-weight: 600;">debounce</span>(callback, delay) {
+  <span class="syn-kw">let</span> timer;
+
+  <span class="syn-kw">return</span> (...args) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+    clearTimeout(timer);
+
+    timer <span style="color: #c084fc; font-weight: 700;">=</span> setTimeout(() <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+      callback(...args);
+    }, delay);
+  };
+}</code></pre>
+</div>
+      <p class="text-p">Search:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> search <span style="color: #c084fc; font-weight: 700;">=</span> <span style="color: #38bdf8; font-weight: 600;">debounce</span>(value <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-fn">console</span>.log(&quot;API call:&quot;, value);
+}, <span class="syn-num">500</span>);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.44</span> Throttle</div>
+      <p class="text-p">Throttle:</p>
+      <div class="def-box">💡 নির্দিষ্ট সময়ের মধ্যে সর্বোচ্চ একবার function চালাও।</div>
+      <p class="text-p">যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">scroll
+scroll
+scroll
+scroll
+scroll</pre>
+</div>
+      <p class="text-p">প্রতিবার না চালিয়ে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT ARCHITECTURAL DIAGRAM</div>
+  <pre class="ascii-tree-content">100ms
+200ms
+300ms</pre>
+</div>
+      <p class="text-p">এরকম interval-এ চালানো যায়।</p>
+    </div>
+    <div class="part-banner">Part 07 — Advanced State Updates, Common React Pitfalls & Real Todo Architecture (38.45 – 38.54)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.45</span> React State Update</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">const</span> [count, <span style="color: #38bdf8; font-weight: 600;">setCount</span>] <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">useState</span>(<span class="syn-num">0</span>);</code></pre>
+</div>
+      <p class="text-p">Wrong ধারণা:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>count <span style="color: #c084fc; font-weight: 700;">=</span> count <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>;</code></pre>
+</div>
+      <p class="text-p">State update করতে হবে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setCount</span>(count <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>);</code></pre>
+</div>
+      <p class="text-p">আর previous state-এর উপর নির্ভর করলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setCount</span>(prevCount <span style="color: #c084fc; font-weight: 700;">=&gt;</span> prevCount <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>);</code></pre>
+</div>
+      <div class="section-subhead">🔹 কেন?</div>
+      <p class="text-p">কারণ React state update asynchronous/batched হতে পারে। এই pattern safer:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setCount</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span> prev <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.46</span> Multiple State Updates</div>
+      <p class="text-p">এটি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setCount</span>(count <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>);
+<span style="color: #38bdf8; font-weight: 600;">setCount</span>(count <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>);</code></pre>
+</div>
+      <p class="text-p">সবসময় <code>+2</code> করার নিশ্চয়তা দেয় না। Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setCount</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span> prev <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>);
+<span style="color: #38bdf8; font-weight: 600;">setCount</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span> prev <span style="color: #c084fc; font-weight: 700;">+</span> <span class="syn-num">1</span>);</code></pre>
+</div>
+      <p class="text-p">এখানে প্রতিটি update previous state-এর উপর নির্ভর করছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.47</span> Nested State Update</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> [user, <span style="color: #38bdf8; font-weight: 600;">setUser</span>] <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-fn">useState</span>({
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  address: {
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>
+  }
+});</code></pre>
+</div>
+      <p class="text-p">City update:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setUser</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span> ({
+  <span style="color: #c084fc; font-weight: 700;">...</span>prev,
+  address: {
+    <span style="color: #c084fc; font-weight: 700;">...</span>prev.address,
+    city: <span class="syn-str">&quot;Dinajpur&quot;</span>
+  }
+}));</code></pre>
+</div>
+      <p class="text-p">এখানে দুই level spread হয়েছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.48</span> React-এ Conditional Rendering</div>
+      <div class="section-subhead">🔹 <code>&amp;&amp;</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>{isAdmin <span style="color: #c084fc; font-weight: 700;">&amp;&amp;</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>AdminPanel <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>}</code></pre>
+</div>
+      <div class="section-subhead">🔹 Ternary</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>{isAdmin ? (
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span>AdminPanel <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>
+) : (
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span>UserPanel <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>
+)}</code></pre>
+</div>
+      <div class="section-subhead">🔹 Function</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">function</span> renderContent() {
+  <span class="syn-kw">if</span> (loading) <span class="syn-kw">return</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>Loading <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+  <span class="syn-kw">if</span> (error) <span class="syn-kw">return</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span><span class="syn-fn">Error</span> <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+  <span class="syn-kw">return</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>Content <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.49</span> Common Mistake — <code>map()</code> এ <code>return</code> ভুলে যাওয়া</div>
+      <p class="text-p">❌:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>{user.name}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+});</code></pre>
+</div>
+      <p class="text-p">এখানে implicit return নেই। সঠিক:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> (
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>{user.name}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+));</code></pre>
+</div>
+      <p class="text-p">অথবা:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+  <span class="syn-kw">return</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>{user.name}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+});</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.50</span> Common Mistake — Object Mutation</div>
+      <p class="text-p">❌:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>user.name <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-str">&quot;Rahim&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">React state হলে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setUser</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span> ({
+  <span style="color: #c084fc; font-weight: 700;">...</span>prev,
+  name: <span class="syn-str">&quot;Rahim&quot;</span>
+}));</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.51</span> Common Mistake — Array Mutation</div>
+      <p class="text-p">❌:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>items.<span style="color: #38bdf8; font-weight: 600;">push</span>(newItem);</code></pre>
+</div>
+      <p class="text-p">Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setItems</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span> [
+  <span style="color: #c084fc; font-weight: 700;">...</span>prev,
+  newItem
+]);</code></pre>
+</div>
+      <p class="text-p">Delete:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setItems</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span>
+  prev.<span style="color: #38bdf8; font-weight: 600;">filter</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span> item.id <span style="color: #c084fc; font-weight: 700;">!==</span> id)
+);</code></pre>
+</div>
+      <p class="text-p">Update:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: 600;">setItems</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span>
+  prev.<span style="color: #38bdf8; font-weight: 600;">map</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span>
+    item.id <span style="color: #c084fc; font-weight: 700;">===</span> id
+      ? { <span style="color: #c084fc; font-weight: 700;">...</span>item, completed: <span class="syn-bool">true</span> }
+      : item
+  )
+);</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.52</span> Common Mistake — Index কে সবসময় <code>key</code> হিসেবে ব্যবহার করা</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>{items.<span style="color: #38bdf8; font-weight: 600;">map</span>((item, index) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> (
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span>div key<span style="color: #c084fc; font-weight: 700;">=</span>{index}&gt;
+    {item.name}
+  <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+))}</code></pre>
+</div>
+      <p class="text-p">Static list হলে কখনো acceptable হতে পারে। কিন্তু list যদি:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>reorder হয়</li>
+        <li>delete হয়</li>
+        <li>insert হয়</li>
+      </ul>
+      <p class="text-p">তাহলে stable unique ID ব্যবহার করা better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code>key<span style="color: #c084fc; font-weight: 700;">=</span>{item.id}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.53</span> Common Mistake — API Data আসার আগেই Access করা</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span style="color: #c084fc; font-weight: 700;">&lt;</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>{user.profile.name}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">API data এখনো আসেনি। Error হতে পারে। Better:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span style="color: #c084fc; font-weight: 700;">&lt;</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>{user<span style="color: #c084fc; font-weight: 700;">?.</span>profile<span style="color: #c084fc; font-weight: 700;">?.</span>name}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">অথবা loading state:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JSX Source</span><span>JSX</span></div>
+  <pre><code><span class="syn-kw">if</span> (loading) {
+  <span class="syn-kw">return</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>Loading<span style="color: #c084fc; font-weight: 700;">...</span><span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>p<span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+}</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.54</span> Real-World Example — Todo App</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> todos <span style="color: #c084fc; font-weight: 700;">=</span> [
+  {
+    id: <span class="syn-num">1</span>,
+    title: <span class="syn-str">&quot;Learn JavaScript&quot;</span>,
+    completed: <span class="syn-bool">true</span>
+  },
+  {
+    id: <span class="syn-num">2</span>,
+    title: <span class="syn-str">&quot;Learn React&quot;</span>,
+    completed: <span class="syn-bool">false</span>
+  }
+];</code></pre>
+</div>
+      <div class="section-subhead">🔹 Completed todos</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> completedTodos <span style="color: #c084fc; font-weight: 700;">=</span> todos.<span style="color: #38bdf8; font-weight: 600;">filter</span>(
+  todo <span style="color: #c084fc; font-weight: 700;">=&gt;</span> todo.completed
+);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Todo names</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> titles <span style="color: #c084fc; font-weight: 700;">=</span> todos.<span style="color: #38bdf8; font-weight: 600;">map</span>(
+  todo <span style="color: #c084fc; font-weight: 700;">=&gt;</span> todo.title
+);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Update</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> updatedTodos <span style="color: #c084fc; font-weight: 700;">=</span> todos.<span style="color: #38bdf8; font-weight: 600;">map</span>(todo <span style="color: #c084fc; font-weight: 700;">=&gt;</span>
+  todo.id <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-num">2</span>
+    ? { <span style="color: #c084fc; font-weight: 700;">...</span>todo, completed: <span class="syn-bool">true</span> }
+    : todo
+);</code></pre>
+</div>
+      <div class="section-subhead">🔹 Delete</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> remainingTodos <span style="color: #c084fc; font-weight: 700;">=</span> todos.<span style="color: #38bdf8; font-weight: 600;">filter</span>(
+  todo <span style="color: #c084fc; font-weight: 700;">=&gt;</span> todo.id <span style="color: #c084fc; font-weight: 700;">!==</span> <span class="syn-num">1</span>
+);</code></pre>
+</div>
+      <p class="text-p">এই চারটি pattern React Todo App-এর core।</p>
+    </div>
+    <div class="part-banner">Part 08 — Must Know Pillars, Quick Cheat Sheet, 8 Practice Labs & Final Mental Map</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.55</span> 🔥 MUST KNOW — React-এর জন্য অপরিহার্য JavaScript কনসেপ্ট</div>
+      <p class="text-p">সবচেয়ে বেশি গুরুত্ব দাও:</p>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Topic</th><th>Importance</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>map()</code></td><td>🔥🔥🔥</td></tr><tr><td><code>filter()</code></td><td>🔥🔥🔥</td></tr><tr><td>Destructuring</td><td>🔥🔥🔥</td></tr><tr><td>Spread</td><td>🔥🔥🔥</td></tr><tr><td>Immutability</td><td>🔥🔥🔥</td></tr><tr><td>Arrow Function</td><td>🔥🔥🔥</td></tr><tr><td>Callback</td><td>🔥🔥🔥</td></tr><tr><td>Closure</td><td>🔥🔥</td></tr><tr><td><code>reduce()</code></td><td>🔥🔥</td></tr><tr><td>Optional Chaining</td><td>🔥🔥🔥</td></tr><tr><td>Nullish Coalescing</td><td>🔥🔥</td></tr><tr><td>Ternary</td><td>🔥🔥🔥</td></tr><tr><td>Async/Await</td><td>🔥🔥🔥</td></tr><tr><td>Promise</td><td>🔥🔥🔥</td></tr><tr><td>Modules</td><td>🔥🔥🔥</td></tr><tr><td>Reference</td><td>🔥🔥🔥</td></tr><tr><td>Event Object</td><td>🔥🔥</td></tr><tr><td>Debounce</td><td>🔥🔥</td></tr><tr><td>Throttle</td><td>🔥🔥</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.56</span> 🧠 Quick Cheat Sheet — React JavaScript সিনট্যাক্স সামারি</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Destructuring</span>
+<span class="syn-kw">const</span> { name } <span style="color: #c084fc; font-weight: 700;">=</span> user;
+
+<span class="syn-com">// Array destructuring</span>
+<span class="syn-kw">const</span> [first, second] <span style="color: #c084fc; font-weight: 700;">=</span> items;
+
+<span class="syn-com">// Spread</span>
+<span class="syn-kw">const</span> newArray <span style="color: #c084fc; font-weight: 700;">=</span> [...oldArray];
+
+<span class="syn-com">// Object spread</span>
+<span class="syn-kw">const</span> newUser <span style="color: #c084fc; font-weight: 700;">=</span> { <span style="color: #c084fc; font-weight: 700;">...</span>user, age: <span class="syn-num">24</span> };
+
+<span class="syn-com">// Rest</span>
+<span class="syn-kw">const</span> [first, <span style="color: #c084fc; font-weight: 700;">...</span>rest] <span style="color: #c084fc; font-weight: 700;">=</span> numbers;
+
+<span class="syn-com">// Map</span>
+items.<span style="color: #38bdf8; font-weight: 600;">map</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span> item.name);
+
+<span class="syn-com">// Filter</span>
+items.<span style="color: #38bdf8; font-weight: 600;">filter</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span> item.active);
+
+<span class="syn-com">// Find</span>
+items.<span style="color: #38bdf8; font-weight: 600;">find</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span> item.id <span style="color: #c084fc; font-weight: 700;">===</span> <span class="syn-num">1</span>);
+
+<span class="syn-com">// Some</span>
+items.<span style="color: #38bdf8; font-weight: 600;">some</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span> item.active);
+
+<span class="syn-com">// Every</span>
+items.<span style="color: #38bdf8; font-weight: 600;">every</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span> item.active);
+
+<span class="syn-com">// Reduce</span>
+items.<span style="color: #38bdf8; font-weight: 600;">reduce</span>((sum, item) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> sum <span style="color: #c084fc; font-weight: 700;">+</span> item.price, <span class="syn-num">0</span>);
+
+<span class="syn-com">// Optional chaining</span>
+user<span style="color: #c084fc; font-weight: 700;">?.</span>profile<span style="color: #c084fc; font-weight: 700;">?.</span>name;
+
+<span class="syn-com">// Nullish</span>
+name <span style="color: #c084fc; font-weight: 700;">??</span> <span class="syn-str">&quot;Guest&quot;</span>;
+
+<span class="syn-com">// Ternary</span>
+isLoggedIn ? <span style="color: #c084fc; font-weight: 700;">&lt;</span>Dashboard /&gt; : &lt;Login /<span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+
+<span class="syn-com">// Short circuit</span>
+isAdmin <span style="color: #c084fc; font-weight: 700;">&amp;&amp;</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>AdminPanel <span style="color: #c084fc; font-weight: 700;">/</span><span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+
+<span class="syn-com">// Immutable update</span>
+<span style="color: #38bdf8; font-weight: 600;">setUser</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span> ({
+  <span style="color: #c084fc; font-weight: 700;">...</span>prev,
+  name: <span class="syn-str">&quot;Rahim&quot;</span>
+}));
+
+<span class="syn-com">// Immutable array add</span>
+<span style="color: #38bdf8; font-weight: 600;">setItems</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span> [...prev, item]);
+
+<span class="syn-com">// Immutable delete</span>
+<span style="color: #38bdf8; font-weight: 600;">setItems</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span>
+  prev.<span style="color: #38bdf8; font-weight: 600;">filter</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span> item.id <span style="color: #c084fc; font-weight: 700;">!==</span> id)
+);
+
+<span class="syn-com">// Immutable update</span>
+<span style="color: #38bdf8; font-weight: 600;">setItems</span>(prev <span style="color: #c084fc; font-weight: 700;">=&gt;</span>
+  prev.<span style="color: #38bdf8; font-weight: 600;">map</span>(item <span style="color: #c084fc; font-weight: 700;">=&gt;</span>
+    item.id <span style="color: #c084fc; font-weight: 700;">===</span> id
+      ? { <span style="color: #c084fc; font-weight: 700;">...</span>item, done: <span class="syn-bool">true</span> }
+      : item
+  )
+);</code></pre>
+</div>
+    </div>
+    <div class="part-banner">Part 08.1 — 8 Hands-On Practice Labs with Complete Production Solutions</div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 1: Array Filtering — Extracting Adults (Age &gt;= 18)</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> প্রদত্ত ইউজার অ্যারে থেকে filter() মেথড ব্যবহার করে শুধুমাত্র ১৮ বা তার বেশি বয়সের ইউজারদের ফিল্টার করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 1</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { name: <span class="syn-str">&quot;A&quot;</span>, age: <span class="syn-num">15</span> },
+  { name: <span class="syn-str">&quot;B&quot;</span>, age: <span class="syn-num">20</span> },
+  { name: <span class="syn-str">&quot;C&quot;</span>, age: <span class="syn-num">25</span> }
+];
+
+<span class="syn-com">// Modern ES6+ / React Pattern</span>
+<span class="syn-kw">const</span> adultUsers <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">filter</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.age <span style="color: #c084fc; font-weight: 700;">&gt;</span><span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">18</span>);
+
+<span class="syn-fn">console</span>.log(adultUsers);
+<span class="syn-com">// Output: [ { name: &#x27;B&#x27;, age: 20 }, { name: &#x27;C&#x27;, age: 25 } ]</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>রিঅ্যাক্ট আর্কিটেকচারাল ব্যাখ্যা:</strong> filter() মূল অ্যারে মিউটেট না করে একটি সম্পূর্ণ নতুন অ্যারে তৈরি করে, যা React-এর স্টেট ফিল্টারিং ও সার্চ ফিচারে শতভাগ নিরাপদ।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 2: Array Projection — Mapping Array of Names</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> ইউজার অবজেক্ট অ্যারে থেকে map() ব্যবহার করে শুধুমাত্র ইউজারদের নামের একটি স্ট্রিং অ্যারে তৈরি করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 2</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { name: <span class="syn-str">&quot;A&quot;</span>, age: <span class="syn-num">15</span> },
+  { name: <span class="syn-str">&quot;B&quot;</span>, age: <span class="syn-num">20</span> },
+  { name: <span class="syn-str">&quot;C&quot;</span>, age: <span class="syn-num">25</span> }
+];
+
+<span class="syn-com">// React Projection Pattern</span>
+<span class="syn-kw">const</span> userNames <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.name);
+
+<span class="syn-fn">console</span>.log(userNames);
+<span class="syn-com">// Output: [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;]</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>রিঅ্যাক্ট আর্কিটেকচারাল ব্যাখ্যা:</strong> map() মেথডটি মূল অ্যারের প্রতিটি উপাদান রূপান্তর করে সমপরিমাণ উপাদানের নতুন অ্যারে বানায়—যা React-এ ডেটা থেকে JSX এলিমেন্ট রেন্ডারিংয়ের মূল ভিত্তি।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 3: Immutable Item Update — Updating Object by ID</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> map() এবং Spread Operator ব্যবহার করে id = 2 ইউজারের নাম পরিবর্তন করে &#x27;Ripon&#x27; করুন (অন্যান্য উপাদান অক্ষত রেখে)।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 3</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;Tanvir&quot;</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;OldName&quot;</span> },
+  { id: <span class="syn-num">3</span>, name: <span class="syn-str">&quot;Karim&quot;</span> }
+];
+
+<span class="syn-com">// Immutable Update Pattern</span>
+<span class="syn-kw">const</span> targetId <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">2</span>;
+<span class="syn-kw">const</span> updatedUsers <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> 
+  user.id <span style="color: #c084fc; font-weight: 700;">===</span> targetId 
+    ? { <span style="color: #c084fc; font-weight: 700;">...</span>user, name: <span class="syn-str">&quot;Ripon&quot;</span> } 
+    : user
+);
+
+<span class="syn-fn">console</span>.log(updatedUsers);
+<span class="syn-com">// Output: [ { id: 1, name: &#x27;Tanvir&#x27; }, { id: 2, name: &#x27;Ripon&#x27; }, { id: 3, name: &#x27;Karim&#x27; } ]</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>রিঅ্যাক্ট আর্কিটেকচারাল ব্যাখ্যা:</strong> React স্টেটে কোনো অবজেক্ট সরাসরি মিউটেট করা নিষিদ্ধ। টার্নারি অপারেটর এবং অবজেক্ট স্প্রেড({...user}) দিয়ে টার্গেট আইটেমটির কপি তৈরি করে আপডেট করতে হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 4: Immutable Item Deletion — Removing Object by ID</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> filter() মেথড ব্যবহার করে id = 3 ইউজারটিকে অ্যারে থেকে নিরাপদে মুছে ফেলুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 4</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> users <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { id: <span class="syn-num">1</span>, name: <span class="syn-str">&quot;Tanvir&quot;</span> },
+  { id: <span class="syn-num">2</span>, name: <span class="syn-str">&quot;Ripon&quot;</span> },
+  { id: <span class="syn-num">3</span>, name: <span class="syn-str">&quot;Karim&quot;</span> }
+];
+
+<span class="syn-com">// Immutable Delete Pattern</span>
+<span class="syn-kw">const</span> deleteId <span style="color: #c084fc; font-weight: 700;">=</span> <span class="syn-num">3</span>;
+<span class="syn-kw">const</span> remainingUsers <span style="color: #c084fc; font-weight: 700;">=</span> users.<span style="color: #38bdf8; font-weight: 600;">filter</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> user.id <span style="color: #c084fc; font-weight: 700;">!==</span> deleteId);
+
+<span class="syn-fn">console</span>.log(remainingUsers);
+<span class="syn-com">// Output: [ { id: 1, name: &#x27;Tanvir&#x27; }, { id: 2, name: &#x27;Ripon&#x27; } ]</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>রিঅ্যাক্ট আর্কিটেকচারাল ব্যাখ্যা:</strong> React-এ Delete অপারেশনের জন্য splice() ব্যবহার করলে মূল অ্যারে পরিবর্তিত হয়ে যায়। filter() মেথড শর্ত না মেলা আইটেমগুলো বাদ দিয়ে নতুন অ্যারে দেয়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 5: Array Aggregation — Shopping Cart Total via reduce()</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> reduce() মেথড ব্যবহার করে শপিং কার্টের সকল আইটেমের মোট মূল্য (Total Price) বের করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 5</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> cart <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { name: <span class="syn-str">&quot;Laptop&quot;</span>, price: <span class="syn-num">80000</span> },
+  { name: <span class="syn-str">&quot;Mouse&quot;</span>, price: <span class="syn-num">1000</span> },
+  { name: <span class="syn-str">&quot;Keyboard&quot;</span>, price: <span class="syn-num">3000</span> }
+];
+
+<span class="syn-com">// React / E-Commerce Accumulator Pattern</span>
+<span class="syn-kw">const</span> totalPrice <span style="color: #c084fc; font-weight: 700;">=</span> cart.<span style="color: #38bdf8; font-weight: 600;">reduce</span>((accumulator, item) <span style="color: #c084fc; font-weight: 700;">=&gt;</span> accumulator <span style="color: #c084fc; font-weight: 700;">+</span> item.price, <span class="syn-num">0</span>);
+
+<span class="syn-fn">console</span>.log(&#x27;Total Cart Amount: ৳&#x27; <span style="color: #c084fc; font-weight: 700;">+</span> totalPrice);
+<span class="syn-com">// Output: Total Cart Amount: ৳84000</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>রিঅ্যাক্ট আর্কিটেকচারাল ব্যাখ্যা:</strong> reduce() মেথডে প্রারম্ভিক মান (Initial Value: 0) উল্লেখ করা বাধ্যতামূলক। এটি কার্ট টোটাল, ট্যাক্স বা ডিসকাউন্ট ক্যালকুলেশনের স্ট্যান্ডার্ড পদ্ধতি।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 6: React Component Bug Fix — Missing Return in map()</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> নিচের কম্পোনেন্টটিতে map() এ ব্র্যাকেট দেওয়ার কারণে JSX রিটার্ন হচ্ছে না। এরর খুঁজে বের করে প্রোডাকশন-রেডি ফিক্স লিখুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 6</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// ❌ Buggy Version (Returns undefined for each item)</span>
+<span class="syn-com">// function Users({ users }) {</span>
+<span class="syn-com">//   return (&lt;div&gt;{users.map(user =&gt; { &lt;p&gt;{user.name}&lt;/p&gt; })}&lt;/div&gt;);</span>
+<span class="syn-com">// }</span>
+
+<span class="syn-com">// ✅ Fixed Version 1: Implicit Return with Parentheses</span>
+<span class="syn-kw">function</span> UsersImplicit({ users }) {
+  <span class="syn-kw">return</span> (
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+      {users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> (
+        <span style="color: #c084fc; font-weight: 700;">&lt;</span>p key<span style="color: #c084fc; font-weight: 700;">=</span>{user.id}&gt;{user.name}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+      ))}
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+  );
+}
+
+<span class="syn-com">// ✅ Fixed Version 2: Explicit Return Keyword with Curly Braces</span>
+<span class="syn-kw">function</span> UsersExplicit({ users }) {
+  <span class="syn-kw">return</span> (
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+      {users.<span style="color: #38bdf8; font-weight: 600;">map</span>(user <span style="color: #c084fc; font-weight: 700;">=&gt;</span> {
+        <span class="syn-kw">return</span> <span style="color: #c084fc; font-weight: 700;">&lt;</span>p key<span style="color: #c084fc; font-weight: 700;">=</span>{user.id}&gt;{user.name}&lt;/p<span style="color: #c084fc; font-weight: 700;">&gt;</span>;
+      })}
+    <span style="color: #c084fc; font-weight: 700;">&lt;</span><span style="color: #c084fc; font-weight: 700;">/</span>div<span style="color: #c084fc; font-weight: 700;">&gt;</span>
+  );
+}</code></pre>
+</div>
+      <div class="def-box">💡 <strong>রিঅ্যাক্ট আর্কিটেকচারাল ব্যাখ্যা:</strong> অ্যারো ফাংশনে কার্লি ব্রেস {} দিলে বডি তৈরি হয়, ফলে রিটার্ন করতে হলে &#x27;return&#x27; কিওয়ার্ড লিখতে হয়। অথবা প্যারেন্থেসিস () দিয়ে ইমপ্লিসিট রিটার্ন করতে হয়। সাথে অনন্য key প্রপ যুক্ত করা জরুরি।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 7: Functional State Update — Immutable Top-Level Property</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> React Functional setState প্যাটার্ন মেনে user অবজেক্টের age প্রপার্টি ২৩ থেকে ২৪ এ আপডেট করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 7</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> [user, <span style="color: #38bdf8; font-weight: 600;">setUser</span>] <span style="color: #c084fc; font-weight: 700;">=</span> [
+  { name: <span class="syn-str">&quot;Ripon&quot;</span>, age: <span class="syn-num">23</span> },
+  newUser <span style="color: #c084fc; font-weight: 700;">=&gt;</span> <span class="syn-fn">console</span>.log(&#x27;Updated User State:&#x27;, newUser)
+];
+
+<span class="syn-com">// React Functional State Update Pattern</span>
+<span style="color: #38bdf8; font-weight: 600;">setUser</span>(prevUser <span style="color: #c084fc; font-weight: 700;">=&gt;</span> ({
+  <span style="color: #c084fc; font-weight: 700;">...</span>prevUser,
+  age: <span class="syn-num">24</span>
+}));
+
+<span class="syn-com">// Output: Updated User State: { name: &#x27;Ripon&#x27;, age: 24 }</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>রিঅ্যাক্ট আর্কিটেকচারাল ব্যাখ্যা:</strong> setState-এ ফাংশনাল আপডেট (prev =&gt; ({ ...prev, prop })) ব্যবহার করলে রেস কন্ডিশন ও স্টেল স্টেট (Stale State) এরর সম্পূর্ণ দূর হয়।</div>
+    </div>
+    <div class="practice-item">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Lab 8: Deep Immutable Update — Nested Object State Modification</span>
+        <span style="background: #e0f2fe; color: #0284c7; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced</span>
+      </div>
+      <p class="text-p"><strong>সমস্যা ও লক্ষ্য:</strong> Nested অবজেক্টের গভীরের প্রপার্টি (address.city) মিউটেট না করে স্প্রেড অপারেটর দিয়ে &#x27;Dhaka&#x27; থেকে &#x27;Dinajpur&#x27; এ আপডেট করুন।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PRODUCTION SOLUTION: LAB 8</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> user <span style="color: #c084fc; font-weight: 700;">=</span> {
+  name: <span class="syn-str">&quot;Ripon&quot;</span>,
+  address: {
+    city: <span class="syn-str">&quot;Dhaka&quot;</span>,
+    country: <span class="syn-str">&quot;Bangladesh&quot;</span>
+  }
+};
+
+<span class="syn-com">// ❌ Buggy Shallow Spread: user.address মিউটেট হয়ে যায়</span>
+<span class="syn-com">// const wrong = { ...user, address: { city: &#x27;Dinajpur&#x27; } }; // country হারিয়ে যাবে!</span>
+
+<span class="syn-com">// ✅ Correct Deep Immutable Spread</span>
+<span class="syn-kw">const</span> updatedUser <span style="color: #c084fc; font-weight: 700;">=</span> {
+  <span style="color: #c084fc; font-weight: 700;">...</span>user,
+  address: {
+    <span style="color: #c084fc; font-weight: 700;">...</span>user.address,
+    city: <span class="syn-str">&quot;Dinajpur&quot;</span>
+  }
+};
+
+<span class="syn-fn">console</span>.log(updatedUser);
+<span class="syn-com">// Output: { name: &#x27;Ripon&#x27;, address: { city: &#x27;Dinajpur&#x27;, country: &#x27;Bangladesh&#x27; } }</span></code></pre>
+</div>
+      <div class="def-box">💡 <strong>রিঅ্যাক্ট আর্কিটেকচারাল ব্যাখ্যা:</strong> Shallow Spread কেবল প্রথম লেভেলের প্রপার্টি কপি করে। নেস্টেড অবজেক্ট থাকলে ভেতরের অবজেক্টকেও আলাদাভাবে স্প্রেড ({...user.address}) করতে হয়, নতুবা অবজেক্টের অন্যান্য প্রপার্টি মুছে যাবে।</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.57</span> 🎯 Final Mental Map — React-এর জন্য JavaScript আর্কিটেকচার মানচিত্র</div>
+      <p class="text-p">পুরো Chapter 38-এর JavaScript ও React সমন্বয় একনজরে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ REACT JAVASCRIPT TAXONOMY MAP</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 700;">Advanced JS for React</span>
+                         <span style="color: #475569;">│</span>
+       <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────</span><span style="color: #475569;">┐</span>
+       <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>
+     <span style="color: #fde047; font-weight: 700;">Syntax</span>             <span style="color: #fde047; font-weight: 700;">Data</span>             <span style="color: #fde047; font-weight: 700;">Logic</span>
+       <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>
+ <span style="color: #c084fc; font-weight: 700;">Destructuring</span>       <span style="color: #c084fc; font-weight: 700;">map/filter</span>        <span style="color: #c084fc; font-weight: 700;">ternary</span>
+ <span style="color: #c084fc; font-weight: 700;">Spread/Rest</span>         <span style="color: #c084fc; font-weight: 700;">find/reduce</span>       &amp;&amp; / ??
+ <span style="color: #c084fc; font-weight: 700;">Arrow Function</span>      <span style="color: #c084fc; font-weight: 700;">some/every</span>        <span style="color: #c084fc; font-weight: 700;">optional chaining</span>
+       <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>
+       <span style="color: #475569;">└</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────</span><span style="color: #475569;">┘</span>
+                         <span style="color: #475569;">│</span>
+                    <span style="color: #fde047; font-weight: 700;">React</span> State
+                         <span style="color: #475569;">│</span>
+                  <span style="color: #34d399; font-weight: 700;">Immutability</span>
+                         <span style="color: #475569;">│</span>
+             <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">───────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">───────────</span><span style="color: #475569;">┐</span>
+             <span style="color: #475569;">│</span>           <span style="color: #475569;">│</span>           <span style="color: #475569;">│</span>
+            <span style="color: #c084fc; font-weight: 700;">Add</span>        <span style="color: #c084fc; font-weight: 700;">Update</span>       <span style="color: #c084fc; font-weight: 700;">Delete</span>
+             <span style="color: #475569;">│</span>           <span style="color: #475569;">│</span>           <span style="color: #475569;">│</span>
+           <span style="color: #c084fc; font-weight: 700;">spread</span>       <span style="color: #c084fc; font-weight: 700;">map</span>        <span style="color: #c084fc; font-weight: 700;">filter</span>
+                         <span style="color: #475569;">│</span>
+                         <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                    <span style="color: #fde047; font-weight: 700;">API / Async</span>
+                         <span style="color: #475569;">│</span>
+                   <span style="color: #c084fc; font-weight: 700;">Promise / await</span>
+                         <span style="color: #475569;">│</span>
+                         <span style="color: #38bdf8; font-weight: 700;">↓</span>
+                    <span style="color: #fde047; font-weight: 700;">React</span> UI</pre>
+</div>
+      <div class="def-box" style="margin-top: 6px; border-left: 3px solid #d97706; background: #fffbeb;">
+        🏆 <strong>এক লাইনে Chapter 38:</strong> React ফ্রেমওয়ার্ক শেখার প্রথম ও প্রধান ভিত্তি হলো আধুনিক JavaScript-এর Destructuring, Spread, map/filter/reduce, Immutability এবং Async/Await—এগুলো আয়ত্ত করলেই React কোড পানির মতো সহজ মনে হবে।
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">38.58</span> 🔗 Curriculum Progression: Chapter 37 → 38 → 39</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">✨ ROADMAP CONTINUITY PIPELINE</div>
+  <pre class="ascii-tree-content">Chapter 37: JavaScript Design Patterns
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Creational, Structural, Behavioral, MVC, Dependency Injection &amp; Repository
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 38: Advanced JavaScript for <span style="color: #fde047; font-weight: 700;">React</span> (THIS CHAPTER)
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Destructuring</span>, Spread, <span style="color: #c084fc; font-weight: 700;">map/filter</span>, <span style="color: #34d399; font-weight: 700;">Immutability</span>, Closures, Synthetic Events
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Chapter 39: Advanced JavaScript for Node.js
+       <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Node.js Architecture, Libuv, Event Loop Phases, Streams, Buffer, Worker Threads</pre>
+</div>
+    </div>
+
+  </div>
+</body>
+</html>

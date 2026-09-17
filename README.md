@@ -38,6 +38,16 @@ Comprehensive, production-grade JavaScript study notes, interactive HTML documen
 | **28** | Symbols, Proxy & Reflect | [HTML](Code/Chapter-28-Symbols-Proxy-Reflect.html) | [PDF](PDF/Chapter-28-Symbols-Proxy-Reflect.pdf) | ✅ Complete |
 | **29** | JavaScript Execution Model & Event Loop | [HTML](Code/Chapter-29-Execution-Model-Event-Loop.html) | [PDF](PDF/Chapter-29-Execution-Model-Event-Loop.pdf) | ✅ Complete |
 | **30** | JavaScript Memory Management & Garbage Collection | [HTML](Code/Chapter-30-Memory-Management-Garbage-Collection.html) | [PDF](PDF/Chapter-30-Memory-Management-Garbage-Collection.pdf) | ✅ Complete |
+| **31** | JavaScript Security & Web Security | [HTML](Code/Chapter-31-JavaScript-Web-Security.html) | [PDF](PDF/Chapter-31-JavaScript-Web-Security.pdf) | ✅ Complete |
+| **32** | Advanced Browser APIs | [HTML](Code/Chapter-32-Advanced-Browser-APIs.html) | [PDF](PDF/Chapter-32-Advanced-Browser-APIs.pdf) | ✅ Complete |
+| **33** | Web Performance & Optimization | [HTML](Code/Chapter-33-Web-Performance-Optimization.html) | [PDF](PDF/Chapter-33-Web-Performance-Optimization.pdf) | ✅ Complete |
+| **34** | NPM, Package Management & JavaScript Tooling | [HTML](Code/Chapter-34-NPM-Package-Management-Tooling.html) | [PDF](PDF/Chapter-34-NPM-Package-Management-Tooling.pdf) | ✅ Complete |
+| **35** | Testing JavaScript | [HTML](Code/Chapter-35-Testing-JavaScript.html) | [PDF](PDF/Chapter-35-Testing-JavaScript.pdf) | ✅ Complete |
+| **36** | Modern ECMAScript / ES2020+ Features | [HTML](Code/Chapter-36-Modern-ECMAScript-ES2020-Features.html) | [PDF](PDF/Chapter-36-Modern-ECMAScript-ES2020-Features.pdf) | ✅ Complete |
+| **37** | JavaScript Design Patterns | [HTML](Code/Chapter-37-JavaScript-Design-Patterns.html) | [PDF](PDF/Chapter-37-JavaScript-Design-Patterns.pdf) | ✅ Complete |
+| **38** | Advanced JavaScript for React | [HTML](Code/Chapter-38-Advanced-JavaScript-for-React.html) | [PDF](PDF/Chapter-38-Advanced-JavaScript-for-React.pdf) | ✅ Complete |
+| **39** | Advanced JavaScript for Node.js | [HTML](Code/Chapter-39-Advanced-JavaScript-for-NodeJS.html) | [PDF](PDF/Chapter-39-Advanced-JavaScript-for-NodeJS.pdf) | ✅ Complete |
+| **40** | Real-World Projects, Best Practices & Interview Preparation | [HTML](Code/Chapter-40-Real-World-Projects-Best-Practices-Interview-Preparation.html) | [PDF](PDF/Chapter-40-Real-World-Projects-Best-Practices-Interview-Preparation.pdf) | ✅ Complete |
 
 ---
 
