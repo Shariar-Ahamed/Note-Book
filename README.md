@@ -26,8 +26,8 @@ Note-Book/
 ├── CSS/                        # 📂 CSS Curriculum & Tracks
 ├── JavaScript/                 # 📂 Published JavaScript Track (Production Distribution)
 │   ├── code/                   # Live Interactive Web Book (HTML, CSS, JS)
-│   ├── single-chapters-pdf/    # 40 Print-ready vectorized A4 PDFs (Chapter-01 to 40)
-│   └── full-chapter-pdf/       # Complete Omnibus Master PDF (1,212 Pages)
+│   ├── chapter-pdfs/           # 40 Print-ready vectorized A4 PDFs (Chapter-01 to 40)
+│   └── full-book-pdf/          # Complete Omnibus Master PDF (1,212 Pages)
 ├── Components/                 # 📂 Development & Modular Source Components
 │   ├── HTML/                   # HTML source components & drafts
 │   ├── CSS/                    # CSS source components & drafts
