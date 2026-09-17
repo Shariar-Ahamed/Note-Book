@@ -51,8 +51,8 @@ CHAPTER_TITLES = {
 }
 
 def merge_all_chapters():
-    pdf_dir = 'JavaScript/chapter-pdfs'
-    out_dir = 'JavaScript/full-book-pdf'
+    pdf_dir = '3-JavaScript/2-chapter-pdfs'
+    out_dir = '3-JavaScript/3-full-book-pdf'
     os.makedirs(out_dir, exist_ok=True)
     out_name = 'JavaScript-Master-Study-Documentation-Full-Book.pdf'
     out_path = os.path.join(out_dir, out_name)
@@ -109,7 +109,7 @@ def merge_all_chapters():
     print(f"          Elapsed:     {elapsed:.2f} seconds")
 
     # Dual-sync to secondary drive
-    sec_repo = r'e:\Git All Repo\Note-Book\JavaScript\full-book-pdf'
+    sec_repo = r'e:\Git All Repo\Note-Book\3-JavaScript\3-full-book-pdf'
     if os.path.exists(os.path.dirname(sec_repo)):
         os.makedirs(sec_repo, exist_ok=True)
         sec_dest = os.path.join(sec_repo, out_name)

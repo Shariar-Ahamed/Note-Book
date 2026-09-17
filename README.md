@@ -1,7 +1,7 @@
 # 📘 Master Study Note-Book (মাল্টি-ল্যাঙ্গুয়েজ স্টাডি নোটবুক)
 
 > 🚀 **Live Interactive Web Book:** [https://shariar-ahamed.github.io/Note-Book/](https://shariar-ahamed.github.io/Note-Book/)  
-> 📖 **Direct JavaScript Track:** [https://shariar-ahamed.github.io/Note-Book/JavaScript/code/](https://shariar-ahamed.github.io/Note-Book/JavaScript/code/)
+> 📖 **Direct JavaScript Track:** [https://shariar-ahamed.github.io/Note-Book/3-JavaScript/1-code/](https://shariar-ahamed.github.io/Note-Book/3-JavaScript/1-code/)
 
 A production-grade, highly structured multi-language software engineering documentation repository. Built with strict formatting standards, deep architectural diagrams, and a **100% Zero-Skipping Policy**.
 
@@ -11,7 +11,7 @@ A production-grade, highly structured multi-language software engineering docume
 
 | Language / Track | Scope & Content | Documentation Index | Status |
 | :--- | :--- | :---: | :---: |
-| **💛 JavaScript (Full Stack)** | 40 Chapters • Fundamentals to React/Node.js Architecture • 1200+ Pages | [🌐 Live Web Book](https://shariar-ahamed.github.io/Note-Book/JavaScript/code/) • [Browse Track](Components/JavaScript/README.md) | ✅ **100% Complete** (HTML & Print-Ready PDF) |
+| **💛 JavaScript (Full Stack)** | 40 Chapters • Fundamentals to React/Node.js Architecture • 1200+ Pages | [🌐 Live Web Book](https://shariar-ahamed.github.io/Note-Book/3-JavaScript/1-code/) • [Browse Track](4-Components/JavaScript/README.md) | ✅ **100% Complete** (HTML & Print-Ready PDF) |
 | **💙 TypeScript** | Type Systems, Generics, Utility Types, Enterprise Architecture | *In Pipeline* | ⏳ Upcoming |
 | **🐍 Python** | Core Mechanics, AsyncIO, Metaprogramming & Web Architecture | *In Pipeline* | ⏳ Upcoming |
 | **🦀 Go / Rust** | Systems Programming, Concurrency, Memory Safety & Cloud Native | *In Pipeline* | ⏳ Upcoming |
@@ -22,13 +22,13 @@ A production-grade, highly structured multi-language software engineering docume
 
 ```
 Note-Book/
-├── HTML/                       # 📂 HTML Curriculum & Tracks
-├── CSS/                        # 📂 CSS Curriculum & Tracks
-├── JavaScript/                 # 📂 Published JavaScript Track (Production Distribution)
-│   ├── code/                   # Live Interactive Web Book (HTML, CSS, JS)
-│   ├── chapter-pdfs/           # 40 Print-ready vectorized A4 PDFs (Chapter-01 to 40)
-│   └── full-book-pdf/          # Complete Omnibus Master PDF (1,212 Pages)
-├── Components/                 # 📂 Development & Modular Source Components
+├── 1-HTML/                     # 📂 HTML Curriculum & Tracks
+├── 2-CSS/                      # 📂 CSS Curriculum & Tracks
+├── 3-JavaScript/               # 📂 Published JavaScript Track (Production Distribution)
+│   ├── 1-code/                 # Live Interactive Web Book (HTML, CSS, JS)
+│   ├── 2-chapter-pdfs/         # 40 Print-ready vectorized A4 PDFs (Chapter-01 to 40)
+│   └── 3-full-book-pdf/        # Complete Omnibus Master PDF (1,212 Pages)
+├── 4-Components/               # 📂 Development & Modular Source Components
 │   ├── HTML/                   # HTML source components & drafts
 │   ├── CSS/                    # CSS source components & drafts
 │   └── JavaScript/             # JavaScript source files & generators
@@ -45,7 +45,7 @@ Note-Book/
 
 ---
 
-## 🎯 Production & Publishing Standards ([Rulebook](Components/JavaScript/.AGENT/agent.md))
+## 🎯 Production & Publishing Standards ([Rulebook](4-Components/JavaScript/.AGENT/agent.md))
 
 - **100% Zero-Skipping Policy:** All technical definitions, language edge cases, deep code samples, ASCII diagrams, and interview problems are rendered verbatim.
 - **Page 1 Balance:** Master Banner + Chapter Intro + Part 01 Banner + Section 1 Card fit unbroken on Page 1.
