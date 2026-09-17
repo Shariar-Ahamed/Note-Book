@@ -1,5 +1,8 @@
 # 📘 JavaScript Master Study Documentation (Note-Book)
 
+> 🌐 **Live Interactive Website:** [https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/](https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/)  
+> ⚡ **Complete Omnibus Edition (Chapters 01 – 40):** [Open Full Book Online](https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/)
+
 Comprehensive, production-grade JavaScript study notes, interactive HTML documentation, and print-ready vectorized PDFs crafted with strict formatting standards and a 100% Zero-Skipping policy.
 
 ---

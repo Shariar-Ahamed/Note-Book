@@ -1,5 +1,8 @@
 # 📘 Master Study Note-Book (মাল্টি-ল্যাঙ্গুয়েজ স্টাডি নোটবুক)
 
+> 🚀 **Live Interactive Web Book:** [https://shariar-ahamed.github.io/Note-Book/](https://shariar-ahamed.github.io/Note-Book/)  
+> 📖 **Direct JavaScript Track:** [https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/](https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/)
+
 A production-grade, highly structured multi-language software engineering documentation repository. Built with strict formatting standards, deep architectural diagrams, and a **100% Zero-Skipping Policy**.
 
 ---
@@ -8,7 +11,7 @@ A production-grade, highly structured multi-language software engineering docume
 
 | Language / Track | Scope & Content | Documentation Index | Status |
 | :--- | :--- | :---: | :---: |
-| **💛 JavaScript (Full Stack)** | 40 Chapters • Fundamentals to React/Node.js Architecture • 1200+ Pages | [Browse JavaScript Track](JavaScript/README.md) | ✅ **100% Complete** (HTML & Print-Ready PDF) |
+| **💛 JavaScript (Full Stack)** | 40 Chapters • Fundamentals to React/Node.js Architecture • 1200+ Pages | [🌐 Live Web Book](https://shariar-ahamed.github.io/Note-Book/JavaScript/Full-Book/) • [Browse Track](JavaScript/README.md) | ✅ **100% Complete** (HTML & Print-Ready PDF) |
 | **💙 TypeScript** | Type Systems, Generics, Utility Types, Enterprise Architecture | *In Pipeline* | ⏳ Upcoming |
 | **🐍 Python** | Core Mechanics, AsyncIO, Metaprogramming & Web Architecture | *In Pipeline* | ⏳ Upcoming |
 | **🦀 Go / Rust** | Systems Programming, Concurrency, Memory Safety & Cloud Native | *In Pipeline* | ⏳ Upcoming |
