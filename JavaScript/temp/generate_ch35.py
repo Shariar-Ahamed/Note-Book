@@ -76,16 +76,20 @@ def highlight_code(code_str, lang='javascript'):
             if l.strip().startswith('#'):
                 out_lines.append(f'<span class="syn-com">{l}</span>')
                 continue
-            line_hl = re.sub(r'\b(npm|npx|node|git|jest|vitest|playwright)\b', r'<span style="color:#38bdf8; font-weight:700;">\1</span>', l)
-            line_hl = re.sub(r'\b(install|test|run|coverage|init)\b', r'<span style="color:#4ade80; font-weight:600;">\1</span>', line_hl)
-            line_hl = re.sub(r'(--[a-zA-Z0-9_-]+|-[a-zA-Z0-9])', r'<span style="color:#fde047; font-weight:600;">\1</span>', line_hl)
+            # Flags / Options first (must be standalone tokens)
+            line_hl = re.sub(r'(?<=^|\s)(--[a-zA-Z0-9_-]+|-[a-zA-Z0-9]+)(?=\s|$)', r'<span style="color:#fde047; font-weight:600;">\1</span>', l)
+            # Commands & tools (standalone tokens)
+            line_hl = re.sub(r'(?<=^|\s)(npm|npx|node|git|jest|vitest|playwright)(?=\s|$)', r'<span style="color:#38bdf8; font-weight:700;">\1</span>', line_hl)
+            # Subcommands (standalone tokens)
+            line_hl = re.sub(r'(?<=^|\s)(install|test|run|coverage|init)(?=\s|$)', r'<span style="color:#4ade80; font-weight:600;">\1</span>', line_hl)
             out_lines.append(line_hl)
         return '\n'.join(out_lines)
     elif lang == 'json':
-        t = re.sub(r'(&quot;[a-zA-Z0-9_$-]+&quot;)\s*:', r'<span style="color:#38bdf8; font-weight:600;">\1</span>:', esc_all)
-        t = re.sub(r':\s*(&quot;.*?&quot;)', r': <span style="color:#4ade80;">\1</span>', t)
+        # JSON syntax highlighting (values first, keys last so tags are not affected)
+        t = re.sub(r':\s*(&quot;.*?&quot;)', r': <span style="color:#4ade80;">\1</span>', esc_all)
         t = re.sub(r':\s*\b(true|false|null)\b', r': <span style="color:#c084fc; font-weight:600;">\1</span>', t)
-        t = re.sub(r':\s*(\d+(?:\.\d+)?)', r': <span style="color:#fb923c;">\1</span>', t)
+        t = re.sub(r':\s*(\d+(?:\.\d+)?)\s*(?=[,\n\r]|$)', r': <span style="color:#fb923c;">\1</span>', t)
+        t = re.sub(r'(&quot;[a-zA-Z0-9_$-]+&quot;)\s*:', r'<span style="color:#38bdf8; font-weight:600;">\1</span>:', t)
         return t
     else:
         return esc_all

@@ -1888,7 +1888,7 @@ element.textContent = userInput; <span class="syn-com">// Encodes characters as 
         <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
           <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
           <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'textContent' শতভাগ নিরাপদ।
-২. কারণ: 'innerHTML' ব্রাউজারের HTML পার্সারকে সক্রিয় করে। যদি userInput-এ ক্ষতিকর স্ক্রিপ্ট বা ইভেন্ট হ্যান্ডলার (যেমন <img src=x onerror=...>) থাকে, তবে ব্রাউজার তা এক্সিকিউট করে ফেলবে (DOM XSS)।
+২. কারণ: 'innerHTML' ব্রাউজারের HTML পার্সারকে সক্রিয় করে। যদি userInput-এ ক্ষতিকর স্ক্রিপ্ট বা ইভেন্ট হ্যান্ডলার (যেমন <code>&lt;img src="x" onerror="..."&gt;</code>) থাকে, তবে ব্রাউজার তা এক্সিকিউট করে ফেলবে (DOM XSS)।
 ৩. অপরদিকে, 'textContent' ব্রাউজারের পার্সারকে বাইপাস করে এবং ইনপুটকে খাঁটি স্ট্রিং হিসেবে DOM টেক্সট নোডে ইনসার্ট করে। সব বিশেষ ক্যারেক্টার স্বয়ংক্রিয়ভাবে নিষ্ক্রিয় থাকে।</div>
         </div>
       </div>

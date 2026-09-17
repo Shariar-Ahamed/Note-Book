@@ -52589,7 +52589,7 @@ element.textContent = userInput; <span class="syn-com">// Encodes characters as 
         <div class="def-box" style="margin-top: 3px; background: #f8fafc; border-left: 3px solid var(--blue-accent);">
           <div style="font-weight: 700; font-size: 9px; color: var(--blue-dark); margin-bottom: 2px;">🔍 Model Solution &amp; Defensive Architecture:</div>
           <div style="font-size: 8.5px; color: #334155; line-height: 1.4; white-space: pre-wrap;">১. 'textContent' শতভাগ নিরাপদ।
-২. কারণ: 'innerHTML' ব্রাউজারের HTML পার্সারকে সক্রিয় করে। যদি userInput-এ ক্ষতিকর স্ক্রিপ্ট বা ইভেন্ট হ্যান্ডলার (যেমন <img src=x onerror=...>) থাকে, তবে ব্রাউজার তা এক্সিকিউট করে ফেলবে (DOM XSS)।
+২. কারণ: 'innerHTML' ব্রাউজারের HTML পার্সারকে সক্রিয় করে। যদি userInput-এ ক্ষতিকর স্ক্রিপ্ট বা ইভেন্ট হ্যান্ডলার (যেমন <code>&lt;img src="x" onerror="..."&gt;</code>) থাকে, তবে ব্রাউজার তা এক্সিকিউট করে ফেলবে (DOM XSS)।
 ৩. অপরদিকে, 'textContent' ব্রাউজারের পার্সারকে বাইপাস করে এবং ইনপুটকে খাঁটি স্ট্রিং হিসেবে DOM টেক্সট নোডে ইনসার্ট করে। সব বিশেষ ক্যারেক্টার স্বয়ংক্রিয়ভাবে নিষ্ক্রিয় থাকে।</div>
         </div>
       </div>
@@ -57139,7 +57139,7 @@ Chapter 34: NPM &amp; Modern JavaScript Tooling
       <div class="section-subhead">🔹 Example</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> lodash</code></pre>
 </div>
       <p class="text-p">এখানে:</p>
       <div class="ascii-tree-container">
@@ -57156,11 +57156,11 @@ lodash</pre>
       <p class="text-p">Node.js install করলে সাধারণত npm-ও পাওয়া যায়। Check করতে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">node</span> <span style="color:#fde047; font-weight:600;">-v</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">node</span> <span style="color:#fde047; font-weight:600;">-v</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#fde047; font-weight:600;">-v</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#fde047; font-weight:600;">-v</span></code></pre>
 </div>
       <p class="text-p">Example:</p>
       <div class="ascii-tree-container">
@@ -57175,18 +57175,18 @@ lodash</pre>
       <p class="text-p">একটি নতুন folder:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code>mkdir my<span style="color:#fde047; font-weight:600;">-p</span>roject
-cd my<span style="color:#fde047; font-weight:600;">-p</span>roject</code></pre>
+  <pre><code>mkdir my-project
+cd my-project</code></pre>
 </div>
       <p class="text-p">তারপর:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">init</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">init</span></code></pre>
 </div>
       <p class="text-p">এটি কিছু প্রশ্ন করবে। আর দ্রুত default configuration চাইলে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
 </div>
       <p class="text-p">এতে তৈরি হবে:</p>
       <div class="ascii-tree-container">
@@ -57200,15 +57200,15 @@ cd my<span style="color:#fde047; font-weight:600;">-p</span>roject</code></pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-project&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;description&quot;</span>: <span style="color:#4ade80;">&quot;My JavaScript project&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;main&quot;</span>: <span style="color:#4ade80;">&quot;index.js&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node index.js&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-project&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;description&quot;</span>: <span style="color:#4ade80;">&quot;My JavaScript project&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;main&quot;</span>: <span style="color:#4ade80;">&quot;index.js&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node index.js&quot;</span>
   },
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {},
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;devDependencies&quot;</span>: {}
+  <span style="color:#38bdf8; font-weight: 600;">&quot;dependencies&quot;</span>: {},
+  <span style="color:#38bdf8; font-weight: 600;">&quot;devDependencies&quot;</span>: {}
 }</code></pre>
 </div>
       <p class="text-p">এটি project-এর গুরুত্বপূর্ণ information ধরে রাখে।</p>
@@ -57232,7 +57232,7 @@ cd my<span style="color:#fde047; font-weight:600;">-p</span>roject</code></pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-project&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-project&quot;</span>
 }</code></pre>
 </div>
       <p class="text-p">এটি project/package-এর নাম। সাধারণত lowercase এবং npm naming rules অনুসরণ করা হয়।</p>
@@ -57242,7 +57242,7 @@ cd my<span style="color:#fde047; font-weight:600;">-p</span>roject</code></pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>
 }</code></pre>
 </div>
       <p class="text-p">এটি project/package-এর current version। এখানেই আসে <strong>Semantic Versioning</strong>।</p>
@@ -57297,14 +57297,14 @@ cd my<span style="color:#fde047; font-weight:600;">-p</span>roject</code></pre>
       <p class="text-p">Dependency হলো এমন package যার ওপর তোমার project নির্ভর করে। ধরো:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> express</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> express</code></pre>
 </div>
       <p class="text-p">তাহলে <code>express</code> project-এর dependency। <code>package.json</code>:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;express&quot;</span>: <span style="color:#4ade80;">&quot;^5.1.0&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;express&quot;</span>: <span style="color:#4ade80;">&quot;^5.1.0&quot;</span>
   }
 }</code></pre>
 </div>
@@ -57339,12 +57339,12 @@ cd my<span style="color:#fde047; font-weight:600;">-p</span>roject</code></pre>
       <p class="text-p">Package install:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> lodash</code></pre>
 </div>
       <p class="text-p">Short form:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> i lodash</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> i lodash</code></pre>
 </div>
       <p class="text-p">এটি সাধারণত: 1. package download করে 2. <code>node_modules</code> তৈরি/আপডেট করে 3. <code>package.json</code> update করে 4. lockfile update করে</p>
     </div>
@@ -57376,7 +57376,7 @@ cd my<span style="color:#fde047; font-weight:600;">-p</span>roject</code></pre>
       <p class="text-p">কারণ অন্য developer:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span></code></pre>
 </div>
       <p class="text-p">দিয়ে dependencies install করতে পারে।</p>
     </div>
@@ -57420,13 +57420,13 @@ Exact dependency resolution</pre>
       <div class="section-subhead">🔹 <code>npm install</code></div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span></code></pre>
 </div>
       <p class="text-p">সাধারণত dependency install/update resolution করতে পারে এবং lockfile update করতে পারে।</p>
       <div class="section-subhead">🔹 <code>npm ci</code></div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">ci</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">ci</span></code></pre>
 </div>
       <p class="text-p">Clean, reproducible installation-এর জন্য ব্যবহৃত হয়, বিশেষ করে CI/CD-তে। এটি lockfile-এর ওপর বেশি strict।</p>
       <div class="section-subhead">🔹 Real-life</div>
@@ -57449,14 +57449,14 @@ CI/CD Server
       <p class="text-p">Application চালানোর সময় দরকার:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> express</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> express</code></pre>
 </div>
       <p class="text-p"><code>package.json</code>:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;express&quot;</span>: <span style="color:#4ade80;">&quot;^5.1.0&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;express&quot;</span>: <span style="color:#4ade80;">&quot;^5.1.0&quot;</span>
   }
 }</code></pre>
 </div>
@@ -57464,19 +57464,19 @@ CI/CD Server
       <p class="text-p">Development-এর সময় দরকার:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font-weight:700;">eslint</span></code></pre>
 </div>
       <p class="text-p">অথবা:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">--save-</span><span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">--save-dev</span> <span style="color:#38bdf8; font-weight:700;">eslint</span></code></pre>
 </div>
       <p class="text-p">Result:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;devDependencies&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;eslint&quot;</span>: <span style="color:#4ade80;">&quot;^9.x&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;devDependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;eslint&quot;</span>: <span style="color:#4ade80;">&quot;^9.x&quot;</span>
   }
 }</code></pre>
 </div>
@@ -57513,27 +57513,27 @@ devDependencies</pre>
       <div class="section-subhead">🔹 Normal</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> axios</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> axios</code></pre>
 </div>
       <div class="section-subhead">🔹 Dev dependency</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font-weight:700;">eslint</span></code></pre>
 </div>
       <div class="section-subhead">🔹 Specific version</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash@4.17.21</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> lodash@4.17.21</code></pre>
 </div>
       <div class="section-subhead">🔹 Latest</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash@latest</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> lodash@latest</code></pre>
 </div>
       <div class="section-subhead">🔹 Global</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-g</span> some<span style="color:#fde047; font-weight:600;">-p</span>ackage</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">-g</span> some-package</code></pre>
 </div>
       <p class="text-p">Global install প্রয়োজন অনুযায়ী ব্যবহার করা হয়; project dependencies-এর জন্য সাধারণত local install preferred।</p>
     </div>
@@ -57541,34 +57541,34 @@ devDependencies</pre>
       <div class="card-title"><span class="badge-num">34.20</span> Package Uninstall</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">uninstall</span> lodash</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">uninstall</span> lodash</code></pre>
 </div>
       <p class="text-p">অথবা:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">remove</span> lodash</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">remove</span> lodash</code></pre>
 </div>
     </div>
     <div class="study-card">
       <div class="card-title"><span class="badge-num">34.21</span> Package Update</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">update</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">update</span></code></pre>
 </div>
       <p class="text-p">Specific package:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">update</span> lodash</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">update</span> lodash</code></pre>
 </div>
       <p class="text-p">Installed packages দেখতে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> list</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> list</code></pre>
 </div>
       <p class="text-p">Top-level packages:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> list <span style="color:#fde047; font-weight:600;">--depth</span>=0</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> list <span style="color:#fde047; font-weight:600;">--depth</span>=0</code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -57576,7 +57576,7 @@ devDependencies</pre>
       <p class="text-p">কোন package outdated তা দেখতে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">outdated</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">outdated</span></code></pre>
 </div>
       <p class="text-p">Example:</p>
       <div class="ascii-tree-container">
@@ -57614,7 +57614,7 @@ Latest  <span style="color: #38bdf8; font-weight: 700;">→</span> registry-এ�
       <p class="text-p">Package খুঁজতে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">search</span> express</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">search</span> express</code></pre>
 </div>
       <p class="text-p">তবে modern development-এ official documentation, package repository এবং trusted sources দেখে package নির্বাচন করা ভালো।</p>
     </div>
@@ -57623,12 +57623,12 @@ Latest  <span style="color: #38bdf8; font-weight: 700;">→</span> registry-এ�
       <p class="text-p">Package সম্পর্কে information:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">info</span> express</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">info</span> express</code></pre>
 </div>
       <p class="text-p">Specific version:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">info</span> express version</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">info</span> express version</code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -57636,7 +57636,7 @@ Latest  <span style="color: #38bdf8; font-weight: 700;">→</span> registry-এ�
       <p class="text-p">Example:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">view</span> react version</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">view</span> react version</code></pre>
 </div>
       <p class="text-p">এটি registry থেকে package metadata দেখতে সাহায্য করে।</p>
     </div>
@@ -57647,32 +57647,32 @@ Latest  <span style="color: #38bdf8; font-weight: 700;">→</span> registry-এ�
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node index.js&quot;</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch index.js&quot;</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;node test.js&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;node test.js&quot;</span>
   }
 }</code></pre>
 </div>
       <p class="text-p">Run:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">start</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">start</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">test</span></code></pre>
 </div>
     </div>
     <div class="study-card">
       <div class="card-title"><span class="badge-num">34.28</span> <code>npm run</code> কী করে?</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <p class="text-p">মানে:</p>
       <div class="ascii-tree-container">
@@ -57693,17 +57693,17 @@ associated command</pre>
       <p class="text-p">Special shorthand:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">start</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">start</span></code></pre>
 </div>
       <p class="text-p">এটি:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">start</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">start</span></code></pre>
 </div>
       <p class="text-p">এর equivalent। একইভাবে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">test</span></code></pre>
 </div>
       <p class="text-p">special script হিসেবে ব্যবহার করা যায়।</p>
     </div>
@@ -57713,25 +57713,25 @@ associated command</pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;vite&quot;</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;build&quot;</span>: <span style="color:#4ade80;">&quot;vite build&quot;</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;preview&quot;</span>: <span style="color:#4ade80;">&quot;vite preview&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;vite&quot;</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;build&quot;</span>: <span style="color:#4ade80;">&quot;vite build&quot;</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;preview&quot;</span>: <span style="color:#4ade80;">&quot;vite preview&quot;</span>
   }
 }</code></pre>
 </div>
       <p class="text-p">Commands:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">build</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> preview</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> preview</code></pre>
 </div>
       <p class="text-p">React/Vite project-এ এ ধরনের scripts খুব common।</p>
     </div>
@@ -57741,12 +57741,12 @@ associated command</pre>
       <p class="text-p"><code>npx</code> package-এর executable command run করতে ব্যবহৃত হয়। Example:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npx</span> <span style="color:#38bdf8; font-weight:700;">vite</span></code></pre>
 </div>
       <p class="text-p">আরেকটি common pattern:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">create</span>-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npx</span> <span style="color:#4ade80; font-weight:600;">create</span>-<span style="color:#38bdf8; font-weight:700;">vite</span></code></pre>
 </div>
       <p class="text-p">এটি package command চালানোর জন্য ব্যবহৃত হয়।</p>
       <div class="section-subhead">🔹 সহজ পার্থক্য</div>
@@ -57766,7 +57766,7 @@ associated command</pre>
       <p class="text-p"><code>npx</code> প্রয়োজন অনুযায়ী package executable resolve/download/cache করে run করতে পারে। তাই:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> some<span style="color:#fde047; font-weight:600;">-t</span>ool</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npx</span> some-tool</code></pre>
 </div>
       <p class="text-p">মানে সবসময় permanent local dependency হিসেবে project-এ install হয়ে গেছে—এমন নয়।</p>
     </div>
@@ -57775,17 +57775,17 @@ associated command</pre>
       <p class="text-p"><strong>Vite</strong> হলো modern frontend development/build tool। React project তৈরি:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">create</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span>@latest</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">create</span> <span style="color:#38bdf8; font-weight:700;">vite</span>@latest</code></pre>
 </div>
       <p class="text-p">তারপর:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span></code></pre>
 </div>
       <p class="text-p">Run:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -57816,7 +57816,7 @@ dist/</pre>
       <p class="text-p">Development source code production-এর জন্য optimize করে output তৈরি করাকে broadly build process বলা হয়। Example:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">build</span></code></pre>
 </div>
       <p class="text-p">Output:</p>
       <div class="ascii-tree-container">
@@ -57834,7 +57834,7 @@ dist/</pre>
       <div class="section-subhead">🔹 Development</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <p class="text-p">সাধারণত:</p>
       <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
@@ -57846,7 +57846,7 @@ dist/</pre>
       <div class="section-subhead">🔹 Production</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">build</span></code></pre>
 </div>
       <p class="text-p">সাধারণত:</p>
       <ul style="margin: 2px 0 5px 16px; color: #334155; font-size: 10.5px;">
@@ -57939,7 +57939,7 @@ Original source mapping</pre>
       <p class="text-p">তোমার ESLint configuration অনুযায়ী semicolon বা অন্যান্য rule নিয়ে warning/error দিতে পারে। Install:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font-weight:700;">eslint</span></code></pre>
 </div>
       <p class="text-p">তারপর project অনুযায়ী configuration setup করা হয়।</p>
     </div>
@@ -57982,7 +57982,7 @@ Better <span style="color: #34d399; font-weight: 700;">Code</span></pre>
       <p class="text-p">Install:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">prettier</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font-weight:700;">prettier</span></code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -58061,22 +58061,22 @@ Better <span style="color: #34d399; font-weight: 700;">Code</span></pre>
       <p class="text-p">External package ব্যবহার মানেই security risk-এর possibility থাকে। Check:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">audit</span></code></pre>
 </div>
       <p class="text-p">Fix attempt:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">audit</span> <span style="color:#4ade80; font-weight:600;">fix</span></code></pre>
 </div>
       <p class="text-p">Package update:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">update</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">update</span></code></pre>
 </div>
       <p class="text-p">কিন্তু blindly:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span> <span style="color:#fde047; font-weight:600;">--force</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">audit</span> <span style="color:#4ade80; font-weight:600;">fix</span> <span style="color:#fde047; font-weight:600;">--force</span></code></pre>
 </div>
       <p class="text-p">ব্যবহার করা উচিত নয়। কারণ breaking changes আসতে পারে।</p>
     </div>
@@ -58104,7 +58104,7 @@ Better <span style="color: #34d399; font-weight: 700;">Code</span></pre>
       <p class="text-p">তুমি নিজে install করেছো:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> express</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> express</code></pre>
 </div>
       <div class="section-subhead">🔹 Transitive dependency</div>
       <p class="text-p">Express-এর dependency হিসেবে অন্য package এসেছে।</p>
@@ -58123,15 +58123,15 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;^1.2.3&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;^1.2.3&quot;</span>
   }
 }</code></pre>
 </div>
       <p class="text-p">এখানে <code>^</code> version range বোঝায়। আর:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
-  <pre><code><span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;~1.2.3&quot;</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight: 600;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;~1.2.3&quot;</span></code></pre>
 </div>
       <p class="text-p">এর behavior আলাদা।</p>
     </div>
@@ -58156,8 +58156,8 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;1.2.3&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;example&quot;</span>: <span style="color:#4ade80;">&quot;1.2.3&quot;</span>
   }
 }</code></pre>
 </div>
@@ -58168,7 +58168,7 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <div class="section-subhead">🔹 Local</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#38bdf8; font-weight:700;">eslint</span></code></pre>
 </div>
       <p class="text-p">থাকে:</p>
       <div class="ascii-tree-container">
@@ -58178,7 +58178,7 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <div class="section-subhead">🔹 Global</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-g</span> ...</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">-g</span> ...</code></pre>
 </div>
       <p class="text-p">Machine-wide command-এর জন্য।</p>
       <div class="section-subhead">🔹 Best practice</div>
@@ -58194,7 +58194,7 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <p class="text-p">Package executable run করার আরেকটি modern command:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">exec</span> -- <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span> .</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">exec</span> -- <span style="color:#38bdf8; font-weight:700;">eslint</span> .</code></pre>
 </div>
       <p class="text-p">অনেক ক্ষেত্রে <code>npx</code>-এর alternative হিসেবে ব্যবহার করা যায়।</p>
     </div>
@@ -58205,20 +58205,20 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;lint&quot;</span>: <span style="color:#4ade80;">&quot;eslint .&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;lint&quot;</span>: <span style="color:#4ade80;">&quot;eslint .&quot;</span>
   }
 }</code></pre>
 </div>
       <p class="text-p">Run:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> lint</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> lint</code></pre>
 </div>
       <p class="text-p">Additional arguments pass করতে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> lint -- --<span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> lint -- --<span style="color:#4ade80; font-weight:600;">fix</span></code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -58241,19 +58241,19 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-node-app&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node src/index.js&quot;</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch src/index.js&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-node-app&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node src/index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch src/index.js&quot;</span>
   }
 }</code></pre>
 </div>
       <p class="text-p">Run:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -58278,22 +58278,22 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <p class="text-p">Commands:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span></code></pre>
 </div>
       <p class="text-p">Development:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <p class="text-p">Production build:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">build</span></code></pre>
 </div>
       <p class="text-p">Preview:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> preview</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> preview</code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -58301,12 +58301,12 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <p class="text-p">Modern tooling-এ তুমি এমন command দেখতে পারো:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">create</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span>@latest</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">create</span> <span style="color:#38bdf8; font-weight:700;">vite</span>@latest</code></pre>
 </div>
       <p class="text-p">এটি project scaffolding tool চালায়। অন্যদিকে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> some<span style="color:#fde047; font-weight:600;">-t</span>ool</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npx</span> some-tool</code></pre>
 </div>
       <p class="text-p">সাধারণভাবে package executable run করার pattern।</p>
     </div>
@@ -58316,17 +58316,17 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <div class="section-subhead">🔹 Yarn</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">yarn</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">yarn</span></code></pre>
 </div>
       <div class="section-subhead">🔹 pnpm</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">pnpm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">pnpm</span> <span style="color:#4ade80; font-weight:600;">install</span></code></pre>
 </div>
       <div class="section-subhead">🔹 Bun</div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">bun</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">bun</span> <span style="color:#4ade80; font-weight:600;">install</span></code></pre>
 </div>
       <p class="text-p">এগুলো JavaScript ecosystem-এর package/runtime tooling ecosystem-এর অংশ। তবে একটি project-এ package manager consistent রাখা ভালো।</p>
     </div>
@@ -58336,7 +58336,7 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE MANIFEST (JSON)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;packageManager&quot;</span>: <span style="color:#4ade80;">&quot;npm@11.x&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;packageManager&quot;</span>: <span style="color:#4ade80;">&quot;npm@11.x&quot;</span>
 }</code></pre>
 </div>
       <p class="text-p">এর মতো metadata থাকতে পারে। এটি team-কে কোন package manager/version ব্যবহার করার expectation জানাতে সাহায্য করতে পারে।</p>
@@ -58346,7 +58346,7 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <p class="text-p">NPM downloaded package metadata/content-এর cache ব্যবহার করতে পারে। Cache সম্পর্কে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> cache verify</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> cache verify</code></pre>
 </div>
       <p class="text-p">এটি cache integrity check করতে সাহায্য করে। সাধারণ সমস্যা হলেই সরাসরি cache delete করা সবসময় প্রথম solution নয়।</p>
     </div>
@@ -58355,7 +58355,7 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <p class="text-p">একজন developer যখন GitHub থেকে project clone করে:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">git</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">clone</span> &lt;repo&gt;</code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">git</span> <span style="color:#4ade80; font-weight:600;">clone</span> &lt;repo&gt;</code></pre>
 </div>
       <p class="text-p">তারপর:</p>
       <div class="code-box">
@@ -58365,12 +58365,12 @@ Other <span style="color: #fde047; font-weight: 600;">Package</span></pre>
       <p class="text-p">তারপর:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span></code></pre>
 </div>
       <p class="text-p">তারপর:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <p class="text-p">Flow:</p>
       <div class="ascii-tree-container">
@@ -58505,24 +58505,24 @@ Server</pre>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># টার্মিনালে নতুন ফোল্ডার তৈরি করে প্রজেক্ট ইনিশিয়ালাইজেশন</span>
-mkdir my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:#fde047; font-weight:600;">-p</span>roject
-cd my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:#fde047; font-weight:600;">-p</span>roject
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
+mkdir my-js-project
+cd my-js-project
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #1)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-js-project&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;description&quot;</span>: <span style="color:#4ade80;">&quot;Enterprise JavaScript Package&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;main&quot;</span>: <span style="color:#4ade80;">&quot;src/index.js&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;echo \&quot;</span>Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  <span style="color:#38bdf8; font-weight: 600;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-js-project&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;description&quot;</span>: <span style="color:#4ade80;">&quot;Enterprise JavaScript Package&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;main&quot;</span>: <span style="color:#4ade80;">&quot;src/index.js&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;echo \&quot;</span>Error: no test specified\&quot; &amp;&amp; exit 1&quot;
   },
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;keywords&quot;</span>: [&quot;javascript&quot;, &quot;tooling&quot;, &quot;npm&quot;],
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;author&quot;</span>: <span style="color:#4ade80;">&quot;FullStack Engineer&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;license&quot;</span>: <span style="color:#4ade80;">&quot;MIT&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;keywords&quot;</span>: [&quot;javascript&quot;, &quot;tooling&quot;, &quot;npm&quot;],
+  <span style="color:#38bdf8; font-weight: 600;">&quot;author&quot;</span>: <span style="color:#4ade80;">&quot;FullStack Engineer&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;license&quot;</span>: <span style="color:#4ade80;">&quot;MIT&quot;</span>
 }</code></pre>
 </div>
       <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> npm init -y কোনো প্রশ্ন ছাড়াই তাৎক্ষণিক একটি স্ট্যান্ডার্ড package.json তৈরি করে। আধুনিক প্রজেক্টে ES Module ইমপোর্ট ব্যবহারের জন্য &quot;type&quot;: &quot;module&quot; যোগ করা অত্যন্ত গুরুত্বপূর্ণ।</div>
@@ -58533,7 +58533,7 @@ cd my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># টার্মিনালে lodash-es ইনস্টল</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> lodash<span style="color:#fde047; font-weight:600;">-e</span>s</code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> lodash-es</code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #2)</span><span>JAVASCRIPT</span></div>
@@ -58561,19 +58561,19 @@ cd my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># ডেভেলপমেন্ট টুল হিসেবে ESLint ইনস্টল</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span></code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font-weight:700;">eslint</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #3)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-js-project&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dependencies&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;lodash-es&quot;</span>: <span style="color:#4ade80;">&quot;^4.17.21&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;my-js-project&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;version&quot;</span>: <span style="color:#4ade80;">&quot;1.0.0&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;type&quot;</span>: <span style="color:#4ade80;">&quot;module&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;dependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;lodash-es&quot;</span>: <span style="color:#4ade80;">&quot;^4.17.21&quot;</span>
   },
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;devDependencies&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;eslint&quot;</span>: <span style="color:#4ade80;">&quot;^9.0.0&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;devDependencies&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;eslint&quot;</span>: <span style="color:#4ade80;">&quot;^9.0.0&quot;</span>
   }
 }</code></pre>
 </div>
@@ -58585,18 +58585,18 @@ cd my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># স্ক্রিপ্ট রান করার কমান্ড</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span>     # ওয়াচ মোডে লাইভ রান
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span>   # প্রোডাকশন বিল্ড ও অ্যাসেট তৈরি
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">start</span>       # প্রোডাকশন সার্ভার স্টার্ট</code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span>     # ওয়াচ মোডে লাইভ রান
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">build</span>   # প্রোডাকশন বিল্ড ও অ্যাসেট তৈরি
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">start</span>       # প্রোডাকশন সার্ভার স্টার্ট</code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #4)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch src/index.js&quot;</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;build&quot;</span>: <span style="color:#4ade80;">&quot;echo &#x27;Building production bundle...&#x27; &amp;&amp; mkdir -p dist &amp;&amp; cp -r src/* dist/&quot;</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node dist/index.js&quot;</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;lint&quot;</span>: <span style="color:#4ade80;">&quot;eslint src/**/*.js&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;dev&quot;</span>: <span style="color:#4ade80;">&quot;node --watch src/index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;build&quot;</span>: <span style="color:#4ade80;">&quot;echo &#x27;Building production bundle...&#x27; &amp;&amp; mkdir -p dist &amp;&amp; cp -r src/* dist/&quot;</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;start&quot;</span>: <span style="color:#4ade80;">&quot;node dist/index.js&quot;</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;lint&quot;</span>: <span style="color:#4ade80;">&quot;eslint src/**/*.js&quot;</span>
   }
 }</code></pre>
 </div>
@@ -58608,7 +58608,7 @@ cd my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># গিট স্ট্যাটাস চেক করে ইগনোর হওয়া নিশ্চিত করা</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">git</span> status</code></pre>
+<span style="color:#38bdf8; font-weight:700;">git</span> status</code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #5)</span><span>ENV</span></div>
@@ -58642,7 +58642,7 @@ cd my<span style="color:#fde047; font-weight:600;">-j</span>s<span style="color:
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># প্রজেক্ট রান</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #6)</span><span>JAVASCRIPT</span></div>
@@ -58673,14 +58673,14 @@ server.<span style="color: #38bdf8; font-weight: 600;">listen</span>(PORT, () =&
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># ১. Vite দিয়ে প্রজেক্ট স্ক্যাফোল্ড করা</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">create</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">vite</span>@latest enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend -- <span style="color:#fde047; font-weight:600;">--template</span> vanilla
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">create</span> <span style="color:#38bdf8; font-weight:700;">vite</span>@latest enterprise-frontend -- <span style="color:#fde047; font-weight:600;">--template</span> vanilla
 
 <span class="syn-com"># ২. ডিরেক্টরিতে প্রবেশ করে ডিপেনডেন্সি ইনস্টল</span>
-cd enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span>
+cd enterprise-frontend
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span>
 
 <span class="syn-com"># ৩. লাইভ ডেভ সার্ভার বুট</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #7)</span><span>JAVASCRIPT</span></div>
@@ -58707,10 +58707,10 @@ cd enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># বিল্ড কমান্ড রান</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">build</span>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">build</span>
 
 <span class="syn-com"># বিল্ড আউটপুট প্রিভিউ</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> preview</code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> preview</code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #8)</span><span>HTML</span></div>
@@ -58735,9 +58735,9 @@ cd enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># প্রজেক্ট ও সিআই পাইপলাইনে সঠিক কমান্ড নির্বাচন</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span>    # নতুন প্যাকেজ যোগ বা লোকাল ডেভেলপমেন্ট শুরুর সময়
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">ci</span>         # GitHub Actions বা Jenkins সিআই/সিডি বিল্ডে ১০০% নির্ভরযোগ্য
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">update</span>     # প্যাকেজগুলোর অনুমোদিত লেটেস্ট মাইনর/প্যাচ আপগ্রেড করতে</code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span>    # নতুন প্যাকেজ যোগ বা লোকাল ডেভেলপমেন্ট শুরুর সময়
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">ci</span>         # GitHub Actions বা Jenkins সিআই/সিডি বিল্ডে ১০০% নির্ভরযোগ্য
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">update</span>     # প্যাকেজগুলোর অনুমোদিত লেটেস্ট মাইনর/প্যাচ আপগ্রেড করতে</code></pre>
 </div>
       <div class="def-box">💡 <strong>প্রোডাকশন অন্তর্দৃষ্টি:</strong> npm install লকফাইল পরিবর্তন করতে পারে, কিন্তু npm ci কখনো লকফাইল স্পর্শ করে না; লকফাইলে কোনো অসঙ্গতি থাকলে npm ci সঙ্গে সঙ্গে এরর দিয়ে বিল্ড থামিয়ে দেয়।</div>
     </div>
@@ -58747,15 +58747,15 @@ cd enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># রুট লেভেল থেকে সাব-প্রজেক্ট চালানোর কমান্ড</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span>:frontend   # ফ্রন্টএন্ড স্টার্ট
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span>:backend    # ব্যাকএন্ড স্টার্ট</code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span>:frontend   # ফ্রন্টএন্ড স্টার্ট
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">dev</span>:backend    # ব্যাকএন্ড স্টার্ট</code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #10)</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;fullstack-platform-root&quot;</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;private&quot;</span>: <span style="color:#c084fc; font-weight: <span style="color:#fb923c;">600</span>;">true</span>,
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
+  <span style="color:#38bdf8; font-weight: 600;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;fullstack-platform-root&quot;</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;private&quot;</span>: <span style="color:#c084fc; font-weight: 600;">true</span>,
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
     &quot;install:all&quot;: <span style="color:#4ade80;">&quot;npm --prefix backend install &amp;&amp; npm --prefix frontend install&quot;</span>,
     &quot;dev:backend&quot;: <span style="color:#4ade80;">&quot;npm --prefix backend run dev&quot;</span>,
     &quot;dev:frontend&quot;: <span style="color:#4ade80;">&quot;npm --prefix frontend run dev&quot;</span>,
@@ -58771,7 +58771,7 @@ cd enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># লিন্টার ও ফরম্যাটার ডিপেনডেন্সি ইনস্টল</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">prettier</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">eslint</span><span style="color:#fde047; font-weight:600;">-c</span>onfig-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">prettier</span></code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">-D</span> <span style="color:#38bdf8; font-weight:700;">eslint</span> <span style="color:#38bdf8; font-weight:700;">prettier</span> eslint-config-prettier</code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #11)</span><span>JAVASCRIPT</span></div>
@@ -58810,7 +58810,7 @@ cd enterprise<span style="color:#fde047; font-weight:600;">-f</span>rontend
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># dotenv লাইব্রেরি ইনস্টল</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> dotenv</code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> dotenv</code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #12)</span><span>JAVASCRIPT</span></div>
@@ -58845,16 +58845,16 @@ JWT_SECRET=&quot;</span>your_jwt_secret_key_here&quot;
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL EXECUTION COMMANDS</span><span>BASH</span></div>
   <pre><code><span class="syn-com"># ১. ডিপেনডেন্সি সিকিউরিটি স্ক্যান</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">audit</span>
 
 <span class="syn-com"># ২. সেমিকম্প্যাটিবল অটো-ফিক্স</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">audit</span> <span style="color:#4ade80; font-weight:600;">fix</span>
 
 <span class="syn-com"># ৩. ব্রেকিং চেঞ্জ রিভিউসহ ফোর্স ফিক্স (সতর্কতার সাথে)</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">fix</span> <span style="color:#fde047; font-weight:600;">--force</span>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">audit</span> <span style="color:#4ade80; font-weight:600;">fix</span> <span style="color:#fde047; font-weight:600;">--force</span>
 
 <span class="syn-com"># ৪. প্রোডাকশন অনলি অডিট (devDependencies বাদ দিয়ে)</span>
-<span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">audit</span> <span style="color:#fde047; font-weight:600;">--omit</span>=<span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">dev</span></code></pre>
+<span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">audit</span> <span style="color:#fde047; font-weight:600;">--omit</span>=<span style="color:#4ade80; font-weight:600;">dev</span></code></pre>
 </div>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">CONFIGURATION & IMPLEMENTATION (LAB #13)</span><span>ENV</span></div>
@@ -59324,12 +59324,12 @@ Actual   <span style="color: #38bdf8; font-weight: 700;">→</span> 5
       <p class="text-p">Project তৈরি:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">init</span> <span style="color:#fde047; font-weight:600;">-y</span></code></pre>
 </div>
       <p class="text-p">Jest install:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">install</span> <span style="color:#fde047; font-weight:600;">--save-dev</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">jest</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">install</span> <span style="color:#fde047; font-weight:600;">--save-dev</span> <span style="color:#38bdf8; font-weight:700;">jest</span></code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -59357,7 +59357,7 @@ test(&quot;</span><span class="syn-num">2</span> + <span class="syn-num">3</span
       <p class="text-p">Run:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">jest</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npx</span> <span style="color:#38bdf8; font-weight:700;">jest</span></code></pre>
 </div>
       <p class="text-p">Expected result:</p>
       <div class="ascii-tree-container">
@@ -59816,7 +59816,7 @@ Lines</pre>
       <p class="text-p">Jest:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npx</span> <span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">jest</span> --<span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">coverage</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npx</span> <span style="color:#38bdf8; font-weight:700;">jest</span> --<span style="color:#4ade80; font-weight:600;">coverage</span></code></pre>
 </div>
       <p class="text-p">Report-এ এমন কিছু দেখা যেতে পারে:</p>
       <div class="ascii-tree-container">
@@ -60230,8 +60230,8 @@ Run 4 <span style="color: #38bdf8; font-weight: 700;">→</span> <span style="co
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE JSON TEST CONFIG</span><span>JSON</span></div>
   <pre><code>[
   {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;id&quot;</span>: <span style="color:#fb923c;">1</span>,
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;Ripon&quot;</span>
+    <span style="color:#38bdf8; font-weight: 600;">&quot;id&quot;</span>: <span style="color:#fb923c;">1</span>,
+    <span style="color:#38bdf8; font-weight: 600;">&quot;name&quot;</span>: <span style="color:#4ade80;">&quot;Ripon&quot;</span>
   }
 ]</code></pre>
 </div>
@@ -60389,20 +60389,20 @@ npm <span style="color: #c084fc; font-weight: 700;">test</span>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">PACKAGE JSON TEST CONFIG</span><span>JSON</span></div>
   <pre><code>{
-  <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;scripts&quot;</span>: {
-    <span style="color:#38bdf8; font-weight: <span style="color:#fb923c;">600</span>;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;jest&quot;</span>
+  <span style="color:#38bdf8; font-weight: 600;">&quot;scripts&quot;</span>: {
+    <span style="color:#38bdf8; font-weight: 600;">&quot;test&quot;</span>: <span style="color:#4ade80;">&quot;jest&quot;</span>
   }
 }</code></pre>
 </div>
       <p class="text-p">তারপর:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">test</span></code></pre>
 </div>
       <p class="text-p">অথবা:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">run</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">run</span> <span style="color:#4ade80; font-weight:600;">test</span></code></pre>
 </div>
     </div>
     <div class="study-card">
@@ -60482,7 +60482,7 @@ describe(&quot;</span>Calculator<span class="syn-str">&quot;, () =&gt; {
       <p class="text-p">Run:</p>
       <div class="code-box">
   <div class="code-top"><span style="color: #38bdf8; font-weight: 600;">TERMINAL TEST COMMAND</span><span>BASH</span></div>
-  <pre><code><span style="color:#38bdf8; font<span style="color:#fde047; font-weight:600;">-w</span>eight:700;">npm</span> <span style="color:#4ade80; font<span style="color:#fde047; font-weight:600;">-w</span>eight:600;">test</span></code></pre>
+  <pre><code><span style="color:#38bdf8; font-weight:700;">npm</span> <span style="color:#4ade80; font-weight:600;">test</span></code></pre>
 </div>
       <p class="text-p">এখানে আমরা একইসাথে শিখলাম:</p>
       <div class="ascii-tree-container">
